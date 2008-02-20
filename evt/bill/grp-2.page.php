@@ -363,10 +363,6 @@
 		<input	type="button" <?php if ( $stage > 2 ) echo 'disabled="disabled"' ?>
 			onclick="javascript: location.replace('<?php echo htmlsecure($_SERVER["PHP_SELF"]) ?>');"
 			class="back" value="<< Départ" name="back" />
-		<?php if ( $stage == 2 ) { ?>
-		<input type="submit" name="express" value="Flash" title="Retient le contexte actuel (spectateur, manifestation -> ventes sur place)" />
-		<?php if ( is_array($_SESSION["evt"]["express"]) ) { ?><input type="submit" name="unexpress" value="Normal" title="Revient sur une billetterie normale" /><?php } ?>
-		<?php } ?>
 		<input type="submit" class="next" value="Suivant >>" name="<?php if ( $print ) echo "printed"; else echo $stage == 2 ? "filled" : "paid" ?>" />
 	</p>
 <?php

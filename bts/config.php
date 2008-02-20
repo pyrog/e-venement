@@ -16,41 +16,11 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2008 Baptiste SIMON <baptiste.simon AT e-glop.net>
 *
 ***********************************************************************************/
 ?>
 <?php
-	require_once("conf.inc.php");
-	includeClass("navigation");
-	
-	$nav = new navigation();
-	
-	// les préconditions
-	if ( !$_GET["plname"] || intval($_GET["siteid"]) <= 0
-	  || !$_GET["onmap"]["x"] || !$_GET["onmap"]["y"]
-	  || !$_GET["size"]["x"] || !$_GET["size"]["y"] )
-	{
-		$nav->misc("HTTP/1.0 412 Precondition Failed");
-		echo "problème interne";
-		exit(1);
-	}
-	
-	$arr = array();
-	$arr["plname"]	= $_GET["plname"];
-	$arr["siteid"]	= intval($_GET["siteid"]);
-	$arr["onmapx"]	= $_GET["onmap"]["x"];
-	$arr["onmapy"]	= $_GET["onmap"]["y"];
-	$arr["width"]	= $_GET["size"]["x"];
-	$arr["height"]	= $_GET["size"]["y"];
-	if ( @$bd->addRecord("site_plnum",$arr) )
-	{
-		$nav->misc("HTTP/1.0 201 Created");
-		echo $bd->getLastSerial("site_plnum","id");
-	}
-	else
-	{
-		$nav->misc("HTTP/1.0 500 Internal Server Error");
-		echo "place en doublon ?";
-	}
+	// keepit in your flyspray.conf.php
+	$config["bts"]["cookiesalt"] = "12a160c01a3407c1c72f9327f26d4c46";
 ?>

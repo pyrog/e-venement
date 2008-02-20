@@ -176,7 +176,7 @@ ul li.npai { color: red; }
 ul li.npai span { color: black; }
 
 /* PARTICULAR */
-form.personne ul.contacts, body.org ul.organismes,
+body.ann ul.contacts, body.org ul.organismes,
 body.evt ul.events, body.salle ul.salle,
 body.bill ul.contacts
 { min-height: 80px; }
@@ -284,7 +284,7 @@ form.results p.nbresults { margin-left: 20px; }
 div.contact p.global { white-space: nowrap; }
 div.organisme p.email input[type=text], div.contact p.email input[type=text] { width: 300px; }
 div.contact, div.organisme,
-#googlemap, div.organismes, div.contacts, div.spectacles,
+div.organismes, div.contacts, div.spectacles,
 div.creation, div.infos, div.manifs, div.children,
 form.salle div.gestion, form.salle div.details,
 div.tel, div.more, form.extractor div p,
@@ -303,24 +303,13 @@ div.organisme p.description {
 }
 div.contact p.global { white-space: nowrap; }
 
-p.titre, form.extractor div p span.titre {
+p.titre,
+form.extractor div p span.titre {
 	position: absolute;
 	margin-top: -20px;
 	padding: 0px 5px;
 	background-color: white;
-	cursor: default;
 }
-p.titre {
-	background-repeat: no-repeat;
-	background-position: 4px center;
-}
-#googlemap p.titre, div.jqslide p.titre {
-	background-image: url(../img/arrow-down.png);
-	background-repeat: no-repeat;
-	background-position: 4px center;
-	padding-left: 16px;
-}
-div.jqhide p.titre { background-image: url(../img/arrow-side.png); }
 form.extractor div p { width: 350px; }
 form.extractor div p span { display: block; }
 form.extractor div p.perso span.npai { font-style: italic; }
@@ -368,20 +357,17 @@ div.organismes p.entite select + a + span + select {
 	width: 22em;
 	display:block;
 }
-div.organismes, div.contacts,
-form.personne #googlemap, body.org #googlemap {
+div.organismes,
+div.contacts {
 	position: absolute;
 	top: 16px;
 	left: 450px;
 	padding-right: 0px;
-	background-color: white;
-	z-index: 0;
 }
-div.organismes, div.contacts { width: 470px; }
 div.organismes div.clip,
 div.contacts div.clip {
 	overflow: auto;
-	width: 460px;
+	min-width: 450px;
 	max-width: 480px;
 	max-height: 415px;
 }
@@ -534,30 +520,4 @@ p#archive {
 	position: absolute;
 	right: 20px;
 	font-weight: bold;
-}
-
-/* geo-localisation */
-#googlemap {
-	padding-right: 10px;
-	background-color: white;
-}
-form.personne #googlemap, form.organisme #googlemap { top: 55px; }
-#googlemap:hover { z-index: 1; }
-#googlemap p.titre { background-image: url(../img/arrow-side.png); }
-#googlemap.nojs:hover p.titre, #googlemap.open p.titre, { background-image: url(../img/arrow-down.png); }
-#googlemap .clip {
-	height: 100px;
-	overflow: hidden;
-	background-color: white;
-}
-#googlemap.nojs:hover .clip { height: 380px; }
-#googlemap.nojs .clip #map { width: 470px; }
-#googlemap .clip #map {
-	width: 460px;
-	height: 380px;
-}
-form.results #googlemap.nojs .clip { height: 450px; }
-form.results #googlemap.nojs #map {
-	height: 450px;
-	width: auto;
 }

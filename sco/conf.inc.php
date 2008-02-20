@@ -49,14 +49,4 @@
 		$user->addAlert("Vous n'avez pas le droit d'accéder à ce module.");
 		$nav->redirect($config["website"]["base"]);
 	}
-	
-        /** traitement du paramétrage **/
-        $query  = " SELECT * FROM params";
-        $request = new bdRequest($bd,$query);
-
-        //valeurs par défaut
-        $config["sco"]["sql"] = array();
-
-        while ( $rec = $request->getRecordNext() )
-                $config["sco"]["sql"][$rec["name"]] = $rec["value"];
 ?>

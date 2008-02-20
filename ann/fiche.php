@@ -28,8 +28,6 @@
 	includeJS("ttt");
 	includeJS("ajax");
 	includeJS("annu");
-	includeJS("jquery");
-	includeJS("jquery.contact");
 	
 	$bd	= new bd (	$config["database"]["name"],
 				$config["database"]["server"],
@@ -224,7 +222,6 @@
 	$fctDefault = "-Chargé de Mission-";
 	$emailDefault = "-drh@lgc.tld-";
 	$srvDefault = "-Service Culturel-";
-	$addrDefault = "29000 Quimper, France";
 	
 	// acquisition des données à afficher
 	$request = false;
@@ -299,7 +296,6 @@
 			<span><?php printField("field[".($name = "prenom")."]",$rec[$name],"-Ilene-",255,15) ?></span>
 		</p>
 		<p class="adresse">
-			<?php $address = trim($rec["adresse"].$rec["cp"].$rec["ville"]) ? $rec["adresse"].', '.$rec["cp"].' '.$rec["ville"].', '.$rec["pays"] : ''; ?>
 			<span><?php printField("field[".($name = "adresse")."]",$rec[$name],"-3, rue du Stang-",NULL,NULL,true) ?></span>
 			<br/>
 			<span><?php printField("field[".($name = "cp")."]",$rec[$name],"-29640-",10,6) ?></span>
@@ -347,16 +343,8 @@
 		</p>
 		<?php	} ?>
 	</div>
-	<?php
-		// googlemap
-		if ( $action == $actions["view"] && $config["gmap"]["enable"] )
-		{
-			includeLib("googlemap");
-			print_googlemap($address);
-		}
-	?>
-	<div class="organismes jqslide">
-		<p class="titre"><span></span>Organismes</p>
+	<div class="organismes">
+		<p class="titre">Organismes</p>
 		<div class="clip">
 		<?php
 			if ( $action == $actions["add"] || $action == $actions["edit"] )
@@ -485,7 +473,7 @@
 		</div>
 		<?php if ( $action != $actions["view"] ) { ?><input type="button" value="valider - revenir" name="valid" class="maj" onclick="javascript: this.form.action += '&edit'; this.form.submit();" /><?php } ?>
 	</div>
-	<div class="tel jqslide">
+	<div class="tel">
 		<p class="titre">Téléphones</p>
 		<div class="clip">
 		<?php
@@ -567,32 +555,30 @@
 		if ( $request->countRecords() > 0 || $action != $actions["view"] )
 		{
 	?>
-	<div class="children jqslide">
+	<div class="children">
 		<p class="titre">Enfants</p>
-		<div class="clip">
-			<p class="content">Années de naissance&nbsp;:</p>
-			<p class="content">
-			<?php
-				if ( $action == $actions["view"] )
+		<p class="content">Années de naissance&nbsp;:</p>
+		<p class="content">
+		<?php
+			if ( $action == $actions["view"] )
+			while ( $rec = $request->getRecordNext() )
+				echo intval($rec["birth"])." ";
+			else
+			{
+				// existing
 				while ( $rec = $request->getRecordNext() )
-					echo intval($rec["birth"])." ";
-				else
-				{
-					// existing
-					while ( $rec = $request->getRecordNext() )
-						echo '<input type="checkbox" name="delchild[]" value="'.intval($rec["id"]).'" /> '.intval($rec["birth"])." ";
-					
-					// new
-					echo '<input type="text" name="child[]" value="" onchange="javascript: '."if(this.value){elt = this.cloneNode(true); elt.value=''; this.parentNode.appendChild(elt); elt.focus(); }".'" />';
-				}
-			?>
-			</p>
-		</div>
+					echo '<input type="checkbox" name="delchild[]" value="'.intval($rec["id"]).'" /> '.intval($rec["birth"])." ";
+				
+				// new
+				echo '<input type="text" name="child[]" value="" onchange="javascript: '."if(this.value){elt = this.cloneNode(true); elt.value=''; this.parentNode.appendChild(elt); elt.focus(); }".'" />';
+			}
+		?>
+		</p>
 	</div>
 	<?php	} ?>
-	<div class="more jqslide">
+	<div class="more">
 		<p class="titre">Groupes statiques</p>
-		<div class="clip">
+		<div>
 		<ul><?php
 		if ( $action != $actions["add"] )
 		{

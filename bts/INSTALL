@@ -1,7 +1,9 @@
 - take the lastest flyspray and install it somewhere in your filesystem
-  http://www.flyspray.org/
 - create a symlink to your BTS module
   ln -s [flyspray] [e-venement]/bts/
+- create the flyspray schema in your e-venement's database
+  psql [your database]
+  CREATE SCHEMA flyspray;
 - dump the initial schema
   pg_restore -d [your database] sql/flyspray.pgdump
 - patch your database
@@ -23,4 +25,4 @@
   values and then :
   psql [your database] < [e-venement]/bts/sql/user_update.sql
 - finished !! enjoy ! and have a look into flyspray's content before telling
-  everyone "it's ok"... and link the needed people to your new module.
+  everyone "it's ok"... and link the needed people to your new module

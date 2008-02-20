@@ -29,10 +29,10 @@
 		
 		echo '<p class="ages">';
 		$ages = $evt["ages"];
-		if ( $ages[0] == 0 )	// pas d'age de début
-			echo '<span class="max">jusqu\'à '.floatval($ages[1]).' an(s)</span>';
-		elseif ( count($ages) > 1 )		// 2 ages dispo
+		if ( count($ages) > 1 )		// 2 ages dispo
 			echo '<span class="min">de '.floatval($ages[0]).' an(s)</span> à <span class"max">'.floatval($ages[1]).' an(s)</span>';
+		elseif ( $ages[0] == 0 )	// pas d'age de début
+			echo '<span class="max">jusqu\'à '.floatval($ages[1]).' an(s)</span>';
 		elseif ( !isset($ages[1]) )	// pas d'age de fin
 			echo '<span class="max">à partir de '.floatval($ages[0]).' an(s)</span>';
 		echo '</p>';

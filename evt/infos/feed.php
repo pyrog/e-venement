@@ -79,7 +79,7 @@
 		{
 			echo '<entry>';
 			echo '<id>'.htmlsecure($config["website"]["base"].'evt/infos/manif.php?id='.intval($rec['manifid']).'&evtid='.intval($rec["id"])).'</id>';
-			echo '<title>'.htmlsecure($rec["nom"]).'</title>';
+			echo '<title>'.htmlsecure(date($config["format"]["date"].' '.$config["format"]["maniftime"],strtotime($rec["date"])).': '.$rec["nom"]).'</title>';
 			echo '<link rel="alternate" type="text/html" href="'.htmlsecure($config["website"]["base"].'evt/infos/manif.php?id='.intval($rec['manifid']).'&evtid='.intval($rec["id"])).'"/>';
 			echo '<updated>'.htmlsecure(date($config["format"]["atomdate"],strtotime($rec["updated"]))).'</updated>';
 			echo '<summary type="xhtml">'.htmlsecure('Le '.date($config["format"]["date"].' '.$config["format"]["maniftime"],strtotime($rec["date"])).' à '.$rec["sitenom"].' - '.$rec["ville"]).'</summary>';

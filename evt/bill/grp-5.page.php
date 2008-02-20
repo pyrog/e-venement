@@ -22,13 +22,8 @@
 ?>
 <?php
 	global $bd,$user,$nav,$class,$data,$title,$stage,$subtitle;
-	global $redirectnewurl; // pour la billetterie express
 	
 	$class .= ' finish';
-	
-	if ( is_array($_SESSION["evt"]["express"]) )
-		$redirectnewurl = $_SERVER["PHP_SELF"];
-	
 	includeLib("headers");
 ?>
 <h1><?php echo $title ?></h1>

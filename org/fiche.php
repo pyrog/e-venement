@@ -26,8 +26,6 @@
 	includeLib("ttt");
 	includeJS("ttt");
 	includeLib("actions");
-	includeJS("jquery");
-	includeJS("jquery.contact");
 	
 	$bd	= new bd (	$config["database"]["name"],
 				$config["database"]["server"],
@@ -155,7 +153,6 @@
 			<span><?php printField("field[".($name = "nom")."]",$rec[$name],"-La Grande Cie-",127,NULL,NULL,NULL,NULL,NULL,'id="focus"') ?></span>
 		</p>
 		<p class="adresse">
-			<?php $address = trim($rec["adresse"].$rec["cp"].$rec["ville"].$rec["pays"]) ? $rec["adresse"].", ".$rec["cp"]." ".$rec["ville"].", ".$rec["pays"] : ""; ?>
 			<span><?php printField("field[".($name = "adresse")."]",$rec[$name],"-3, Hent Ty Menhir-",NULL,NULL,true) ?></span>
 			<br/>
 			<span><?php printField("field[".($name = "cp")."]",$rec[$name],"-29640-",10,6) ?></span>
@@ -213,7 +210,7 @@
 		</p>
 		<?php } ?>
 	</div>
-	<div class="tel jqslide">
+	<div class="tel">
 		<p class="titre">Téléphones de l'organisme</p>
 		<div>
 		<?php
@@ -296,18 +293,8 @@
 			echo '<p class="valid"><input type="submit" name="valid" value="valider" /></p>';
 	?>
 </form>
-<?php
-	// googlemap
-	if ( $action == $actions["view"] && $config["gmap"]["enable"] )
-	{
-		includeLib("googlemap");
-		print_googlemap($address);
-	}
-	
-	if ( $id > 0 )
-	{
-?>
-<div class="contacts jqslide">
+<?php if ( $id > 0 ) { ?>
+<div class="contacts">
 	<p class="titre">Membres de l'organisme</p>
 	<div class="clip">
 	<?php

@@ -35,10 +35,6 @@
 		<span>Reprise express d'une transaction classique (ne fonctionne pas pour dépôts et contingents)&nbsp;:</span>
 		<span>#<input type="text" size="5" value="" name="t" id="focus" /></span>
 		<span class="hidden"><input type="submit" name="submit" value="" /></span>
-		<?php if ( is_array($_SESSION["evt"]["express"]) ) { ?>
-		|
-		<span><input type="submit" name="unexpress" value="Normal" title="Revient sur une billetterie normale" /></span>
-		<?php } ?>
 	</p>
 </form>
 <div class="desc"><?php @include("desc.txt"); ?></div>

@@ -98,7 +98,6 @@
 			<li>colorlines: définit la couleur des lignes (ex: '#ffe5e5')</li>
 			<li>colorcols: définit la couleur des lignes (ex: '#e5ffff')</li>
 			<li>colorinter: définit la couleur des croisements (ex: '#eeffe5')</li>
-			<li>trinentries: on permet ou non l'affichage des transpositions dans les entrées ('true'|'false')</li>
 		</ul>
 	</p>
 </form>

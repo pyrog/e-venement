@@ -23,7 +23,7 @@
 <?php
 	require_once("../../config.php");
 	require_once("../config.php");
-	$css[]	= "styles/main.css";
+	$css[]	= "vel/pub/styles/main.css";
 	
 	$config["website"]["base"] = $_SERVER["DOCUMENT_ROOT"].dirname($_SERVER["PHP_SELF"]);
 	

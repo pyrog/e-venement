@@ -447,15 +447,12 @@
 		echo '</span></span>';
 		
 		// dernière colonne, passage à la véritable billetterie
-		if ( $transp || $config["sco"]["sql"]["trinentries"] != "false" )
-		{
-			echo '<span class="operation" onmouseout="javascript: '." e=this.getElementsByTagName('a'); if ( e.length > 0 ) if (e.item(0).href == '".$url."') e.item(0).href='evt/bill/billing.php'; e.item(0).className='';".'">';
-			echo '<a href="'.($transp ? $config["website"]["base"].'evt/bill/billing.php?t='.$transp.'&s=3' : $url = htmlsecure($config["website"]["base"].'sco/fiche.php').'?id='.$id.'&line='.intval($rec["tabid"])).'"
+		echo '<span class="operation" onmouseout="javascript: '." e=this.getElementsByTagName('a'); if ( e.length > 0 ) if (e.item(0).href == '".$url."') e.item(0).href='evt/bill/billing.php'; e.item(0).className='';".'">';
+		echo '<a href="'.($transp ? $config["website"]["base"].'evt/bill/billing.php?t='.$transp.'&s=3' : $url = htmlsecure($config["website"]["base"].'sco/fiche.php').'?id='.$id.'&line='.intval($rec["tabid"])).'"
 				onmouseup="javascript: '."sco_disableinputs(this.parentNode.parentNode); this.className='hidden';".'">';
-			echo '&gt;&gt;</a>';
-			echo '<span class="desc">'."Pour la transposition vers la billetterie, l'utilisation d'onglets est conseillée... (ctrl+clic)".'</span>';
-		}
-		if ($transp)
+		echo '&gt;&gt;</a>';
+		echo '<span class="desc">'."Pour la transposition vers la billetterie, l'utilisation d'onglets est conseillée... (ctrl+clic)".'</span>';
+		if ($transp) 
 		{
 			echo '<span class="newline"></span>';
 			echo '<a class="untrans" href="'.htmlsecure($_SERVER["PHP_SELF"]).'?id='.$id.'&untrans='.intval($rec["tabid"]).'">';

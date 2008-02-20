@@ -30,7 +30,7 @@
 	<li class="<?php if ( $stage == ++$cur ) echo 'current'; else echo $stage > $cur ? 'past' : 'tocome' ?>">Sélections initiales</li>
 	<li class="<?php if ( $stage == ++$cur ) echo 'current'; else echo $stage > $cur ? 'past' : 'tocome' ?>">Préparation de la commande</li>
 	<li class="<?php if ( $stage == ++$cur ) echo 'current'; else echo $stage > $cur ? 'past' : 'tocome' ?> edit">Édition des billets</li>
-	<li class="<?php if ( $stage == ++$cur ) echo 'current'; else echo $stage > $cur ? 'past' : 'tocome' ?>">Facture et règlement</li>
+	<li class="<?php if ( $stage == ++$cur ) echo 'current'; else echo $stage > $cur ? 'past' : 'tocome' ?>">Réajustements, facture et règlement</li>
 	<li class="<?php if ( $stage == ++$cur ) echo 'current'; else echo $stage > $cur ? 'past' : 'tocome' ?>">Terminé</li>
 </ul>
 <?php	} ?>

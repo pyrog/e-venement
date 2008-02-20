@@ -100,17 +100,8 @@ function sco_transpose($tabpersid)
 // $tabpersid: id dans le tableau_personne
 function sco_untranspose($tabpersid)
 {
-	global $bd,$nav;
-	$request = new bdRequest($bd,$query=" SELECT transposed FROM tableau_personne AS tabpers WHERE id = ".$tabpersid);
-	$t = $request->getRecord("transposed");
-	$request->free();
-	
-	if ( $r = $bd->updateRecordsSimple("tableau_personne",array("id" => $tabpersid),array("transposed" => NULL, "confirmed" => "f", "conftext" => NULL)) > 0 )
-	{
-		$nav->redirect("../evt/bill/annul.php?pretransac=".$t);
-		$bd->free();
-	}
-	else	return $r;
+	global $bd;
+	return $bd->updateRecordsSimple("tableau_personne",array("id" => $tabpersid),array("transposed" => NULL, "confirmed" => "f", "conftext" => NULL)) > 0;
 }
 
 ?>

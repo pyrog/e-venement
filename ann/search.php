@@ -144,16 +144,9 @@
 	<ul><?php
 		$csv = array();
 		$nb = 0;
-		$pointsAddr = array(); // geo-localisation
 		while ( $personnes && $rec = $personnes->getRecordNext() )
 		if ( $rec["id"] != NULL )
 		{
-			// geo-localisation
-			if ( trim($rec["adresse"].$rec["cp"].$rec["ville"]) || trim($rec["orgadr"].$rec["orgcp"].$rec["orgville"]) )
-			$pointsAddr[] = trim($rec["adresse"].$rec["cp"].$rec["ville"])
-				? $rec["adresse"].", ".$rec["cp"]." ".$rec["ville"]
-				: $rec["orgadr"].", ".$rec["orgcp"]." ".$rec["orgville"];
-			
 			$nb++;
 			echo '<li class="'.($rec["npai"] == 't' ? "npai" : "").'">';
 			echo '<span>';
@@ -172,16 +165,6 @@
 	?></ul>
 	<p class="nbresults"><?php echo $nb." résultat(s)" ?></p>
 	<p class="submit"><input type="submit" value="Retirer" name="rempers" /> les personnes sélectionnées</p>
-	
-	<?php
-		//// géolocalisation ////
-		if ( is_array($pointsAddr) && count($pointsAddr) && $config["gmap"]["enable"] )
-		{
-			includeLib("googlemap");
-			echo '<h3>Géo-localisation</h3>';
-			print_googlemap(NULL,$pointsAddr);
-		}
-	?>
 	
 	<?php
 		$exclusions = $personnes->getExclusions();
@@ -572,8 +555,8 @@
 	</div>
 	<p><input type="submit" name="submit" value="Extraire" /></p>
 </form>
-<?php	} // if ( $fields ) ?>
 </div>
+<?php	} // if ( $fields ) ?>
 <script language="javascript">
 <?php
 if ( $personnes )

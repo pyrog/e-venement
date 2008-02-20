@@ -36,19 +36,8 @@
 	}
 	
 	$data["manif"] = $request->getRecord();	// mise en forme logique des données
-	$request->free();
 	
-	// tarifs pour cette manifestation
-	$query	= " SELECT id, prix, prixspec
-		    FROM tarif_manif
-		    WHERE id IN ( SELECT id FROM tariftosell )
-		      AND manifid = ".intval($data["manif"]["manifid"]);
-	$tarifs = new bdRequest($bd,$query);
-	$data["manif"]["pu"] = array();
-	while ( $tarif = $tarifs->getRecordNext() )
-		$data["manif"]["pu"][intval($tarif["id"])]
-			= floatval($tarif["prixspec"] ? $tarif["prixspec"] : $tarif["prix"]);
-	$tarifs->free();
+	$request->free();
 	
 	// récup des tarifs intéressants
 	$query	= " SELECT * FROM tarif, tariftosell AS tss WHERE tss.id = tarif.id ORDER BY priority DESC, description";

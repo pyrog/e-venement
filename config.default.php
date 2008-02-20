@@ -28,17 +28,6 @@
         $config["divers"]["author-name"]        = '<a href="http://www.libre-informatique.fr/">Libre Informatique</a> - Baptiste SIMON';
         $config["divers"]["author-mail"]        = "bs-public AT e-glop.net";
 	
-	// géo-localisation (google-map)
-	$config["gmap"]["enable"]	= false;
-	$config["gmap"]["key"]		= '';
-	$config["gmap"]["zoomout"]	= 6;
-	$config["gmap"]["zoom"]		= 13;
-	$config["gmap"]["markers"]	= 5;
-	$config["gmap"]["defcenter"][0]	= '47.998118';
-	$config["gmap"]["defcenter"][1]	= '-4.097701';
-	$config["gmap"]["perso_url"]	= 'http://maps.google.com/maps/ms?ie=UTF8&hl=fr&mid=1203000400&msa=0&msid=109071131383604672741.0004461f885edf8b54a7d';
-	$config["gmap"]["perso_kml"]	= $config["gmap"]["perso_url"]."&output=nl";
-	
 	$config["format"]["sysdate"]		= "Y-m-d";
 	$config["format"]["date"]		= "d/m/Y";
 	$config["format"]["time"]		= "H:i:s";

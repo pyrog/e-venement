@@ -5,5 +5,5 @@
 	if ( $user->hasRight($config["rights"]["param"]) )
 	{
 ?>
-<a class="add" href="bts/" title="Préférez son ouverture dans un nouvel onglet" target="_blank">Tickets</a>
+<a class="add" href="bts/" title="Préférez son ouverture dans un nouvel onglet" target="_blank">tickets</a>
 <?php	} ?>

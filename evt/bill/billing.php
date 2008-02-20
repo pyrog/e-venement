@@ -27,23 +27,6 @@
 	includeJS("ttt");
 	includeJS("ajax");
 	includeJS("annu");
-	includeJS("jquery");
-	includeJS("jquery.evt","evt");
-	
-	// billetterie express
-	if ( isset($_POST["unexpress"]) || isset($_GET["unexpress"]) )
-	{
-		unset($_SESSION["evt"]["express"]);
-		unset($_POST);
-	}
-	if ( isset($_SESSION["evt"]["express"]["client"]) && isset($_SESSION["evt"]["express"]["manif"])
-	  && !isset($_POST["client"]) && !isset($_POST["manif"])
-	  && !isset($_GET["t"]) && !isset($_POST["oldtransac"]) )
-	{
-		if ( !is_array($_POST) ) $_POST = array();
-		$_POST["client"] = $_SESSION["evt"]["express"]["client"];
-		$_POST["manif"] = $_SESSION["evt"]["express"]["manif"];
-	}
 	
 	if ( $user->evtlevel < $config["evt"]["right"]["mod"] )
 	{
@@ -283,13 +266,6 @@
 		
 		if ( !isset($prices) && $stage != 2 )
 			$prices = getPrices($data["numtransac"]);
-		
-		// enregistrement des infos pour des transactions express
-		if ( isset($_POST["express"]) )
-		{
-			$_SESSION["evt"]["express"]["client"] = $data["client"];
-			$_SESSION["evt"]["express"]["manif"] = $data["manif"];
-		}	
 		
 		includePage("grp-2");
 	}

@@ -41,8 +41,7 @@
 <p id="cmd"><?php
 	if ( !$data["cmd"] )
 		echo '<a href="cart.php?cmd">Commander ...</a>';
-	elseif ( $data["loggedin"] )
-		echo '<a href="cart.php?pay">Payer ...</a>';
+	else	echo '<a href="cart.php?pay">Payer ...</a>';
 ?></p>
 <?php require("habillage.php"); ?>
 <?php require("inc/footers.php"); ?>
