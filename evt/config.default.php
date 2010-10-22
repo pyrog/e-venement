@@ -38,9 +38,7 @@
 	
         $config["evt"]["syndication"]           = true;
         $config["evt"]["ext"]["web"]		= false;
-  
-  $config['evt']['spacesurl'] = 'evt/index.php';
-  
+        
         /**
 	  * Possibilité ou non de sortir des billets groupés
 	  * Afin de rester en phase avec le code général des impots
@@ -62,9 +60,6 @@
 	  *
 	  **/
 	$config["ticket"]["dematerialized"]	= false;
-	
-	// enabling spaces functionnality to have distinct spaces for events and ticketting system
-	$config['evt']['spaces'] = false;
 	
 	// les droits sur le module
 	$config['evt']['right']['param']	= 10;		// droit de paramétrer le module

@@ -27,10 +27,6 @@
 	$onglet = "Droits evenements";
 	$titre = 'Gestion des droits de la partie évènements/billetterie.';
 	
-	// la condition de l'espace courant
-	$spaceid = intval($_POST['spaceid']);
-	$spacecond = $spaceid > 0 ? 'spaceid = '.$spaceid : 'spaceid IS NULL';
-	
 	includeLib("headers");
 	$bd	= new bd (	$config["database"]["name"],
 				$config["database"]["server"],
@@ -46,8 +42,6 @@
 		{
 			$arr["id"] = intval($_POST["new"]["accountid"]);
 			$arr["level"] = intval($_POST["new"]["level"]);
-			if ( $spaceid > 0 )
-  			$arr['spaceid'] = $spaceid;
 			if ( !$bd->addRecord("rights",$arr) )
 				$user->addAlert("Impossible d'ajouter votre sélection.");
 		}
@@ -56,14 +50,14 @@
 		$ok = true;
 		if ( is_array($_POST["level"]) )
 		foreach ( $_POST["level"] as $id => $value )
-			$ok = $ok && $bd->updateRecords("rights",'id = '.intval($id).' AND '.$spacecond,array("level" => intval($value)));
+			$ok = $ok && $bd->updateRecordsSimple("rights",array("id" => intval($id)),array("level" => intval($value)));
 		if ( !$ok ) $user->addAlert("Impossible de mettre à jour au moins une de vos entrées.");
 		
 		// suppressions
 		$ok = true;
 		if ( is_array($_POST["del"]) )
 		foreach ( $_POST["del"] as $id )
-			$ok = $ok && $bd->delRecords("rights",'id = '.intval($id).' AND '.$spacecond);
+			$ok = $ok && $bd->delRecordsSimple("rights",array("id" => intval($id)));
 		if ( !$ok ) $user->addAlert("Impossible de supprimer au moins une de vos entrées.");
 	}
 	
@@ -73,36 +67,15 @@
 <p class="actions"><a href="evt/def/">Paramétrage</a><a class="nohref active"><?php echo htmlsecure($onglet) ?></a><a href="." class="parent">..</a></p>
 <div class="body">
 <h2><?php echo htmlsecure($titre) ?></h2>
-<?php if ( $config['evt']['spaces'] ): ?>
-<form class="space" method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
-  <p>
-    <?php
-      $query =  ' SELECT *
-                  FROM space
-                '.(!$user->hasRight($config["right"]["param"]) ? 'WHERE id IN ( SELECT spaceid FROM rights WHERE level >= 10 AND id = '.$user->getId().' )' : '').'
-                  ORDER BY name';
-      $request = new bdRequest($bd,$query);
-    ?>
-    <select name="spaceid" onchange="javascript: submit()">
-      <option value="">Espace par défaut</option>
-      <?php while ( $rec = $request->getRecordNext() ): ?>
-      <option value="<?php echo intval($rec['id']) ?>" <?php echo intval($rec['id']) == $spaceid ? 'selected="selected"' : '' ?>><?php echo htmlsecure($rec['name']) ?></option>
-      <?php endwhile; ?>
-    </select>
-    <?php $request->free(); ?>
-  </p>
-</form>
-<?php endif; ?>
 <form name="formu" method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
 	<p class="new">
-	  <input type="hidden" name="spaceid" value="<?php echo $spaceid ? $spaceid : $user->evtspace ?>" />
 		<span class="user"><?php
 			echo '<select name="new[accountid]">';
 			echo '<option value="">-Les comptes-</option>';
 			
 			$query	= " SELECT *
 				    FROM account
-				    WHERE id NOT IN ( SELECT id FROM rights WHERE $spacecond )
+				    WHERE id NOT IN ( SELECT id FROM rights )
 				    ORDER BY name";
 			$request = new bdRequest($bd,$query);
 			
@@ -117,7 +90,7 @@
 	<?php
 		$query	= " SELECT account.id, account.login, account.name, rights.level
 			    FROM account, rights
-			    WHERE rights.id = account.id AND $spacecond";
+			    WHERE rights.id = account.id";
 		$request = new bdRequest($bd,$query);
 		
 		while ( $rec = $request->getRecordNext() )
@@ -137,7 +110,7 @@
 			<li><?php echo intval($config["evt"]["right"]["simple"]) ?> - Ajout/modification/suppression, accès minimaliste</li>
 			<li><?php echo intval($config["evt"]["right"]["mod"]) ?> - Ajout/modification/suppression</li>
 			<li><?php echo intval($config["evt"]["right"]["unblock"]) ?> - Possibilité de débloquer des opérations de billetterie</li>
-			<li><?php echo intval($config["evt"]["right"]["param"]) ?> - Paramétrage du module, pas de prise en compte des opérations bloquées, tous espaces confondus</li>
+			<li><?php echo intval($config["evt"]["right"]["param"]) ?> - Paramétrage du module, pas de prise en compte des opérations bloquées</li>
 		</ul>
 	</p>
 	<p class="valid"><input type="submit" name="submit" value="Valider" /></p>
