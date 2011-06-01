@@ -1,0 +1,29 @@
+default:
+  javascripts: [menu,/sfFormExtraPlugin/js/jquery.autocompleter.js]
+
+createSuccess:
+  stylesheets: [view]
+newSuccess:
+  stylesheets: [view]
+updateSuccess:
+  stylesheets: [view]
+  javascripts: [contact-edit]
+editSuccess:
+  stylesheets: [view]
+  javascripts: [contact-edit]
+showSuccess:
+  stylesheets: [view]
+  javascripts: [contact-show]
+
+indexSuccess:
+  javascripts: [contact-filters, contact-search]
+filterSuccess:
+  javascripts: [contact-filters]
+
+labelsSuccess:
+  has_layout: false
+csvSuccess:
+  has_layout: false
+  http_metas:
+    content-type: text/comma-separated-values
+    content-disposition: attachment; filename="contacts-list.csv"

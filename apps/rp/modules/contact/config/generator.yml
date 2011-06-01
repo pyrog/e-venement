@@ -1,0 +1,47 @@
+generator:
+  class: sfDoctrineGenerator
+  param:
+    model_class:           Contact
+    theme:                 jroller
+    non_verbose_templates: true
+    with_show:             false
+    singular:              ~
+    plural:                ~
+    route_prefix:          contact
+    with_doctrine_route:   true
+    actions_base_class:    sfActions
+    extra:                 [show]
+
+    config:
+      actions: ~
+      fields:
+        description: { label: Keywords }
+        YOBs_list:  { label: "Years of Birth (x[, x [,..]])" }
+        YOB:        { label: Year of Birth }
+        not_groups_list: { label: Not member of groups }
+      list:
+        display: [title, name, firstname, postalcode, city, email, npai]
+      show: 
+        display:
+          NONE: [_show_who, _show_email, _show_phonenumbers_list]
+          Address: [title, name, firstname, address, postalcode, city, country]
+          Precisions: [family_contact, npai, description, _YOBs]
+          Groups: [_show_groups_list]
+          #Geolocalization: [_gmap]
+          Details: [created_at,updated_at,slug,longitude,latitude]
+      filter:
+        display: [name, firstname, postalcode, city, country, YOB, groups_list, not_groups_list, description, family_contact, npai, organism_id, organism_category_id, professional_type_id, has_email, has_address, emails_list, event_categories_list, events_list]
+      form: ~
+      edit:
+        title: Contact %%name%% %%firstname%%
+        display:
+          NONE:  [title, name, firstname, address, postalcode, city, _cities, country]
+          Precisions: [family_contact, npai, email, description, YOBs_list, password]
+          Phonenumbers: [_form_phonenumbers_list]
+          Personal groups: [groups_list]
+      new:
+        title: New contact
+        display:
+          NONE:  [title, name, firstname, address, postalcode, city, _cities, country]
+          Precisions: [family_contact, npai, email, description, YOBs_list, password]
+          Groups: [groups_list]

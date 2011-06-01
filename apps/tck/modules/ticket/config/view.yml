@@ -1,0 +1,29 @@
+default:
+  javascripts: [jquery,menu]
+
+printSuccess:
+  javascripts: [-*, jquery, print-tickets]
+  stylesheets: [-*, print-tickets.default]
+orderSuccess:
+  javascripts: [-*, jquery, print-ticket]
+  stylesheets: [-*, print-accounting]
+invoiceSuccess:
+  javascripts: [-*, jquery, print-ticket]
+  stylesheets: [-*, print-accounting]
+
+gaugeSuccess:
+  stylesheets: [gauge]
+
+failedSuccess:
+  stylesheets: [ticket]
+passedSuccess:
+  stylesheets: [ticket]
+controlSuccess:
+  stylesheets: [ticket]
+
+cancelSuccess:
+  stylesheets: [ticket-cancel]
+cancelBootSuccess:
+  stylesheets: [ticket-cancel]
+canceledTicketSuccess:
+  stylesheets: [ticket]
