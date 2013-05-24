@@ -42,7 +42,7 @@
       if ( substr($request->getParameter('manif_new'),0,7) == '#manif-' )
       {
         $mid = array();
-        $manifs = explode(',',$request->getParameter('manif_new'));
+        $manifs = split(',',$request->getParameter('manif_new'));
         foreach ( $manifs as $manif )
           $mid[] = substr($manif,7);
       }
@@ -51,6 +51,8 @@
         $charset = sfConfig::get('software_internals_charset');
         $q = Doctrine::getTable('Event')->createQuery('e')
           ->select('e.id')
+          ->leftJoin('me.Users u')
+          ->andWhere('u.id = ?',$this->getUser()->getId())
           ->limit(intval($request->getParameter('limit')) > 0 ? intval($request->getParameter('limit')) : (isset($config['max_display']) ? $config['max_display'] : 30));
         if ( $request->getParameter('display_all','false') !== 'true' )
           $q->andWhere('e.display_by_default = TRUE');
@@ -64,8 +66,12 @@
       // prices to be shown for each manifestations
       $q = Doctrine::getTable('Manifestation')->createQuery('m')
         ->leftJoin('m.Color color')
+        ->leftJoin('w.Users u')
+        ->leftJoin('p.Users pu')
         ->andWhereNotIn('m.id',$mids)
-        ->select('m.*, e.*, color.*, l.*, pm.*, p.*, g.*, me.*, w.*, pu.*, wu.*, meu.*')
+        ->andWhere('u.id != ?',$this->getUser()->getId())
+        ->andWhere('pu.id = ?',$this->getUser()->getId())
+        ->select('m.*, e.*, color.*, l.*, pm.*, p.*, g.*, ws.*')
         ->orderBy('happens_at ASC')
         ->limit(intval($request->getParameter('limit')) > 0 ? intval($request->getParameter('limit')) : (isset($config['max_display']) ? $config['max_display'] : 30));
       
@@ -84,10 +90,21 @@
       $config =  sfConfig::get('app_transaction_manifs',array());
       $eids = array();
       $q = Doctrine::getTable('Manifestation')
-        ->createQuery('m')
+        ->createQuery('m',true)
         ->leftJoin('m.Color color')
+        ->leftJoin('m.Gauges g')
+        ->leftJoin('g.Workspace gw')
+        ->leftJoin('gw.Order gwo ON gwo.workspace_id = gw.id AND gwo.sf_guard_user_id = '.intval($this->getUser()->getId()))
+        ->leftJoin('m.Prices p')
+        ->leftJoin('p.PriceManifestations pm ON p.id = pm.price_id AND m.id = pm.manifestation_id')
+        ->leftJoin('m.PriceManifestations mp ON p.id = mp.price_id AND m.id = mp.manifestation_id')
+        ->leftJoin('p.Users u')
+        ->leftJoin('p.Workspaces pw')
+        ->leftJoin('pw.Gauges pg ON pw.id = pg.workspace_id AND pg.manifestation_id = m.id')
+        ->andWhere('pg.id = g.id')
         ->andWhereNotIn('m.id',$mids)
-        ->andWhere('e.display_by_default = TRUE')
+        ->andWhere('u.id = ?',$this->getUser()->getId())
+        ->andWhere('e.display_by_default')
         ->orderBy('m.happens_at, e.name')
         ->limit(intval($request->getParameter('limit')) > 0 ? intval($request->getParameter('limit')) : (isset($config['max_display']) ? $config['max_display'] : 10));
 

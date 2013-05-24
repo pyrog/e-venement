@@ -25,10 +25,7 @@
 <label><?php echo __('Groups list') ?>:</label>
 <ul class="show_groups">
   <?php foreach ( $professional->Groups as $group ): ?>
-  <li>
-    <?php echo $group->getRaw('html_tag') ?>
-    <a href="<?php echo url_for('group/show?id='.$group->id) ?>"><?php echo $group ?></a>
-  </li>
+  <li><a href="<?php echo url_for('group/show?id='.$group->id) ?>"><?php echo $group ?></a></li>
   <?php endforeach ?>
 </ul>
 </div>

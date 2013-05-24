@@ -1,11 +1,4 @@
-<?php
-  if ( !isset($manifestation) && isset($form) )
-    $manifestation = $form->getObject();
-  
-  foreach ( array('demands', 'orders', 'sells') as $field )
-  if ( !isset($manifestation->$field) )
-    $manifestation->$field = 0;
-?>
+<?php if ( !isset($manifestation) && isset($form) ) $manifestation = $form->getObject(); ?>
 <div class="gauge">
 <div class="backup" id="gauge-<?php echo $manifestation->id ?>">
 <p class="text">

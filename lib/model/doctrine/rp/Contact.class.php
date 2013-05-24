@@ -60,11 +60,17 @@ class Contact extends PluginContact
     return $c;
   }
   
-  public function getGroupsPicto()
+  public function getEvents()
   {
-    $str = '';
-    foreach ( $this->Groups as $group )
-      $str .= $group->getHtmlTag().' ';
-    return $str;
+    if ( isset($this->events) )
+      return $this->events;
+    
+    return $this->events = Doctrine_Query::create()->from('Event e')
+      ->leftJoin('e.Manifestations m')
+      ->leftJoin('m.Tickets tck')
+      ->leftJoin('tck.Transaction t')
+      ->andWhere('t.contact_id = ?',$this->id)
+      ->select('e.*')
+      ->execute();
   }
 }
