@@ -1,12 +1,3 @@
-picture:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                Picture
-    module:               picture
-    prefix_path:          /picture
-    column:               id
-    with_wildcard_routes: true
-
 authentication:
   class: sfDoctrineRouteCollection
   options:

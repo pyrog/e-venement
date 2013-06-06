@@ -10,27 +10,6 @@
  */
 class GroupForm extends BaseGroupForm
 {
-  public function doSave($con = NULL)
-  {
-    $picform_name = 'Picture';
-    $file = $this->values[$picform_name]['content_file'];
-    unset($this->values[$picform_name]['content_file']);
-    
-    if (!( $file instanceof sfValidatedFile ))
-      unset($this->embeddedForms[$picform_name]);
-    else
-    {
-      // data translation
-      $this->values[$picform_name]['content']  = base64_encode(file_get_contents($file->getTempName()));
-      $this->values[$picform_name]['name']     = $file->getOriginalName();
-      $this->values[$picform_name]['type']     = $file->getType();
-      $this->values[$picform_name]['width']    = 24;
-      $this->values[$picform_name]['height']   = 16;
-    }
-    
-    return parent::doSave($con);
-  }
-  
   public function configure()
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url'));
@@ -76,16 +55,5 @@ class GroupForm extends BaseGroupForm
       'choices'   => $choices,
       'default'   => $this->isNew() ? $sf_user->getId() : $this->getObject()->sf_guard_user_id,
     ));
-    
-    // pictures & co
-    $this->embedRelation('Picture');
-    foreach ( array('name', 'type', 'version', 'height', 'width',) as $fieldName )
-      unset($this->widgetSchema['Picture'][$fieldName], $this->validatorSchema['Picture'][$fieldName]);
-    $this->validatorSchema['Picture']['content_file']->setOption('required',false);
-    unset($this->widgetSchema['picture_id'], $this->validatorSchema['picture_id']);
-    
-    // removing too big widgets
-    foreach ( array('contacts_list', 'professionals_list', 'organisms_list') as $fieldName )
-      unset($this->widgetSchema[$fieldName]);
   }
 }

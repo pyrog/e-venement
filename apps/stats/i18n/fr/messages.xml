@@ -5,26 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>#label# for an amount of #val#</source>
-        <target>#label# pour un montant de #val#</target>
-      </trans-unit>
-      <trans-unit>
-        <source>e-venement is loading data</source>
-        <target>e-venement charge les données</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ordered tickets</source>
-        <target>Billets réservés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Overbooked</source>
-        <target>Sur-réservés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Engaged</source>
-        <target>Réservés</target>
-      </trans-unit>
-      <trans-unit>
         <source>Workspaces</source>
         <target>Espaces de travail</target>
       </trans-unit>
@@ -304,6 +284,10 @@
         <source>Asked</source>
         <target>Demandés</target>
       </trans-unit>
+      <trans-unit>
+        <source>Engaged</source>
+        <target>Réservés</target>
+      </trans-unit>
       <trans-unit id="110">
         <source>Chart</source>
         <target>Graphique</target>
@@ -312,7 +296,7 @@
         <source>Record</source>
         <target>Enregistrer</target>
       </trans-unit>
-      <trans-unit>
+      <trans-unit id="112">
         <source>Gauge filling</source>
         <target>Remplissage de la jauge</target>
       </trans-unit>

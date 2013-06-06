@@ -54,8 +54,8 @@ class Manifestation extends PluginManifestation
       $q->leftJoin('tck.Gauge g')
         ->andWhereIn('g.workspace_id',$options['workspaces']);
     
-    if (!( isset($options['not-yet-printed']) && $options['not-yet-printed']))
-      $q->andWhere('(tck.printed_at IS NOT NULL OR tck.cancelling IS NOT NULL OR tck.integrated_at IS NOT NULL)');
+    if (!( isset($options['not-yet-printed']) && $options['not-yet-printed'] ))
+      $q->andWhere('(tck.printed = TRUE OR tck.cancelling IS NOT NULL OR tck.integrated = TRUE)');
     else
       $q->leftJoin('tck.Transaction t')
         ->leftJoin('t.Payments p')
@@ -64,10 +64,12 @@ class Manifestation extends PluginManifestation
     if ( isset($options['dates']) && is_array($options['dates']) )
     {
       if (!( isset($options['tck_value_date_payment']) && $options['tck_value_date_payment'] ))
+      {
         $q->andWhere('tck.updated_at >= ? AND tck.updated_at < ?',array(
             $options['dates'][0],
             $options['dates'][1],
           ));
+      }
       else
       {
         if ( !$q->contains('LEFT JOIN t.Payments p') )

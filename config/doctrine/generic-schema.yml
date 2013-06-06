@@ -169,24 +169,3 @@ Authentication:
       foreignAlias: Authentications
       onDelete: SET NULL
       onUpdate: CASCADE
-
-Picture:
-  package: generic
-  actAs:
-    Timestampable: ~
-    Versionable: ~
-  columns:
-    name:
-      type: string(255)
-      notnull: true
-      notblank: true
-    type:
-      type: string(255)
-      notnull: true
-      notblank: true
-    content:
-      type: blob
-      notnull: true
-    width: integer
-    height: integer
-

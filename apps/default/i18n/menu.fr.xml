@@ -5,10 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Types of relationships</source>
-        <target>Types de relations</target>
-      </trans-unit>
-      <trans-unit>
         <source>Authentication</source>
         <target>Authentification</target>
       </trans-unit>

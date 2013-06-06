@@ -150,9 +150,4 @@ $(document).ready(function(){
   // remove the ticketting part
   if ( $('#remove_ticketting').length > 0 )
     $('a[href="#sf_fieldset_ticketting"]').parent().hide();
-  
-  // adding titles to YOBs' inputs
-  $('.sf_admin_form_field_YOBs table table tr').each(function(){
-    $(this).prop('title', $(this).find('th label').html());
-  });
 });
