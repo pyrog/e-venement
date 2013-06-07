@@ -33,12 +33,8 @@
         return false;
       });
     }
-    function group_organisms_load()
-    {
-      $.get('<?php echo url_for('organism/groupList?id='.$group->id) ?>',group_organisms_loaded);
-    }
     $(document).ready(function(){
-      group_organisms_load();
+      $.get('<?php echo url_for('organism/groupList?id='.$group->id) ?>',group_organisms_loaded);
     });
   --></script>
 </div>

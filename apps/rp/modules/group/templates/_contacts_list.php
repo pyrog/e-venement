@@ -33,12 +33,8 @@
         return false;
       });
     }
-    function group_contacts_load()
-    {
-      $.get('<?php echo url_for('contact/groupList?id='.$group->id) ?>',group_contacts_loaded);
-    }
     $(document).ready(function(){
-      group_contacts_load()
+      $.get('<?php echo url_for('contact/groupList?id='.$group->id) ?>',group_contacts_loaded);
     });
   --></script>
 </div>

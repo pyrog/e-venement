@@ -71,14 +71,17 @@
       ->leftJoin('m.Tickets tck')
       ->leftJoin('tck.Gauge tg')
       ->leftJoin('tck.Transaction t')
+      ->leftJoin('g.Workspace ws')
       ->leftJoin('tck.Price tp')
+      ->leftJoin('p.Users pu')
       ->leftJoin('m.Color c')
       ->leftJoin('p.Workspaces pws')
       ->leftJoin('pws.Gauges pwsg ON pws.id = pwsg.workspace_id AND pwsg.manifestation_id = m.id')
+      ->andWhere('pu.id = ?',$this->getUser()->getId())
       ->andWhere('t.id = ?',$this->transaction->id)
       ->andWhere('tck.id NOT IN (SELECT tck2.duplicating FROM Ticket tck2 WHERE tck2.duplicating IS NOT NULL)')
       ->andWhereIn('tg.workspace_id',array_keys($this->getUser()->getWorkspacesCredentials()))
-      ->orderBy('e.name, m.happens_at, m.id, g.workspace_id, tg.workspace_id, tck.price_name, tck.printed_at, tck.id');
+      ->orderBy('e.name, m.happens_at, m.id, g.workspace_id, tg.workspace_id, tck.price_name, tck.printed, tck.id');
     
     if ( intval($values['manifestation_id']) > 0 )
     {
