@@ -12,24 +12,6 @@
  */
 abstract class PluginManifestation extends BaseManifestation implements liMetaEventSecurityAccessor
 {
-  public function duplicate($save = true)
-  {
-    $manif = $this->copy();
-    foreach ( array('id', 'updated_at', 'created_at', 'sf_guard_user_id') as $property )
-      $manif->$property = NULL;
-    foreach ( array('Gauges', 'PriceManifestations', 'Organizers') as $subobjects )
-    foreach ( $this->$subobjects as $subobject )
-    {
-      $collection = $manif->$subobjects;
-      $collection[] = $subobject->copy();
-    }
-    
-    if ( $save )
-      $manif->save();
-    
-    return $manif;
-  }
-  
   public function preSave($event)
   {
     if ( intval($this->duration).'' != ''.$this->duration )
@@ -38,22 +20,6 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
     }
     parent::preSave($event);
   }
-  
-  public function postInsert($event)
-  {
-    if ( $this->PriceManifestations->count() == 0 )
-    foreach ( Doctrine::getTable('Price')->createQuery()->execute() as $price )
-    {
-      $pm = PriceManifestation::createPrice($price);
-      $pm->manifestation_id = $this->id;
-      //$pm->save();
-      $this->PriceManifestations[] = $pm;
-    }
-    $this->save();
-    
-    parent::postInsert($event);
-  }
-  
   public function getDurationHR()
   {
     if ( intval($this->duration).'' != ''.$this->duration )
@@ -68,5 +34,4 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
   {
     return $this->Event->getMEid();
   }
-  
 }
