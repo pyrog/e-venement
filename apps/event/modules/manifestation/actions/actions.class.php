@@ -119,18 +119,6 @@ class manifestationActions extends autoManifestationActions
     $this->redirect(cross_app_url_for('rp','group/show?id='.$group->id));
     return sfView::NONE;
   }
-  public function executeDuplicate(sfWebRequest $request)
-  {
-    $manif = Doctrine_Query::create()->from('Manifestation m')
-      ->leftJoin('m.PriceManifestations p')
-      ->leftJoin('m.Gauges g')
-      ->leftJoin('m.Organizers o')
-      ->andWhere('m.id = ?',$request->getParameter('id',0))
-      ->fetchOne()
-      ->duplicate();
-    
-    $this->redirect('manifestation/edit?id='.$manif->id);
-  }
   public function executeNew(sfWebRequest $request)
   {
     parent::executeNew($request);
@@ -253,20 +241,12 @@ class manifestationActions extends autoManifestationActions
     $to = date('Y-m-01', $request->getParameter('end',strtotime('+ 1 month')));
     
     $q = Doctrine::getTable('Manifestation')->createQuery('m')
-      ->select('m.*, l.*, c.*, e.*, g.*')
-      ->leftJoin('m.Color c')
+      ->select('m.*, l.*, e.*, g.*')
       ->andWhere('m.happens_at >= ?',$from)
       ->andWhere('m.happens_at <  ?',$to)
       ->orderBy('happens_at');
-    if ( $this->location_id )
-      $q->andWhere('(TRUE')
-        ->andWhere('m.location_id = ?',$this->location_id)
-        ->leftJoin('m.Booking b')
-        ->orWhere('b.id = ?',$this->location_id)
-        ->andWhere('TRUE)');
-    if ( $this->event_id )
-      $q->andwhere('m.event_id = ?',$this->event_id);
-    
+    if ( $this->location_id ) $q->andWhere('m.location_id = ?',$this->location_id);
+    if ( $this->event_id ) $q->andwhere('m.event_id = ?',$this->event_id);
     EventFormFilter::addCredentialsQueryPart($q);
     $this->manifestations = $q->execute();
     $this->forward404Unless($this->manifestations);
@@ -362,16 +342,18 @@ class manifestationActions extends autoManifestationActions
   }
   public function executeEdit(sfWebRequest $request)
   {
-    $this->securityAccessFiltering($request);
     parent::executeEdit($request);
+    $this->securityAccessFiltering($request);
     //$this->form->prices = $this->getPrices();
     //$this->form->spectators = $this->getSpectators();
     //$this->form->unbalanced = $this->getUnbalancedTransactions();
   }
   public function executeShow(sfWebRequest $request)
   {
+    $this->manifestation = $this->getRoute()->getObject();
     $this->securityAccessFiltering($request);
-    parent::executeShow($request);
+    $this->forward404Unless($this->manifestation);
+    $this->form = $this->configuration->getForm($this->manifestation);
     //$this->form->prices = $this->getPrices();
     //$this->form->spectators = $this->getSpectators();
     $this->form->unbalanced = $this->getUnbalancedTransactions();
