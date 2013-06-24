@@ -27,8 +27,8 @@ class ticketsActions extends sfActions
       $criterias['dates']['from'] = date('Y-m-d',strtotime('1 month ago'));
     if ( !isset($criterias['dates']['to']) )
       $criterias['dates']['to'] = date('Y-m-d',strtotime('tomorrow'));
-    $q->andWhere('(tck.printed_at IS NOT NULL AND tck.printed_at >= ? OR tck.integrated_at IS NOT NULL AND tck.integrated_at >= ?)',array($criterias['dates']['from'],$criterias['dates']['from']))
-      ->andWhere('(tck.printed_at IS NOT NULL AND tck.printed_at <  ? OR tck.integrated_at IS NOT NULL AND tck.integrated_at <  ?)',array($criterias['dates']['to'],$criterias['dates']['to']));
+    $q->andWhere('tck.updated_at >= ?',$criterias['dates']['from'])
+      ->andWhere('tck.updated_at <  ?',$criterias['dates']['to']);
     
     // workspaces
     if ( isset($criterias['workspaces_list']) && is_array($criterias['workspaces_list']) )
@@ -51,26 +51,11 @@ class ticketsActions extends sfActions
       $this->redirect($this->getContext()->getModuleName().'/index');
     }
 
-    $this->form = new StatsCriteriasForm;
+    $this->form = new StatsCriteriasForm();
     //$this->form->addWithContactCriteria();
     $this->form->addEventCriterias();
     if ( is_array($this->getUser()->getAttribute('stats.criterias',array(),'admin_module')) )
-    {
-      $criterias = $this->getUser()->getAttribute('stats.criterias',array('dates' => array(
-        'from' => date('Y-m-d',strtotime('1 month ago')),
-        'to'   => date('Y-m-d',strtotime('tomorrow')),
-      )),'admin_module');
-      
-      if ( !isset($criterias['dates']) )
-        $criterias['dates'] = array();
-      if ( !isset($criterias['dates']['from']) || isset($criterias['dates']['from']) && !$criterias['dates']['from']['day'] )
-        $criterias['dates']['from'] = date('Y-m-d',strtotime('1 month ago'));
-      if ( !isset($criterias['dates']['to']) || isset($criterias['dates']['to']) && !$criterias['dates']['to']['day'] )
-        $criterias['dates']['to'] = date('Y-m-d',strtotime('tomorrow'));
-      
-      $this->form->bind($criterias);
-    }
-    $this->criterias = $this->form->getValues();
+      $this->form->bind($this->getUser()->getAttribute('stats.criterias',array(),'admin_module'));
     
     $this->professionals = $this->contacts = array('nb' => 0, 'tickets' => 0, 'events' => 0,);
     

@@ -22,16 +22,14 @@
 ***********************************************************************************/
 ?>
 <?php
-    if ( intval($request->getParameter('id','none')).'' === $request->getParameter('id','none') )
-      $mid = $request->getParameter('id');
-    else
-      $mid = 0;
+    if ( !$request->getParameter('id') )
+      return false;
     
     $q = Doctrine::getTable('Gauge')->createQuery('g')
-      ->andWhere('g.manifestation_id = ?', $mid);
-    if ( intval($request->getParameter('wsid'),0) > 0 )
+      ->andWhere('g.manifestation_id = ?', $mid = $request->getParameter('id'));
+    if ( intval($request->getParameter('wsid')) > 0 )
     {
-      $workspace = intval($request->getParameter('wsid'),0) > 0
+      $workspace = intval($request->getParameter('wsid')) > 0
         ? Doctrine::getTable('Workspace')->findOneById(intval($request->getParameter('wsid')))
         : $this->getUser()->getGuardUser()->Workspaces[0];
       $q->andWhere('g.workspace_id = ?', $workspace->id); // to be performed
@@ -51,9 +49,9 @@
       ->leftJoin('m.Event e')
       ->leftJoin('e.MetaEvent me')
       ->addSelect('m.id')
-      ->addSelect('sum(t.printed_at IS NOT NULL OR t.integrated_at IS NOT NULL) AS sells')
-      ->addSelect('sum(t.printed_at IS NULL AND t.integrated_at IS NULL AND t.transaction_id IN (SELECT o.transaction_id FROM order o)) AS orders')
-      ->addSelect('sum(t.printed_at IS NULL AND t.integrated_at IS NULL AND t.transaction_id NOT IN (SELECT o2.transaction_id FROM order o2)) AS demands')
+      ->addSelect('sum(t.printed OR t.integrated) AS sells')
+      ->addSelect('sum(NOT t.printed AND NOT t.integrated AND t.transaction_id IN (SELECT o.transaction_id FROM order o)) AS orders')
+      ->addSelect('sum(NOT t.printed AND NOT t.integrated AND t.transaction_id NOT IN (SELECT o2.transaction_id FROM order o2)) AS demands')
       ->andWhere('m.id = ?',$mid)
       //->andWhere('t.duplicating IS NULL')
       //->andWhere('t.cancelling IS NULL')
@@ -61,21 +59,21 @@
       ->groupBy('m.id, e.name, me.name, m.happens_at, m.duration');
     
     // only tickets from asked gauge
-    if ( intval($request->getParameter('wsid'),0) > 0 )
+    if ( intval($request->getParameter('wsid')) > 0 )
       $q->leftJoin('m.Tickets t ON t.gauge_id = ? AND m.id = t.manifestation_id AND t.duplicating IS NULL AND t.cancelling IS NULL AND t.id NOT IN (SELECT tt.cancelling FROM ticket tt WHERE cancelling IS NOT NULL)',$this->gauge->id);
     else
       $q->leftJoin('m.Tickets t ON m.id = t.manifestation_id AND t.duplicating IS NULL AND t.cancelling IS NULL AND t.id NOT IN (SELECT tt.cancelling FROM ticket tt WHERE cancelling IS NOT NULL)');
     
     $manifs = $q->execute();
-    $count = $manifs->count();
-    $this->manifestation = $manifs[0];
+    if ( $manifs->count() > 0 )
+      $this->manifestation = $manifs[0];
     
     $gauge = $this->gauge->value > 0 ? $this->gauge->value : 100;
     $this->height = array(
-      'sells'   => ($count ? $this->manifestation->sells : 0) / $gauge * 100,
-      'orders'  => ($count ? $this->manifestation->orders : 0) / $gauge * 100,
-      'demands' => ($count ? $this->manifestation->demands : 0) / $gauge * 100,
-      'free'    => 100 - (($count ? $this->manifestation->sells : 0)+($count ? $this->manifestation->orders : 0)) / $gauge * 100
+      'sells'   => $this->manifestation->sells / $gauge * 100,
+      'orders'  => $this->manifestation->orders / $gauge * 100,
+      'demands' => $this->manifestation->demands / $gauge * 100,
+      'free'    => 100 - ($this->manifestation->sells+$this->manifestation->orders) / $gauge * 100
     );
     
     $this->setLayout('empty');

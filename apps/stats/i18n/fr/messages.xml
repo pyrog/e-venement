@@ -5,30 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>From %%from%% to %%to%%</source>
-        <target>Du %%from%% au %%to%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>#label# for an amount of #val#</source>
-        <target>#label# pour un montant de #val#</target>
-      </trans-unit>
-      <trans-unit>
-        <source>e-venement is loading data</source>
-        <target>e-venement charge les données</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ordered tickets</source>
-        <target>Billets réservés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Overbooked</source>
-        <target>Sur-réservés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Engaged</source>
-        <target>Réservés</target>
-      </trans-unit>
-      <trans-unit>
         <source>Workspaces</source>
         <target>Espaces de travail</target>
       </trans-unit>
@@ -77,8 +53,8 @@
         <target>Nombre de contacts uniques</target>
       </trans-unit>
       <trans-unit>
-        <source>&lt;strong&gt;pessimistic estimation&lt;/strong&gt;, even better if the standard deviation is low</source>
-        <target>&lt;strong&gt;estimation pessimiste&lt;/strong&gt;, d'autant plus juste que l'écart-type est bas</target>
+        <source>&lt;strong&gt;estimation&lt;/strong&gt;, even better if the standard deviation is low</source>
+        <target>&lt;strong&gt;estimation&lt;/strong&gt;, d'autant plus juste que l'écart-type est bas</target>
       </trans-unit>
       <trans-unit>
         <source>Global stats on ticketting</source>
@@ -308,6 +284,10 @@
         <source>Asked</source>
         <target>Demandés</target>
       </trans-unit>
+      <trans-unit>
+        <source>Engaged</source>
+        <target>Réservés</target>
+      </trans-unit>
       <trans-unit id="110">
         <source>Chart</source>
         <target>Graphique</target>
@@ -316,7 +296,7 @@
         <source>Record</source>
         <target>Enregistrer</target>
       </trans-unit>
-      <trans-unit>
+      <trans-unit id="112">
         <source>Gauge filling</source>
         <target>Remplissage de la jauge</target>
       </trans-unit>

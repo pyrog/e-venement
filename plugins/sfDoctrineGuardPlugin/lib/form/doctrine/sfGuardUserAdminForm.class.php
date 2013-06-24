@@ -15,6 +15,5 @@ class sfGuardUserAdminForm extends BasesfGuardUserAdminForm
    */
   public function configure()
   {
-    parent::configure();
   }
 }

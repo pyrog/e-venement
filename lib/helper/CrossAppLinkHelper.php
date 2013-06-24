@@ -1,16 +1,12 @@
 <?php
 /**
  * @author Olivier Mansour
- * @author Baptiste Simon
- * @author Libre Informatique [http://www.libre-informatique.fr/]
  */
 
 /**
  * return an url for a given symfony application and an internal url
  *
  * @author Olivier Mansour
- * @author Baptiste Simon
- * @author Libre Informatique [http://www.libre-informatique.fr/]
  *
  * @param string $appname
  * @param string $url

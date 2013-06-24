@@ -1,4 +1,4 @@
-<div class="sf_admin_form_row sf_admin_form_field_online">
+<div class="sf_admin_form_row">
   <label><?php echo __('Online') ?>:</label>
   <?php
     echo $manifestation->online

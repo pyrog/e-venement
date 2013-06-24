@@ -21,9 +21,9 @@
 *
 ***********************************************************************************/
 ?>
-<?php use_javascript('/liFullcalendarPlugin/fullcalendar/fullcalendar.min.js') ?>
-<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar/fullcalendar.css') ?>
-<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar/fullcalendar.print.css','',array('media' => 'print')) ?>
+<?php use_javascript('/liFullcalendarPlugin/fullcalendar.min.js') ?>
+<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar.css') ?>
+<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar.print.css','',array('media' => 'print')) ?>
 <div class="sf_admin_edit ui-widget ui-widget-content ui-corner-all">
   <div class="manifestation_calendar">
   </div>
@@ -31,7 +31,6 @@
 $(document).ready(function(){
   $('#fullcalendar, #more .manifestation_calendar').fullCalendar({
     firstDay: 1,
-    minTime: '15:00',
     theme: true,
     monthNames: [ 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre' ],
     monthNamesShort: [ 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc' ],
@@ -50,13 +49,11 @@ $(document).ready(function(){
     allDayDefault: false,
     header: { left: 'today prev,next', center: 'title', right: 'month,agendaWeek,agendaDay' },
     
-    eventTextColor: 'black',
-    eventBackgroundColor: 'white',
     eventSources: [
       <?php foreach ( $urls as $url ): ?>
       {
         url: '<?php echo $url ?>',
-        //color: 'LightGreen',
+        color: 'LightGreen',
         error: function(){ alert('<?php echo __('Error loading the data from manifestations') ?>'); }
       },
       <?php endforeach ?>

@@ -53,16 +53,6 @@ WorkspaceUser:
       type: integer
       notnull: true
       primary: true
-  relations:
-    User:
-      class: sfGuardUser
-      foreignAlias: WorkspaceUsers
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Workspace:
-      foreignAlias: WorkspaceUsers
-      onDelete: CASCADE
-      onUpdate: CASCADE
 WorkspaceUserOrdering:
   package: event
   columns:
@@ -288,21 +278,6 @@ Manifestation:
       notnull: true
     depends_on: integer
     contact_id: integer
-    reservation_begins_at:
-      type: timestamp
-      notnull: true
-    reservation_ends_at:
-      type: timestamp
-      notnull: true
-    reservation_description: text
-    blocking:
-      type: boolean
-      notnull: true
-      default: true
-    optional:
-      type: boolean
-      notnull: true
-      default: false
   relations:
     Event:
       foreignAlias: Manifestations
@@ -320,7 +295,7 @@ Manifestation:
       class: Organism
       refClass: ManifestationOrganizer
       foreignAlias: Manifestations
-    Applicant:
+    Demander:
       class: Contact
       foreignAlias: Manifestations
     Workspaces:
@@ -337,28 +312,6 @@ Manifestation:
     Vat:
       foreignAlias: Manifestations
       onDelete: SET NULL
-      onUpdate: CASCADE
-    Booking:
-      class: Location
-      refClass: LocationBooking
-      foreignAlias: BookedBy
-LocationBooking:
-  package: event
-  columns:
-    manifestation_id:
-      type: integer
-      notnull: true
-    location_id:
-      type: integer
-      notnull: true
-  relations:
-    Manifestation:
-      foreignAlias: LocationBookings
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Location:
-      foreignAlias: LocationBookings
-      onDelete: CASCADE
       onUpdate: CASCADE
 Vat:
   package: event

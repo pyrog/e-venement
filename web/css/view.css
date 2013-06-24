@@ -25,7 +25,7 @@ body #more {
 #more .ui-widget-header { cursor: pointer; }
 
 #more label { min-width: 130px; }
-#more ul:not(.sf_admin_td_actions) li { margin-left: 20px; margin-top: 10px; }
+#more ul li { margin-left: 20px; margin-top: 10px; }
 #more .sf_admin_form { line-height: 1.4em; }
 #more .sf_admin_form input[type=text],
 #more .sf_admin_form textarea,
@@ -54,7 +54,3 @@ div:hover > .sf_admin_form_field_cities { display: block; }
   margin-top: -20px;
   margin-bottom: 40px;
 }
-
-.sf_admin_form_field_Picture th label { display: none; }
-.sf_admin_form_field_show_picture { text-align: center; }
-#sf_admin_container .sf_admin_form_field_picture_del { height: 16px; display: block; width: 16px; font-size: 0; float: right; margin-top: -25px; }

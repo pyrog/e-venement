@@ -58,7 +58,3 @@ all:
     display:
       max: 200
       notices: true
-
-dev:
-  tickets:
-    specimen: true

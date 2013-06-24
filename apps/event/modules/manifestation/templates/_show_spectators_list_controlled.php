@@ -9,7 +9,7 @@
     $transaction = $contact = $pro = array();
     $contact = array('value' => 0, 'prices' => array(), 'ticket-ids' => array());
     foreach ( $transac->Tickets as $t )
-    if ( ($t->printed_at || $t->integrated_at) && $t->Controls->count() > 0 )
+    if ( ($t->printed || $t->integrated) && $t->Controls->count() > 0 )
     {
       $contact['ticket-ids'][] = $t->id;
       $contact['transaction'] = $transac;
@@ -25,13 +25,13 @@
   ?>
   <?php if ( $contact['ticket-ids'] ): ?>
   <tr class="<?php echo ($overlined = !$overlined) ? 'overlined' : '' ?>">
-    <?php include_partial('show_spectators_list_line',array(
-      'transac' => $transac,
-      'contact' => $contact,
-      'ws'      => $ws,
-      'show_workspaces' => $show_workspaces,
-      'wsid'    => $wsid,
-    )) ?>
+    <td class="name"><?php echo cross_app_link_to($transac->Contact,'rp','contact/show?id='.$transac->contact_id) ?></td>
+    <td class="organism"><?php if ( $contact['pro'] ) echo cross_app_link_to($contact['pro']->Organism,'rp','organism/show?id='.$contact['pro']->Organism->id) ?></td>
+    <td class="tickets"><?php $arr = array(); foreach ( $contact['prices'] as $key => $value ) $arr[] = $value.$key; echo implode(', ',$arr); ?></td>
+    <td class="price"><?php echo format_currency($contact['value'],'€') ?></td>
+    <td class="transaction"  title="<?php echo __('Updated at %%d%% by %%u%%',array('%%d%%' => format_datetime($transac->updated_at), '%%u%%' => $transac->User)) ?>">#<?php echo cross_app_link_to($contact['transaction'],'tck','ticket/sell?id='.$contact['transaction']) ?></td>
+    <td class="accounting"></td>
+    <td class="ticket-ids">#<?php echo implode(', #',$contact['ticket-ids']) ?></td>
   </tr>
   <?php endif ?>
   <?php endforeach ?>

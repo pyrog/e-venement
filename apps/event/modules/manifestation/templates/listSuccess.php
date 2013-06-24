@@ -22,8 +22,6 @@
 ***********************************************************************************/
 ?>
 <?php
-  use_helper('Colors');
-  
   // JSON CONTENT
   
   $manifs = array();
@@ -41,11 +39,8 @@
     );
     
     if ( $manif->color_id )
-      $manifs[count($manifs)-1]['backgroundColor'] = '#'.$manif->Color->color;
+      $manifs[count($manifs)-1]['backgroundColor'] = $manif->Color;
   }
+  
+  echo json_encode($manifs);
 ?>
-<?php if ( $debug ): ?>
-<pre><?php print_r($manifs) ?></pre>
-<?php else: ?>
-<?php echo json_encode($manifs) ?>
-<?php endif ?>
