@@ -15,7 +15,7 @@ class Manifestation extends PluginManifestation
   public function getName()
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('I18N','Date'));
-    return $this->Event->name.' '.__('at').' '.$this->getShortenedDate();
+    return $this->Event->name.' '.__('at').' '.format_datetime($this->happens_at,'EEE d MMM yyyy HH:mm');
   }
   public function getNameWithFullDate()
   {
@@ -36,10 +36,6 @@ class Manifestation extends PluginManifestation
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('I18N','Date'));
     return $this->Event->name.' '.__('at').' '.format_date($this->happens_at);
-  }
-  public function getEndsAt()
-  {
-    return date('Y-m-d H:i:s',strtotime($this->happens_at)+$this->duration);
   }
   public function __toString()
   {
@@ -126,5 +122,20 @@ class Manifestation extends PluginManifestation
       $r['vat'][$rate] = round($value,2);
     
     return $r;
+  }
+  
+  public function postInsert($event)
+  {
+    if ( $this->PriceManifestations->count() == 0 )
+    foreach ( Doctrine::getTable('Price')->createQuery()->execute() as $price )
+    {
+      $pm = PriceManifestation::createPrice($price);
+      $pm->manifestation_id = $this->id;
+      //$pm->save();
+      $this->PriceManifestations[] = $pm;
+    }
+    $this->save();
+    
+    parent::postInsert($event);
   }
 }
