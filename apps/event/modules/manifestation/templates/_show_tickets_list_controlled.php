@@ -6,7 +6,7 @@
   {
     $qty = $value = array('controlled' => 0, 'not_controlled' => 0);
     foreach ( $price->Tickets as $t )
-    if ( $t->printed_at || $t->integrated_at )
+    if ( $t->printed || $t->integrated )
     {
       $key = $t->Controls->count() > 0  && !$t->hasBeenCancelled() && $t->Duplicatas->count() == 0 ? 'controlled' : 'not_controlled';
       $tickets[$key][$t->id] = $t;
@@ -33,13 +33,11 @@
     <td class="transaction"><?php echo cross_app_link_to('#'.$ticket->Transaction,'tck','ticket/sell?id='.$ticket->transaction_id) ?></td>
     <td class="contact"><?php
       echo $ticket->Transaction->professional_id
-        ? cross_app_link_to($c=$t->Transaction->Professional->Contact,'rp','contact/show?id='.$c->id)
-          .' @ '.
+        ? cross_app_link_to($c=$t->Transaction->Professional->Contact,'rp','contact/show?id='.$c->id).
+          ' @ '.
           cross_app_link_to($o=$t->Transaction->Professional->Organism,'rp','organism/show?id='.$o->id)
-          .' <span class="pictos">'.$t->Transaction->Professional->getRaw('groups_picto').'</span>'
         : $ticket->Transaction->contact_id
         ? cross_app_link_to($ticket->Transaction->Contact,'rp','contact/show?id='.$ticket->Transaction->Contact->id)
-          .' <span class="pictos">'.$t->Transaction->Contact->getRaw('groups_picto').'</span>'
         : '';
     ?></td>
   </tr>

@@ -12,35 +12,8 @@
  */
 class YOB extends PluginYOB
 {
-  protected function getWithPadding($field, $pad = 2)
+  function __toString()
   {
-    return $this->rawGet($field) ? str_pad($this->rawGet($field), $pad, '0', STR_PAD_LEFT) : '';
-  }
-  public function getDay()
-  {
-    return $this->getWithPadding('day');
-  }
-  public function getMonth()
-  {
-    return $this->getWithPadding('month');
-  }
-  public function getYear()
-  {
-    return $this->getWithPadding('year',4);
-  }
-  
-  public function __toString()
-  {
-    sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));
-    
-    if ( $this->day && $this->month )
-      $r = format_date($this->year.'-'.$this->month.'-'.$this->day);
-    else
-      $r = $this->year;
-     
-     $r .= ' ';
-     $r .= $this->name ? $this->name : '';
-     
-     return $r;
+    return (string)$this->year;
   }
 }

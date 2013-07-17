@@ -26,7 +26,7 @@
     'name'              => $name,
     'value'             => $object instanceof Transaction
       ? 'Ventes #'.$object->id.' de '.$object->User
-      : $object->Manifestation->Event.' '.$object->Manifestation->getShortenedDate(),
+      : $object->Manifestation,
     'field_description' => $field_description,
     'meta_format'       => $meta_format,
   ));

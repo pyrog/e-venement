@@ -6,19 +6,19 @@
       selects = $(this).closest('.gauge').find('.quantity select');
       var max_qty = 0;
       selects.each(function(){
-        if ( parseInt($(this).find('option:last-child').val(),10) > max_qty )
-          max_qty = parseInt($(this).find('option:last-child').val(),10);
+        if ( parseInt($(this).find('option:last-child').val()) > max_qty )
+          max_qty = parseInt($(this).find('option:last-child').val());
       });
       for ( quantities = i = 0 ; i < selects.length ; i++ )
-        quantities += parseInt($(selects[i]).val(),10);
+        quantities += parseInt($(selects[i]).val());
       options = selects.find('option');
       options.show();
       for ( i = 0 ; i < options.length ; i++ )
-      if ( parseInt($(options[i]).val(),10) > max_qty - quantities + parseInt($(options[i]).closest('select').val(),10) )
+      if ( parseInt($(options[i]).val()) > max_qty - quantities + parseInt($(options[i]).closest('select').val()) )
         $(options[i]).hide();
       
       // calculating totals by line
-      val = parseFloat($(this).closest('tr').find('.value').html().replace(',','.')) * parseInt($(this).val(),10);
+      val = parseFloat($(this).closest('tr').find('.value').html().replace(',','.')) * parseInt($(this).val());
       currency = $(this).closest('tr').find('.value').html().replace(/^.*(&nbsp;.*)/,'$1');
       txt = val.toFixed(2) + currency;
       $(this).closest('tr').find('.total').html(txt);

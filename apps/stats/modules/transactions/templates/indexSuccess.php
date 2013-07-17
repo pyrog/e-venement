@@ -3,14 +3,12 @@
   <a name="chart-title"></a>
   <div class="ui-widget-header ui-corner-all fg-toolbar">
     <?php include_partial('attendance/filters_buttons') ?>
-    <h1><?php echo __('Transactions by price',null,'menu') ?></h1>
+    <h1>Répartition globale</h1>
   </div>
-<?php include_partial('chart_printed') ?>
-<?php include_partial('chart_ordered') ?>
-<div class="clear"></div>
-<?php if ( sfConfig::get('project_count_demands',false) ): ?>
-<?php include_partial('chart_asked') ?>
-<?php endif ?>
 <?php include_partial('chart_all') ?>
+<?php include_partial('chart_printed') ?>
+<div class="clear"></div>
+<?php include_partial('chart_ordered') ?>
+<?php include_partial('chart_asked') ?>
 <div class="clear"></div>
 </div>

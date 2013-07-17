@@ -35,13 +35,6 @@ Group:
     sf_guard_user_id: integer
     description: string
     slug: string
-    picture_id:
-      type: integer
-      unique: true
-    display_everywhere:
-      type: boolean
-      default: false
-      notnull: true
   indexes:
     name_user:
       fields: [name, sf_guard_user_id]
@@ -63,10 +56,6 @@ Group:
       class: sfGuardUser
       foreignAlias: Groups
       onDelete: CASCADE
-      onUpdate: CASCADE
-    Picture:
-      foreignAlias: Groups
-      onDelete: SET NULL
       onUpdate: CASCADE
 GroupDetail:
   package: group
@@ -97,10 +86,6 @@ GroupContact:
       foreignAlias: ContactGroups
       onDelete: CASCADE
       onUpdate: CASCADE
-    Group:
-      foreignAlias: ContactGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
 GroupProfessional:
   package: group
   inheritance:
@@ -116,10 +101,6 @@ GroupProfessional:
       foreignAlias: ProfessionalGroups
       onDelete: CASCADE
       onUpdate: CASCADE
-    Group:
-      foreignAlias: ProfessionalGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
 GroupOrganism:
   package: group
   inheritance:
@@ -132,10 +113,6 @@ GroupOrganism:
       primary: true
   relations:
     Organism:
-      foreignAlias: OrganismGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Group:
       foreignAlias: OrganismGroups
       onDelete: CASCADE
       onUpdate: CASCADE

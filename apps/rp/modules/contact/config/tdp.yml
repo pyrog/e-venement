@@ -31,7 +31,7 @@ all:
         lines:
           Complements:
             show_labels: true
-            fields: [organism_category_id, email, email_no_newsletter, _groups_picto]
+            fields: [organism_category_id, email, email_no_newsletter]
           Address:
             fields: [address]
           City:
@@ -42,9 +42,7 @@ all:
           More:
             show_labels: true
             extra_class: tdp-vertical
-            fields: [family_contact, npai, password]
-          Relations:
-            fields: [YOBs, Relationships]
+            fields: [family_contact, npai, YOBs_list, password]
           Social:
             show_labels: true
             extra_class: tdp-vertical
@@ -77,7 +75,7 @@ all:
           new_title: [organism_id]
           lines:
             line1:
-              fields: [professional_type_id, name, department, _organism_category, _groups_picto]
+              fields: [professional_type_id, name, _organism_category]
             Phonenumbers:
               show_labels: true
               fields: [contact_number, _organism_phones_list]
@@ -112,20 +110,20 @@ all:
             fields: [phone_type, phone_number]
     
     fields:
-      organism_id:  { label: Organism }
-      phone_type:   { label: Type }
+      organism_id: { label: Organism }
+      phone_type: { label: Type }
       phone_number: { label: Phonenumber }
       professional_type_id: { label: Professional type }
-      description:  { label: Keywords }
-      YOBs:         { label: Birthdays }
-      YOB:          { label: Birthdays }
+      description: { label: Keywords }
+      YOBs_list:  { label: "Years of Birth (x[, x [,..]])" }
+      YOB:      { label: Year of Birth }
       not_groups_list: { label: Not member of groups }
-      email_list:   { label: Email }
+      email_list: { label: Email }
       organisms_email_list: { label: Organism's email }
       family_contact: { label: Family contact }
-      phone_type:   { label: Type }
+      phone_type: { label: Type }
       phone_number: { label: Phonenumber }
-      list_phones:  { label: Phonenumbers }
+      list_phones: { label: Phonenumbers }
       member_cards_expire_at: { label: Valid on }
       control_created_at: { label: Passed in between }
       control_manifestation_id: { label: Passed on manifestations }

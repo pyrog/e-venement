@@ -11,18 +11,16 @@
     $qty = $value = 0;
     $transaction = $contact = $pro = array();
     foreach ( $price->Tickets as $t )
-    if ( !$t->printed_at && !$t->integrated_at && $t->Transaction->Order->count() == 0 )
+    if ( !$t->printed && !$t->integrated && $t->Transaction->Order->count() == 0 )
     {
       $transaction[$t->transaction_id] = cross_app_link_to('#'.$t->transaction_id,'tck','ticket/sell?id='.$t->transaction_id);
       if ( $t->Transaction->professional_id )
         $contact[$t->Transaction->id] =
-          cross_app_link_to($c=$t->Transaction->Professional->Contact,'rp','contact/show?id='.$c->id)
-          .' @ '.
-          cross_app_link_to($o=$t->Transaction->Professional->Organism,'rp','organism/show?id='.$o->id)
-          .' <span class="pictos">'.$t->Transaction->Professional->getRaw('groups_picto').'</span>';
+          cross_app_link_to($c=$t->Transaction->Professional->Contact,'rp','contact/show?id='.$c->id).
+          ' @ '.
+          cross_app_link_to($o=$t->Transaction->Professional->Organism,'rp','organism/show?id='.$o->id);
       else if ( $t->Transaction->contact_id )
-        $contact[$t->Transaction->id] = cross_app_link_to($t->Transaction->Contact,'rp','contact/show?id='.$t->Transaction->Contact->id)
-        .' <span class="pictos">'.$t->Transaction->Contact->getRaw('groups_picto').'</span>';
+        $contact[$t->Transaction->id] = cross_app_link_to($t->Transaction->Contact,'rp','contact/show?id='.$t->Transaction->Contact->id);
       else
         $contact[$t->Transaction->id] = '&nbsp;';
       $value += $t->value;
