@@ -1,4 +1,4 @@
-<div class="sf_admin_form_row sf_admin_form_field_duration">
+<div class="sf_admin_form_row">
   <label><?php echo __('Duration') ?>:</label>
   <?php echo $manifestation->getDurationHR() ?>
 </div>
