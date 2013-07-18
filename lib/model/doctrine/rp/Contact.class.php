@@ -13,7 +13,6 @@
 class Contact extends PluginContact
 {
   protected $module = 'contact';
-  protected $yobs_ordered = false;
   
   public function __toString()
   {
@@ -46,26 +45,10 @@ class Contact extends PluginContact
   public function getYOBsString()
   {
     $arr = array();
-    foreach ( $this->orderYOBs()->YOBs as $YOB )
-      $arr[] = (string)$YOB;
-    return implode(', ',$arr);
-  }
-  public function orderYOBs()
-  {
-    if ( $this->yobs_ordered )
-      return $this;
-    
-    $arr = array();
     foreach ( $this->YOBs as $YOB )
-      $arr[$YOB->year.$YOB->month.$YOB->day.$YOB->name] = $YOB;
-    ksort($arr);
-    
-    $this->YOBs->clear();
-    foreach ( $arr as $YOB )
-      $this->YOBs[] = $YOB;
-    
-    $this->yobs_ordered = true;
-    return $this;
+      $arr[] = (string)$YOB;
+    sort($arr);
+    return implode(', ',$arr);
   }
   
   public function getIdBarcoded()
@@ -77,11 +60,17 @@ class Contact extends PluginContact
     return $c;
   }
   
-  public function getGroupsPicto()
+  public function getEvents()
   {
-    $str = '';
-    foreach ( $this->Groups as $group )
-      $str .= $group->getHtmlTag().' ';
-    return $str;
+    if ( isset($this->events) )
+      return $this->events;
+    
+    return $this->events = Doctrine_Query::create()->from('Event e')
+      ->leftJoin('e.Manifestations m')
+      ->leftJoin('m.Tickets tck')
+      ->leftJoin('tck.Transaction t')
+      ->andWhere('t.contact_id = ?',$this->id)
+      ->select('e.*')
+      ->execute();
   }
 }

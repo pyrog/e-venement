@@ -19,7 +19,9 @@ class emailActions extends autoEmailActions
   }
   public function executeAttach(sfWebRequest $request) {
     $email = $request->getParameter('email');
-    $this->email = Doctrine::getTable('email')->find($email['id']);
+    $this->email = Doctrine::getTable('email')->createQuery('e')
+      ->andWhere('id = ?',$email['id'])
+      ->fetchOne();
     
     $arr = $request->getFiles();
     $file = new liFileAttachment($arr['attachment']['name'],$arr['attachment']['type'],$arr['attachment']['tmp_name'],$arr['attachment']['size'],sfConfig::get('sf_upload_dir'));
@@ -53,16 +55,12 @@ class emailActions extends autoEmailActions
   public function executeCopy(sfWebRequest $request)
   {
     $this->email = $this->getRoute()->getObject()->copy();
-    foreach ( array('Contacts', 'Professionals', 'Organisms') as $relation )
-    foreach ( $this->getRoute()->getObject()->$relation as $obj )
-    {
-      $rel = $this->email->$relation;
-      $rel[] = $obj;
-    }
+    $this->email->Professionals = $this->getRoute()->getObject()->Professionals;
+    $this->email->Contacts = $this->getRoute()->getObject()->Contacts;
     $this->email->sent = false;
     
-    foreach ( $this->getRoute()->getObject()->Attachments as $att )
-      $this->email->Attachments[] = $att->copy();
+    foreach ( $this->email->Attachments as $key => $att )
+      $this->Attachments[$key] = $att->copy();
     
     $this->email->save();
     $this->redirect('email/edit?id='.$this->email->id);
@@ -87,17 +85,12 @@ class emailActions extends autoEmailActions
     $this->form = $this->configuration->getForm($this->email);
     $this->form->removeAlreadyKnownReceipientsList();
     
-    // not for real (test sending, attachment, content templating...)
-    if ( !(isset($email['test_address']) && $email['test_address'])
-      && !(isset($email['load']) && $email['load']) )
+    // testing
+    if ( !$email['test_address']
+      && !$email['load'] )
     {
       $this->form->getValidator('test_address')->setOption('required',false);
-      if ( !isset($email['attach']) )
-        $this->email->not_a_test = true;
-      else
-      {
-        unset($email['attach']);
-      }
+      $this->email->not_a_test = true;
     }
     
     // loading templates
@@ -115,10 +108,9 @@ class emailActions extends autoEmailActions
     if ( $this->email->sent )
     {
       $this->getUser()->setFlash('error',"You can't modify an email already sent !");
-      $this->redirect(url_for('email/show?id='.$this->email->id));
+      $this->redirect('@email_show',$this->email);
     }
     
-    $request->setParameter('email', $email);
     try {
       $this->processForm($request, $this->form);
     }

@@ -14,9 +14,6 @@ generator:
       list:
         title: Permission list
         display: [=name, description, created_at, updated_at]
-        object_actions:
-          _edit: ~
-          _delete: ~
       
       edit:
         title: Editing Permission "%%name%%"
