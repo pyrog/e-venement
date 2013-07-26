@@ -5,18 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Social statistics</source>
-        <target>Statistiques sociales</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Messaging</source>
-        <target>Messagerie</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Types of relationships</source>
-        <target>Types de relations</target>
-      </trans-unit>
-      <trans-unit>
         <source>Authentication</source>
         <target>Authentification</target>
       </trans-unit>
@@ -38,7 +26,7 @@
       </trans-unit>
       <trans-unit>
         <source>Types of resources</source>
-        <target>Ressources principales</target>
+        <target>Types de resources</target>
       </trans-unit>
       <trans-unit>
         <source>Familial situations</source>

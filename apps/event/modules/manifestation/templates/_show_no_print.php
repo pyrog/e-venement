@@ -1,4 +1,4 @@
-<div class="sf_admin_form_row sf_admin_form_field_no_print">
+<div class="sf_admin_form_row">
   <label><?php echo __('Preprinted ticketting') ?>:</label>
   <?php
     echo $manifestation->no_print

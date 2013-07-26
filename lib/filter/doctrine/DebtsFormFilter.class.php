@@ -30,40 +30,37 @@ class DebtsFormFilter extends TransactionFormFilter
     parent::configure();
   }
   
-  public function addDateColumnQuery(Doctrine_Query $q, $field, $values)
+  public function addDateColumnQuery(Doctrine_Query $query, $field, $values)
   {
     $a = $query->getRootAlias();
     
-    if ( $values )
-    {
-      TransactionTable::addDebtsListBaseSelect($query);
-      $q->addSelect('(SELECT SUM(tck.value)  FROM Ticket tck  WHERE '.TransactionTable::getDebtsListTicketsCondition('tck',$values).') AS outcomes')
-        ->addSelect("(SELECT SUM(pp.value)   FROM Payment pp  WHERE pp.transaction_id = t.id AND pp.created_at < '".$values."') AS incomes")
-        ->andWhere('((SELECT (CASE WHEN COUNT(tck2.id) = 0 THEN 0 ELSE SUM(tck2.value) END) FROM Ticket tck2 WHERE '.TransactionTable::getDebtsListTicketsCondition('tck2',$values).') - (SELECT (CASE WHEN COUNT(p2.id) = 0 THEN 0 ELSE SUM(p2.value) END) FROM Payment p2 WHERE p2.transaction_id = t.id AND p2.created_at < ?)) != 0',$values);
-    }
+    TransactionTable::addDebtsListBaseSelect($query);
+    $query
+      ->addSelect('(SELECT SUM(tck.value) FROM Ticket tck WHERE '.TransactionTable::getDebtsListTicketsCondition('tck',$values).') AS outcomes')
+      ->addSelect("(SELECT SUM(pp.value)   FROM Payment pp  WHERE pp.transaction_id = t.id AND pp.created_at < '".$values."') AS incomes")
+      ->andWhere('((SELECT (CASE WHEN COUNT(tck2.id) = 0 THEN 0 ELSE SUM(tck2.value) END) FROM Ticket tck2 WHERE '.TransactionTable::getDebtsListTicketsCondition('tck2',$values).') - (SELECT (CASE WHEN COUNT(p2.id) = 0 THEN 0 ELSE SUM(p2.value) END) FROM Payment p2 WHERE p2.transaction_id = t.id AND p2.created_at < ?)) != 0',$values);
     
-    return $q;
+    return $query;
   }
 
-   public function addAllColumnQuery(Doctrine_Query $query, $field, $values)
-   {
-     $a = $query->getRootAlias();
-     
-     if ( !$values )
-     {
-       $query
-         ->andWhere('t.closed = false');
-     }
-     return $query;
-   }
+  public function addAllColumnQuery(Doctrine_Query $query, $field, $values)
+  {
+    $a = $query->getRootAlias();
+    
+    if ( !$values )
+    {
+      $query
+        ->andWhere('t.closed = false');
+    }
+    return $query;
+  }
 
-   public function getFields()
-   {
-     // the position of the "date" record in the array is very important because of this filter special behaviour
-     return array_merge(array(
-       'date'  => 'Date',
-       'all'   => 'All',
-     ),parent::getFields());
-   }
- }
+  public function getFields()
+  {
+    // the position of the "date" record in the array is very important because of this filter special behaviour
+    return array_merge(array(
+      'date'  => 'Date',
+      'all'   => 'All',
+    ),parent::getFields());
+  }
 }

@@ -5,70 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Extra informations</source>
-        <target>Informations suppl.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Periodicities for %%manifestation%%</source>
-        <target>Périodicités pour %%manifestation%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Periodicity</source>
-        <target>Périodicité</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Required.</source>
-        <target>Requis.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Confirmed</source>
-        <target>Confirmé</target>
-      </trans-unit>
-      <trans-unit>
-        <source>No extra location booked</source>
-        <target>Pas de ressource supplémentaire réservée</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Reservation</source>
-        <target>Réservation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Extra locations</source>
-        <target>Ressources suppl.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Applicant</source>
-        <target>Demandeur</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Begins at</source>
-        <target>Commence le</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Blocking</source>
-        <target>Bloquante</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This is an option</source>
-        <target>Ceci est une option</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ends at</source>
-        <target>Se termine le</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Duplicate</source>
-        <target>Dupliquer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Costs</source>
-        <target>Coûts</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Reservation costs</source>
-        <target>Coûts de réservation</target>
-      </trans-unit>
-      <trans-unit>
         <source>For the accounting department</source>
         <target>Pour le service comptable</target>
       </trans-unit>
@@ -563,10 +499,6 @@
       <trans-unit>
         <source>Organization</source>
         <target>Organisation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>View Manifestation %%name%%</source>
-        <target>Fiche manifestation %%name%%</target>
       </trans-unit>
       <trans-unit>
         <source>View Manifestation</source>

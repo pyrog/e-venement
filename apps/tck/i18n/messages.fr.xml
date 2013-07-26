@@ -5,22 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Without cancellations</source>
-        <target>Sans les annulations</target>
-      </trans-unit> 
-      <trans-unit>
-        <source>Paybacks</source>
-        <target>Remboursements</target>
-      </trans-unit> 
-      <trans-unit>
-        <source>Really paid total</source>
-        <target>Total réellement payé</target>
-      </trans-unit> 
-      <trans-unit>
-        <source>Transaction resetted and closed</source>
-        <target>Opération remise à zéro et fermée</target>
-      </trans-unit>
-      <trans-unit>
         <source>Even closed transactions ?</source>
         <target>Même les opérations verrouillées ?</target>
       </trans-unit> 

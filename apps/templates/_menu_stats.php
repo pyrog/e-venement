@@ -25,7 +25,6 @@
         || $sf_user->hasCredential('stats-activity')
         || $sf_user->hasCredential('stats-prices')
         || $sf_user->hasCredential('stats-byGroup')
-        || $sf_user->hasCredential('stats-pr-social')
         || $sf_user->hasCredential('stats-pr-cards') ): ?>
       <li>
         <ul class="second">
@@ -37,23 +36,17 @@
           <li><a href="<?php echo cross_app_url_for('stats','transactions/index') ?>"><?php echo __('Transactions by price',array(),'menu') ?></a></li>
           <?php endif ?>
           <?php if ( $sf_user->hasCredential('stats-activity') ): ?>
-          <li class="spaced"><a href="<?php echo cross_app_url_for('stats','activity/index') ?>"><?php echo __('Ticketting activity',array(),'menu') ?></a></li>
+          <li><a href="<?php echo cross_app_url_for('stats','activity/index') ?>"><?php echo __('Ticketting activity',array(),'menu') ?></a></li>
           <li><a href="<?php echo cross_app_url_for('stats','debts/index') ?>"><?php echo __('Debts evolution',array(),'menu') ?></a></li>
           <?php endif ?>
           <?php if ( $sf_user->hasCredential('tck-reports') ): ?>
-          <li><a href="<?php echo cross_app_url_for('stats','tickets/index') ?>"><?php echo __('Ticketting',array(),'menu') ?></a></li>
+          <li class="spaced"><a href="<?php echo cross_app_url_for('stats','tickets/index') ?>"><?php echo __('Ticketting',array(),'menu') ?></a></li>
           <?php endif ?>
-          <?php if ( false && $sf_user->hasCredential('stats-byGroup') ): ?>
+          <?php if ( $sf_user->hasCredential('stats-byGroup') ): ?>
           <li><a href="<?php echo cross_app_url_for('stats','byGroup/index') ?>"><?php echo __('Entrances by group',array(),'menu') ?></a></li>
           <?php endif ?>
-          <?php if ( $sf_user->hasCredential('stats-pr-cards') || $sf_user->hasCredential('stats-pr-social') ): ?>
-          <li class="spaced"></li>
-          <?php endif ?>
           <?php if ( $sf_user->hasCredential('stats-pr-cards') ): ?>
-          <li><a href="<?php echo cross_app_url_for('stats','cards/index') ?>"><?php echo __('Member cards',array(),'menu') ?></a></li>
-          <?php endif ?>
-          <?php if ( $sf_user->hasCredential('stats-pr-social') ): ?>
-          <li><a href="<?php echo cross_app_url_for('stats','social/index') ?>"><?php echo __('Social statistics',array(),'menu') ?></a></li>
+          <li class="spaced"><a href="<?php echo cross_app_url_for('stats','cards/index') ?>"><?php echo __('Member cards',array(),'menu') ?></a></li>
           <?php endif ?>
         </ul>
         <span class="title"><?php echo __('Stats',array(),'menu') ?></span>

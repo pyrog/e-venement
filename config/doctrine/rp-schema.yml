@@ -47,9 +47,6 @@ Contact:
     familial_quotient_id: integer
     type_of_resources_id: integer
     familial_situation_id: integer
-    sf_guard_user_id:
-      type: integer
-      unique: true
   relations:
     Category:
       class: OrganismCategory
@@ -66,22 +63,8 @@ Contact:
       foreignAlias: Contacts
       onDelete: SET NULL
       onUpdate: CASCADE
-    User:
-      class: sfGuardUser
-      foreignAlias: Contact
-      onDelete: SET NULL
-      onUpdate: SET NULL
-    Relations:
-      class: Contact
-      refClass: ContactRelationship
-      foreignAlias: BackRelations
-      local: from_contact_id
-      foreign: to_contact_id
 Organism:
   package: rp
-  actAs:
-    Searchable:
-      fields: [name, administrative_number]
   inheritance:
     extends: Addressable
     type: concrete
@@ -89,7 +72,6 @@ Organism:
     url: string(255)
     description: string
     organism_category_id: integer
-    administrative_number: string(255)
   relations:
     Category:
       class: OrganismCategory
@@ -137,13 +119,10 @@ YOB:
   package: rp
   actAs: [Timestampable]
   columns:
-    year: integer
-    month: integer
-    day: integer
-    name: string(255)
-    contact_id:
+    year:
       type: integer
       notnull: true
+    contact_id: integer
   relations:
     Contact:
       foreignAlias: YOBs
@@ -202,45 +181,6 @@ Professional:
     Organism:
       foreignAlias: Professionals
       onDelete: CASCADE
-
-ContactRelationshipType:
-  package: rp
-  actAs: [Timestampable]
-  columns:
-    name:
-      type: string(255)
-      notnull: true
-      notblank: true
-ContactRelationship:
-  package: rp
-  actAs: [Timestampable]
-  columns:
-    from_contact_id:
-      type: integer
-      notnull: true  
-    to_contact_id:
-      type: integer
-      notnull: true
-    contact_relationship_type_id: integer
-  relations:
-    ContactOrig:
-      local: from_contact_id
-      class: Contact
-      foreignAlias: Relationships
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Contact:
-      local: to_contact_id
-      class: Contact
-      foreignAlias: ForeignRelationships
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Type:
-      local: contact_relationship_type_id
-      class: ContactRelationshipType
-      foreignAlias: Relationships
-      onDelete: SET NULL
-      onUpdate: CASCADE
 
 TitleType:
   package: rp

@@ -27,7 +27,6 @@ class pricesActions extends sfActions
     $this->form = new StatsCriteriasForm();
     $this->form->addUsersCriteria();
     $this->form->addEventCriterias();
-    $this->form->addManifestationCriteria();
     if ( is_array($this->getUser()->getAttribute('stats.criterias',array(),'admin_module')) )
       $this->form->bind($this->getUser()->getAttribute('stats.criterias',array(),'admin_module'));
   }
@@ -88,17 +87,40 @@ class pricesActions extends sfActions
   
   public function executeData(sfWebRequest $request)
   {
-    $this->prices = $this->getPrices(
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink'));
+    
+    $g = new stGraph();
+    $g->bg_colour = '#FFFFFF';
+    
+    //Set the transparency, line colour to separate each slice etc.
+    $g->pie(80,'#78B9EC','{font-size: 12px; color: #78B9EC;');
+    
+    $prices = $this->getPrices(
       $request->getParameter('id') == 'asked',
       $request->getParameter('id') == 'ordered',
       $request->getParameter('id') == 'all'
     );
     
+    $total = 0;
+    $names = $data = array();
+    foreach ( $prices as $price )
+      $total += $price->nb;
+    foreach ( $prices as $price )
+    {
+      $data[] = round($price->nb*100/$total);
+      $names[] = $price->name.' ('.$price->nb.')';
+    }
+    
+    $g->pie_values($data,$names);
+    $g->pie_slice_colours( array('#d01f3c','#3537a0','#35a088','#d0841f','#cbd01f') );
+    
+    //To display value as tool tip
+    $g->set_tool_tip( __('#x_label# ticket(s): #val#%') );
+    
     if ( !$request->hasParameter('debug') )
     {
-      $this->setLayout('raw');
-      sfConfig::set('sf_debug',false);
-      $this->getResponse()->setContentType('application/json');
+      echo $g->render();
+      return sfView::NONE;
     }
   }
   
@@ -111,7 +133,6 @@ class pricesActions extends sfActions
     $dates['to']   = isset($criterias['dates']) && $criterias['dates']['to']['day'] && $criterias['dates']['to']['month'] && $criterias['dates']['to']['year']
       ? strtotime($criterias['dates']['to']['year'].'-'.$criterias['dates']['to']['month'].'-'.$criterias['dates']['to']['day'].' 23:59:59')
       : strtotime('+ 3 weeks + 1 day');
-    $criterias['dates'] = $dates;
     if ( isset($criterias['users']) && count($criterias['users']) > 0 )
     {
       if ( !$criterias['users'][0] )
@@ -134,17 +155,14 @@ class pricesActions extends sfActions
       ->andWhere('t.id NOT IN (SELECT tt.cancelling FROM ticket tt WHERE tt.cancelling IS NOT NULL)')
       ->andWhere('m.happens_at > ?',date('Y-m-d H:i:s',$dates['from']))
       ->andWhere('m.happens_at <= ?',date('Y-m-d H:i:s',$dates['to']))
-      ->groupBy('p.id, p.name, p.value')
-      ->orderBy('p.name, p.value');
+      ->groupBy('p.id, p.name, p.value');
     
-    if ( isset($criterias['manifestations_list']) && count($criterias['manifestations_list']) > 0 )
-      $q->andWhereIn('t.manifestation_id',$criterias['manifestations_list']);
     if ( isset($criterias['users']) && count($criterias['users']) > 0 )
       $q->andWhereIn('t.sf_guard_user_id',$criterias['users']);
 
     if ( !$all )
     {
-      $q->andWhere($asked || $ordered ? 'NOT (t.printed_at IS NOT NULL OR t.integrated_at IS NOT NULL)' : '(t.printed_at IS NOT NULL OR t.integrated_at IS NOT NULL)');
+      $q->andWhere($asked || $ordered ? 'NOT (t.printed OR t.integrated)' : '(t.printed OR t.integrated)');
       if ( $ordered)
         $q->andWhere('t.transaction_id IN (SELECT oo.transaction_id FROM Order oo)');
       if ( $asked )

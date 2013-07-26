@@ -9,7 +9,6 @@ all:
     date_begin: 1 week ago
     date_end: tomorrow
     max_tickets: 5000
-    #sum_rounding_before: 2013-01-01 # BE EXTREMELY CAREFUL IF YOU WANT TO USE THIS OPTION
   transaction:
     #gauge_alert: true
     #gauge_block: true
@@ -59,7 +58,3 @@ all:
     display:
       max: 200
       notices: true
-
-dev:
-  tickets:
-    specimen: true

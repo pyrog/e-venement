@@ -48,7 +48,7 @@ class byGroupActions extends sfActions
       if ( !isset($this->lines[$group['id']]['manif-'.$manif->id]) )
         $this->lines[$group['id']]['manif-'.$manif->id] = 0;
       
-      $this->lines[$group['id']]['manif-'.$group['manifestation_id']] = $group['nb_entries'];
+      $this->lines[$group['id']]['manif-'.$group['manifestation_id']] = $group['nb_tickets'];
     }
     
     $params = OptionCsvForm::getDBOptions();
@@ -80,23 +80,84 @@ class byGroupActions extends sfActions
   
   public function executeData(sfWebRequest $request)
   {
-    $this->manifs = Doctrine::getTable('Manifestation')->createQuery('m')
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink'));
+    $groups = $this->getGroups();
+    
+    $q = Doctrine::getTable('Manifestation')->createQuery('m')
       ->andWhere('m.happens_at <= now()')
       ->limit('3')
-      ->orderBy('m.happens_at DESC, e.name, l.name')
-      ->execute();
-    $this->groups = $this->getGroups();
+      ->orderBy('m.happens_at DESC, e.name, l.name');
+    $manifs = $q->execute();
     
-    if ( !$request->hasParameter('debug') )
+    $bars = array();
+    $colors = array(
+      $manifs[0]->id => array('#ec7890','#fe3462'),
+      $manifs[1]->id => array('#eca478','#fe8134'),
+      $manifs[2]->id => array('#789aec','#1245b9'),
+      -1 => array('#7cec78','#17b912'),
+    );
+    foreach ( $manifs as $manif )
     {
-      $this->setLayout('raw');
-      sfConfig::set('sf_debug',false);
-      $this->getResponse()->setContentType('application/json');
+      $id = !isset($colors[$manif->id]) ? -1 : $manif->id;
+      $bars[$manif->id] = new stBarOutline( 40, $colors[$id][0], $colors[$id][1] );
+      $bars[$manif->id]->key( $manif->getShortName(), 10 );
     }
+    
+    //Passing the random data to bar chart
+    $names = $max = array();
+    foreach ( $groups as $group )
+    {
+      $names[] = $group['name'];
+      $max[] = $group['nb_tickets'];
+      $bars[$group['manifestation_id']]->add_link($group['nb_tickets'],cross_app_url_for('rp','group/show?id='.$group['id'],true));
+    }
+    
+    //Creating a stGraph object
+    $g = new stGraph();
+    //$g->title( __('Gauge filling'), '{font-size: 20px;}' );
+    $g->bg_colour = '#E4F5FC';
+    $g->bg_colour = '#FFFFFF';
+    $g->set_inner_background( '#E3F0FD', '#CBD7E6', 90 );
+    $g->x_axis_colour( '#8499A4', '#E4F5FC' );
+    $g->y_axis_colour( '#8499A4', '#E4F5FC' );
+ 
+    //Pass stBarOutline object i.e. $bar to graph
+    $g->data_sets = $bars;
+ 
+    //Setting labels for X-Axis
+    $g->set_x_labels($names);
+ 
+    // to set the format of labels on x-axis e.g. font, color, step
+    $g->set_x_label_style( 10, '#18A6FF', 2, 1 );
+ 
+    // To tick the values on x-axis
+    // 2 means tick every 2nd value
+    //$g->set_x_axis_steps( 1 );
+ 
+    //set maximum value for y-axis
+    //we can fix the value as 20, 10 etc.
+    //but its better to use max of data
+    $g->set_y_max($max);
+    $g->y_label_steps( 4 );
+    $g->set_y_legend( __('Percentage on gauge'), 12, '#18A6FF' );
+    echo $g->render();
+ 
+    return sfView::NONE;
   }
   
   protected function getGroups()
   {
+    /*
+    $criterias = $this->getUser()->getAttribute('stats.criterias',array(),'admin_module');
+    $dates['from'] = $criterias['dates']['from']['day'] && $criterias['dates']['from']['month'] && $criterias['dates']['from']['year']
+      ? strtotime($criterias['dates']['from']['year'].'-'.$criterias['dates']['from']['month'].'-'.$criterias['dates']['from']['day'])
+      : strtotime('- 1 weeks');
+    $dates['to']   = $criterias['dates']['to']['day'] && $criterias['dates']['to']['month'] && $criterias['dates']['to']['year']
+      ? strtotime($criterias['dates']['to']['year'].'-'.$criterias['dates']['to']['month'].'-'.$criterias['dates']['to']['day'].' 23:59:59')
+      : strtotime('+ 3 weeks + 1 day');
+    $dates = array(':date1' => date('Y-m-d H:i:s',$dates['from']), ':date2' => date('Y-m-d H:i:s',$date['to']));
+    */
+    
     $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
     $q = ' SELECT g.id, g.name,
                   m.id AS manifestation_id, m.happens_at,
@@ -117,7 +178,7 @@ class byGroupActions extends sfActions
            GROUP BY g.id, g.name, m.id, m.happens_at, e.id, e.name, l.id, l.name, l.city
            ORDER BY g.name, m.happens_at, e.name, l.name';
     $stmt1 = $pdo->prepare($q);
-    $stmt1->execute();
+    $stmt1->execute($dates);
     
     $q = ' SELECT g.id, g.name,
                   m.id AS manifestation_id, m.happens_at,
@@ -138,7 +199,7 @@ class byGroupActions extends sfActions
            GROUP BY g.id, g.name, m.id, m.happens_at, e.id, e.name, l.id, l.name, l.city
            ORDER BY g.name, m.happens_at, e.name, l.name';
     $stmt2 = $pdo->prepare($q);
-    $stmt2->execute();
+    $stmt2->execute($dates);
     
     return array_merge($stmt1->fetchAll(),$stmt2->fetchAll());
   }

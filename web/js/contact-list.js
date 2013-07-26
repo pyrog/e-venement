@@ -34,11 +34,7 @@ $(document).ready(function(){
   // making emails clickable except when filling down the list through AJAX
   $('.sf_admin_list_td_email').each(function(){
     if ( $(this).html().trim() )
-      $(this).html('<a title="'+$(this).html().trim()+'" href="mailto:'+$(this).html().trim()+'">'+$(this).html()+'</a>');
-  });
-  // adding titles to emails when already clickables
-  $('.sf_admin_list_td_list_emails a').each(function(){
-    $(this).prop('title',$(this).closest('li').prop('title')+': '+$(this).html().trim());
+    $(this).html('<a title="'+$(this).html().trim()+'" href="mailto:'+$(this).html().trim()+'">'+$(this).html()+'</a>');
   });
   
   // this does some make-up for filter form
@@ -110,14 +106,6 @@ $(document).ready(function(){
   elt.find('h2').html('Relations');
   elt.prependTo('#sf_admin_filter > form > table > tbody');
   
-  elt = elt.clone(true);
-  elt.find('tbody').html('')
-    .append($('#sf_admin_filter .sf_admin_filter_field_familial_quotient_id'))
-    .append($('#sf_admin_filter .sf_admin_filter_field_familial_situation_id'))
-    .append($('#sf_admin_filter .sf_admin_filter_field_type_of_resources_id'));
-  elt.find('h2').html('Informations sociales');
-  elt.prependTo('#sf_admin_filter > form > table > tbody');
-
   elt = elt.clone(true);
   elt.find('tbody').html('')
     .append($('#sf_admin_filter .sf_admin_filter_field_title'))

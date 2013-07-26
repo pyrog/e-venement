@@ -10,59 +10,7 @@ $(document).ready(function(){
     $('#tdp-side-bar .tdp-object-groups .new').remove();
   }
   
-  // LINK TO RELATIONSHIPS
-  $('.sf_admin_form_field_Relationships table table').each(function(){
-    $(this).find('input[type=hidden]').each(function(){
-      if ( /contact\[Relationships\]\[\d+\]\[url\]/.test($(this).attr('name')) )
-      {
-        relationship = $(this).closest('table');
-        tfoot = $('<tfoot><tr><th></th><td><a><span class="ui-icon ui-icon-person"></span></a></td></tr></tfoot>');
-        tfoot.prop('title', relationship.find('input[type=text]').val())
-          .find('a').prop('href',$(this).val());
-        tfoot.appendTo(relationship);
-      }
-   });
-  });
-  
-  // BIRTHDAYS DEALING WITH INTEGERS AND TIPPING TIPS
-  $('.sf_admin_form_field_YOBs table table tr').each(function(){
-    // adding titles to YOBs' inputs
-    $(this).prop('title', $(this).find('th label').html());
-  });
-  // navigation between birth date fields
-  $('.sf_admin_form_field_YOBs table table tr input[type=text]').keyup(function(e){
-    if ( e.which == 8 && $(this).val() == '' )
-      $(this).closest('tr').prev().find('input[type=text]').focus();
-  });  
-  $('.sf_admin_form_field_YOBs table table tr:not(:last-child) input[type=text]').keyup(function(e){
-    $(this).val(isNaN(parseInt($(this).val(),10)) ? '' : ($(this).val().substring(0,1) == '0' && $(this).val() !== '0' ? '0' : '')+parseInt($(this).val(),10));
-    if ( $(this).val().length >= ($(this).css('width') === $(this).closest('table').find('tr:first input[type=text]').css('width') ? 2 : 4) )
-      $(this).closest('tr').next().find('input[type=text]').focus();
-  });
-  // adding the captain's age to birth dates
-  $('.sf_admin_form_field_YOBs table table').each(function(){
-    inputs = $(this).find('input[type=text]');
-    if ( inputs.eq(2).val() )
-    {
-      date   = new Date(inputs.eq(2).val(), inputs.eq(1).val()-1, inputs.eq(0).val());
-      now    = new Date();
-      nYears = now.getUTCFullYear() - date.getUTCFullYear();
-      nMonth = now.getUTCMonth()    - date.getUTCMonth();
-
-      plus = '';
-      if ( nMonth < 0 )
-      {
-        nYears -= 1;
-        nMonth  = 12+nMonth;
-      }
-      if ( nMonth >= 6 )
-        plus = '½';
-
-      $(this).append('<tfoot><tr><th></th><td>'+nYears+(nYears < 21 ? '<br/>'+plus : '')+'</td></tr></tfoot>');
-    }
-  });  
-  
-  // FORMS: submitting subobjects though AJ$AX
+  // FORMS: submitting subobjects though AJAX
   $('.tdp-subobject form, .tdp-object #sf_admin_content > form').submit(function(){
     $("html, body").animate({ scrollTop: 0 }, "slow");
     $('.sf_admin_flashes *').fadeOut('fast',function(){ $(this).remove(); });
@@ -93,7 +41,7 @@ $(document).ready(function(){
         tr.find('> :not('+subobjects_elts+')')
           .remove();
         $(this).find('> :not('+subobjects_elts+')')
-          .prop('rowspan',parseInt($(this).find('> :not('+subobjects_elts+')').prop('rowspan'),10)+1);
+          .prop('rowspan',parseInt($(this).find('> :not('+subobjects_elts+')').prop('rowspan'))+1);
         
         $(this).after(tr);
       }

@@ -59,7 +59,7 @@
     $this->grouped_tickets = false;
     $this->duplicate = $request->getParameter('duplicate') == 'true';
     $this->tickets = array();
-    $update = array('printed_at' => array(), 'integrated_at' => array());
+    $update = array('printed' => array(), 'integrated' => array());
     
     // grouped tickets
     if ( sfConfig::has('app_tickets_authorize_grouped_tickets')
@@ -81,7 +81,7 @@
           if ( $request->getParameter('duplicate') == 'true' )
           {
             if ( strcasecmp($ticket->price_name,$request->getParameter('price_name')) == 0
-              && $ticket->printed_at
+              && $ticket->printed
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               if ( $cpt >= 150 )
@@ -94,7 +94,6 @@
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
-              $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->grouping_fingerprint = $fingerprint;
               $newticket->Duplicated = $ticket;
               $newticket->save();
@@ -112,7 +111,7 @@
           }
           
           else // not duplicates
-          if ( !$ticket->printed_at && !$ticket->integrated_at )
+          if ( !$ticket->printed && !$ticket->integrated )
           {
             if ( $cpt >= 150 )
             {
@@ -121,10 +120,10 @@
             }
         
             if ( $ticket->Manifestation->no_print )
-              $update['integrated_at'][$ticket->id] = $ticket->id;
+              $update['integrated'][$ticket->id] = $ticket->id;
             else
             {
-              $update['printed_at'][$ticket->id] = $ticket->id;
+              $update['printed'][$ticket->id] = $ticket->id;
               
               if ( isset($this->tickets[$id = $ticket->gauge_id.'-'.$ticket->price_id.'-'.$ticket->transaction_id]) )
               {
@@ -144,7 +143,7 @@
       
       if ( $request->getParameter('duplicate') != 'true' )
       foreach ( $this->tickets as $ticket )
-        $update['printed_at'][$ticket['ticket']->id] = $ticket['ticket']->id;
+        $update['printed'][$ticket['ticket']->id] = $ticket['ticket']->id;
     }
     
     // normal / not grouped tickets
@@ -163,14 +162,13 @@
           if ( $request->getParameter('duplicate') == 'true' )
           {
             if ( strcasecmp($ticket->price_name,$request->getParameter('price_name')) == 0
-              && $ticket->printed_at
+              && $ticket->printed
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               $newticket = $ticket->copy();
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
-              $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->Duplicated = $ticket;
               $newticket->save();
               
@@ -180,29 +178,29 @@
           
           else // $this->duplicate == false
           {
-            if ( !$ticket->printed_at && !$ticket->integrated_at )
+            if ( !$ticket->printed && !$ticket->integrated )
             {
               if ( $ticket->Manifestation->no_print )
               {
                 // member cards
                 if ( $ticket->Price->member_card_linked )
                 {
-                  $ticket->integrated_at = date('Y-m-d H:i:s');
+                  $ticket->integrated = true;
                   $ticket->save();
                 }
                 else
-                  $update['integrated_at'][$ticket->id] = $ticket->id;
+                  $update['integrated'][$ticket->id] = $ticket->id;
               }
               else
               {
                 // member cards
                 if ( $ticket->Price->member_card_linked )
                 {
-                  $ticket->printed_at = date('Y-m-d H:i:s');
+                  $ticket->printed = true;
                   $ticket->save();
                 }
                 else
-                  $update['printed_at'][$ticket->id] = $ticket->id;
+                  $update['printed'][$ticket->id] = $ticket->id;
                 
                 $this->tickets[] = $ticket;
               }
@@ -221,8 +219,8 @@
       $q = Doctrine_Query::create()->update()
         ->from('Ticket t')
         ->whereIn('t.id',$ids)
-        ->andWhere(sprintf('t.%s IS NULL',$type))
-        ->set('t.'.$type,'NOW()')
+        ->andWhere('t.'.$type.' != ?',true)
+        ->set('t.'.$type,'true')
         ->set('t.updated_at','NOW()')
         ->set('t.sf_guard_user_id',$this->getUser()->getId())
         ->set('t.version','t.version + 1');

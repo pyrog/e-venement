@@ -55,7 +55,7 @@
         $this->getUser()->setFlash('error',__("Can't duplicate the ticket #%%i%% because its transaction has been closed already.",array('%%i%%' => $ticket->id)));
         $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
-      if ( !$ticket->printed_at )
+      if ( !$ticket->printed )
       {
         $this->getUser()->setFlash('error',__("Can't duplicate the ticket #%%i%% because it was not yet printed... Just try to print it",array('%%i%%' => $ticket->id)));
         $this->redirect('ticket/sell?id='.$ticket->transaction_id);
@@ -78,7 +78,7 @@
       
       // linking a new duplicating ticket to this ticket
       $this->ticket = $ticket->copy();
-      $this->ticket->printed_at = date('Y-m-d H:i:s');
+      $this->ticket->printed = true;
       $this->ticket->created_at = NULL;
       $this->ticket->updated_at = NULL;
       $this->ticket->sf_guard_user_id = NULL;
@@ -88,6 +88,6 @@
       $this->tickets[] = $this->ticket;
     }
     
-    //$this->duplicate = true;
+    $this->duplicate = true;
     $this->setLayout('nude');
     $this->setTemplate('print');
