@@ -16,7 +16,6 @@ generator:
       fields:  ~
       list:
         display: [name]
-        sort: [name,'']
         object_actions:
           _edit: ~
           _delete: ~
