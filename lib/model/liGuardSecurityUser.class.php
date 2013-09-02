@@ -40,26 +40,4 @@ class liGuardSecurityUser extends sfGuardSecurityUser
       return $this->getGuardUser()->getId();
     return null;
   }
-  
-  public function getContact()
-  {
-    if (!( $this->getGuardUser() instanceOf sfGuardUser ))
-      return false;
-    if ( $this->getGuardUser()->Contact->count() == 0 )
-      return false;
-    
-    return $this->getGuardUser()->Contact[0];
-  }
-  
-  public function getJabber($i = NULL)
-  {
-    if ( $this->getGuardUser() instanceOf sfGuardUser )
-    {
-      if ( intval($i).'' == $i.'' )
-        return $this->getGuardUser()->Jabber[$i];
-      else
-        return $this->getGuardUser()->Jabber;
-    }
-    return null;
-  }
 }

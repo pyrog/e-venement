@@ -14,7 +14,5 @@ class YOBForm extends BaseYOBForm
   {
     $this->validatorSchema['year']->setOption('required',false);
     $this->useFields(array('day','month','year','name'));
-    
-    $this->widgetSchema['name']->setLabel('Firstname');
   }
 }
