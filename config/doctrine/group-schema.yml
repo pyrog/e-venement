@@ -64,10 +64,6 @@ Group:
       foreignAlias: Groups
       onDelete: CASCADE
       onUpdate: CASCADE
-    Users:
-      class: sfGuardUser
-      refClass: GroupUser
-      foreignAlias: AuthForGroups
     Picture:
       foreignAlias: Groups
       onDelete: SET NULL
@@ -141,37 +137,5 @@ GroupOrganism:
       onUpdate: CASCADE
     Group:
       foreignAlias: OrganismGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
-GroupUser:
-  package: group
-  inheritance:
-    extends: GroupDetail
-    type: concrete
-  columns:
-    sf_guard_user_id:
-      type: integer
-      notnull: true
-      primary: true
-  relations:
-    User:
-      foreignAlias: UserGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
-      local: sf_guard_user_id
-      class: sfGuardUser
-    Group:
-      foreignAlias: GroupUsers
-      onDelete: CASCADE
-      onUpdate: CASCADE
-GroupDeleted:
-  package: group
-  inheritance:
-    extends: GroupDetail
-    type: concrete
-  columns:
-  relations:
-    Group:
-      foreignAlias: UserGroups
       onDelete: CASCADE
       onUpdate: CASCADE

@@ -81,21 +81,7 @@ class Contact extends PluginContact
   {
     $str = '';
     foreach ( $this->Groups as $group )
-    {
-      if ( !sfContext::hasInstance() )
-      {
-        $str .= $group->getHtmlTag().' ';
-        continue;
-      }
-      
-      $sf_user = sfContext::getInstance()->getUser();
-      $users = array();
-      foreach ( $group->Users as $user )
-        $users[] = $user->id;
-      if ( $group->sf_guard_user_id == $sf_user->getId()
-        || is_null($group->sf_guard_user_id) && (in_array($sf_user->getId(), $users) || $sf_user->hasCredential(array('admin','super-admin'),false)) )
-        $str .= $group->getHtmlTag().' ';
-    }
+      $str .= $group->getHtmlTag().' ';
     return $str;
   }
 }

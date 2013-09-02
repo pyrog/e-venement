@@ -79,9 +79,6 @@ Contact:
       foreign: to_contact_id
 Organism:
   package: rp
-  actAs:
-    Searchable:
-      fields: [name, administrative_number]
   inheritance:
     extends: Addressable
     type: concrete
@@ -89,7 +86,6 @@ Organism:
     url: string(255)
     description: string
     organism_category_id: integer
-    administrative_number: string(255)
   relations:
     Category:
       class: OrganismCategory
@@ -137,13 +133,13 @@ YOB:
   package: rp
   actAs: [Timestampable]
   columns:
-    year: integer
+    year:
+      type: integer
+      notnull: true
     month: integer
     day: integer
     name: string(255)
-    contact_id:
-      type: integer
-      notnull: true
+    contact_id: integer
   relations:
     Contact:
       foreignAlias: YOBs
