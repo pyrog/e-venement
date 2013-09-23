@@ -12,12 +12,10 @@
  */
 class Manifestation extends PluginManifestation
 {
-  var $conflict = NULL;
-  
   public function getName()
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('I18N','Date'));
-    return $this->Event->name.' '.__('at').' '.$this->getShortenedDate();
+    return $this->Event->name.' '.__('at').' '.format_datetime($this->happens_at,'EEE d MMM yyyy HH:mm');
   }
   public function getNameWithFullDate()
   {
@@ -34,19 +32,10 @@ class Manifestation extends PluginManifestation
     sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));
     return format_datetime($this->happens_at,'EEE d MMM yyyy HH:mm');
   }
-  public function getMiniDate()
-  {
-    sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));
-    return format_datetime($this->happens_at,'dd/MM/yyyy HH:mm');
-  }
   public function getShortName()
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('I18N','Date'));
     return $this->Event->name.' '.__('at').' '.format_date($this->happens_at);
-  }
-  public function getEndsAt()
-  {
-    return date('Y-m-d H:i:s',strtotime($this->happens_at)+$this->duration);
   }
   public function __toString()
   {
@@ -54,32 +43,6 @@ class Manifestation extends PluginManifestation
   }
   
   /**
-    * method hasAnyConflict()
-    * returns if the object is or would be in conflict with an other one
-    * concerning the resources management
-    *
-    * Precondition: the values that are used are those which are recorded in DB
-    *
-    **/
-  public function hasAnyConflict()
-  {
-    // precondition
-    if ( $this->isNew() || $this->isModified() )
-      throw new liBookingException('A manifestation has to be recorded to be checked for conflicts. Save it before...');
-    
-    if ( !is_null($this->conflict) )
-      return $this->conflict;
-    
-    $conflicts = Doctrine::getTable('Manifestation')->getConflicts(array(
-      'id' => $this->id,
-      'potentially' => $this->id,
-    ));
-    
-    return isset($conflicts[$this->id]);
-  }
-  
-  /**
-    * Get all needed informations about the manifestation's gauges usage
     * $options: modeled on sales ledger's criterias
     *
     **/
@@ -164,5 +127,20 @@ class Manifestation extends PluginManifestation
       $r['vat'][$rate] = round($value,2);
     
     return $r;
+  }
+  
+  public function postInsert($event)
+  {
+    if ( $this->PriceManifestations->count() == 0 )
+    foreach ( Doctrine::getTable('Price')->createQuery()->execute() as $price )
+    {
+      $pm = PriceManifestation::createPrice($price);
+      $pm->manifestation_id = $this->id;
+      //$pm->save();
+      $this->PriceManifestations[] = $pm;
+    }
+    $this->save();
+    
+    parent::postInsert($event);
   }
 }

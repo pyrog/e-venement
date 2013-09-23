@@ -21,24 +21,16 @@
 *
 ***********************************************************************************/
 ?>
-<?php use_javascript('/liFullcalendarPlugin/fullcalendar/fullcalendar.min.js') ?>
-<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar/fullcalendar.css') ?>
-<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar/fullcalendar.print.css','',array('media' => 'print')) ?>
+<?php use_javascript('/liFullcalendarPlugin/fullcalendar.min.js') ?>
+<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar.css') ?>
+<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar.print.css','',array('media' => 'print')) ?>
 <div class="sf_admin_edit ui-widget ui-widget-content ui-corner-all">
   <div class="manifestation_calendar">
   </div>
 <script type="text/javascript"><!--
 $(document).ready(function(){
   $('#fullcalendar, #more .manifestation_calendar').fullCalendar({
-    <?php if ( isset($start_date) && $start_date && strtotime($start_date) > 0 ): ?>
-    day: <?php echo date('d', strtotime($start_date)) ?>,
-    month: <?php echo date('m', strtotime($start_date))-1 ?>,
-    year: <?php echo date('Y', strtotime($start_date)) ?>,
-    <?php endif ?>
     firstDay: 1,
-    minTime: '<?php echo sfConfig::get('app_listing_min_time','8') ?>',
-    maxTime: '<?php echo sfConfig::get('app_listing_max_time','24') ?>',
-    firstHour: '<?php echo sfConfig::get('app_listing_first_hour','15') ?>',
     theme: true,
     monthNames: [ 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre' ],
     monthNamesShort: [ 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc' ],
@@ -53,7 +45,7 @@ $(document).ready(function(){
     titleFormat: { month: 'MMMM yyyy', week: "d[ MMM][ yyyy]{ - d MMM yyyy}", day: 'dddd d MMM yyyy' },
     columnFormat: { week: 'ddd d/M', day: 'dddd d/M' },
     timeFormat: 'H(:mm)',
-    allDayText: '<?php echo __('All day long') ?>',
+    allDayText: 'Journée entière',
     allDayDefault: false,
     header: { left: 'today prev,next', center: 'title', right: 'month,agendaWeek,agendaDay' },
     
@@ -64,24 +56,21 @@ $(document).ready(function(){
       {
         url: '<?php echo $url ?>',
         //color: 'LightGreen',
-        error: function(){ alert('<?php echo __('Error loading the data from manifestations',null,'sf_admin') ?>'); }
+        error: function(){ alert('<?php echo __('Error loading the data from manifestations') ?>'); }
       },
       <?php endforeach ?>
     ],
-    lazyFetching: false,
     
-    eventResize: function(event, dayDelta, minuteDelta, revertFunc){
+    eventResize: function(event, dayDelta, minuteDelta){
       $.ajax({
         url: '<?php echo url_for('manifestation/slideDuration') ?>',
         data: { id: event.id, days: dayDelta, minutes: minuteDelta },
         type: 'post'
       })
       .done(function(){
-        $('#fullcalendar, #more .manifestation_calendar').fullCalendar('refetchEvents');
       })
       .fail(function(){
-        revertFunc();
-        alert("<?php echo __("Error changing the manifestation's duration",null,'sf_admin') ?>");
+        alert("<?php echo __("Error changing the event's duration") ?>");
       });
     },
     eventDrop: function(event, dayDelta, minuteDelta, revertFunc){
@@ -91,22 +80,13 @@ $(document).ready(function(){
         type: 'post'
       })
       .done(function(){
-        $('#fullcalendar, #more .manifestation_calendar').fullCalendar('refetchEvents');
       })
       .fail(function(){
-        revertFunc();
-        alert('<?php echo __('Error moving the manifestation') ?>');
+        alert('<?php echo __('Error moving the event') ?>');
       });
     },
     eventClick: function(event){
-      if ( event.hackurl != undefined )
       window.open(event.hackurl);
-    },
-    eventAfterRender: function(event, element){
-      if ( event.css )
-      $.each(event.css, function(index, value){
-        $(element).css(index, value);
-      });
     }
   });
 });

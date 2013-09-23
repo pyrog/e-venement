@@ -5,10 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>It is forbidden to integrate foreign sales on an unconfirmed manifestation</source>
-        <target>Il est interdit d'intégrer des ventes de partenaires sur une manifestation non confirmée</target>
-      </trans-unit> 
-      <trans-unit>
         <source>Without cancellations</source>
         <target>Sans les annulations</target>
       </trans-unit> 
@@ -286,7 +282,7 @@
       </trans-unit>
       <trans-unit>
         <source>Prices association for member cards</source>
-        <target>Association de prix pour les cartes d'abonnement</target>
+        <target>Association de tarifs pour les cartes d'abonnement</target>
       </trans-unit>
       <trans-unit>
         <source>Type of member card</source>
@@ -351,10 +347,6 @@
       <trans-unit>
         <source>Flow display</source>
         <target>Affichage des flux</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Are you sure?</source>
-        <target>Êtes-vous sûr(e) ?</target>
       </trans-unit>
       <trans-unit>
         <source>Are you sure? You are going to replace all your payments in the original and (if it exists) cancelling transactions...</source>

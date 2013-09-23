@@ -5,22 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Personal</source>
-        <target>Personnel</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Additional</source>
-        <target>Additionnel</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Social informations</source>
-        <target>Informations sociales</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Admin. ID</source>
-        <target>Identifiant</target>
-      </trans-unit>
-      <trans-unit>
         <source>Remove through filters</source>
         <target>Retirer via les filtres</target>
       </trans-unit>
@@ -230,19 +214,19 @@
       </trans-unit>
       <trans-unit>
         <source>List of types of resources</source>
-        <target>Liste de ressources principales</target>
+        <target>Liste des types de ressources</target>
       </trans-unit>
       <trans-unit>
         <source>Edit Type of resources</source>
-        <target>Modification de la ressource principale</target>
+        <target>Modification du type de ressources</target>
       </trans-unit>
       <trans-unit>
         <source>Type of resources</source>
-        <target>Ressource principale</target>
+        <target>Type de ressources</target>
       </trans-unit>
       <trans-unit>
         <source>New Type of resources</source>
-        <target>Nouvelle ressource principale</target>
+        <target>Nouveau type de ressources</target>
       </trans-unit>
       <trans-unit>
         <source>List of familial situations</source>
@@ -315,10 +299,6 @@
       <trans-unit>
         <source>Upload attachment</source>
         <target>Téléchargement de la pièce jointe</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Edit Member card type</source>
-        <target>Modification du type de carte d'abo.</target>
       </trans-unit>
       <trans-unit>
         <source>Member card type</source>
@@ -758,7 +738,7 @@
       </trans-unit>
       <trans-unit>
         <source>Users list</source>
-        <target>Liste des utilisateurs</target>
+        <target>List des utilisateurs</target>
       </trans-unit>
       <trans-unit id="27">
         <source>Maintenance</source>

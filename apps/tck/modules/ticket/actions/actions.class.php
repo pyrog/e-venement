@@ -241,11 +241,9 @@ class ticketActions extends sfActions
       $q = new Doctrine_Query();
       $q->from('Transaction')
         ->where('id = ?',$id);
-      if ( $this->transaction = $q->fetchOne() )
-      {
-        $this->transaction->closed = false;
-        $this->transaction->save();
-      }
+      $this->transaction = $q->fetchOne();
+      $this->transaction->closed = false;
+      $this->transaction->save();
     }
     
     $this->redirect('ticket/sell?id='.$id);

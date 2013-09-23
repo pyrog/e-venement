@@ -76,7 +76,7 @@ WorkspaceUserOrdering:
       type: integer
       notnull: true
   indexes:
-    sf_guard_user_id_workspace_id_idx:
+    sf_guard_user_id_workspace_id:
       fields: [sf_guard_user_id, workspace_id]
       unique: true
   relations:
@@ -92,19 +92,12 @@ WorkspaceUserOrdering:
 MetaEvent:
   package: event
   actAs: [Timestampable]
-  indexes:
-    meta_event_hide_in_month_calendars_idx:
-      fields: [hide_in_month_calendars]
   columns:
     name:
       type:     string(255)
       notblank: true
       notnull:  true
       unique:   true
-    hide_in_month_calendars:
-      type: boolean
-      default: false
-      notnull: true
   relations:
     Users:
       class: sfGuardUser
@@ -152,9 +145,6 @@ Event:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    event_name_idx:
-      fields: [name]
   columns:
     name:
       type:         string(255)
@@ -229,9 +219,6 @@ EventCompany:
  
 Location:
   package: event
-  indexes:
-    location_place_idx:
-      fields: [place]
   inheritance:
     extends: Addressable
     type: concrete
@@ -247,10 +234,6 @@ Location:
     reservation_price:
       type: decimal(11)
       scale: 2
-    place:
-      type: boolean
-      notnull: true
-      default: true
   relations:
     Organism:
       foreignAlias: Locations
@@ -279,17 +262,6 @@ Manifestation:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    manifestation_happens_at_idx:
-      fields: [happens_at]
-    manifestation_reservation_begins_at_idx:
-      fields: [reservation_begins_at]
-    manifestation_reservation_ends_at_idx:
-      fields: [reservation_ends_at]
-    manifestation_blocking_idx:
-      fields: [blocking]
-    manifestation_reservation_confirmed_idx:
-      fields: [reservation_confirmed]
   columns:
     event_id:
       type: integer
@@ -316,25 +288,6 @@ Manifestation:
       notnull: true
     depends_on: integer
     contact_id: integer
-    blocking:
-      type: boolean
-      notnull: true
-      default: true
-    reservation_begins_at:
-      type: timestamp
-      notnull: true
-    reservation_ends_at:
-      type: timestamp
-      notnull: true
-    reservation_description: string
-    reservation_optional:
-      type: boolean
-      notnull: true
-      default: false
-    reservation_confirmed:
-      type: boolean
-      notnull: true
-      default: true
   relations:
     Event:
       foreignAlias: Manifestations
@@ -352,12 +305,9 @@ Manifestation:
       class: Organism
       refClass: ManifestationOrganizer
       foreignAlias: Manifestations
-    Applicant:
-      local: contact_id
+    Demander:
       class: Contact
       foreignAlias: Manifestations
-      onDelete: SET NULL
-      onUpdate: CASCADE
     Workspaces:
       class: Workspace
       refClass: Gauge
@@ -373,31 +323,9 @@ Manifestation:
       foreignAlias: Manifestations
       onDelete: SET NULL
       onUpdate: CASCADE
-    Booking:
-      class: Location
-      refClass: LocationBooking
-      foreignAlias: BookedBy
-LocationBooking:
-  package: event
-  columns:
-    manifestation_id:
-      type: integer
-      notnull: true
-    location_id:
-      type: integer
-      notnull: true
-  relations:
-    Manifestation:
-      foreignAlias: LocationBookings
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Location:
-      foreignAlias: LocationBookings
-      onDelete: CASCADE
-      onUpdate: CASCADE
 Vat:
   package: event
-  actAs: [Timestampable, Versionable]
+  actAs: [Versionable, Timestampable]
   columns:
     name:
       type: string(64)
@@ -412,9 +340,6 @@ Vat:
 Gauge:
   package: event
   actAs: [Timestampable]
-  indexes:
-    gauge_online:
-      fields: [online]
   columns:
     workspace_id:
       type: integer
@@ -442,33 +367,7 @@ Gauge:
     manifestation_workspace:
       fields: [manifestation_id, workspace_id]
       unique: true
-
-ManifestationExtraInformation:
-  package: event
-  inheritance:
-    extends: Traceable
-    type: concrete
-  columns:
-    name:
-      type: string(255)
-      notnull: true
-      notblank: true
-    value:
-      type: string(255)
-      notnull: true
-    checked:
-      type: boolean
-      notnull: true
-      default: false
-    manifestation_id:
-      type: integer
-      notnull: true
-  relations:
-    Manifestation:
-      foreignAlias: ExtraInformations
-      onDelete: CASCADE
-      onUpdate: CASCADE
-
+                      
 Color:
   package: event
   actAs: [Timestampable]
@@ -481,7 +380,6 @@ Color:
       type:     string(255)
       notnull:  true
       notblank: true
-
 ManifestationOrganizer:
   package: event
   columns:

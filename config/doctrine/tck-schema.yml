@@ -25,9 +25,6 @@ Transaction:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    transaction_closed_idx:
-      fields: [closed]
   columns:
     contact_id: integer
     professional_id: integer
@@ -65,22 +62,6 @@ Ticket:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    ticket_updated_at_idx:
-      fields: [updated_at]
-    ticket_manif_numerotation_idx:
-      fields: [numerotation, manifestation_id]
-      unique: true
-    ticket_barcode_idx:
-      fields: [barcode]
-    ticket_othercode_idx:
-      fields: [othercode]
-    ticket_duplicating_idx:
-      fields: [duplicating]
-    ticket_printed_at_idx:
-      fields: [printed_at]
-    ticket_integrated_at_idx:
-      fields: [integrated_at]
   columns:
     transaction_id:
       type: integer
@@ -109,13 +90,29 @@ Ticket:
       type: integer
       unique: true
     printed_at: timestamp
+    printed:
+      type: boolean
+      default: false
+      notnull: true
     integrated_at: timestamp
+    integrated:
+      type: boolean
+      default: false
+      notnull: true
     barcode: string(255)
     othercode: string(255)
     member_card_id: integer
     vat:
       type: decimal(5)
       scale: 4
+  indexes:
+    manif_numerotation:
+      fields: [numerotation, manifestation_id]
+      unique: true
+    barcode:
+      fields: [barcode]
+    othercode:
+      fields: [othercode]
   relations:
     Manifestation:
       foreignAlias: Tickets
@@ -200,9 +197,6 @@ Accounting:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    accounting_type_idx:
-      fields: [type]
   columns:
     transaction_id:
       type: integer
@@ -218,9 +212,6 @@ Order:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    order_type_idx:
-      fields: [type]
   columns:
     transaction_id:
       type: integer
@@ -241,9 +232,6 @@ Invoice:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    invoice_type_idx:
-      fields: [type]
   columns:
     transaction_id:
       type: integer
@@ -284,9 +272,6 @@ RawAccounting:
 
 PaymentMethod:
   package: tck
-  indexes:
-    payment_method_display_idx:
-      fields: [display]
   columns:
     name:
       type: string(255)
@@ -306,9 +291,6 @@ Payment:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    payment_created_at_idx:
-      fields: [created_at]
   columns:
     transaction_id:
       type: integer

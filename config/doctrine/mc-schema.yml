@@ -55,11 +55,6 @@ MemberCard:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    member_card_expire_at_idx:
-      fields: [expire_at]
-    member_card_active_idx:
-      fields: [active]
   columns:
     contact_id: integer
     expire_at:
@@ -117,10 +112,6 @@ MemberCardPriceModel:
   inheritance:
     extends: Traceable
     type: concrete
-  indexes:
-    member_card_type_id_price_id_event_id_idx:
-      fields: [member_card_type_id, price_id, event_id]
-      unique: true
   columns:
     member_card_type_id:
       type: integer
@@ -145,3 +136,7 @@ MemberCardPriceModel:
       foreignAlias: MemberCardPriceModels
       onDelete: RESTRICT
       onUpdate: CASCADE
+  indexes:
+    member_card_type_id_price_id_event_id:
+      fields: [member_card_type_id, price_id, event_id]
+      unique: true

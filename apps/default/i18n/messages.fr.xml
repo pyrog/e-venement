@@ -5,38 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Are you sure?</source>
-        <target>Êtes-vous sûr(e) ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>is empty</source>
-        <target>vide ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Error loading the data from manifestations</source>
-        <target>Erreur de chargement des données des manifestations</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New Jabber account</source>
-        <target>Nouveau compte Jabber</target>
-      </trans-unit>
-      <trans-unit>
-        <source>List of jabber accounts</source>
-        <target>Liste des comptes jabber</target>
-      </trans-unit>
-      <trans-unit>
-        <source>List of authorized groups</source>
-        <target>Liste des groupes autorisés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Public relations</source>
-        <target>Relations publiques</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Edit the %%User%%'s Jabber account</source>
-        <target>Modification du compte Jabber de %%User%%</target>
-      </trans-unit>
-      <trans-unit>
         <source>Remove linked contact</source>
         <target>Retirer le contact lié</target>
       </trans-unit>

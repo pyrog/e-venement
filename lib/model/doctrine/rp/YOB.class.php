@@ -33,14 +33,14 @@ class YOB extends PluginYOB
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));
     
-    if ( $this->day && $this->month ) try {
+    if ( $this->day && $this->month )
       $r = format_date($this->year.'-'.$this->month.'-'.$this->day);
-    } catch ( sfException $e ) { $r = (string)$this->year; }
     else
-      $r = (string)$this->year;
-    
-    $r .= $this->name ? ' '.$this->name : '';
-    
-    return $r;
+      $r = $this->year;
+     
+     $r .= ' ';
+     $r .= $this->name ? $this->name : '';
+     
+     return $r;
   }
 }

@@ -27,14 +27,6 @@ Group:
     Timestampable: ~
     #Sluggable:
     #  fields: [name, sf_guard_user_id]
-  indexes:
-    group_name_idx:
-      fields: [name]
-    group_display_everywhere_idx:
-      fields: [display_everywhere]
-    group_name_user_idx:
-      fields: [name, sf_guard_user_id]
-      type_idx: unique
   columns:
     name:
       type: string(255)
@@ -50,6 +42,10 @@ Group:
       type: boolean
       default: false
       notnull: true
+  indexes:
+    name_user:
+      fields: [name, sf_guard_user_id]
+      type: unique
   relations:
     Contacts:
       class: Contact
@@ -68,10 +64,6 @@ Group:
       foreignAlias: Groups
       onDelete: CASCADE
       onUpdate: CASCADE
-    Users:
-      class: sfGuardUser
-      refClass: GroupUser
-      foreignAlias: AuthForGroups
     Picture:
       foreignAlias: Groups
       onDelete: SET NULL
@@ -145,37 +137,5 @@ GroupOrganism:
       onUpdate: CASCADE
     Group:
       foreignAlias: OrganismGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
-GroupUser:
-  package: group
-  inheritance:
-    extends: GroupDetail
-    type: concrete
-  columns:
-    sf_guard_user_id:
-      type: integer
-      notnull: true
-      primary: true
-  relations:
-    User:
-      foreignAlias: UserGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
-      local: sf_guard_user_id
-      class: sfGuardUser
-    Group:
-      foreignAlias: GroupUsers
-      onDelete: CASCADE
-      onUpdate: CASCADE
-GroupDeleted:
-  package: group
-  inheritance:
-    extends: GroupDetail
-    type: concrete
-  columns:
-  relations:
-    Group:
-      foreignAlias: UserGroups
       onDelete: CASCADE
       onUpdate: CASCADE

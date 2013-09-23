@@ -174,9 +174,4 @@ abstract class PluginTicket extends BaseTicket
     
     parent::preUpdate($event);
   }
-
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

@@ -35,9 +35,4 @@ abstract class PluginContact extends BaseContact
     
     parent::postInsert($event);
   }
-
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

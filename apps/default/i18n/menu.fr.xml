@@ -5,30 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Bookings to confirm</source>
-        <target>Réservations à confirmer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Use conflicts</source>
-        <target>Conflits d'usage</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Resources</source>
-        <target>Ressources</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Evolution of groups</source>
-        <target>Évolution des groupes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Social statistics</source>
-        <target>Statistiques sociales</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Messaging</source>
-        <target>Messagerie</target>
-      </trans-unit>
-      <trans-unit>
         <source>Types of relationships</source>
         <target>Types de relations</target>
       </trans-unit>
@@ -54,7 +30,7 @@
       </trans-unit>
       <trans-unit>
         <source>Types of resources</source>
-        <target>Ressources principales</target>
+        <target>Types de resources</target>
       </trans-unit>
       <trans-unit>
         <source>Familial situations</source>

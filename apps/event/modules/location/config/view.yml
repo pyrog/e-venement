@@ -1,5 +1,5 @@
 all:
-  javascripts: [/liTinymcePlugin/tinymce.min.js, /liTinymcePlugin/jquery.tinymce.min.js]
+  javascripts: [/liTinymcePlugin/tiny_mce]
   stylesheets: [location,manifestation]
 
 showSuccess:
@@ -13,6 +13,6 @@ newSuccess:
 createSuccess:
   stylesheets: [view]
 indexSuccess:
-  javascripts: [list-scroll, location]
+  javascripts: [list-scroll]
   stylesheets: [list-print: {media: print}]
 
