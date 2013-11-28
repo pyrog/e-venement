@@ -155,7 +155,6 @@ function ticket_events()
       $('#manifestations .gauge').fadeIn();
       ticket_activate_manifs_gauge();
       ticket_manif_new_events();
-      ticket_display_seated_plan();
       if ( $('#manifestations form [name=manif_new]').val().substring(0,7) == '#manif-' )
       {
         setTimeout(function(){
@@ -170,7 +169,6 @@ function ticket_events()
   });
   ticket_activate_manifs_gauge();
   ticket_manif_new_events();
-  ticket_display_seated_plan();
   
   // toggle link "hide / show"
   $('#manifestations .manif_new .toggle_view').unbind().click(function(){
@@ -279,12 +277,11 @@ function ticket_manif_new_events()
 {
   $('.manifestations_add input[type=radio]').unbind().click(function(){
     $(this).unbind();
-    var manif = $(this).closest('li');
     if ( $('.manifestations_list input[name="'+$(this).prop('name')+'"][value='+$(this).val()+']').length <= 0 )
     {
-      manif.find('span').unbind();
+      $(this).parent().parent().find('span').unbind();
       ticket_gauge_backup($('.manifestations_add .gauge'));
-      manif.prependTo('.manifestations_list ul');
+      $(this).parent().parent().prependTo('.manifestations_list ul');
       if ( $('#prices .manifestations_list').length > 0 )
       {
         ticket_activate_prices_gauge();
@@ -293,7 +290,7 @@ function ticket_manif_new_events()
     }
     else
     {
-      manif.remove();
+      $(this).parent().parent().remove();
       $('.manifestations_list input[name="'+$(this).prop('name')+'"][value='+$(this).val()+']').prop('selected','selected');
     }
   });
@@ -342,7 +339,7 @@ function ticket_transform_hidden_to_span(all)
       else
         $('<span class="'+name+' ticket_prices '+$(this).prop('class')+'" title="'+$(this).prop('title')+'"><input type="text" class="nb" name="hidden_nb" value="1" autocomplete="off" maxlength="3" /><input type="hidden" class="nb" name="hidden_nb" value="1"> <span class="price">'+price+'</span><span class="tickets_id"></span><span class="value">'+$(this).val()+'</span></span>')
           .appendTo($(this).parent());
-      $(this).parent().find('.'+name+'.'+$(this).prop('class')+' .tickets_id').append($(this).prop('alt')+', ');
+      $(this).parent().find('.'+name+'.'+$(this).prop('class')+' .tickets_id').append($(this).prop('alt')+'<br/>');
     });
   });
   
@@ -411,39 +408,6 @@ function ticket_display_prices()
   }
 }
 
-function ticket_display_seated_plan()
-{
-  var go = function(url){
-    // the ESCAPE key
-    $(document).keyup(function(event){ if ( event.key == 'Esc' ) $('#seated-plan').remove(); });
-    
-    // the old plans removal (??)
-    $('#seated-plan').remove();
-    
-    // adding the plan itself
-    $('<div id="seated-plan"></div>')
-      .append($('<iframe></iframe>').prop('src',url).addClass('ui-corner-all').addClass('ui-widget-content'))
-      .click(function(){$(this).remove();})
-      .appendTo('#content');
-    return false;
-  };
-  
-  // opening the seated plan as a dialog widget
-  $('.manif .workspace a.ws-name, .manif .workspaces a.ws-name').unbind().click(function(){
-    return go($(this).prop('href'));
-  });
-  $('.manif .workspaces [name="ticket[gauge_id]"]').click(function(event){
-    if ( event.ctrlKey )
-    {
-      go('/event.php/seated_plan/show/action?transaction_id='+$.trim($('#global_transaction_id').html())+'&gauge_id='+$(this).val());
-      
-      // a trick to close the select menu, that makes a better GUI interaction
-      $(this).hide();
-      setTimeout(function(){ $('.manif .workspaces [name="ticket[gauge_id]"]').show(); },250);
-    }
-  });
-}
-
 function ticket_get_ws_gauge(json_url)
 {
   if ( json_url == null )
@@ -459,7 +423,6 @@ function ticket_get_ws_gauge(json_url)
       .append('<span class="asked" style="width: '+(parseInt(data.total,10) == 0 ? '0' : data.booked.asked*100/(parseInt(data.total,10)+(parseInt(data.free,10) < 0 ? -parseInt(data.free,10) : 0)))+'%" title="'+data.booked.asked+'">&nbsp;</span>')
       .append('<span class="free" style="width: '+(parseInt(data.total,10) == 0 ? '0' : (parseInt(data.free,10) < 0 ? 0 : parseInt(data.free,10))*100/(parseInt(data.total,10)+(parseInt(data.free,10) < 0 ? -parseInt(data.free,10) : 0)))+'%" title="'+parseInt(data.free,10)+'">&nbsp;</span>');
     $('.manifestations_list .workspace.gauge-'+data.id+' .ws-name').prop('title',parseInt(data.total,10));
-    ticket_display_seated_plan();
     
     if ( parseInt(data.free,10) <= 0 )
     {
@@ -531,6 +494,39 @@ function ticket_prices()
         },2500);
       }
       
+      // if it is a seating plan which is displaid
+      if ( $(data).find('#seating-plan').length > 0 )
+      {
+        // appearing
+        $('#transition').show();
+        $('#seating-plan').remove();
+        $('#prices').prepend($(data).find('#seating-plan'));
+        $('#seating-plan input:first').focus();
+        $('#seating-plan .reset').click(function(){
+          $('#transition').hide();
+          $('#seating-plan').remove();
+          ticket_transform_hidden_to_span();
+          $('#prices form [name="ticket[numerotation]"]').val('');
+        });
+        
+        // submitting
+        $('#seating-plan').submit(function(){
+          // preparing the form
+          $('#prices form input[name="ticket[numerotation]"]').val($('#seating-plan [name=numerotation]').val());
+          nb = $('#prices form input[name="ticket[nb]"]').val();
+          $('#prices form input[name="ticket[nb]"]').val($('#seating-plan [name=nb]').val());
+          
+          // submitting
+          $('#prices input[name="ticket[price_name]"][value="'+$(this).find('[name=price_name]').val()+'"]').click();
+          
+          // get back to initial state
+          $('#prices form input[name="ticket[nb]"]').val(nb);
+          $('#seating-plan .reset').click();
+          return false;
+        });
+        return true;
+      }
+      
       // the gauge
       ticket_gauge_update_click();
       
@@ -557,7 +553,6 @@ function ticket_prices()
           ticket_transform_hidden_to_span();
           
           ticket_gauge_trigger();
-          ticket_display_seated_plan();
         });
        
         // restoring checked manifestation

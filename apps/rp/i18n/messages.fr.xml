@@ -5,10 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Required.</source>
-        <target>Obligatoire.</target>
-      </trans-unit>
-      <trans-unit>
         <source>Read receipt</source>
         <target>Accusé de réception</target>
       </trans-unit>

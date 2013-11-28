@@ -5,62 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>This is the number of seats when the screen loaded.</source>
-        <target>Ceci est le nombre de place au moment du chargement de l'écran.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Nb of seats</source>
-        <target>Nb de places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>An error occurred during the plot recording. Try again.</source>
-        <target>Nb de places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Magnify</source>
-        <target>Effet loupe</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New Seated plan</source>
-        <target>Nouveau plan de salle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Edit Seated plan</source>
-        <target>Modification du plan de salle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Seated plan List</source>
-        <target>Liste des plans de salle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Plot diameter behind a seat</source>
-        <target>Diamètre du point derrière un siège</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Background color</source>
-        <target>Couleur de fond</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This seat's name has already been given.</source>
-        <target>Ce nom de place a déjà été donné.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Do not ask</source>
-        <target>Directement</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Hop</source>
-        <target>Saut</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Picture</source>
-        <target>Plan</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Seat's name</source>
-        <target>Nom de la place</target>
-      </trans-unit>
-      <trans-unit>
         <source>You have requested the version %%v%% that does not exist</source>
         <target>Vous avez demandé la version %%v%% qui n'existe pas</target>
       </trans-unit>

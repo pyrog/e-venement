@@ -33,10 +33,34 @@ class TicketForm extends BaseTicketForm
     ));
     $this->widgetSchema['transaction_id'] = new sfWidgetFormInputHidden();
     $this->widgetSchema['numerotation'] = new sfWidgetFormInputHidden();
-    $this->validatorSchema['numerotation'] = new sfValidatorString(array(
-      'min_length' => 1,
-      'required' => false,
-    ));
+  }
+  
+  public function isValid()
+  {
+    if ( !parent::isValid() )
+      return false;
+    
+    $q = Doctrine::getTable('Workspace')->createQuery('w')
+      ->leftJoin('w.Gauges g')
+      ->andWhere('g.id = ?',$this->getValue('gauge_id'));
+    $workspace = $q->fetchOne();
+    if ( $workspace->seated )
+    {
+      if ( !$this->getValue('numerotation') )
+        throw new liSeatingException('No numerotation given.');
+      
+      $q = Doctrine::getTable('Ticket')->createQuery('tck')
+        ->andWhere('tck.numerotation = ?',$this->getValue('numerotation'))
+        ->andWhere('tck.gauge_id = ?',$this->getValue('gauge_id'))
+        ->andWhere('tck.cancelling IS NULL AND tck.id NOT IN (SELECT tt.cancelling FROM Ticket tt WHERE tt.cancelling IS NOT NULL AND tt.gauge_id = tck.gauge_id)');
+      $tickets = $q->execute();
+      if ( $this->getValue('nb') < 0 && $tickets->count() == 0 )
+        throw new liSeatingException('There is no ticket to remove on this seat for this gauge.');
+      if ( $this->getValue('nb') > 0 && $tickets->count() > 0 )
+        throw new liSeatingException('There are already some tickets on this seat for this gauge.');
+    }
+
+    return true;
   }
   
   public function save($con = NULL)

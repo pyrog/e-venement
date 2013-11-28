@@ -21,6 +21,7 @@
 *
 ***********************************************************************************/
 ?>
+
 <?php
     $cpt = 0;
     $max = array(
@@ -28,6 +29,10 @@
       'duplicate' => 30,
     );
     
+    if ( !($this->getRoute() instanceof sfObjectRoute) )
+      return $this->redirect('ticket/sell');
+    
+    //$this->transaction = $this->getRoute()->getObject();
     $q = Doctrine::getTable('Transaction')
       ->createQuery('t')
       ->andWhere('t.id = ?',$request->getParameter('id'))
@@ -54,9 +59,6 @@
     
     $this->transaction = $q->fetchOne();
     $this->manifestation_id = $request->getParameter('manifestation_id');
-    
-    // if any ticket needs a seat, do what's needed
-    $this->redirectToSeatsAllocationIfNeeded('print');
     
     $fingerprint = NULL;
     $this->print_again = false;
@@ -93,7 +95,6 @@
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               $newticket = $ticket->copy();
-              $ticket->numerotation = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
@@ -101,8 +102,6 @@
               $newticket->grouping_fingerprint = $fingerprint;
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->numerotation )
-                $ticket->save();
               
               if ( isset($this->tickets[$id = $ticket->gauge_id.'-'.$ticket->price_id.'-'.$ticket->transaction_id]) )
               {
@@ -122,7 +121,7 @@
               $this->print_again = true;
               break;
             }
-        
+            
             if ( $ticket->Manifestation->no_print )
               $update['integrated_at'][$ticket->id] = $ticket->id;
             else
@@ -148,7 +147,7 @@
       foreach ( $this->tickets as $ticket )
         $update['printed_at'][$ticket['ticket']->id] = $ticket['ticket']->id;
     }
-    
+      
     // normal / not grouped tickets
     else
     {
@@ -168,15 +167,12 @@
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               $newticket = $ticket->copy();
-              $ticket->numerotation = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
               $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->numerotation )
-                $ticket->save();
               
               $this->tickets[] = $newticket;
             }
