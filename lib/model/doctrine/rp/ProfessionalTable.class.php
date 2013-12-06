@@ -24,14 +24,8 @@ class ProfessionalTable extends PluginProfessionalTable
   public function doSelectOnlyGrp(Doctrine_Query $q)
   {
     $a = $q->getRootAlias();
-    $o = $a != 'o' ? 'o' : 'o1';
-    $c = $a != 'c' ? 'c' : 'c1';
-    $t = $a != 't' ? 't' : 't1';
-    $gce = $a != 'gce' ? 'gce' : 'gce1';
-    
-    $q->leftJoin("$a.ContactEntries $gce")
-      ->andWhere('gce.id IS NOT NULL')
-      ->select("$a.*, $t.*, $c.*, $gce.*");
+    $q->leftJoin("$a.ContactEntries gce")
+      ->andWhere('gce.id IS NOT NULL');
     
     // limitating to user's MetaEvents
     if ( sfContext::hasInstance() )

@@ -37,17 +37,6 @@ Addressable:
     Sluggable:
       unique: true
       fields: [name]
-  indexes:
-    %CLASS%_postalcode_idx:
-      fields: [postalcode]
-    %CLASS%_country_idx:
-      fields: [country]
-    %CLASS%_npai_idx:
-      fields: [npai]
-    %CLASS%_email_no_newsletter_idx:
-      fields: [email_no_newsletter]
-    %CLASS%_vcard_uid_idx:
-      fields: [vcard_uid]
   columns:
     name:
       type: string(255)
@@ -70,14 +59,8 @@ Addressable:
       type: boolean
       notnull: true
       default: false
-    vcard_uid:
-      type: string(255)
-      unique: true
 Postalcode:
   package: generic
-  indexes:
-    postalcode_postalcode_idx:
-      fields: [postalcode]
   columns:
     postalcode:
       type: string(7)
@@ -96,11 +79,6 @@ Traceable:
       versionColumn: version
       className: %CLASS%Version
       auditLog: true
-  indexes:
-    %CLASS%_updated_at_idx:
-      fields: [updated_at]
-    %CLASS%_created_at_idx:
-      fields: [created_at]
   columns:
     sf_guard_user_id:
       type: integer
@@ -139,9 +117,9 @@ ModelType:
       notblank: true
       notnull: true
   indexes:
-    name_type_idx:
+    name_type:
       fields: [name, type]
-      type: unique
+      unique: true
 
 Option:
   package: generic
@@ -168,7 +146,7 @@ Option:
       foreignAlias: Options
       onDelete: CASCADE
   indexes:
-    %CLASS%_name_user_value_type_idx:
+    option_name_user_value_type:
       fields: [name, sf_guard_user_id, value, type]
       type: unique
 
@@ -197,9 +175,6 @@ Picture:
   actAs:
     Timestampable: ~
     Versionable: ~
-  indexes:
-    picture_type_idx:
-      fields: [type]
   columns:
     name:
       type: string(255)
@@ -215,25 +190,3 @@ Picture:
     width: integer
     height: integer
 
-Jabber:
-  package: generic
-  indexes:
-    jabber_jabber_id_idx:
-      fields: [jabber_id]
-  columns:
-    jabber_id:
-      type: string(255)
-      email: true
-      notnull: true
-    password:
-      type: string(255)
-      notnull: true
-      notblank: true
-    sf_guard_user_id:
-      type: integer
-      unique: true
-      notnull: true
-  relations:
-    User:
-      class: sfGuardUser
-      foreignAlias: Jabber

@@ -13,7 +13,7 @@ body .ui-tabs-vertical .ui-tabs-nav li { width: 97%; }
 #content .show_groups { margin-left: 30px; line-height: 1.5em; }
 
 .sf_admin_show .sf_admin_form_row { display: table-row; }
-.sf_admin_show .sf_admin_form_row label { display: table-cell; width: 110px; padding-bottom: 4px; }
+.sf_admin_show .sf_admin_form_row label { display: table-cell; width: 80px; padding-bottom: 4px; }
 
 .open_list > div, .double_list > div > div { width: 100%; text-align: center; }
 .open_list > div:first-child, .double_list > div > div:first-child { margin-bottom: -2em; }
@@ -78,7 +78,7 @@ body #sf_admin_container .ui-widget-header h1 { font-size: 22px; }
 body #sf_admin_container { font-size: 11px; width: auto; }
 body .ui-widget-header { margin: 2px 2px auto 2px; }
 
-.ui-state-success, .ui-widget-content .ui-state-success {
+.ui-widget-content .ui-state-success {
   background-color: #ecfeed;
   border: 1px solid #0acd12;
 }
@@ -98,12 +98,11 @@ body .ui-widget-header { margin: 2px 2px auto 2px; }
 }
 
 #content .sf_admin_date select,
+#content .sf_admin_date input[type=text],
+#content .sf_admin_date select,
 #content .sf_admin_date input[type=text] {
   text-align: center;
   width: 4em;
-}
-#content .sf_admin_date input[type=text][size="2"] {
-  width: 2em;
 }
 
 #content .sf_admin_form {
@@ -114,8 +113,7 @@ body .ui-widget-header { margin: 2px 2px auto 2px; }
   padding: 10px;
 }
 
-.sf_admin_td_actions { white-space: nowrap; font-size: 0; }
-body .sf_admin_td_actions li { display: inline-block; float: none; }
+.sf_admin_td_actions { width: 60px; }
 .sf_admin_td_actions .fg-button-mini { font-size: 0px; padding: 16px 16px 0 0; }
 
 .gmap_actions {

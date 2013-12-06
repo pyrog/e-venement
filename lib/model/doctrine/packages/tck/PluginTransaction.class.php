@@ -12,8 +12,4 @@
  */
 abstract class PluginTransaction extends BaseTransaction
 {
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

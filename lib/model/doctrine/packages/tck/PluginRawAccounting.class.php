@@ -12,8 +12,4 @@
  */
 abstract class PluginRawAccounting extends BaseRawAccounting
 {
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

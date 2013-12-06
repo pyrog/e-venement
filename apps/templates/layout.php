@@ -5,11 +5,10 @@
     <?php use_stylesheet('menu') ?>
     <?php use_stylesheet('/private/main.css') ?>
     <?php use_stylesheet('about') ?>
-    <?php if ( sfConfig::get('project_messaging_enable',false) ) use_stylesheet('jappix') ?>
     <?php use_javascript('jquery.datepicker-fr.js') ?>
     
     <?php $module_name = $sf_context->getModuleName() ?>
-    <?php $sf_response->setTitle('e-venement, '.($sf_user->isAuthenticated() ? __(ucwords($module_name)) : __('The free ticketting system',null,'menu'))) ?>
+    <?php $sf_response->setTitle('e-venement, '.($sf_user->isAuthenticated() ? __(strtoupper(substr($module_name,0,1)).substr($module_name,1)) : __('The free ticketting system',null,'menu'))) ?>
     <?php include_http_metas() ?>
     <?php include_metas() ?>
     <?php include_title() ?>
@@ -27,20 +26,15 @@
     <div id="banner">
       <a href="<?php echo cross_app_url_for('default','sf_guard_signout') ?>" onclick="javascript: window.close()"><?php echo image_tag("close.png",array('alt' => 'close')) ?></a>
       <h1>
-        <?php echo image_tag(sfConfig::get('project_museum',false) ? 'logo-emusee.png' : 'logo-evenement.png', array('alt' => '')); ?>
+        <?php echo image_tag("logo-evenement.png",array('alt' => '')); ?>
         <?php echo $sf_response->getTitle() ?>
       </h1>
     </div>
-    <div id="logo" class="<?php echo sfConfig::get('project_museum',false) ? 'museum' : '' ?>"></div>
+    <div id="logo"></div>
     <div id="footer">
       <?php include_partial('global/footer') ?>
       <?php include_partial('global/date') ?>
     </div>
     <div id="transition"><span class="close"></span></div>
-    <?php echo include_partial('global/instant_messaging') ?>
-    
-    <?php if ( sfConfig::get('project_experimentations',false) ): ?>
-    <div id="experimentations"><?php echo sfConfig::get('project_experimentations') ?></div>
-    <?php endif ?>
   </body>
 </html>

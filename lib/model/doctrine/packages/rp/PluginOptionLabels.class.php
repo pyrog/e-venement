@@ -12,8 +12,4 @@
  */
 abstract class PluginOptionLabels extends BaseOptionLabels
 {
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

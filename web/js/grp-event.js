@@ -79,34 +79,16 @@ $(document).ready(function(){
   $('.manifestation .fg-button-mini').each(function(){
     $(this).prop('title',$.trim($(this).html()));
   });
-  
-  // hidding the gauges selection if there is only one choice
-  $('.EntryTickets select[name="entry_tickets[gauge_id]"] option:only-child').each(function(){
-    $(this).parent().replaceWith('<input type="hidden" value="'+$(this).val()+'" name="'+$(this).parent().prop('name')+'" />');
-  });
-  
+                  
   // fixing thead & tfoot
-  if ( $.tableScroll !== 'undefined' )
-  {
-    var h = $(window).height()-250;
-    $('table.grp-entry').hide();
-    if ( $('#content').height() > h )
-      h = $('#content').height();
-    $('table.grp-entry').show();
-    
-    // HACK: minimizing content to optimize tableScroll calculation - it permits a gain of time of 50% on big arrays
-    $('table.grp-entry tbody tr:first td').css('height',$('table.grp-entry tbody').height()+"px");
-    trs = $('table.grp-entry tbody tr:not(:first)').clone();
-    $('table.grp-entry tbody tr:not(:first)').remove();
-    
-    $('table.grp-entry').tableScroll({
-      height: h - $('table.grp-entry thead').height() - $('table.grp-entry tfoot').height(),
-    });
-    
-    // HACK: re-establishing content
-    $('table.grp-entry tbody tr:first td').css('height','auto');
-    $('table.grp-entry tbody').append(trs);
-  }
+  var h = $(window).height()-250;
+  $('table.grp-entry').hide();
+  if ( $('#content').height() > h )
+    h = $('#content').height();
+  $('table.grp-entry').show();
+  $('table.grp-entry').tableScroll({
+    height: h - $('table.grp-entry thead').height() - $('table.grp-entry tfoot').height(),
+  });
   
   // using the print button ... to print
   $('.sf_admin_action_print a')

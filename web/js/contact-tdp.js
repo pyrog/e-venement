@@ -44,7 +44,7 @@ $(document).ready(function(){
     inputs = $(this).find('input[type=text]');
     if ( inputs.eq(2).val() )
     {
-      date   = new Date(inputs.eq(2).val(), inputs.eq(1).val()-1, inputs.eq(0).val());
+      date   = new Date(inputs.eq(2).val(), inputs.eq(1).val(), inputs.eq(0).val());
       now    = new Date();
       nYears = now.getUTCFullYear() - date.getUTCFullYear();
       nMonth = now.getUTCMonth()    - date.getUTCMonth();
@@ -171,9 +171,6 @@ $(document).ready(function(){
   if ( window.list_scroll_end == undefined )
     window.list_scroll_end = new Array();
   window.list_scroll_end[window.list_scroll_end.length] = contact_tdp_show_orgs;
-  if ( window.integrated_search_end == undefined )
-    window.integrated_search_end = new Array();
-  window.integrated_search_end[window.integrated_search_end.length] = contact_tdp_show_orgs;
   
   // CONTENT: NEW FUNCTION FOR A CONTACT
   $('.tdp-subobject.tdp-object-new .tdp-widget-header input[type=text]').each(function(){
@@ -202,10 +199,6 @@ $(document).ready(function(){
   });
   $('#tdp-side-bar input[type=checkbox]').click(function(){
     $('#tdp-update-filters').get(0).blink();
-    if ( $(this).closest('.tdp-side-widget').is('#tdp-side-categories') )
-      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value='+$(this).val()+']').prop('selected',$(this).prop('checked'));
-    if ( $(this).closest('.tdp-side-widget').is('#tdp-side-groups') )
-      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value='+$(this).val()+']').prop('selected',$(this).prop('checked'));
   });
   
   // integrated search
@@ -226,12 +219,6 @@ $(document).ready(function(){
       $(this).keyup();
     })
     .keyup();
-  
-  // filters
-  $('#tdp-side-bar .filters').submit(function(){
-    $('#sf_admin_filter form').submit();
-    return false;
-  });
   
   // TOPBAR
   $('#tdp-top-bar .tdp-top-widget > a.group').mouseenter(function(){

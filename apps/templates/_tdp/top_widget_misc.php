@@ -26,14 +26,11 @@
   }
   
   // emailing
-  if ( $active_filters )
+  if ( $sf_user->hasCredential('pr-emailing') )
   {
-    if ( $sf_user->hasCredential('pr-emailing') )
-      echo link_to(__('Emailing'), $sf_context->getModuleName().'/emailing',array('title' => __('Create emailing')));
-  }
-  elseif ( is_object($object) )
-  {
-    if ( $sf_user->hasCredential('pr-contact-csv') )
-      echo link_to(__('vCard'), $sf_context->getModuleName().'/vcf?id='.$object->id, array('target' => '_blank'));
+    if ( $active_filters )
+      echo link_to(__('Emailing'),$sf_context->getModuleName().'/emailing',array('title' => __('Create emailing')));
+    else
+      echo '<a href="#">'.__('Emailing').'</a>';
   }
 ?>

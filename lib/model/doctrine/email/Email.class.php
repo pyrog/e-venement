@@ -13,7 +13,6 @@
 class Email extends PluginEmail
 {
   protected $nospool = false;
-  protected $read_receipt = false;
   
   public function setUp()
   {
@@ -26,10 +25,6 @@ class Email extends PluginEmail
   public function setNoSpool($boolean = true)
   {
     $this->nospool = $boolean;
-  }
-  public function setReadReceipt($boolean = true)
-  {
-    $this->read_receipt = $boolean;
   }
   
   public function __toString()

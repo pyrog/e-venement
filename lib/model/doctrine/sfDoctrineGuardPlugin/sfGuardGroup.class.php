@@ -12,12 +12,4 @@
  */
 class sfGuardGroup extends PluginsfGuardGroup
 {
-  public function getNameWithDescription()
-  {
-    if ( !sfConfig::get('app_sf_guard_display_group_description',false) )
-      return (string)$this;
-    
-    sfApplicationConfiguration::getActive()->loadHelpers(array('I18N'));
-    return $this->name.' ('.__(trim((string)$this->description),null,'sf_guard').')';
-  }
 }

@@ -5,46 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Seated plans</source>
-        <target>Plans numérotés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Frequently Asked Questions</source>
-        <target>Foire Aux Questions</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This plateform is dedicated to</source>
-        <target>Cette plateforme est dédiée à</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Activity related to the PR module</source>
-        <target>Activité liée au module RP</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Bookings to confirm</source>
-        <target>Réservations à confirmer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Use conflicts</source>
-        <target>Conflits d'usage</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Resources</source>
-        <target>Ressources</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Evolution of groups</source>
-        <target>Évolution des groupes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Social statistics</source>
-        <target>Statistiques sociales</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Messaging</source>
-        <target>Messagerie</target>
-      </trans-unit>
-      <trans-unit>
         <source>Types of relationships</source>
         <target>Types de relations</target>
       </trans-unit>
@@ -70,7 +30,7 @@
       </trans-unit>
       <trans-unit>
         <source>Types of resources</source>
-        <target>Ressources principales</target>
+        <target>Types de resources</target>
       </trans-unit>
       <trans-unit>
         <source>Familial situations</source>
@@ -187,10 +147,6 @@
       <trans-unit id="7">
         <source>Events</source>
         <target>Événements</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Event</source>
-        <target>Événementiel</target>
       </trans-unit>
       <trans-unit id="8">
         <source>Agenda</source>
@@ -414,7 +370,7 @@
       </trans-unit>
       <trans-unit>
         <source>The free ticketting system</source>
-        <target>La billetterie informatique libre</target>
+        <target>La billetterie informatisée libre</target>
       </trans-unit>
       <trans-unit>
         <source>Prices</source>

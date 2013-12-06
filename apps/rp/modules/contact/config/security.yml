@@ -38,8 +38,6 @@ labels:
   credentials: pr-contact-labels
 csv:
   credentials: pr-contact-csv
-vcf:
-  credentials: pr-contact-csv
 group:
   credentials: pr-group-perso
 

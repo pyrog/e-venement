@@ -12,8 +12,4 @@
  */
 abstract class PluginCancellation extends BaseCancellation
 {
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

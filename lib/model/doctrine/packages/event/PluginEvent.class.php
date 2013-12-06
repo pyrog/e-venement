@@ -14,19 +14,9 @@ abstract class PluginEvent extends BaseEvent implements liMetaEventSecurityAcces
 {
   public function preSave($event)
   {
-    // converting duration from "1:00" to 3600 (seconds)
-    if ( intval($this->duration).'' != ''.$this->duration )
-    {
-      $str = $this->duration;
-      $this->duration = intval(strtotime($this->duration.'+0',0));
-      
-      // for durations > 24h
-      if ( !$this->duration )
-      {
-        $arr = explode(':', $str);
-        $this->duration = intval($arr[1])*60 + intval($arr[0])*3600;
-      }
-    }
+    $this->duration = intval($this->duration).'' == ''.$this->duration
+      ? $this->duration
+      : intval(strtotime(date('Y-m-d',0).' '.$this->duration.'+0'));
     parent::preSave($event);
   }
   public function getDurationHR()
@@ -42,10 +32,5 @@ abstract class PluginEvent extends BaseEvent implements liMetaEventSecurityAcces
   public function getMEid()
   {
     return $this->meta_event_id;
-  }
-
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
   }
 }

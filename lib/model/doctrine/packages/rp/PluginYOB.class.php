@@ -14,8 +14,8 @@ abstract class PluginYOB extends BaseYOB
 {
   public function save(Doctrine_Connection $con = NULL)
   {
-    if ( !$this->year && !$this->name || !$this->contact_id )
-      return;
+    if ( !$this->year )
+      return false;
     parent::save($con);
   }
 }

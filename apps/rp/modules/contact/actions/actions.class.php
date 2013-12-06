@@ -41,7 +41,6 @@ class contactActions extends autoContactActions
   
   public function executeError404(sfWebRequest $request)
   {
-    $this->useClassicTemplateDir(true);
   }
   public function postExecute()
   {
@@ -66,11 +65,9 @@ class contactActions extends autoContactActions
         $this->hasFilters = $this->getUser()->getAttribute('contact.filters', $this->configuration->getFilterDefaults(), 'admin_module');
       if ( !isset($this->filters) )
         $this->filters = $this->configuration->getFilterForm($this->getFilters());
-      //if ( !in_array($this->getActionName(), array('error404','index','search','map','labels','getSpecializedForm','csv','groupList','group')) )
+      //if ( !in_array($this->getActionName(), array('index','search','map','labels','getSpecializedForm','csv','groupList','group')) )
       if ( in_array($this->getActionName(), array('edit','new','show','create','update','delete')) )
         $this->setTemplate('edit');
-      if ( in_array($this->getActionName(), array('duplicates')) )
-        $this->setTemplate('index');
     }
   }
   
@@ -78,10 +75,7 @@ class contactActions extends autoContactActions
   {
     $request->checkCSRFProtection();
 
-    $ids = $request->getParameter('ids',array());
-    $pro_ids = $request->getParameter('professional_ids',array());
-    
-    if (!( $ids || $pro_ids ))
+    if ( !($ids = $request->getParameter('ids',array())) && !($pro_ids = $request->getParameter('professional_ids',array())) )
     {
       $this->getUser()->setFlash('error', 'You must at least select one item.');
 
@@ -180,16 +174,6 @@ class contactActions extends autoContactActions
     
     $this->getUser()->setFlash('notice',__('The chosen contacts and professionals have been added to the selected groups.'));
     $this->redirect('@contact');
-  }
-  public function executeBatchDelete(sfWebRequest $request)
-  {
-    $this->dispatcher->notify(new sfEvent($this, 'admin.delete_objects', array(
-      'objects' => Doctrine::getTable('Contact')->createQuery('c')
-        ->andWhereIn('c.id',$request->getParameter('ids'))
-        ->select('c.*')
-        ->execute(),
-    )));
-    return parent::executeBatchDelete($request);
   }
   
   public function executeShow(sfWebRequest $request)
@@ -400,12 +384,6 @@ class contactActions extends autoContactActions
     $this->processForm($request, $this->form);
     
     $this->setTemplate('edit');
-  }
-  
-  public function executeVcf(sfWebRequest $request)
-  {
-    $this->executeShow($request);
-    $this->useClassicTemplateDir(true);
   }
   
   public function executeCard(sfWebRequest $request)

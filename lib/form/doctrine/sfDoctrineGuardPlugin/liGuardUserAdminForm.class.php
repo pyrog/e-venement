@@ -30,18 +30,9 @@ class liGuardUserAdminForm extends sfGuardUserAdminForm
         ->setOption('expanded',true)
         ->setOption('order_by',array('name',''));
     
-    $this->widgetSchema['groups_list']
-      ->setOption('method', 'getNameWithDescription')
-      ->setOption('renderer_class', NULL);
-
     $this->validatorSchema['workspaces_list']->setOption('query', $q = Doctrine::getTable('Workspace')->createQuery('ws',true));
     $this->widgetSchema   ['workspaces_list']->setOption('query',$q)
                                              ->setOption('order_by',array('name',''));
-    
-    $this->validatorSchema['auth_for_groups_list']->setOption('query',$q = Doctrine::getTable('Group')->createQuery('g')->andWhere('g.sf_guard_user_id IS NULL'));
-    $this->widgetSchema   ['auth_for_groups_list']->setOption('query',$q)
-                                                  ->setOption('order_by',array('name',''))
-                                                  ->setOption('expanded', true);
   }
   
   public function doSave($con = NULL)

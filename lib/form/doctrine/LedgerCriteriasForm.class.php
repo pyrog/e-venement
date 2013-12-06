@@ -31,6 +31,7 @@ class LedgerCriteriasForm extends BaseForm
     $this->widgetSchema['users'] = new sfWidgetFormDoctrineChoice(array(
       'model'     => 'sfGuardUser',
       'query'     => $q,
+      'add_empty' => sfContext::getInstance()->getUser()->hasCredential('tck-ledger-all-users'),
       'order_by'  => array('first_name, last_name',''),
       'multiple'  => true,
     ));
@@ -54,6 +55,7 @@ class LedgerCriteriasForm extends BaseForm
     
     $this->widgetSchema['workspaces'] = new sfWidgetFormDoctrineChoice(array(
       'model'     => 'Workspace',
+      'add_empty' => true,
       'order_by'  => array('name',''),
       'multiple'  => true,
     ));

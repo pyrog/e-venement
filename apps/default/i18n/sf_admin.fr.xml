@@ -5,48 +5,12 @@
     <header />
     <body>
       <trans-unit>
-        <source>Your email have been sent correctly.</source>
-        <target>Votre email a été envoyé correctement.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>You cannot access this object, you do not have the required credentials.</source>
-        <target>Vous ne pouvez accéder à cet objet, faute d'accréditation requise.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>You cannot edit this object, you do not have the required credentials.</source>
-        <target>Vous ne pouvez modifier cet objet, faute d'accréditation requise.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Current</source>
-        <target>Actuel</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Confirm</source>
-        <target>Confirmer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Error moving the manifestation</source>
-        <target>Une erreur est survenue lors du déplacement de la manifestation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Error changing the manifestation's duration</source>
-        <target>Une erreur est survenue lors du changement de la durée de la manifestation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Error loading the data from manifestations</source>
-        <target>Une erreur est survenue lors du chargement des données des manifestations</target>
-      </trans-unit>
-      <trans-unit>
         <source>Some chars are not allowed here</source>
         <target>Certains caractères ne sont pas autorisés ici</target>
       </trans-unit>
       <trans-unit>
         <source>Merge</source>
         <target>Fusionner</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Back</source>
-        <target>Retour</target>
       </trans-unit>
       <trans-unit>
         <source>Add in a group</source>

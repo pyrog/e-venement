@@ -46,11 +46,11 @@ class professionalActions extends autoProfessionalActions
     $this->form = $this->configuration->getForm($this->professional);
   }
   
-  public function executeNew(sfWebRequest $request)
-  { $this->redirect('professional_full/new'); }
   public function executeEdit(sfWebRequest $request)
-  { $this->redirect('professional_full/edit?id='.$request->getParameter('id')); }
+  { $this->redirect('professional/show?id='.$request->getParameter('id')); }
   public function executeUpdate(sfWebRequest $request)
+  { throw new liEvenementException('This action is not implemented.'); }
+  public function executeNew(sfWebRequest $request)
   { throw new liEvenementException('This action is not implemented.'); }
   public function executeCreate(sfWebRequest $request)
   { throw new liEvenementException('This action is not implemented.'); }
@@ -81,7 +81,7 @@ class professionalActions extends autoProfessionalActions
       ->removeDqlQueryPart('limit');
     $a = $q->getRootAlias();
     $q->select("o.name AS organism_name, o.city AS organism_city, $a.name AS function, c.name||' '||c.firstname AS name, $a.contact_email")
-      ->addSelect('o.administrative_number')
+//      ->addSelect('o.administrative_number')
       ->addSelect('count(DISTINCT eem.event_id) as nb_events, count(DISTINCT eem.id) as nb_manifestations');
     $this->lines = $q->fetchArray();
     for ( $i = 0 ; $i < count($this->lines) ; $i++ )
@@ -101,7 +101,7 @@ class professionalActions extends autoProfessionalActions
         'name',
         'function',
         'contact_email',
-        'administrative_number',
+//        'administrative_number',
         'nb_events',
         'nb_manifestations',
       ),

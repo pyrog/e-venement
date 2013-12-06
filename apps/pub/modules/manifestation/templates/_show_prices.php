@@ -4,16 +4,10 @@
 <tbody>
 <?php foreach ( $gauge->Manifestation->PriceManifestations as $pm ): ?>
   <?php
-    // calculating the quantity of tickets already in the cart
-    $qty = 0;
-    foreach ( $pm->Price->Tickets as $ticket)
-    if ( $ticket->gauge_id == $gauge->id )
-      $qty++;
-    
     // price_id & default quantity
     $form
       ->setPriceId($pm->price_id)
-      ->setQuantity($qty);
+      ->setQuantity($pm->Price->Tickets->count());
     
     // limitting the max quantity, especially for prices linked to member cards
     $vel = sfConfig::get('app_tickets_vel');

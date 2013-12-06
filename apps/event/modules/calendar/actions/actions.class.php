@@ -21,8 +21,6 @@ class calendarActions extends sfActions
     
     $this->setNow($range);
     
-    $this->only_pending = $request->hasParameter('only_pending');
-    
     $this->setTemplate('show');
   }
   public function executeShow(sfWebRequest $request)

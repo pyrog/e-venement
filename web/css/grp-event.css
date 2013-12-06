@@ -62,8 +62,11 @@ tfoot td {
   width: auto;
   overflow-x: auto;
 }
-#sf_admin_container td { width: 160px; min-width: 160px; }
-#sf_admin_container #sf_admin_pager td { min-width: inherit; }
+#sf_admin_container td {
+  width: 160px;
+  min-width: 160px;
+  /*border: 1px solid gray;*/
+}
 #sf_admin_container td:last-child {
   width: 100px;
 }
@@ -99,9 +102,6 @@ body #sf_admin_container .EntryTickets input[type=text] {
 }
 body #sf_admin_container .EntryTickets select {
   width: 60px;
-}
-body #sf_admin_container .EntryTickets select[name="entry_tickets[gauge_id]"] {
-  width: 50px;
 }
 
 .EntryElement {

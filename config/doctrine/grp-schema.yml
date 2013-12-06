@@ -50,11 +50,9 @@ ContactEntry:
       onUpdate: CASCADE
       onDelete: SET NULL
   indexes:
-    contact_entry_confirmed_idx:
-      fields: [confirmed]
-    contact_entry_index_idx:
+    contact_entry_index:
       fields: [professional_id,entry_id]
-      type: unique
+      unique: true
 
 ManifestationEntry:
   package: grp
@@ -77,9 +75,9 @@ ManifestationEntry:
       onUpdate: CASCADE
       onDelete: CASCADE
   indexes:
-    manif_entry_index_idx:
+    manif_entry_index:
       fields: [manifestation_id,entry_id]
-      type: unique
+      unique: true
 
 Entry:
   package: grp
@@ -100,11 +98,6 @@ EntryElement:
   package: grp
   actAs:
     Timestampable: ~
-  indexes:
-    entry_element_second_choice_idx:
-      fields: [second_choice]
-    entry_element_accepted_idx:
-      fields: [accepted]
   columns:
     manifestation_entry_id:
       type: integer
@@ -144,9 +137,6 @@ EntryTickets:
     quantity:
       type: integer
       notnull: true
-    gauge_id:
-      type: integer
-      notnull: true
   relations:
     EntryElement:
       foreignAlias: EntryTickets
@@ -156,14 +146,10 @@ EntryTickets:
       foreignAlias: EntryTickets
       onUpdate: CASCADE
       onDelete: CASCADE
-    Gauge:
-      foreignAlias: EntryTickets
-      onUpdate: CASCADE
-      onDelete: CASCADE
   indexes:
-    entry_price_index_idx:
+    entry_price_index:
       fields: [entry_element_id,price_id]
-      type: unique
+      unique: true
 
 GroupWorkspace:
   package: grp

@@ -64,7 +64,6 @@
       // prices to be shown for each manifestations
       $q = Doctrine::getTable('Manifestation')->createQuery('m')
         ->leftJoin('m.Color color')
-        ->andWhere('g.id IS NOT NULL')
         ->andWhereNotIn('m.id',$mids)
         ->select('m.*, e.*, color.*, l.*, pm.*, p.*, g.*, me.*, w.*, pu.*, wu.*, meu.*')
         ->orderBy('happens_at ASC')
@@ -87,9 +86,7 @@
       $q = Doctrine::getTable('Manifestation')
         ->createQuery('m')
         ->leftJoin('m.Color color')
-        ->andWhere('g.id IS NOT NULL')
         ->andWhereNotIn('m.id',$mids)
-        ->andWhere('m.reservation_confirmed = TRUE')
         ->andWhere('e.display_by_default = TRUE')
         ->orderBy('m.happens_at, e.name')
         ->limit(intval($request->getParameter('limit')) > 0 ? intval($request->getParameter('limit')) : (isset($config['max_display']) ? $config['max_display'] : 10));

@@ -38,8 +38,7 @@ class organismActions extends autoOrganismActions
         $this->hasFilters = $this->getUser()->getAttribute('organism.filters', $this->configuration->getFilterDefaults(), 'admin_module');
       if ( !isset($this->filters) )
         $this->filters = $this->configuration->getFilterForm($this->getFilters());
-      //if ( !in_array($this->getActionName(), array('index','search','map','labels','csv','groupList')) )
-      if ( in_array($this->getActionName(), array('edit','new','show','create','update','delete')) )
+      if ( !in_array($this->getActionName(), array('index','search','map','labels','csv','groupList')) )
         $this->setTemplate('edit');
     }
   }
@@ -54,16 +53,6 @@ class organismActions extends autoOrganismActions
   public function executeBatchMerge(sfWebRequest $request)
   {
     require(dirname(__FILE__).'/batch-merge.php');
-  }
-  public function executeBatchDelete(sfWebRequest $request)
-  {
-    $this->dispatcher->notify(new sfEvent($this, 'admin.delete_objects', array(
-      'objects' => Doctrine::getTable('Organism')->createQuery('o')
-        ->andWhereIn('o.id',$request->getParameter('ids'))
-        ->select('o.*')
-        ->execute(),
-    )));
-    return parent::executeBatchDelete($request);
   }
   public function executeEmailing(sfWebRequest $request)
   {
@@ -174,8 +163,9 @@ class organismActions extends autoOrganismActions
     $q = Doctrine::getTable('Organism')->createQuery();
     $q->where('id = ?',$request->getParameter('id'))
       ->orderBy('c.name, c.firstname, pt.name, p.name');
-    $this->organism = $q->fetchOne();
+    $organisms = $q->execute();
     
+    $this->organism = $organisms[0];
     $this->forward404Unless($this->organism);
     $this->form = $this->configuration->getForm($this->organism);
   }
@@ -191,7 +181,6 @@ class organismActions extends autoOrganismActions
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
-    $this->filters = true; // hack Beaulieu du 30/09/2013 à valider avant commit
     $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q'));
     
     $q = Doctrine::getTable('Organism')
@@ -253,12 +242,6 @@ class organismActions extends autoOrganismActions
   public function executeLabels(sfWebRequest $request)
   {
     require(dirname(__FILE__).'/labels.php');
-  }
-  
-  public function executeVcf(sfWebRequest $request)
-  {
-    $this->executeShow($request);
-    $this->useClassicTemplateDir(true);
   }
   
   public function executeFilter(sfWebRequest $request)
