@@ -6,7 +6,6 @@
     <td class="qty"><?php echo __('Value') ?></td>
     <td class="accounting"><?php echo __('Acc.') ?></td>
     <td class="transaction"><?php echo __('Transaction') ?></td>
-    <td class="ticket-ids"><?php echo __('IDs') ?></td>
-    <td class="ticket-nums"><?php if ( $sf_user->hasCredential('seats-allocation') ) echo __('Nums') ?></td>
+    <td class="ticket-ids"><?php echo __('Ticket ids') ?></td>
   </tr>
 </thead>

@@ -1,7 +1,12 @@
 .alert { border: 2px solid orange; border-radius: 4px; }
-.action { margin: 5px 2px 0 2px; padding: 5px; }
+.action {
+  margin: 5px 2px 0 2px;
+  padding: 5px;
+}
 
-#manifestations > .backup { display: none; }
+#manifestations > .backup {
+  display: none;
+}
 
 #transaction-id {
   position: absolute;
@@ -12,17 +17,26 @@
   font-size: 150%;
 }
 #transaction-id span { font-weight: normal; }
-#transaction-id.translinked { border-bottom: 1px solid red; }
+#transaction-id.translinked {
+  border-bottom: 1px solid red;
+}
 
-#manifestations select, .manifestations_list select { font-size: 10px; width: 80px; }
+#manifestations select, .manifestations_list select {
+  font-size: 10px;
+  width: 80px;
+}
 #manifestations .manifestations_add {
   height: 200px;
   margin-right: 270px;
   overflow: auto;
 }
 #manifestations li .manif { padding: 5px; }
-#manifestations .manifestations_add span { background-color: white; }
-#manifestations .manifestations_add .selected { border-bottom: 1px gray dashed; }
+#manifestations .manifestations_add span {
+  background-color: white;
+}
+#manifestations .manifestations_add .selected {
+  border-bottom: 1px gray dashed;
+}
 .manifestations_list, #manifestations ul {
   padding: 3px 0 10px 0;
   margin: 5px 0;
@@ -38,7 +52,9 @@
   display: table-cell;
   padding: 0 5px;
 }
-.manifestations_list li > .manif { white-space: nowrap; }
+.manifestations_list li > .manif {
+  white-space: nowrap;
+}
 .manifestations_list .prices { width: 100%; }
 .manifestations_list .prices .ticket_prices {
   display: inline-block;
@@ -49,7 +65,9 @@
   white-space: nowrap;
 }
 .manifestations_list .prices .ticket_prices.notprinted .price,
-.manifestations_list .prices .ticket_prices.integrated .price { cursor: pointer; }
+.manifestations_list .prices .ticket_prices.integrated .price {
+  cursor: pointer;
+}
 .manifestations_list .prices .ticket_prices.integrated input[type=text],
 .manifestations_list .prices .ticket_prices.integrated,
 .manifestations_list .prices .ticket_prices.printed input[type=text],
@@ -67,13 +85,17 @@
 .manifestations_list .prices .done { background-color: gray; }
 .manifestations_list .prices .selected { background-color: silver; }
 
-.sf_admin_flashes { margin: 5px 0; }
+.sf_admin_flashes {
+  margin: 5px 0;
+}
 
 .manifestations_list .total { font-weight: bold; text-align: right; }
 .manifestations_list .total { text-align: right; }
 .manifestations_list .total .total { text-decoration: underline; padding-top: 5px; }
 
-#payment { min-height: 250px; }
+#payment {
+  min-height: 250px;
+}
 #payment form {
   position: absolute;
   width: 400px;
@@ -124,11 +146,6 @@
   border: 1px dashed silver;
 }
 
-#description { width: 350px; padding: 2px 5px; float: right; margin-top: 5px; }
-#description textarea { width: 335px; height: 3em; font-size: 80%; }
-
-#contact { display: inline-block; min-height: 38px; }
-#contact .title { display: inline-block; margin-top: 15px; }
 #contact .delete-contact {
   padding-left: 16px;
   margin-left: 5px;
@@ -232,9 +249,6 @@
   border: 1px solid gray;
   background-color: silver;
   padding: 2px 3px;
-  max-width: 120px;
-  white-space: normal;
-  text-align: left;
 }
 #prices .ticket_prices:hover .tickets_id { display: block; }
 #prices [name="ticket[nb]"] { text-align: center; }
@@ -262,10 +276,11 @@
   padding-left: 3px;
   margin-left: -5px;
 }
-#prices .workspaces .ws-name { padding: 1px 22px 1px 4px; border: 2px solid silver; font-size: 10px; text-decoration: none; width: 80px; white-space: nowrap; }
-#prices .workspaces select { cursor: pointer; }
-#prices .workspaces option { cursor: default; }
-#prices .workspaces option.alert { font-style: italic; border: 0; color: orange; }
+#prices .workspaces option.alert {
+  font-style: italic;
+  border: 0;
+  color: orange;
+}
 
 #manifestations .workspaces { display: none; }
 .prices .workspace {
@@ -276,7 +291,6 @@
   float: left;
   padding-top: 3px;
 }
-.prices .workspace .ws-name { text-decoration: none; }
 .prices .workspace .ws-gauge {
   width: 100px;
   display: inline-block;
@@ -353,6 +367,3 @@
   float: none;
   text-align: right;
 }
-
-#seated-plan { position: absolute; top: 0; padding-bottom: 100px; width: 100%; left: 0; background-color: rgba(0,0,0,0.5); z-index: 1000; text-align: center; }
-#seated-plan iframe { margin-top: 220px; width: 1000px; height: 500px; overflow: auto; padding: 5px; }

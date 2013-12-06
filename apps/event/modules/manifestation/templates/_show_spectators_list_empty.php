@@ -6,7 +6,7 @@
     $('#sf_fieldset_spectators table tbody').each(function(){
       
       // create the workspace list
-      var workspaces = new Array();
+      workspaces = new Array();
       $(this).find('tr').each(function(){
         if ( $(this).find('.workspace').length > 0 && $.trim($(this).find('.workspace').html()) )
         if ( workspaces.indexOf($.trim($(this).find('.workspace').html())) == -1 )
@@ -15,7 +15,7 @@
       
       // create the workspaces lines
       for ( i = 0 ; i < workspaces.length ; i++ )
-        $(this).prepend('<tr class="workspace"><td colspan="2" class="name">'+workspaces[i]+'</td><td class="tickets">0</td><td class="price">0</td><td>-</td><td>-</td><td>-</td>');
+        $(this).prepend('<tr class="workspace"><td colspan="2" class="name">'+workspaces[i]+'</td><td class="tickets">0</td><td class="price">0</td><td>-</td><td>-</td>');
         
       // ordering the table content
       totals = [0,0];

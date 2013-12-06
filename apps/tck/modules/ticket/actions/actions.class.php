@@ -58,10 +58,6 @@ class ticketActions extends sfActions
   {
     require('sell.php');
   }
-  public function executeAddDescription(sfWebRequest $request)
-  {
-    return require('add-description.php');
-  }
   public function executeTouchscreen(sfWebRequest $request)
   {
     require('touchscreen.php');
@@ -156,42 +152,6 @@ class ticketActions extends sfActions
   {
   }
   
-  protected function redirectToSeatsAllocationIfNeeded($type)
-  {
-    // checks if any ticket needs a seat
-    foreach ( $this->transaction->Tickets as $ticket )
-    if ( !$ticket->numerotation
-      && $ticket->Gauge->Workspace->seated
-      && $seated_plan = $ticket->Manifestation->Location->getWorkspaceSeatedPlan($ticket->Gauge->workspace_id)
-    )
-    {
-      // if so ask the user which one to use for this ticket
-      sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Url'));
-      $this->getUser()->setFlash('notice', __('You still have to give some tickets a seat...'));
-      $this->getUser()->setFlash('referer', $_SERVER['REQUEST_URI'].(!$_SERVER['QUERY_STRING'] ? '?'.file_get_contents("php://input") : ''));
-      
-      $url = url_for('ticket/seatsAllocation?type='.$type.'&id='.$this->transaction->id.'&gauge_id='.$ticket->gauge_id);
-      if ( isset($this->toprint) && $this->toprint )
-        $url .= '&toprint[]='.implode('&toprint[]=',$this->toprint);
-      $this->redirect($url);
-      return false;
-    }
-    
-    return true;
-  }
-  public function executeSeatsAllocation(sfWebRequest $request)
-  {
-    require('seats-allocation.php');
-  }
-  public function executeGiveASeat(sfWebRequest $request)
-  {
-    return require('give-a-seat.php');
-  }
-  public function executeResetASeat(sfWebRequest $request)
-  {
-    return require('reset-a-seat.php');
-  }
-  
   public function executeAccounting(sfWebRequest $request, $printed = true, $manifestation_id = false)
   {
     require('accounting.php');
@@ -199,7 +159,17 @@ class ticketActions extends sfActions
   // order
   public function executeOrder(sfWebRequest $request)
   {
-    return require('order.php');
+    $this->executeAccounting($request,false);
+    $this->order = $this->transaction->Order[0];
+    
+    if ( $request->hasParameter('cancel-order') )
+    {
+      $this->order->delete();
+      return true;
+    }
+    else
+    if ( is_null($this->order->id) )
+      $this->order->save();
   }
   public function executeRecordAccounting(sfWebRequest $request)
   {

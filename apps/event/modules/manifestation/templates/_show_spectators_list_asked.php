@@ -15,29 +15,16 @@
       foreach ( $transac->Tickets as $t )
       if ( !$t->printed_at && !$t->integrated_at && $t->Transaction->Order->count() == 0 )
       {
-        if ( $sf_user->hasCredential('seats-allocation') && $t->numerotation )
-        {
-          if ( !isset($contact['ticket-nums'][$t->Gauge->workspace_id]) )
-            $contact['ticket-nums'][$t->Gauge->workspace_id] = array('name' => $t->Gauge->Workspace->name);
-          $contact['ticket-nums'][$t->Gauge->workspace_id][] = $t->numerotation;
-        }
-        
-        if ( !isset($contact['ticket-ids'][$t->Gauge->workspace_id]) )
-          $contact['ticket-ids'][$t->Gauge->workspace_id] = array('name' => $t->Gauge->Workspace->name);
-        $contact['ticket-ids'][$t->Gauge->workspace_id][] = $t->id;
-        
+        $contact['ticket-ids'][] = $t->id;
         if ( !isset($contact['prices'][$t->Gauge->workspace_id]) )
           $contact['prices'][$t->Gauge->workspace_id] = array('name' => $t->Gauge->Workspace->name);
         isset($contact['prices'][$t->Gauge->workspace_id][$t->price_name])
           ? $contact['prices'][$t->Gauge->workspace_id][$t->price_name]++
           : $contact['prices'][$t->Gauge->workspace_id][$t->price_name] = 1;
-        
         if ( !isset($contact['value'][$t->Gauge->workspace_id]) )
           $contact['value'][$t->Gauge->workspace_id] = 0;
         $contact['value'][$t->Gauge->workspace_id] += $t->value;
-        
         if ( !isset($total['qty'][$t->gauge_id]) ) $total['qty'][$t->gauge_id] = 0;
-        
         $total['qty'][$t->gauge_id]++;
         $workspaces[$t->gauge_id] = $t->Gauge->Workspace->name;
         $total['value'] += $t->value;
@@ -45,7 +32,6 @@
     }
     elseif ( $transac->asked > 0 )
     {
-      $contact['ticket-nums'][] = '-';
       $contact['ticket-ids'][] = '-';
       $contact['prices'][''] = $transac->asked;
       $contact['value'] = $transac->asked_value;

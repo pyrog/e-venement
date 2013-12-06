@@ -78,7 +78,7 @@ WorkspaceUserOrdering:
   indexes:
     sf_guard_user_id_workspace_id_idx:
       fields: [sf_guard_user_id, workspace_id]
-      type: unique
+      unique: true
   relations:
     Workspace:
       foreignAlias: Order
@@ -260,6 +260,19 @@ Location:
       foreignAlias: Locations
       onDelete: SET NULL
       onUpdate: CASCADE
+SeatingPlan:
+  package: event
+  actAs: [Timestampable]
+  columns:
+    image_url:    string(255)
+    location_id:
+      type: integer
+      unique: true
+  relations:
+    Location:
+      foreignType: one
+      onDelete: CASCADE
+      onUpdate: CASCADE
 
 Manifestation:
   package: event
@@ -428,7 +441,7 @@ Gauge:
   indexes:
     manifestation_workspace:
       fields: [manifestation_id, workspace_id]
-      type: unique
+      unique: true
 
 ManifestationExtraInformation:
   package: event
@@ -487,80 +500,5 @@ ManifestationOrganizer:
       onUpdate: CASCADE
     Manifestation:
       foreignAlias: ManifestationOrganizers
-      onDelete: CASCADE
-      onUpdate: CASCADE
-
-SeatedPlan:
-  package: event
-  actAs:
-    Timestampable: ~
-    Versionable: ~
-  columns:
-    seat_diameter:
-      type: integer
-      notnull: true
-      default: 10 #px
-    description: string
-    picture_id: integer
-    online_picture_id: integer
-    location_id: integer
-    workspace_id: integer
-    background:
-      type: string(255)
-      default: white
-  indexes:
-    location_id_workspace_id_idx:
-      fields: [location_id, workspace_id]
-      type: unique
-  relations:
-    OnlinePicture:
-      foreignAlias: SeatedPlanOnline
-      local: online_picture_id
-      class: Picture
-      onDelete: SET NULL
-      onUpdate: CASCADE
-    Picture:
-      foreignAlias: SeatedPlan
-      onDelete: SET NULL
-      onUpdate: CASCADE
-    Location:
-      foreignAlias: SeatedPlans
-      onDelete: SET NULL
-      onUpdate: CASCADE
-    Workspace:
-      foreignAlias: SeatedPlans
-      onDelete: SET NULL
-      onUpdate: CASCADE
-Seat:
-  package: event
-  actAs:
-    Timestampable: ~
-  indexes:
-    seat_name_idx:
-      fields: [name]
-    seat_name_seated_plan_id_idx:
-      fields: [seated_plan_id, name]
-      type: unique
-  columns:
-    seated_plan_id:
-      type: integer
-      notnull: true
-    name:
-      type: string(255)
-      notnull: true
-      notblank: true
-    x:
-      type: integer
-      notnull: true
-    y:
-      type: integer
-      notnull: true
-    diameter:
-      type: integer
-      notnull: true
-      default: 10 #px
-  relations:
-    SeatedPlan:
-      foreignAlias: Seats
       onDelete: CASCADE
       onUpdate: CASCADE

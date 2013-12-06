@@ -10,25 +10,11 @@
       <a class="gauge-gfx" href="<?php echo cross_app_url_for('tck','ticket/gauge?id='.$form->getObject()->id.'&wsid=all') ?>">gauge</a>
     </li>
     <?php endif; ?>
-    <?php
-      $gauges = array();
-      foreach ( $form->getObject()->Gauges as $gauge )
-        $gauges[$gauge->Workspace->name.'-'.$gauge->id] = $gauge;
-      ksort($gauges);
-    ?>
-    <?php foreach ( $gauges as $gauge ): ?>
+    <?php foreach ( $form->getObject()->Gauges as $gauge ): ?>
     <li class="ui-corner-all">
       <a href="<?php echo url_for('workspace/show?id='.$gauge->Workspace->id) ?>"><?php echo $gauge->Workspace ?></a>
       (<?php echo $gauge->online ? __('Online') : '' ?>)
       <a class="gauge-gfx" href="<?php echo cross_app_url_for('tck','ticket/gauge?id='.$form->getObject()->id.'&wsid='.$gauge->Workspace->id) ?>">gauge</a>
-      <?php if ( $gauge->Workspace->seated ): ?>
-        <?php $seated_plan = NULL; foreach ( $gauge->Workspace->SeatedPlans as $sp ) if ( $sp->location_id == $form->getObject()->location_id ) { $seated_plan = $sp; break; } ?>
-        <?php if ( $seated_plan ): ?>
-          <a class="picture seated-plan" href="<?php echo url_for('seated_plan/getSeats?id='.$seated_plan->id.'&gauge_id='.$gauge->id) ?>" style="background-color: <?php echo $seated_plan->background ?>;">
-            <?php echo $seated_plan->Picture->getHtmlTag(array('title' => $seated_plan->Picture)) ?>
-          </a>
-        <?php endif ?>
-      <?php endif ?>
     </li>
     <?php endforeach ?>
     <?php endif ?>

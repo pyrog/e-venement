@@ -5,14 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Your email has been temporary recorded. Please be careful, modify its subject and its content before sending...</source>
-        <target>Votre email a été temporairement enregistré. Soyez vigilant, pensez à modifier son sujet et son contenu avant de l'envoyer...</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Required.</source>
-        <target>Obligatoire.</target>
-      </trans-unit>
-      <trans-unit>
         <source>Read receipt</source>
         <target>Accusé de réception</target>
       </trans-unit>

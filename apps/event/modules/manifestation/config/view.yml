@@ -3,22 +3,17 @@ all:
   javascripts: [manifestation,manifestation-duration]
 
 showSuccess:
-  stylesheets: [manifestation-view, view, seated-plan]
-  javascripts:  [seated-plan]
+  stylesheets: [manifestation-view,view]
 editSuccess:
-  stylesheets: [manifestation-view,view, seated-plan]
-  javascripts:  [seated-plan]
+  stylesheets: [manifestation-view,view]
 newSuccess:
   stylesheets: [manifestation-view,view]
-  javascripts:  [seated-plan]
 periodicitySuccess:
   stylesheets: [manifestation-view,view]
 updateSuccess:
-  stylesheets: [manifestation-view,view, seated-plan]
-  javascripts:  [seated-plan]
+  stylesheets: [manifestation-view,view]
 createSuccess:
-  stylesheets: [manifestation-view,view, seated-plan]
-  javascripts:  [seated-plan]
+  stylesheets: [manifestation-view,view]
 versionsSuccess:
   javascripts: [manifestation-versionning]
 
