@@ -1,6 +1,5 @@
 <?php use_stylesheet('rss') ?>
 <div class="feed">
-<?php try { ?>
 <?php $feed = sfFeedPeer::createFromWeb(sfConfig::get('app_feed_url','http://www.e-venement.org/feed/')); ?>
 <?php foreach ( $feed->getItems() as $item ): ?>
 <article>
@@ -15,4 +14,3 @@
     $('#transition .close').click();
   });
 });</script>
-<?php } catch ( Exception $e ) { error_log($e->getMessage()); } ?>

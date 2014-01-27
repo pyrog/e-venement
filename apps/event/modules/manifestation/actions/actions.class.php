@@ -127,74 +127,37 @@ class manifestationActions extends autoManifestationActions
     $charset = sfConfig::get('software_internals_charset');
     $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q'));
     
+    $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery());
+    
     $eids = array();
-    if ( $search )
+    foreach ( $e->execute() as $event )
+      $eids[] = $event['id'];
+    
+    if ( count($eids) > 0 )
     {
-      $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery());
-      foreach ( $e->execute() as $event )
-        $eids[] = $event['id'];
-    }
-    
-    if (!( $max = sfConfig::get('app_manifestations_max_ajax') ))
-    {
-      $conf = sfConfig::get('app_transaction_manifs', array());
-      $max = isset($conf['max_display']) && $conf['max_display'] ? $conf['max_display'] : 10;
-    }
-    
-    $q = Doctrine::getTable('Manifestation')
-      ->createQuery('m')
-      ->leftJoin('m.Color c')
-      ->orderBy('m.happens_at')
-      ->limit($request->getParameter('limit',$max));
-    if ( $eids )
-      $q->andWhereIn('m.event_id',$eids);
-    elseif ( $search )
-      $q->andWhere('m.event_id IS NULL');
-    
-    if ( $e = $request->getParameter('except',false) )
-      $q->andWhereNotIn('m.id', is_array($e) ? $e : array($e));
-     
-    $q = EventFormFilter::addCredentialsQueryPart($q);
-    
-    if ( !$search
-      || $request->hasParameter('later')
-      || $request->getParameter('except_transaction',false) && !$this->getUser()->hasCredential('tck-unblock') )
-      $q->andWhere('m.happens_at > NOW()');
-    
-    $manifestations = $q->select('m.*, e.*, c.*')->execute();
-    
-    $manifs = array();
-    foreach ( $manifestations as $manif )
-    {
-      $go = true;
-      if ( $request->getParameter('except_transaction',false) )
-      {
-        $go = $manif->reservation_confirmed && $manif->blocking;
-        $go = $go && Doctrine_Query::create()->from('ticket tck')
-          ->andWhere('tck.manifestation_id = ?', $manif->id)
-          ->andWhere('tck.transaction_id = ?', intval($request->getParameter('except_transaction')))
-          ->count() == 0;
-      }
+      $q = Doctrine::getTable('Manifestation')
+        ->createQuery()
+        ->andWhereIn('event_id',$eids)
+        ->orderBy('happens_at')
+        ->limit($request->getParameter('limit'));
+      $q = EventFormFilter::addCredentialsQueryPart($q);
       
-      if ( $go )
-        $manifs[$manif->id] = $request->hasParameter('with_colors')
-          ? array('name' => (string)$manif, 'color' => (string)$manif->Color)
-          : (string)$manif;
-    }
+      if ( $request->hasParameter('later') )
+        $q->andWhere('happens_at > NOW()');
+      
+      $manifestations = $q->execute()->getData();
+      
+      $manifs = array();
+      foreach ( $manifestations as $manif )
+      if ( $request->getParameter('except',false) != $manif->id )
+       $manifs[$manif->id] = (string) $manif;
     
-    if ( $request->hasParameter('debug') && $this->getContext()->getConfiguration()->getEnvironment() == 'dev' )
-    {
-      $this->getResponse()->setContentType('text/html');
-      sfConfig::set('sf_debug',true);
-      $this->setLayout('layout');
+      return $this->renderText(json_encode($manifs));
     }
     else
     {
-      sfConfig::set('sf_debug',false);
-      sfConfig::set('sf_escaping_strategy', false);
+      return $this->renderText(json_encode(array()));
     }
-    
-    $this->json = $manifs;
   }
 
   public function executeList(sfWebRequest $request)
