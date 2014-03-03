@@ -77,7 +77,7 @@ class summaryActions extends autoSummaryActions
     Doctrine::getTable('Ticket')->createQuery('tck')
       ->delete()
       ->andWhere('tck.transaction_id = ?',$request->getParameter('id'))
-      ->andWhere('tck.printed_at IS NULL AND tck.integrated_at IS NULL')
+      ->andWhere('tck.printed = false AND tck.integrated = false')
       ->andWhere('tck.transaction_id NOT IN (SELECT o.transaction_id FROM Order o)')
       ->execute();
       
@@ -85,36 +85,6 @@ class summaryActions extends autoSummaryActions
     $this->redirect('summary/asks');
   }
   
-  public function executeSearch(sfWebRequest $request)
-  {
-    $this->type = false;
-    parent::executeIndex($request);
-    
-    $q = array('Contact' => NULL, 'Organism' => NULL);
-    $cpt = 0;
-    foreach ( $q as $tname => $query )
-    {
-      $cpt++;
-      $table = Doctrine::getTable($tname);
-      $search = $this->sanitizeSearch($s = $request->getParameter('s'));
-      $transliterate = sfConfig::get('software_internals_transliterate',array());
-      $q[$tname] = $table->search($search.'*',Doctrine_Query::create()->from($tname.' tt'.$cpt));
-      $q[$tname]->select("tt$cpt.id");
-    }
-    
-    $a = $this->pager->getQuery()->getRootAlias();
-    $this->pager->getQuery()->andWhere("$a.contact_id IN (".$q['Contact'].") OR p.organism_id IN (".$q['Organism'].")",array($s,$s));
-    $this->pager->setPage($request->getParameter('page') ? $request->getParameter('page') : 1);
-    $this->pager->init();
-    
-    $this->setTemplate('index');
-  }
-  public static function sanitizeSearch($search)
-  {
-    $nb = strlen($search);
-    $charset = sfConfig::get('software_internals_charset');
-    return str_replace(array('-','+',','),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
-  }
   public function buildQuery()
   {
     $q = parent::buildQuery();
@@ -133,12 +103,12 @@ class summaryActions extends autoSummaryActions
 
     switch ( $this->type ) {
     case 'asks':
-      $q->andWhere('tck.printed_at IS NULL')
+      $q->andWhere('tck.printed = FALSE')
         ->andWhere('tck.duplicating IS NULL');
       break;
     case 'duplicatas':
       $q->andWhere('tck.id IN (SELECT tck2.duplicating FROM Ticket tck2)')
-        ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL');
+        ->andWhere('tck.printed = TRUE OR tck.integrated = TRUE');
       break;
     case 'debts':
       // debts
@@ -147,12 +117,11 @@ class summaryActions extends autoSummaryActions
         ->from('Transaction t')
         ->addComponent('t','Transaction')
         //->andWhere("(SELECT CASE WHEN SUM(tt.value) IS NULL THEN 0 ELSE SUM(tt.value) END FROM Ticket tt WHERE transaction_id = t.id AND (tt.printed OR tt.cancelling IS NOT NULL) AND tt.duplicating IS NULL) != (CASE WHEN (SELECT SUM(pp.value) FROM Payment pp WHERE pp.transaction_id = t.id) IS NULL THEN 0 ELSE (SELECT SUM(pp.value) FROM Payment pp WHERE pp.transaction_id = t.id) END)");
-        ->andWhere("(SELECT CASE WHEN SUM(tt.value) IS NULL THEN 0 ELSE SUM(tt.value) END FROM Ticket tt WHERE transaction_id = t.id AND (tt.printed_at IS NOT NULL OR tt.cancelling IS NOT NULL OR tt.integrated_at IS NOT NULL) AND tt.duplicating IS NULL) != (SELECT CASE WHEN SUM(pp.value) IS NULL THEN 0 ELSE SUM(pp.value) END FROM Payment pp WHERE pp.transaction_id = t.id)");
+        ->andWhere("(SELECT CASE WHEN SUM(tt.value) IS NULL THEN 0 ELSE SUM(tt.value) END FROM Ticket tt WHERE transaction_id = t.id AND (tt.printed OR tt.cancelling IS NOT NULL OR tt.integrated) AND tt.duplicating IS NULL) != (SELECT CASE WHEN SUM(pp.value) IS NULL THEN 0 ELSE SUM(pp.value) END FROM Payment pp WHERE pp.transaction_id = t.id)");
       $ids = $rq->execute(array(),Doctrine::HYDRATE_NONE);
       foreach ( $ids as $key => $id )
         $ids[$key] = $id[0];
       $q->andWhereIn("$t.id",$ids);
-      break;
     default:
       // all transactions
       break;

@@ -6,7 +6,7 @@
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
- * @version $Id$
+ * @version $Id: functions.inc.php 448 2011-11-13 13:00:03Z fabien.menager $
  */
 
 if ( !defined('PHP_VERSION_ID') ) {

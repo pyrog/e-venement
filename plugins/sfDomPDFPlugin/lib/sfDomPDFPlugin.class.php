@@ -165,10 +165,11 @@ class sfDomPDFPlugin
    *
    * @return binary
    */
-  public function execute($filename = 'dom.pdf')
+  public function execute()
   {
-    // Render the output to PDF
+    // Render the output to PDF    
     $this->render();
-    echo $this->getPDF()->output($filename);
+    
+    return $this->getPDF()->output();
   }
 }

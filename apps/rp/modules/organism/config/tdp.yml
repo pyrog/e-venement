@@ -9,27 +9,22 @@ all:
           credential: pr-organism-del
           attributes:
             onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
-        actions:
-          label: Actions
-          attributes:
-            onclick: "javascript: return false;"
-            target: _blank
         csv:
           credential: pr-contact-csv
           label: Extract
         labels:
           credential: pr-contact-labels
           label: Labels
+        map:
+          label: Geolocalize
         batchMerge:
           credential: pr-contact-edit
           label: Merge
           attributes:
             onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
-        #map:
-        #  label: Geolocalize
     edit:
       object:
-        title: [name, _show_dates]
+        title: [name]
         new_title: [name]
         lines:
           Complements:
@@ -45,7 +40,7 @@ all:
           More:
             show_labels: true
             extra_class: tdp-vertical
-            fields: [administrative_number, npai]
+            fields: [npai]
           Correspondence:
             show_title: true
             fields: [description]
@@ -148,7 +143,6 @@ all:
       organism_category_id: { label: Category }
       email_no_newsletter: { label: No newsletter }
       contact_email_no_newsletter: { label: No newsletter }
-      administrative_number: { label: Admin. ID }
 
 dev:
   active: true

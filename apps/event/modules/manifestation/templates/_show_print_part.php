@@ -1,18 +1,19 @@
 <p class="tab-print">
-  <?php if ( $tab == 'spectators' ): ?>
-  <a class="fg-button fg-button-icon-left ui-state-default extract" href="<?php echo url_for('manifestation/csv?id='.$manifestation_id) ?>" title="<?php echo __('... the list of spectators with a ticket') ?>" target="_blank">
-    <span class="ui-icon ui-icon-cart"></span>
-    <?php echo __('Extract') ?>
-  </a>
-  <?php endif ?>
-  <a class="fg-button fg-button-icon-left ui-state-default print" href="#">
+  <a class="fg-button fg-button-icon-left ui-state-default" href="#">
     <span class="ui-icon ui-icon-print"></span>
     <?php echo __('Print',array(),'menu') ?>
   </a>
   <script type="text/javascript">
-    // NOT EXECUTED WHEN CALLED THROUGH AJAX
     $(document).ready(function(){
-      <?php include_partial('show_print_part_js',array('tab' => $tab)) ?>
+      $('#sf_fieldset_<?php echo $tab ?> .tab-print a').click(function(){
+        $('body').addClass('sf_fieldset_<?php echo $tab ?>');
+        print();
+        
+        // time out permitting the system to prepare the print before restoring things
+        setTimeout(function(){ $('body').removeClass('sf_fieldset_<?php echo $tab ?>'); },500);
+        
+        return false;
+      });
     });
   </script>
 </p>

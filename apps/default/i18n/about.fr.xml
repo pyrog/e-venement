@@ -25,10 +25,6 @@
         <target>il y a moins bien, mais c'est plus cher</target>
       </trans-unit>
       <trans-unit>
-        <source>the ticketting software to accompany your development</source>
-        <target>la billetterie informatique pour accompagner votre développement</target>
-      </trans-unit>
-      <trans-unit>
         <source>All rights reserved</source>
         <target>Tous droits réservés</target>
       </trans-unit>
@@ -41,8 +37,8 @@
         <target>Cela vous donne des libertés, mais vous devez également respecter ses clauses (citer les sources, partager de la même manière)</target>
       </trans-unit>
       <trans-unit>
-        <source>%e% and the %e% logo are the properties of %firm%</source>
-        <target>%e% et le logo d'%e% sont les propriétés de %firm%</target>
+        <source>%e% and the %e% logo are the properties of %author% and %firm%</source>
+        <target>%e% et le logo d'%e% sont les propriétés de %author% et %firm%</target>
       </trans-unit>
       <trans-unit>
         <source>%e% for %client%</source>

@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
     $this->form = new ControlForm();
     $this->form->getWidget('checkpoint_id')->setOption('default', $this->getUser()->getAttribute('control.checkpoint_id'));
     $q = Doctrine::getTable('Checkpoint')->createQuery('c');
@@ -104,8 +104,8 @@
           ->andWhere('c.id = ?',$params['checkpoint_id']);
         $checkpoint = $q->fetchOne();
         
-        $cancontrol = $checkpoint instanceof Checkpoint;
-        if ( $cancontrol && $checkpoint->legal )
+        $cancontrol = true;
+        if ( $checkpoint->legal )
         {
           $q = Doctrine::getTable('Control')->createQuery('c')
             ->leftJoin('c.Checkpoint c2')

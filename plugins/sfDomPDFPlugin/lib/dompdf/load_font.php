@@ -6,7 +6,7 @@
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
- * @version $Id$
+ * @version $Id: load_font.php 467 2012-02-04 13:25:17Z fabien.menager $
  */
 
 require_once "dompdf_config.inc.php";

@@ -4,7 +4,7 @@
  * @link    http://www.dompdf.com/
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
- * @version $Id$
+ * @version $Id: javascript_embedder.cls.php 448 2011-11-13 13:00:03Z fabien.menager $
  */
 
 /**

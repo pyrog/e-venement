@@ -12,16 +12,4 @@
  */
 abstract class PluginTransaction extends BaseTransaction
 {
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
-  
-  public function preSave($event)
-  {
-    parent::preSave($event);
-    
-    if ( !$this->contact_id || in_array('contact_id', $this->_modified) && !in_array('professional_id', $this->_modified) )
-      $this->professional_id = NULL;
-  }
 }

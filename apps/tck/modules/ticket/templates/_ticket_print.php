@@ -1,6 +1,6 @@
 <form action="<?php echo url_for('ticket/print?id='.$transaction->id) ?>" method="get" target="_blank" class="print">
   <p>
-    <input type="submit" name="s" value="<?php echo __('Print') ?>" onclick="javascript: return click_print()" class="ui-widget-content ui-state-default ui-corner-all ui-widget" />
+    <input type="submit" name="s" value="<?php echo __('Print') ?>" onclick="javascript: return click_print()" />
     <script type="text/javascript"><!--
     function click_print()
     {
@@ -24,16 +24,16 @@
     <?php if ( sfConfig::has('app_tickets_authorize_grouped_tickets') && sfConfig::get('app_tickets_authorize_grouped_tickets') ): ?>
     <input type="checkbox" name="grouped_tickets" value="true" title="<?php echo __('Grouped tickets') ?>" />
     <?php endif ?>
-    <?php if ( (!isset($display_simple) || !$display_simple) && isset($accounting) && $accounting !== false ): ?>
+    <?php if ( isset($accounting) && $accounting !== false ): ?>
     <input type="checkbox" name="duplicate" value="true" title="<?php echo __('Duplicatas') ?>" />
     <input type="text" name="price_name" value="" class="price" />
     <?php endif ?>
   </p>
 </form>
-<?php if ( $sf_user->hasCredential('tck-integrate') && !isset($display_simple) || !$display_simple ): ?>
+<?php if ( $sf_user->hasCredential('tck-integrate') ): ?>
 <form action="<?php echo url_for('ticket/integrate?id='.$transaction->id) ?>" method="get" target="_blank" class="integrate">
   <p>
-    <input type="submit" name="s" value="<?php echo __('Integrate') ?>" title="<?php echo __("Integrate from an external seller") ?>" class="ui-widget-content ui-state-default ui-corner-all ui-widget" />
+    <input type="submit" name="s" value="<?php echo __('Integrate') ?>" title="<?php echo __("Integrate from an external seller") ?>" />
   </p>
 </form>
 <?php endif ?>
@@ -55,27 +55,22 @@
 <form action="<?php echo url_for('ticket/order?id='.$transaction->id) ?>" method="get" target="_blank" class="accounting">
   <p>
     <?php $has_order = $transaction->Order->count() > 0 ? true : false ?>
-    <input type="submit" name="cancel-order" value="<?php echo __('Cancel order') ?>" <?php if ( !$has_order ): ?>style="display: none;"<?php endif ?> class="ui-widget-content ui-state-default ui-corner-all ui-widget" />
-    <?php if ( !isset($display_simple) || !$display_simple ): ?>
-    <input type="submit" name="order" value="<?php echo __('Order') ?>" class="ui-widget-content ui-state-default ui-corner-all ui-widget" />
+    <input type="submit" name="cancel-order" value="<?php echo __('Cancel order') ?>" <?php if ( !$has_order ): ?>style="display: none;"<?php endif ?> />
+    <input type="submit" name="order" value="<?php echo __('Order') ?>" />
     <input type="checkbox" name="nocancel" value="nocancel" title="<?php echo __("Excludes cancelled tickets from order.") ?>" />
-    <?php endif ?>
   </p>
 </form>
 <?php endif ?>
 <?php if ( $sf_user->hasCredential('tck-accounting-invoice') ): ?>
 <form action="<?php echo url_for('ticket/invoice?id='.$transaction->id) ?>" method="get" target="_blank" class="accounting">
   <p>
-    <input type="submit" name="invoice" value="<?php echo __('Invoice') ?>" class="ui-widget-content ui-state-default ui-corner-all ui-widget" />
-    <?php if ( !isset($display_simple) || !$display_simple ): ?>
+    <input type="submit" name="invoice" value="<?php echo __('Invoice') ?>" />
     <input type="checkbox" name="partial" value="partial" title="<?php echo __("Generate an invoice focused only on the selected manifestation.") ?>" />
     <input type="checkbox" name="nocancel" value="nocancel" title="<?php echo __("Excludes cancelled tickets from invoice.") ?>" />
-    <?php endif ?>
   </p>
 </form>
 <?php endif ?>
 <?php endif ?>
-<?php if ( !isset($display_simple) || !$display_simple ): ?>
 <form action="<?php echo url_for('ticket/partial?id='.$transaction->id) ?>" method="get" target="_blank" class="partial">
   <script type="text/javascript">
     $(document).ready(function(){
@@ -91,8 +86,7 @@
     });
   </script>
   <p>
-    <input type="submit" value="<?php echo __('Partial printing') ?>" name="partial" title="<?php echo __('Only on the selected line/manifestation') ?>" class="ui-widget-content ui-state-default ui-corner-all ui-widget" />
+    <input type="submit" value="<?php echo __('Partial printing') ?>" name="partial" title="<?php echo __('Only on the selected line/manifestation') ?>" />
     <input type="hidden" name="manifestation_id" value="" />
   </p>
 </form>
-<?php endif ?>

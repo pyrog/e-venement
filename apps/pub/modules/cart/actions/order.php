@@ -67,7 +67,7 @@
         $config = sfConfig::get('app_tickets_vel');
         $q->addSelect("(SELECT count(*) AS nb
                         FROM Ticket tck4
-                        WHERE printed_at IS NULL AND integrated_at IS NULL
+                        WHERE NOT printed AND NOT integrated
                           AND transaction_id NOT IN (SELECT o4.transaction_id FROM Order o4)
                           AND duplicating IS NULL AND cancelling IS NULL AND gauge_id = g.id
                           AND id NOT IN (SELECT tck44.cancelling FROM Ticket tck44 WHERE tck44.cancelling IS NOT NULL)
@@ -77,7 +77,7 @@
                        ) AS asked_from_vel")
           ->addSelect("(SELECT count(*) AS nb
                         FROM Ticket tck5
-                        WHERE printed_at IS NULL AND integrated_at IS NULL
+                        WHERE NOT printed AND NOT integrated
                           AND transaction_id NOT IN (SELECT o5.transaction_id FROM Order o5)
                           AND duplicating IS NULL AND cancelling IS NULL AND gauge_id = g.id
                           AND id NOT IN (SELECT tck55.cancelling FROM Ticket tck55 WHERE tck55.cancelling IS NOT NULL)
@@ -119,17 +119,9 @@
     $this->contact = $this->form->save();
     
     // setting up the vars to commit to the bank
-    if ( ($topay = $this->getUser()->getTransaction()->getPrice(true,true)) > 0 && sfConfig::get('app_payment_type','paybox') != 'onthespot' )
-    {
-      $class = 'PayboxPayment';
-      switch ( sfConfig::get('app_payment_type','paybox') ) {
-      case 'tipi':
-        $class = 'TipiPayment';
-        break;
-      }
-      $this->online_payment = $class::create($this->getUser()->getTransaction());
-    }
-    else // no payment to be done
+    if ( $this->getUser()->getTransaction()->getPrice(true,true) > 0 )
+      $this->online_payment = PayboxPayment::create($this->getUser()->getTransaction());
+    else
     {
       $this->getContext()->getConfiguration()->loadHelpers('I18N');
       
@@ -140,10 +132,7 @@
       
       $this->sendConfirmationEmails($transaction);
       $this->getUser()->resetTransaction();
-      if ( $transaction->Payments->count() > 0 )
-        $this->getUser()->setFlash('notice',__("Your command has been passed on your member cards, you don't have to pay anything."));
-      elseif ( sfConfig::get('app_payment_type', 'paybox') == 'onthespot' )
-        $this->getUser()->setFlash('notice',__("Your command has been booked, you will have to pay for it directly with us."));
+      $this->getUser()->setFlash('notice',__("Your command has been passed on your member cards, you don't have to pay anything."));
       
       $this->redirect('transaction/show?id='.$transaction->id);
     }

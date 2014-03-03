@@ -42,7 +42,7 @@
     </thead>
     <tfoot>
       <tr>
-        <th colspan="5">
+        <th colspan="4">
           <div class="ui-state-default ui-th-column ui-corner-bottom">
             <?php include_partial('manifestation/event_pagination', array('pager' => $pager, 'event_id' => $event_id)) ?>
           </div>
@@ -53,7 +53,7 @@
     <tbody>
       <?php foreach ($pager->getResults() as $i => $manifestation): $odd = fmod(++$i, 2) ? ' odd' : '' ?>
       <tr class="sf_admin_row ui-widget-content <?php echo $odd ?>">
-        <?php include_partial('manifestation/event_list_td_tabular', array('manifestation' => $manifestation, 'helper' => $helper,)) ?>
+        <?php include_partial('manifestation/event_list_td_tabular', array('manifestation' => $manifestation)) ?>
       </tr>
       <?php endforeach; ?>
     </tbody>

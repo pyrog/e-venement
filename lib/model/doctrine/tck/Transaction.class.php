@@ -31,11 +31,8 @@ class Transaction extends PluginTransaction
     
     $price = 0;
     foreach ( $this->Tickets as $ticket )
-    {
-    if ( $all && $ticket->Duplicatas->count() == 0
-      || $ticket->Duplicatas->count() == 0 && ($ticket->printed_at || $ticket->integrated_at || !is_null($ticket->cancelling)) )
+    if ( $all || $ticket->Duplicatas->count() == 0 && ($ticket->printed_at || $ticket->integrated_at || !is_null($ticket->cancelling)) )
       $price += $ticket->value;
-    }
     return $price;
   }
   public function getMemberCardPrice($all = false)
@@ -87,24 +84,5 @@ class Transaction extends PluginTransaction
     foreach ( $this->Payments as $payment )
       $paid += $payment->value;
     return $paid;
-  }
-  
-  public function renderSimplifiedTickets($with = array('css' => true, 'tickets' => true))
-  {
-    sfApplicationConfiguration::getActive()->loadHelpers(array('I18N'));
-    $tickets_html = '';
-    
-    // tickets w/ barcode
-    if ( !isset($with['css']) || isset($with['css']) && $with['css'] )
-    {
-      $tickets_html .= '<div style="clear: both"></div>';
-      $tickets_html .= '<style type="text/css" media="all">.cmd-ticket { padding: 5px; border: 1px solid silver; margin: 2em 0; page-break-after: always; page-break-before: always; background-color: whitesmoke } .cmd-ticket br { display: none; } .cmd-ticket .bc { float: right; border: 1px solid silver; padding: 10px; } .cmd-ticket .desc { margin-right: 300px; } .cmd-ticket .clear { clear: both; }</style>';
-    }
-    
-    if ( !isset($with['tickets']) || isset($with['tickets']) && $with['tickets'] )
-    foreach ( $this->Tickets as $ticket )
-      $tickets_html .= $ticket->renderSimplified();
-    
-    return $tickets_html;
   }
 }

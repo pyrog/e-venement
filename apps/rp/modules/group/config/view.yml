@@ -2,19 +2,19 @@ default:
   javascripts: [menu,/sfFormExtraPlugin/js/jquery.autocompleter.js]
 
 newSuccess:
-  stylesheets: [view, picture]
-  javascripts: [more-simple, default-check-all]
+  stylesheets: [view]
+  javascripts: [more-simple]
 createSuccess:
-  stylesheets: [view, picture]
-  javascripts: [more-simple, default-check-all]
+  stylesheets: [view]
+  javascripts: [more-simple]
 updateSuccess:
-  stylesheets: [view, picture]
-  javascripts: [more-simple, default-check-all]
+  stylesheets: [view]
+  javascripts: [more-simple]
 editSuccess:
-  stylesheets: [view, picture]
-  javascripts: [more-simple, default-check-all]
+  stylesheets: [view]
+  javascripts: [more-simple]
 showSuccess:
-  stylesheets: [view, picture]
+  stylesheets: [view]
   javascripts: [more-simple]
 
 indexSuccess:

@@ -14,5 +14,4 @@ delete:
 batchDelete:
   credentials: [event-event-del]
 calendar:
-  is_secure: false
-  #credentials: [event-event-calendar]
+  credentials: [event-event-calendar]

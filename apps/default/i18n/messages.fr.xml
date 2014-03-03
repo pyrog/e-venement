@@ -5,70 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Filters list</source>
-        <target>Liste des filtres</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Transactions</source>
-        <target>Opérations</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Schools &amp; Groups</source>
-        <target>Scolaires &amp; groupes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Search</source>
-        <target>Rechercher</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Global Search</source>
-        <target>Recherche globale</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Try again your global search with a valid string</source>
-        <target>Reprenez votre recherche globale correctement SVP</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Your organism</source>
-        <target>Votre organisme</target>
-      </trans-unit>
-      <trans-unit>
-        <source>What's new?</source>
-        <target>Quoi de neuf ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Are you sure?</source>
-        <target>Êtes-vous sûr(e) ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>is empty</source>
-        <target>vide ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Error loading the data from manifestations</source>
-        <target>Erreur de chargement des données des manifestations</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New Jabber account</source>
-        <target>Nouveau compte Jabber</target>
-      </trans-unit>
-      <trans-unit>
-        <source>List of jabber accounts</source>
-        <target>Liste des comptes jabber</target>
-      </trans-unit>
-      <trans-unit>
-        <source>List of authorized groups</source>
-        <target>Liste des groupes autorisés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Public relations</source>
-        <target>Relations publiques</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Edit the %%User%%'s Jabber account</source>
-        <target>Modification du compte Jabber de %%User%%</target>
-      </trans-unit>
-      <trans-unit>
         <source>Remove linked contact</source>
         <target>Retirer le contact lié</target>
       </trans-unit>
@@ -137,12 +73,12 @@
         <target>Liste des meta-événements</target>
       </trans-unit>
       <trans-unit>
-        <source>You can't add an account as a (Super)Admin if you're not a (Super)Admin youself. This flag has been simply deactivated.</source>
-        <target>Vous ne pouvez ajouter un compte comme (Super)Admin si vous n'êtes pas (Super)Admin vous-même. Cette propriété a simplement été déactivée.</target>
+        <source>You can't add an account as a Super-Admin if you're not a Super-Admin youself. This flag has been simply deactivated.</source>
+        <target>Vous ne pouvez ajouter un compte comme Super-Admin si vous n'êtes pas Super-Admin vous-même. Cette propriété a simplement été déactivée.</target>
       </trans-unit>
       <trans-unit>
-        <source>A problem occurs when deleting some of the selected item (you probably tried to delete one or more (Super)Admin accounts without being a (Super)Admin yourself).</source>
-        <target>Un problème est apparût en supprimant l'une de vos sélections (vous avez probablement essayé de supprimer un compte (Super)Admin sans en être un vous-même).</target>
+        <source>A problem occurs when deleting some of the selected item (you probably tried to delete one or more Super-Admin accounts without being a Super-Admin yourself).</source>
+        <target>Un problème est apparût en supprimant l'une de vos sélections (vous avez probablement essayé de supprimer un compte Super-Admin sans en être un vous-même).</target>
       </trans-unit>
       <trans-unit>
         <source>Some of the selected items have been deleted successfully.</source>
@@ -157,8 +93,8 @@
         <target>Il y a eu un problème lors de la suppression de vos sélections.</target>
       </trans-unit>
       <trans-unit>
-        <source>You are not allowed to access account %%user%%, it is a (Super)Admin account.</source>
-        <target>Vous n'êtes pas autorisé(e) à accéder au compte %%user%%, c'est un compte (Super)Admin.</target>
+        <source>You are not allowed to access account %%user%%, it is a Super-Admin account.</source>
+        <target>Vous n'êtes pas autorisé(e) à accéder au compte %%user%%, c'est un compte Super-Admin.</target>
       </trans-unit>
       <trans-unit>
         <source>The username and/or password is invalid.</source>
@@ -177,8 +113,8 @@
         <target>Erreur ! L'écran que vous avez demandé est sécurisé et vous n'avez pas les droits nécessaires.</target>
       </trans-unit>
       <trans-unit>
-        <source>Last actions</source>
-        <target>Dernières actions réalisées</target>
+        <source>Last updates</source>
+        <target>Dernières mises à jour</target>
       </trans-unit>
       <trans-unit>
         <source>Emails</source>
@@ -229,6 +165,26 @@
         <target>Vue de la permission</target>
       </trans-unit>
       <trans-unit>
+        <source></source>
+        <target></target>
+      </trans-unit>
+      <trans-unit>
+        <source></source>
+        <target></target>
+      </trans-unit>
+      <trans-unit>
+        <source></source>
+        <target></target>
+      </trans-unit>
+      <trans-unit>
+        <source></source>
+        <target></target>
+      </trans-unit>
+      <trans-unit>
+        <source></source>
+        <target></target>
+      </trans-unit>
+      <trans-unit>
         <source>Viewing Group</source>
         <target>Vue du groupe</target>
       </trans-unit>
@@ -261,8 +217,8 @@
         <target>Utilisateurs</target>
       </trans-unit>
       <trans-unit>
-        <source>Welcome %%user%%</source>
-        <target>Bienvenue %%user%%</target>
+        <source>Welcome on e-venement</source>
+        <target>Bienvenue sur e-venement</target>
       </trans-unit>
       <trans-unit>
         <source>Login</source>

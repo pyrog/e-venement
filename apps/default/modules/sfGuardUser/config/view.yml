@@ -1,2 +1,2 @@
 editSuccess:
-  javascripts: [autocomplete-setnull, default-check-all]
+  javascripts: [autocomplete-setnull]

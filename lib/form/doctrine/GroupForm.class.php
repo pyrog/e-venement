@@ -1,27 +1,4 @@
 <?php
-/**********************************************************************************
-*
-*	    This file is part of e-venement.
-*
-*    e-venement is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License.
-*
-*    e-venement is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with e-venement; if not, write to the Free Software
-*    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*
-*    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
-*
-***********************************************************************************/
-?>
-<?php
 
 /**
  * Group form.
@@ -49,9 +26,6 @@ class GroupForm extends BaseGroupForm
       $this->values[$picform_name]['type']     = $file->getType();
       $this->values[$picform_name]['width']    = 24;
       $this->values[$picform_name]['height']   = 16;
-      
-      // hack to force root object update
-      $this->values['updated_at'] = date('Y-m-d H:i:s');
     }
     
     return parent::doSave($con);
@@ -114,15 +88,5 @@ class GroupForm extends BaseGroupForm
     if ( !$this->object->isNew() )
     foreach ( array('contacts_list', 'professionals_list', 'organisms_list') as $fieldName )
       unset($this->widgetSchema[$fieldName]);
-    
-    $this->widgetSchema   ['users_list']->setOption('expanded', true);
-    $this->widgetSchema   ['users_list']->setOption('query', $q = Doctrine::getTable('sfGuardUser')->createQuery('u')->andWhere('u.is_active = TRUE'));
-    $this->validatorSchema['users_list']->setOption('query', $q);
-  }
-  
-  public function removeUsersList()
-  {
-    unset($this->widgetSchema['users_list']);
-    return $this;
   }
 }

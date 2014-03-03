@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
     
     $tmp = explode(',',$request->getParameter('ticket_id'));
     $ticket_ids = array(0);
@@ -46,12 +46,7 @@
     {
       if ( !$ticket )
       {
-        $this->getUser()->setFlash('error',__("Can't find the ticket #%%i%% in database... Perhaps the related transaction is closed already.",array('%%i%%' => $ticket->id)));
-        $this->redirect('ticket/cancel');
-      }
-      if ( $ticket->Transaction->closed )
-      {
-        $this->getUser()->setFlash('error',__("Can't cancel a ticket #%%i%% because its transaction #%%t%% is already closed.",array('%%i%%' => $ticket->id, '%%t%%' => $ticket->transaction_id)));
+        $this->getUser()->setFlash('error',__("Can't find the ticket #%%i%% in database...",array('%%i%%' => $ticket->id)));
         $this->redirect('ticket/cancel');
       }
       if ( !$ticket->printed_at )

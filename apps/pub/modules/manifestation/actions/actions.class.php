@@ -38,9 +38,8 @@ class manifestationActions extends autoManifestationActions
   public function executeShow(sfWebRequest $request)
   {
     $this->gauges = Doctrine::getTable('Gauge')->createQuery('g')
-      ->addSelect('m.*, pm.*, p.*, tck.*, e.*, l.*, ws.*, sp.*, op.*')
+      ->addSelect('m.*, pm.*, p.*, tck.*, e.*')
       ->leftJoin('g.Manifestation m')
-      ->leftJoin('m.Location l')
       ->leftJoin('ws.Users wu')
       ->leftJoin('m.Event e')
       ->leftJoin('m.PriceManifestations pm')
@@ -54,10 +53,7 @@ class manifestationActions extends autoManifestationActions
       ->andWhere('pw.id = g.workspace_id')
       ->andWhere('m.id = ?',$request->getParameter('id'))
       ->andWhere('m.happens_at > NOW() OR ?',sfContext::getInstance()->getConfiguration()->getEnvironment() == 'dev')
-      ->andWhere('g.online = ?', true)
-      ->andWhere('p.online = ?', true)
-      ->andWhere('m.reservation_confirmed = ?',true)
-      ->orderBy('ws.name, p.name')
+      ->andWhere('g.online = TRUE')
       ->execute();
     
     if ( !$this->gauges || $this->gauges && $this->gauges->count() <= 0 )
@@ -100,7 +96,7 @@ class manifestationActions extends autoManifestationActions
     
     // get back already booked tickets
     $tickets_to_count = Doctrine_Query::create()->from('Ticket tck')
-      ->andWhere('tck.printed_at IS NULL')
+      ->andWhere('tck.printed = ?',false)
       ->andWhere('tck.member_card_id IS NOT NULL')
       ->leftJoin('tck.Manifestation m')
       ->leftJoin('tck.Price p')

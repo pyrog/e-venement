@@ -27,47 +27,14 @@ class locationActions extends autoLocationActions
   {
     $this->executeEdit($request);
   }
-  
-  public function executeNewManif(sfWebRequest $request)
-  {
-    // preconditions
-    $this->executeEdit($request);
-    if ( !$request->getParameter('event_name',false) && !$request->getParameter('event_id',false) )
-      throw new liEvenementException('Bad request.');
-    
-    if ( $eid = $request->getParameter('event_id',false) )
-      $event = Doctrine::getTable('Event')->createQuery('e')->andWhere('e.id = ?',$eid)->fetchOne();
-    else
-    {
-      $event = new Event;
-      $event->name = $request->getParameter('event_name');
-      $me = array_keys($this->getUser()->getMetaEventsCredentials());
-      $event->meta_event_id = $me[0];
-      $event->save();
-    }
-    
-    $this->redirect('manifestation/new?event='.$event->slug.'&location='.$this->location->slug);
-  }
 
-  public function executeSearch(sfWebRequest $request)
+  public function executeUpdateIndexes(sfWebRequest $request)
   {
-    self::executeIndex($request);
-    $table = Doctrine::getTable('Location');
+    $table = Doctrine_Core::getTable('Location');
+    $table->batchUpdateIndex();
     
-    $search = $this->sanitizeSearch($request->getParameter('s'));
-    $transliterate = sfConfig::get('software_internals_transliterate',array());
+    $this->getUser()->setFlash('notice',"Locations' index table has been updated.");
     
-    $a = $this->pager->getQuery()->getRootAlias();
-    $this->pager->setQuery($table->search($search.'*',$this->pager->getQuery()->andWhere("$a.place = ?",true)));
-    $this->pager->setPage($request->getParameter('page') ? $request->getParameter('page') : 1);
-    $this->pager->init();
-    
-    $this->setTemplate('index');
-  }
-  public static function sanitizeSearch($search)
-  {
-    $nb = strlen($search);
-    $charset = sfConfig::get('software_internals_charset');
-    return str_replace(array('-','+',','),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
+    $this->redirect('location');
   }
 }

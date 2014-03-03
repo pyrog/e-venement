@@ -1,5 +1,5 @@
 all:
-  javascripts: [/liTinymcePlugin/tinymce.min.js, /liTinymcePlugin/jquery.tinymce.min.js, email]
+  javascripts: [/liTinymcePlugin/tiny_mce,email]
   stylesheets: [email]
 
 contentSuccess:
@@ -10,4 +10,4 @@ indexSuccess:
   stylesheets: [list-print: {media: print}]
 
 uploadSuccess:
-  javascripts: [-/liTinymcePlugin/tinymce.min.js, -/liTinymcePlugin/jquery.tinymce.min.js]
+  javascripts: [-/liTinymcePlugin/tiny_mce]

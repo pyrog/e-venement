@@ -38,6 +38,14 @@ class ContactForm extends BaseContactForm
     ));
     
     $q = Doctrine::getTable('Group')->createQuery('g');
+    if ( sfContext::hasInstance() )
+    {
+      $q->where('(TRUE')
+        ->andWhere('g.sf_guard_user_id = ?',sfContext::getInstance()->getUser()->getId());
+      if ( sfContext::getInstance()->getUser()->hasCredential('pr-group-common') )
+        $q->orWhere('g.sf_guard_user_id IS NULL');
+      $q->andWhere('TRUE)');
+    }
     $this->widgetSchema   ['groups_list']
       ->setOption('order_by', array('u.id IS NULL DESC, u.username, name',''))
       ->setOption('query', $q);
@@ -62,20 +70,8 @@ class ContactForm extends BaseContactForm
       'required' => false,
     ));
     
-    $this->widgetSchema   ['sf_guard_user_id'] =
-    $this->widgetSchema   ['confirmed'] = new sfWidgetFormInputHidden;
-    
-    $this->widgetSchema['type_of_resources_id']->setOption('order_by',array('name',''));
-    $this->widgetSchema['familial_situation_id']->setOption('order_by',array('name',''));
-    $this->widgetSchema['familial_quotient_id']->setOption('order_by',array('name',''));
-    
-    // adding artificial mandatory fields
-    if ( is_array($force = sfConfig::get('app_options_force_fields', array())) )
-    foreach ( $force as $field )
-    {
-      if ( isset($this->validatorSchema[$field]) )
-        $this->validatorSchema[$field]->setOption('required', true);
-    }
+    $this->widgetSchema   ['confirmed'] = new sfWidgetFormInputHidden();
+    $this->widgetSchema   ['sf_guard_user_id'] = new sfWidgetFormInputHidden();
     
     parent::configure();
   }
@@ -98,7 +94,7 @@ class ContactForm extends BaseContactForm
     
     if ( isset($this->widgetSchema['YOBs']) )
     foreach ( $this->values['YOBs'] as $key => $values )
-    if (!( isset($values['year']) && trim($values['year']) ) && !( isset($values['name']) && trim($values['name']) ))
+    if (!( isset($values['year']) && trim($values['year']) ))
     {
       unset(
         $this->object->YOBs[$key],
@@ -109,12 +105,10 @@ class ContactForm extends BaseContactForm
     
     return parent::doSave($con);
   }
-  
   public function save($con = null)
   {
     $r = parent::save($con);
     
-    // this is useless with the TDP design:
     if ( isset($this->widgetSchema['YOBs_list']) )
     {
       // get back given values

@@ -19,17 +19,13 @@ generator:
         nb_manifestations: { label: Manifs, type: numeric }
         nb_events: { label: Events, type: numeric }
         nb_tickets: { label: Tick.Avg., type: numeric }
-        list_organism_administrative_number: { label: Admin.ID }
         organism_city: { label: City }
       list:
-        display: [Organism, organism_city, Contact, name, _groups_picto, contact_email, _list_organism_administrative_number, nb_events, nb_manifestations, _nb_tickets]
+        display: [Organism, organism_city, Contact, name, _groups_picto, contact_email, nb_events, nb_manifestations, _nb_tickets]
         batch_actions: {}
+        object_actions: { _show: ~ }
         actions:
           _extract: { action: extract }
-        object_actions:
-          _show: ~
-          _edit:
-            credentials: grp-events
         table_method: doSelectOnlyGrp
         title: By contact
         max_per_page: 50

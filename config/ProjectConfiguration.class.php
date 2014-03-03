@@ -48,20 +48,17 @@ class ProjectConfiguration extends sfProjectConfiguration
     $this->enablePlugins('sfDoctrineGuardPlugin');
     $this->enablePlugins('sfAdminThemejRollerPlugin');
     $this->enablePlugins('cxFormExtraPlugin');
-    //$this->enablePlugins('sfEasyGMapPlugin');
+    $this->enablePlugins('sfEasyGMapPlugin');
     $this->enablePlugins('sfiCalCreatorPlugin');
     $this->enablePlugins('liBarcodePlugin');
     $this->enablePlugins('liOfcPlugin');
     $this->enablePlugins('sfDomPDFPlugin');
-    $this->enablePlugins('sfWebBrowserPlugin');
-    $this->enablePlugins('sfFeed2Plugin');
-    $this->enablePlugins('liCardDavPlugin');
     
     $this->loadProjectConfiguration();
     
     // transliteration & hyphenation
-    $this->charset       = sfConfig::get('software_internals_charset',array());
-    $this->transliterate = sfConfig::get('software_internals_transliterate',array('from' => '', 'to' => ''));
+    $charset       = sfConfig::get('software_internals_charset',array());
+    $transliterate = sfConfig::get('software_internals_transliterate',array('from' => '', 'to' => ''));
     setlocale(LC_ALL,sfConfig::get('project_locale',sfConfig::get('software_internals_locale'))); // w/o it, sometimes transliteration fails
   }
 

@@ -84,9 +84,7 @@ float: left;
 .lieuprix, .dateheure { font-size: 11pt; height: 13pt; }
 .datetime { margin-top: 1.5mm; }
 .placeprice { margin-top: 0.5mm; }
-.placeprice .address { display: none; }
 .price_name .name { display: none; }
-.right .price_name { display: none; }
 .event { font-size: 26px; margin-top: 1mm; height: 30px; }
 .event-short { display: none; }
 .cie { font-size: 12pt; margin-top: 1mm; height: 14pt; }
@@ -145,10 +143,8 @@ span.eur { font-weight: normal; }
   top: 44mm;
   width: 40mm;
   text-align: center;
-  margin-left: -103mm;
-  margin-top: 8mm;
+  margin-left: -18mm;
   transform: rotate(270deg);
-  transform-origin: top left;
 }
 #options { display: none; }
 

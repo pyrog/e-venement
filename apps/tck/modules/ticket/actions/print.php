@@ -21,6 +21,7 @@
 *
 ***********************************************************************************/
 ?>
+
 <?php
     $cpt = 0;
     $max = array(
@@ -28,6 +29,10 @@
       'duplicate' => 30,
     );
     
+    if ( !($this->getRoute() instanceof sfObjectRoute) )
+      return $this->redirect('ticket/sell');
+    
+    //$this->transaction = $this->getRoute()->getObject();
     $q = Doctrine::getTable('Transaction')
       ->createQuery('t')
       ->andWhere('t.id = ?',$request->getParameter('id'))
@@ -54,9 +59,6 @@
     
     $this->transaction = $q->fetchOne();
     $this->manifestation_id = $request->getParameter('manifestation_id');
-    
-    // if any ticket needs a seat, do what's needed
-    $this->redirectToSeatsAllocationIfNeeded('print');
     
     $fingerprint = NULL;
     $this->print_again = false;
@@ -88,13 +90,12 @@
               $this->toprint[] = $ticket->id;
               $this->print_again = true;
             }
-            elseif ( strcasecmp($ticket->price_name,trim($request->getParameter('price_name'))) == 0
+            elseif ( strcasecmp($ticket->price_name,$request->getParameter('price_name')) == 0
               && $ticket->printed_at
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               $cpt++;
               $newticket = $ticket->copy();
-              $ticket->numerotation = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
@@ -102,8 +103,6 @@
               $newticket->grouping_fingerprint = $fingerprint;
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->numerotation )
-                $ticket->save();
               
               if ( isset($this->tickets[$id = $ticket->gauge_id.'-'.$ticket->price_id.'-'.$ticket->transaction_id]) )
               {
@@ -124,7 +123,7 @@
               break;
             }
             $cpt++;
-        
+            
             if ( $ticket->Manifestation->no_print )
               $update['integrated_at'][$ticket->id] = $ticket->id;
             else
@@ -142,14 +141,14 @@
           }
         }
         catch ( liEvenementException $e )
-        { error_log($e->getMessage()); }
+        { }
       }
       
       if ( $request->getParameter('duplicate') != 'true' )
       foreach ( $this->tickets as $ticket )
         $update['printed_at'][$ticket['ticket']->id] = $ticket['ticket']->id;
     }
-    
+      
     // normal / not grouped tickets
     else
     {
@@ -164,21 +163,18 @@
               $this->toprint[] = $ticket->id;
               $this->print_again = true;
             }
-            elseif ( strcasecmp($ticket->price_name,trim($request->getParameter('price_name'))) == 0
+            elseif ( strcasecmp($ticket->price_name,$request->getParameter('price_name')) == 0
               && $ticket->printed_at
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               $cpt++;
               $newticket = $ticket->copy();
-              $ticket->numerotation = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
               $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->numerotation )
-                $ticket->save();
               
               $this->tickets[] = $newticket;
             }
@@ -191,17 +187,16 @@
               $this->print_again = true;
               break;
             }
+            $cpt++;
             
             if ( !$ticket->printed_at && !$ticket->integrated_at )
             {
-              $cpt++;
               if ( $ticket->Manifestation->no_print )
               {
                 // member cards
                 if ( $ticket->Price->member_card_linked )
                 {
                   $ticket->integrated_at = date('Y-m-d H:i:s');
-                  $ticket->vat = $ticket->Manifestation->Vat->value;
                   $ticket->save();
                 }
                 else
@@ -213,7 +208,6 @@
                 if ( $ticket->Price->member_card_linked )
                 {
                   $ticket->printed_at = date('Y-m-d H:i:s');
-                  $ticket->vat = $ticket->Manifestation->Vat->value;
                   $ticket->save();
                 }
                 else
@@ -233,12 +227,12 @@
     foreach ( $update as $type => $ids )
     if ( count($ids) > 0 )
     {
-      $q = Doctrine_Query::create()->update('Ticket t')
+      $q = Doctrine_Query::create()->update()
+        ->from('Ticket t')
         ->whereIn('t.id',$ids)
         ->andWhere(sprintf('t.%s IS NULL',$type))
         ->set('t.'.$type,'NOW()')
         ->set('t.updated_at','NOW()')
-        ->set('t.vat', '(SELECT v.value FROM Manifestation m LEFT JOIN Vat v ON v.id = m .vat_id WHERE m.id = manifestation_id)')
         ->set('t.sf_guard_user_id',$this->getUser()->getId())
         ->set('t.version','t.version + 1');
       
@@ -263,9 +257,7 @@
     }
     
     if ( count($this->tickets) <= 0 )
-    {
       $this->setTemplate('close');
-    }
     else
     {
       if ( sfConfig::get('app_tickets_id') != 'othercode' )
@@ -285,10 +277,3 @@
         $this->setTemplate('rfid');
       }
     }
-
-    $this->getContext()->getEventDispatcher()->notify(new sfEvent($this, 'tck.tickets_print', array(
-      'transaction' => $this->transaction,
-      'tickets'     => $this->tickets,
-      'duplicate'   => $this->duplicate,
-      'user'        => $this->getUser(),
-    )));

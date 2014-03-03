@@ -48,8 +48,7 @@ class groupActions extends autoGroupActions
     
     $r = array();
     
-    //try
-    {
+    try {
       // is the asked model is supported
       $validator = new sfValidatorChoice(array(
         'choices' => array('contact', 'professional', 'organism'),
@@ -77,7 +76,7 @@ class groupActions extends autoGroupActions
         'model' => ucfirst($type),
         'required' => true,
         'query' => $q->copy()->select('o.id')
-          ->leftJoin(sprintf('g.%s og ON og.group_id = ? AND og.group_id = g.id AND og.%s_id = o.id', $relation = $relations[$type], $type), $this->form->getObject()->id)
+          ->leftJoin(sprintf('g.%s og ON og.group_id = ? AND og.group_id = g.id AND og.%s_id = o.id', $relations[$type], $type), $this->form->getObject()->id)
           ->having(sprintf('count(og.group_id) %s',$modifier == 'add' ? '= 0' : '= 1'))
           ->groupBy('o.id') // big but beautiful SQL hack...
       ), array('required' => 'Required.', 'invalid' => $invalid[$modifier]));
@@ -85,29 +84,17 @@ class groupActions extends autoGroupActions
       
       // adding / removing the object from the group
       $object = $q->andWhere('o.id = ?',$object_id)->select('o.*, g.*')->fetchOne();
-      if ( $modifier == 'add' )
-      {
-        $object->Groups[] = $this->form->getObject();
-        $object->save();
-      }
-      else
-      {
-        $rel = $object->$relation;
-        $del = new GroupDeleted; // save the deletion for stats
-        $del->created_at = $rel[0]->created_at;
-        $del->group_id   = $rel[0]->group_id;
-        //$del->information = $rel[0]->information;
-        $rel[0]->delete();
-        $del->save();
-      }
+      if ( $modifier == 'add' ) $object->Groups[] = $this->form->getObject();
+      else unset($object->Groups[0]);
+      $object->save();
       
       // messages
       $r['success'] = __(ucfirst($type).' '.($modifier == 'add' ? 'added' : 'removed'));
       $r['object_id'] = $object->id;
     }
-    //catch ( sfValidatorError $e )
+    catch ( sfValidatorError $e )
     {
-      //$r['error'] = __($e->getMessage(), null, 'sf_admin');
+      $r['error'] = __($e->getMessage(), null, 'sf_admin');
     }
     
     if ( !$request->hasParameter('debug') )
@@ -149,50 +136,23 @@ class groupActions extends autoGroupActions
     return $this->redirect('group/edit?id='.$request->getParameter('id'));
   }
   
-  public function executeShow(sfWebRequest $request)
-  {
-    $this->group = $this->getRoute()->getObject();
-    $this->form = $this->configuration->getForm($this->group);
-  }
   public function executeEdit(sfWebRequest $request)
   {
     parent::executeEdit($request);
     
-    if ( !$this->getUser()->hasCredential(array('admin-users', 'admin-power'), false) )
-      $this->form->removeUsersList();
-    
     /**
       * if the user cannot modify anything
       * if the user cannot modify common groups and this group is common
       * if the group is not his own
       *
       **/
-    if ( !$this->getUser()->hasCredential('pr-group-perso') && !$this->getUser()->hasCredential('pr-group-common')
-      || is_null($this->group->sf_guard_user_id) && !$this->getUser()->hasCredential('pr-group-common')
-      || $this->group->sf_guard_user_id !== $this->getUser()->getId() && !is_null($this->group->sf_guard_user_id) )
+    if ( !$this->getUser()->hasCredential('pr-group-perso')
+      && !$this->getUser()->hasCredential('pr-group-common')
+      || is_null($this->group->sf_guard_user_id)
+      && !$this->getUser()->hasCredential('pr-group-common')
+      || $this->group->sf_guard_user_id !== $this->getUser()->getId()
+      && !is_null($this->group->sf_guard_user_id) )
     $this->setTemplate('show');
-  }
-  public function executeUpdate(sfWebRequest $request)
-  {
-    $this->group = $this->getRoute()->getObject();
-    $this->form = $this->configuration->getForm($this->group);
-    if ( !$this->getUser()->hasCredential(array('admin-users', 'admin-power'), false) )
-      $this->form->removeUsersList();
-    
-    /**
-      * if the user cannot modify anything
-      * if the user cannot modify common groups and this group is common
-      * if the group is not his own
-      *
-      **/
-    if ( !$this->getUser()->hasCredential('pr-group-perso') && !$this->getUser()->hasCredential('pr-group-common')
-      || is_null($this->group->sf_guard_user_id) && !$this->getUser()->hasCredential('pr-group-common')
-      || $this->group->sf_guard_user_id !== $this->getUser()->getId() && !is_null($this->group->sf_guard_user_id) )
-    $this->redirect('group/index');
-    
-    $this->processForm($request, $this->form);
-    $this->setTemplate('edit');
-    
   }
 
   public function executeIndex(sfWebRequest $request)

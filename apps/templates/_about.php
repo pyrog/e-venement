@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-  $firm = sfConfig::get('project_about_firm');
+  $firm = sfConfig::get('software_about_firm');
   $client = sfConfig::get('project_about_client');
   $translate = array(
     '%e%'       => '<strong>'.sfConfig::get('software_about_name').'</strong>',
@@ -37,7 +37,7 @@
   </div>
   <div class="contributors">
     <h3>e-venement</h3>
-    <p><?php echo __("the ticketting software to accompany your development",null,'about') ?></p>
+    <p><?php echo __("there is worst, but it's more expensive",null,'about') ?></p>
     <ul>
       <li><strong><?php echo __('the contributors',null,'about') ?></strong></li>
       <?php if ( is_array($c=sfConfig::get('software_about_contributors')) ) foreach ( $c as $contributor ): ?>
@@ -77,7 +77,7 @@
       <?php //echo __('This gives you freedoms, but also you must respect its clauses (attribution, share-alike)',null,'about') ?>
     </p>
     <p class="tm">
-      <?php echo __("%e% and the %e% logo are the properties of %firm%",$translate,'about') ?>.
+      <?php echo __("%e% and the %e% logo are the properties of %author% and %firm%",$translate,'about') ?>.
       <?php echo __('All rights reserved',null,'about') ?>.
     </p>
     <form action="#" method="get" class="button-contribs">

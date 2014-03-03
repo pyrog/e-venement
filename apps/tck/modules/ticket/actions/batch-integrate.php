@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-  $this->getContext()->getConfiguration()->loadHelpers(array('I18N','CrossAppLink'));
+  $this->getContext()->getConfiguration()->loadHelpers('I18N');
   $notices = array();
   
   // get back the manifestation
@@ -30,14 +30,6 @@
   $q = Doctrine::getTable('Manifestation')->createQuery('m')
     ->where('id = ?',$mid);
   $this->manifestation = $q->fetchOne();
-  
-  // preconditions
-  if ( !$this->manifestation->reservation_confirmed )
-  {
-    $this->getUser()->setFlash('error', __('It is forbidden to integrate foreign sales on an unconfirmed manifestation'));
-    $this->redirect(cross_app_url_for('event', 'manifestation/show?id='.$this->manifestation->id));
-  }
-  
   $this->payform = new PaymentIntegrationForm($this->manifestation);
   $this->importform = new TicketsIntegrationForm($this->manifestation);
   
@@ -196,7 +188,7 @@
       }
 
       fclose($fp);
-      $this->getContext()->getConfiguration()->loadHelpers(array('Url','I18N'));
+      sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url','I18N'));
       $this->getUser()->setFlash('notice',__("File importated with the last transaction's id %%tid%%, %%nbtck%% ticket(s), %%nberr%% error(s).",array('%%tid%%' => $transaction->id, '%%nbtck%%' => $nbtck, '%%nberr%%' => $nberr)).' -- '.implode(' ',$notices));
       //$this->redirect(url_for('ticket/batchIntegrate?manifestation_id='.$this->manifestation->id));
     }

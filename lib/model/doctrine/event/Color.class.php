@@ -12,12 +12,4 @@
  */
 class Color extends PluginColor
 {
-  public function __toString()
-  {
-    return $this->name ? $this->color : '';
-  }
-  public function getColor()
-  {
-    return '#'.str_replace('#','',$this->rawGet('color'));
-  }
 }

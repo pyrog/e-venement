@@ -55,8 +55,8 @@ class liWidgetFormDoctrineJQueryAutocompleterGuide extends sfWidgetFormDoctrineJ
            sprintf(<<<EOF
 <script type="text/javascript">
   jQuery(document).ready(function() {
-    var input = '#%s';
-    var autocomplete = '#%s';
+    input = '#%s';
+    autocomplete = '#%s';
     
     jQuery(autocomplete)
     .autocomplete('%s', jQuery.extend({}, {

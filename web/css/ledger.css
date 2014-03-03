@@ -42,14 +42,14 @@ tr.method td, tr.event td { padding-top: 5px; }
 table tbody a { text-decoration: none; }
 table tbody a:hover { text-decoration: underline; }
 
-#users.criterias, #workspaces.criterias { min-height: 0; margin: 10px 245px 10px 0px; }
-.criterias .dates, .criterias ul { margin: 10px 30px; }
+#content #users { min-height: 0; margin: 10px 245px 10px 5px; }
+.criterias ul { margin: 10px 30px; }
 
 #criterias {
   width: 230px;
   position: absolute;
   right: 25px;
-  height: 540px;
+  height: 520px;
   margin-top: 5px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -68,4 +68,4 @@ table tbody a:hover { text-decoration: underline; }
 #ledger .user { white-space: nowrap; max-width: 70px; overflow: hidden; }
 
 .ui-widget-header a { float: right; margin-top: -2em; }
-.ui-datepicker a { float: none; margin-top: 0; }
+

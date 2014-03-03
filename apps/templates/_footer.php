@@ -1,4 +1,4 @@
-<a href="http://www.e-venement.org/">e-venement</a>
+<a href="http://www.libre-informatique.fr/sw/01-Billetterie/e-venement">e-venement</a>
 <?php echo __("the free and open source ticketing software",array(),'footer') ?> 
 -
 &copy; 2006-<?php echo date('Y') ?> 

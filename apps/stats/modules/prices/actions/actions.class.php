@@ -75,7 +75,7 @@ class pricesActions extends sfActions
     $this->charset   = sfConfig::get('software_internals_charset');
     
     sfConfig::set('sf_escaping_strategy', false);
-    $confcsv = sfConfig::get('software_internals_csv'); if ( isset($confcsv['set_charset']) && $confcsv['set_charset'] ) sfConfig::set('sf_charset', $this->options['ms'] ? $this->charset['ms'] : $this->charset['db']);
+    sfConfig::set('sf_charset', $this->options['ms'] ? $this->charset['ms'] : $this->charset['db']);
     
     if ( $request->hasParameter('debug') )
     {
@@ -124,8 +124,10 @@ class pricesActions extends sfActions
       ->leftJoin('t.Manifestation m')
       ->leftJoin('m.Event e')
       ->leftJoin('t.Transaction tr')
-      ->leftJoin('t.Gauge g')
-      ->andWhereIn('g.workspace_id',array_keys($this->getUser()->getWorkspacesCredentials()))
+      ->andWhere('(TRUE')
+      ->andWhereIn('tr.workspace_id',array_keys($this->getUser()->getWorkspacesCredentials()))
+      ->orWhere('tr.workspace_id IS NULL')
+      ->andWhere('TRUE)')
       ->andWhereIn('e.meta_event_id',array_keys($this->getUser()->getMetaEventsCredentials()))
       ->andWhere('t.duplicating IS NULL')
       ->andWhere('t.cancelling IS NULL')

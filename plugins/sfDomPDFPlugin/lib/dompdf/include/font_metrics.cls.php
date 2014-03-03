@@ -6,7 +6,7 @@
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
- * @version $Id$
+ * @version $Id: font_metrics.cls.php 469 2012-02-05 22:25:30Z fabien.menager $
  */
 
 require_once DOMPDF_LIB_DIR . "/class.pdf.php";

@@ -33,130 +33,41 @@
  */
 class EntryTicketsForm extends BaseEntryTicketsForm
 {
-  const CACHE_TIMEOUT = 5; // timeout, in minutes
-  
   public function configure()
   {
     $this->widgetSchema['entry_element_id'] = new sfWidgetFormInputHidden();
+    $arr = array('id','entry_element_id','quantity','price_id');
+    $this->widgetSchema->setPositions($arr);
+    
+    $prices = $userp = $manifp = array();
     
     $this->widgetSchema['price_id']->setOption('add_empty', true);
+    $this->restrictPriceIdQuery();
     
-    $this->validatorSchema['gauge_id']->setOption('query', $q = Doctrine::getTable('Gauge')
-      ->createQuery('g')
-      ->select('g.*, w.*')
-      ->leftJoin('g.Manifestation m')
-      ->leftJoin('m.ManifestationEntries me')
-      ->leftJoin('me.Entries ee')
-      ->leftJoin('g.Workspace w')
-      ->leftJoin('w.GroupWorkspace gw')
-      ->andWhere('gw.id IS NOT NULL')
-    );
-    $this->widgetSchema   ['gauge_id']
-      ->setOption('query', $q->copy())
-      ->setOption('order_by', array('w.name', ''));
-    if ( !$this->isNew() )
-      $this->widgetSchema ['gauge_id'] = new sfWidgetFormInputHidden;
-
-    $arr = array('id','entry_element_id','quantity','price_id', 'gauge_id');
-    $this->widgetSchema->setPositions($arr);
     $this->enableCSRFProtection();
-  }
-  
-  public function doBind(array $values)
-  {
-    $this->restrictGaugeIdQuery($this->validatorSchema['entry_element_id']->clean($values['entry_element_id']));
-    $this->restrictPriceIdQuery($this->validatorSchema['entry_element_id']->clean($values['entry_element_id']));
-    parent::doBind($values);
-  }
-  
-  public function restrictGaugeIdQuery($entry_element_id = NULL)
-  {
-    if (!( $this->widgetSchema['gauge_id'] instanceof sfWidgetFormDoctrineChoice ))
-      return;
-    
-    $manifid = !is_null($entry_element_id) && $this->object->isNew()
-      ? Doctrine::getTable('EntryElement')->findOneById($entry_element_id)->ManifestationEntry->manifestation_id
-      : $this->getObject()->EntryElement->ManifestationEntry->manifestation_id;
-    
-    if ( $this->widgetSchema['gauge_id']->getOption('query') instanceof Doctrine_Query )
-      $this->widgetSchema   ['gauge_id']->getOption('query')->andWhere('g.manifestation_id = ?', $manifid);
-    $this->validatorSchema  ['gauge_id']->getOption('query')->andWhere('g.manifestation_id = ?', $manifid);
-    
-    // backup gauges for current manifestation
-    if ( sfContext::hasInstance() )
-    {
-      $this->timeout();
-      $gauges = sfContext::getInstance()->getUser()->getAttribute('gauges', array(), 'grp');
-      if ( !isset($gauges[$manifid]) && $this->widgetSchema['gauge_id'] instanceof sfWidgetFormDoctrineChoice )
-      {
-        $gauges[$manifid] = $this->widgetSchema['gauge_id']->getChoices();
-        sfContext::getInstance()->getUser()->setAttribute('gauges', $gauges, 'grp');
-      }
-      $this->widgetSchema['gauge_id'] = new sfWidgetFormChoice(array('choices' => $gauges[$manifid],));
-    }
-    
-    return $this;
   }
   
   public function restrictPriceIdQuery($entry_element_id = NULL)
   {
-    if (!( $this->widgetSchema['price_id'] instanceof sfWidgetFormDoctrineChoice ))
-      return;
-    
-    if ( !is_null($entry_element_id) && $this->object->isNew() )
-    {
-      $entry_element = Doctrine::getTable('EntryElement')->findOneById(
-        intval($entry_element_id) > 0
-          ? $entry_element_id
-          : ($this->values['entry_element_id'] ? $this->values['entry_element_id'] : $this->getObject()->entry_element_id)
-      );
-    }
-    else
-      $entry_element = $this->getObject()->EntryElement;
-    
-    $manifid = $entry_element->ManifestationEntry->manifestation_id;
-    
-    $this->widgetSchema['price_id']->setOption('query', $q = Doctrine::getTable('Price')
-      ->createQuery('p')
+    $prices = array();
+    $q = Doctrine::getTable('Price')->createQuery('p')
       ->select('p.*')
       ->leftJoin('p.Users u')
       ->andWhere('u.id = ?',sfContext::getInstance()->getUser()->getId())
       ->leftJoin('p.Manifestations m')
-      ->andWhere('m.id = ?', $manifid)
+      ->leftJoin('m.ManifestationEntries me')
+      ->leftJoin('me.Entries el')
+      ->andWhere('el.id = ?',$id = !is_null($entry_element_id) ? $entry_element_id : ($this->values['entry_element_id'] ? $this->values['entry_element_id'] : $this->getObject()->entry_element_id));
+    foreach ( $q->execute() as $pm )
+      $prices[] = $pm->id;
+    
+    $this->widgetSchema['price_id']->setOption('query', $q = Doctrine::getTable('Price')
+      ->createQuery('p')
       ->andWhere('p.hide = FALSE')
+      ->andWhereIn('p.id',$prices)
       ->orderBy('p.name')
-    )->setOption('order_by', array('p.name',''));
+    );
     $this->validatorSchema['price_id']->setOption('query',$q);
-    
-    // backup prices for current manifestation
-    if ( sfContext::hasInstance() )
-    {
-      $this->timeout();
-      $prices = sfContext::getInstance()->getUser()->getAttribute('prices', array(), 'grp');
-      if ( !isset($prices[$manifid]) && $this->widgetSchema['price_id'] instanceof sfWidgetFormDoctrineChoice )
-      {
-        $prices[$manifid] = $this->widgetSchema['price_id']->getChoices();
-        sfContext::getInstance()->getUser()->setAttribute('prices', $prices, 'grp');
-      }
-      $this->widgetSchema['price_id'] = new sfWidgetFormChoice(array('choices' => $prices[$manifid],));
-    }
-    
-    return $this;
-  }
-  
-  // force the recalculation every 2*60 seconds
-  public function timeout()
-  {
-    if ( !sfContext::hasInstance() )
-      return true;
-    
-    if ( time() < sfContext::getInstance()->getUser()->getAttribute('timeout', time(), 'grp') )
-      return false;
-    
-    sfContext::getInstance()->getUser()->setAttribute('gauges', array(), 'grp');
-    sfContext::getInstance()->getUser()->setAttribute('prices', array(), 'grp');
-    sfContext::getInstance()->getUser()->setAttribute('timeout', time() + self::CACHE_TIMEOUT * 60, 'grp');
-    return true;
   }
 }
 

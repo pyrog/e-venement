@@ -6,7 +6,7 @@
     $('#sf_fieldset_spectators table tbody').each(function(){
       
       // create the workspace list
-      var workspaces = new Array();
+      workspaces = new Array();
       $(this).find('tr').each(function(){
         if ( $(this).find('.workspace').length > 0 && $.trim($(this).find('.workspace').html()) )
         if ( workspaces.indexOf($.trim($(this).find('.workspace').html())) == -1 )
@@ -15,7 +15,7 @@
       
       // create the workspaces lines
       for ( i = 0 ; i < workspaces.length ; i++ )
-        $(this).prepend('<tr class="workspace"><td colspan="2" class="name">'+workspaces[i]+'</td><td class="tickets">0</td><td class="price">0</td><td>-</td><td>-</td><td>-</td>');
+        $(this).prepend('<tr class="workspace"><td colspan="2" class="name">'+workspaces[i]+'</td><td class="tickets">0</td><td class="price">0</td><td>-</td><td>-</td>');
         
       // ordering the table content
       totals = [0,0];
@@ -46,7 +46,14 @@
       $(this).find('tr .workspace').hide();
     });
     
-    <?php include_partial('show_print_part_js',array('tab' => 'spectators')) ?>
+    $('#sf_fieldset_spectators .tab-print a').click(function(){
+      $('body').addClass('sf_fieldset_spectators'); print();
+      
+      // time out permitting the system to prepare the print before restoring things
+      setTimeout(function(){ $('body').removeClass('sf_fieldset_spectators'); },500);
+      
+      return false;
+    });
   });
 </script>
 

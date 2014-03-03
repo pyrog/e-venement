@@ -26,7 +26,7 @@
     if ( !sfConfig::has('app_texts_email_confirmation') )
       throw new liOnlineSaleException('You need to configure app_texts_email_confirmation in your apps/pub/config/app.yml file');
     
-    sfApplicationConfiguration::getActive()->loadHelpers(array('Date','Number','I18N', 'Url'));
+    sfApplicationConfiguration::getActive()->loadHelpers(array('Date','Number','I18N'));
     
     // command is not yet i18n, only french
     $command = 'Commande #'.$transaction->id;
@@ -60,11 +60,11 @@
         unset($event['event']);
         foreach ( $event as $manif )
         {
-          $command .= "  Le ".format_datetime($manif['manif']->happens_at)." à ".$manif['manif']->Location.(($sp = $ticket->Manifestation->Location->getWorkspaceSeatedPlan($ticket->Gauge->workspace_id)) ? '*' : '')."\n";
+          $command .= "  Le ".format_datetime($manif['manif']->happens_at)." à ".$manif['manif']->Location."\n";
           unset($manif['manif']);
           foreach ( $manif as $tickets )
             $command .= "    ".($tickets['price']->description ? $tickets['price']->description : $tickets['price'])." x ".$tickets['qty']." = ".format_currency($tickets['value'],'€')."\n";
-        }
+       }
       }
     }
     
@@ -80,14 +80,12 @@
     // footer
     $command .= "\n";
     $command .= __('Total')."\n";
-    if ( $amount = $transaction->getMemberCardPrice(true) )
-    $command .= '  '.__('Member cards').": ".format_currency($amount,'€')."\n";
+    $command .= '  '.__('Member cards').": ".format_currency($transaction->getMemberCardPrice(true),'€')."\n";
     $command .= '  '.__('Tickets').": ".format_currency($transaction->getPrice(true),'€')."\n";
     $command .= "\n";
     $command .= "Paiements\n";
-    if ( $amount = $transaction->getTicketsLinkedToMemberCardPrice(true) )
-    $command .= "  ".__('Member cards').": ".format_currency($amount,'€')."\n";
-    $command .= "  ".__('Credit card').": ".format_currency($transaction->getPrice(true,true),'€')."\n";
+    $command .= "  ".__('Member cards').": ".format_currency($transaction->getTicketsLinkedToMemberCardPrice(true),'€')."\n";
+    $command .= "  Carte bancaire: ".format_currency($transaction->getPrice(true,true),'€')."\n";
     
     $replace = array(
       '%%DATE%%' => format_date(date('Y-m-d')),
@@ -95,21 +93,17 @@
       '%%TRANSACTION_ID%%' => $transaction->id,
       '%%SELLER%%' => sfConfig::get('app_informations_title'),
       '%%COMMAND%%' => '<pre>'.$command.'</pre>',
-      '%%TICKETS%%' => $transaction->renderSimplifiedTickets(), // HTML tickets w/ barcode
     );
     
     $email = new Email;
     $email->Contacts[] = $transaction->Contact;
     $email->field_bcc = sfConfig::get('app_informations_email','webdev@libre-informatique.fr');
-    $email->field_subject = sfConfig::get('app_informations_title').': '.__('your order #').$transaction->id;
+    $email->field_subject = sfConfig::get('app_informations_title').': votre commande #'.$transaction->id;
     $email->field_from = sfConfig::get('app_informations_email','contact@libre-informatique.fr');
     $email->content = nl2br(str_replace(array_keys($replace),$replace,sfConfig::get('app_texts_email_confirmation')));
-    $email->content .= nl2br("\n\n  * ".sfConfig::get('app_text_email_seated_tickets',
-      __('All lines marked with an wildcard concern a seated venue. You will receive a new email as soon as we allocate seats for your tickets.')
-    ));
-    $email->content .= nl2br("\n\n".sfConfig::get('app_text_email_footer',<<<EOF
+    $email->content .= nl2br("\n".sfConfig::get('app_text_email_footer',<<<EOF
 --
-<a href="http://www.e-venement.net/">e-venement</a> est le système de billetterie informatisée développé par développé par <a href="http://www.libre-informatique.fr/">Libre Informatique</a>. 
+<a href="http://www.libre-informatique.fr/sw/01-Billetterie/e-venement">e-venement</a> est le système de billetterie informatisée développé par développé par Libre Informatique. 
 Ces logiciels sont distribués sous <a href="http://fr.wikipedia.org/wiki/Licences_libres">licences libres</a>
 
 Libre Informatique

@@ -26,7 +26,6 @@ a, a:active, a:visited { color: #000; }
   border-radius: 7px;
   background-color: #bddcff;
 }
-.nude { padding: 0; background-color: white; }
 .nude #more, .nude #content {
   margin-top: 10px;
 }
@@ -66,15 +65,14 @@ a, a:active, a:visited { color: #000; }
 
 #logo {
   position: fixed;
-  top: -5px;
-  left: 700px;
-  height: 57px;
+  top: 0;
+  left: 640px;
+  height: 52px;
   width: 223px;
-  background-image: url(../images/logo-evenement-small.png);
+  background-image: url(../images/menu-e-venement.png);
   background-repeat: no-repeat;
   z-index: 1200;
 }
-#logo.museum { background-image: url(../images/logo-emusee-small.png); }
 
 #transition {
   position: fixed;
@@ -83,7 +81,7 @@ a, a:active, a:visited { color: #000; }
   left: 0;
   right: 0;
   background-color: rgba(114,159,207,0.7);
-  background-image: url('../images/wait.png');
+  background-image: url('../images/wait.gif');
   background-repeat: no-repeat;
   background-position: center center;
   display: none;
@@ -130,9 +128,10 @@ html .specialized-form input[type=text] { padding: 1px 1px; padding-right: 0px; 
 }
     
 
-#sf_admin_container ul li.sf_admin_action_periodicity a,
-#sf_admin_container ul li.sf_admin_action_duplicate a { background: rgb(223, 239, 252) url("../sfAdminThemejRollerPlugin/css/jquery/redmond/images/ui-icons_6da8d5_256x240.png") no-repeat -16px -128px; }
-#sf_admin_container ul li.sf_admin_action_periodicity a { background-position: -112px -112px; }
+#sf_admin_container ul li.sf_admin_action_duplicate a
+{
+  background: rgb(223, 239, 252) url("../sfAdminThemejRollerPlugin/css/jquery/redmond/images/ui-icons_6da8d5_256x240.png") no-repeat -16px -128px;
+}
   
 html button.fg-button-icon-left .ui-icon { left: 0.4em; }
 
@@ -141,9 +140,3 @@ html button.fg-button-icon-left .ui-icon { left: 0.4em; }
 .ui-dialog .ui-button-icon-only .ui-button-text { display: none; }
 .ui-dialog .ui-button-icon-only .ui-icon { margin-top: -2px; margin-left: -3px; }
 #ui-datepicker-div { display: none; }
-
-.sf_admin_text input[type=file] { border: 0; }
-
-.welcome { min-height: 600px; }
-
-.sf_admin_form_row .label input[type=checkbox][name=all] { margin-right: 0.5em; }

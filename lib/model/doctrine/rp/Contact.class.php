@@ -57,7 +57,7 @@ class Contact extends PluginContact
     
     $arr = array();
     foreach ( $this->YOBs as $YOB )
-      $arr[$YOB->year.$YOB->month.$YOB->day.$YOB->name.$YOB->id] = $YOB;
+      $arr[$YOB->year.$YOB->month.$YOB->day.$YOB->name] = $YOB;
     ksort($arr);
     
     $this->YOBs->clear();
@@ -77,43 +77,11 @@ class Contact extends PluginContact
     return $c;
   }
   
-  /**
-   * @see PluginContact::getVcard()
-   **/
-  public function getVcard($dummy = NULL)
-  {
-    return parent::getVcard();
-  }
-  
-  /**
-   * @see PluginContact::setVcard()
-   **/
-  public function setVcard($vcard, $dummy = NULL)
-  {
-    if (!( $vcard instanceof liVCard ))
-      $vcard = new liVCard(NULL, $vcard);
-    return parent::setVcard($vcard);
-  }
-  
   public function getGroupsPicto()
   {
     $str = '';
     foreach ( $this->Groups as $group )
-    {
-      if ( !sfContext::hasInstance() )
-      {
-        $str .= $group->getHtmlTag().' ';
-        continue;
-      }
-      
-      $sf_user = sfContext::getInstance()->getUser();
-      $users = array();
-      foreach ( $group->Users as $user )
-        $users[] = $user->id;
-      if ( $group->sf_guard_user_id == $sf_user->getId()
-        || is_null($group->sf_guard_user_id) && (in_array($sf_user->getId(), $users) || $sf_user->hasCredential(array('admin','super-admin'),false)) )
-        $str .= $group->getHtmlTag().' ';
-    }
+      $str .= $group->getHtmlTag().' ';
     return $str;
   }
 }

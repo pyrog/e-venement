@@ -9,34 +9,29 @@ all:
           credential: pr-contact-del
           attributes:
             onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
-        actions:
-          label: Actions
-          attributes:
-            onclick: "javascript: return false;"
-            target: _blank
-        batchRemoveFromFilters:
-          credential: pr-contact
-          label: Remove through filters
-          attributes:
-            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
         csv:
           credential: pr-contact-csv
           label: Extract
-        labels:
-          credential: pr-contact-labels
-          label: Labels
-        duplicates:
-          label: Duplicates
         batchMerge:
           credential: pr-contact-edit
           label: Merge
           attributes:
             onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
-        #map:
-        #  label: Geolocalize
+        batchRemoveFromFilters:
+          credential: pr-contact
+          label: Remove through filters
+          attributes:
+            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
+        duplicates:
+          label: Duplicates
+        labels:
+          credential: pr-contact-labels
+          label: Labels
+        map:
+          label: Geolocalize
     edit:
       object:
-        title: [title, name, firstname, _show_dates]
+        title: [title, name, firstname]
         new_title: [title, name, firstname]
         lines:
           Complements:
@@ -94,7 +89,7 @@ all:
             Internet:
               show_labels: true
               fields: [contact_email, contact_email_no_newsletter, _organism_email, _organism_url]
-            Professional memo:
+            Professional correspondence:
               show_labels: true
               show_title: true
               extra_class: tdp-vertical
@@ -112,14 +107,6 @@ all:
         Emails:
           credentials: pr-emailing
           partial: global/tdp/side_widget_object_emails
-        <?php if ( !sfConfig::get('app_options_no_event_archives',true) ): echo PHP_EOL; ?>
-        Archives:
-          credentials: tck-reports
-          partial: global/tdp/side_widget_object_events_archive
-        <?php endif; echo PHP_EOL; ?>
-        Duplicates:
-          show_title: false
-          partial: global/tdp/side_widget_object_new_duplicates
 
     new:
       object:

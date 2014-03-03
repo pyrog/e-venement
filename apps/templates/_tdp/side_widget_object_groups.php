@@ -16,9 +16,7 @@
           <h3><?php echo $obj ?></h3>
         <?php endif ?>
         <form action="#" method="get"><ul>
-          <?php foreach ( $obj->getGroups() as $group ): ?>
-          <?php $users = array(); foreach ( $group->Users as $user ) $users[] = $user->id; ?>
-          <?php if ( is_null($group->sf_guard_user_id) && (in_array($sf_user->getId(), $users) || $sf_user->hasCredential(array('super-admin','admin'),false)) || $group->sf_guard_user_id === $sf_user->getId() ): ?>
+          <?php foreach ( $obj->Groups as $group ): ?>
           <li>
             <?php if ( $group->sf_guard_user_id === $sf_user->getId() || (is_null($group->sf_guard_user_id) && $sf_user->hasCredential('pr-group-common')) ): ?>
             <a href="#" class="remove" onclick="javascript: contact_tdp_group_removing_obj<?php echo $cpt.'_'.$obj->id ?>(this);">x</a>
@@ -28,7 +26,6 @@
             <?php endif ?>
             <?php echo link_to($group,'group/show?id='.$group->id) ?>
           </li>
-          <?php endif ?>
           <?php endforeach ?>
           <li class="empty" <?php if ( $obj->Groups->count() > 0 ): ?>style="display: none"<?php endif ?>><?php echo __('No result',null,'sf_admin') ?></li>
           <?php if ( $sf_user->hasCredential('pr-group-common') || $sf_user->hasCredential('pr-group-perso') ): ?>

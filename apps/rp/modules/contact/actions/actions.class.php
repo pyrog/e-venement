@@ -41,7 +41,6 @@ class contactActions extends autoContactActions
   
   public function executeError404(sfWebRequest $request)
   {
-    $this->useClassicTemplateDir(true);
   }
   public function postExecute()
   {
@@ -66,11 +65,9 @@ class contactActions extends autoContactActions
         $this->hasFilters = $this->getUser()->getAttribute('contact.filters', $this->configuration->getFilterDefaults(), 'admin_module');
       if ( !isset($this->filters) )
         $this->filters = $this->configuration->getFilterForm($this->getFilters());
-      //if ( !in_array($this->getActionName(), array('error404','index','search','map','labels','getSpecializedForm','csv','groupList','group')) )
+      //if ( !in_array($this->getActionName(), array('index','search','map','labels','getSpecializedForm','csv','groupList','group')) )
       if ( in_array($this->getActionName(), array('edit','new','show','create','update','delete')) )
         $this->setTemplate('edit');
-      if ( in_array($this->getActionName(), array('duplicates')) )
-        $this->setTemplate('index');
     }
   }
   
@@ -78,10 +75,7 @@ class contactActions extends autoContactActions
   {
     $request->checkCSRFProtection();
 
-    $ids = $request->getParameter('ids',array());
-    $pro_ids = $request->getParameter('professional_ids',array());
-    
-    if (!( $ids || $pro_ids ))
+    if ( !($ids = $request->getParameter('ids',array())) && !($pro_ids = $request->getParameter('professional_ids',array())) )
     {
       $this->getUser()->setFlash('error', 'You must at least select one item.');
 
@@ -137,7 +131,7 @@ class contactActions extends autoContactActions
       $validator = new sfValidatorDoctrineChoice(array('model' => 'Contact', 'multiple' => true, 'required' => false));
       $ids = $validator->clean($request->getParameter('ids'));
       $validator = new sfValidatorDoctrineChoice(array('model' => 'Professional', 'multiple' => true, 'required' => false));
-      $pro_ids = $validator->clean($request->getParameter('professional_ids'));
+      $pro_ids = $validator->clean($request->getParameter('pro_ids'));
       $validator = new sfValidatorDoctrineChoice(array('model' => 'Group', 'multiple' => true));
       $groups = $request->getParameter('contact_filters');
       $groups = $validator->clean(isset($groups['groups_list'])
@@ -147,7 +141,6 @@ class contactActions extends autoContactActions
     }
     catch (sfValidatorError $e)
     {
-      error_log($e->getMessage());
       $this->getUser()->setFlash('error', 'A problem occurs when adding the selected items as some items do not exist anymore.');
       return $this->redirect('@contact');
     }
@@ -162,7 +155,7 @@ class contactActions extends autoContactActions
       $gc->group_id = $group_id;
       
       try { $gc->save(); }
-      catch(Doctrine_Exception $e) { error_log($e->getMessage()); }
+      catch(Doctrine_Exception $e) {}
     }
     
     // professionals
@@ -181,16 +174,6 @@ class contactActions extends autoContactActions
     
     $this->getUser()->setFlash('notice',__('The chosen contacts and professionals have been added to the selected groups.'));
     $this->redirect('@contact');
-  }
-  public function executeBatchDelete(sfWebRequest $request)
-  {
-    $this->dispatcher->notify(new sfEvent($this, 'admin.delete_objects', array(
-      'objects' => Doctrine::getTable('Contact')->createQuery('c')
-        ->andWhereIn('c.id',$request->getParameter('ids'))
-        ->select('c.*')
-        ->execute(),
-    )));
-    return parent::executeBatchDelete($request);
   }
   
   public function executeShow(sfWebRequest $request)
@@ -329,24 +312,10 @@ class contactActions extends autoContactActions
       $this->sort = array('name','');
       $this->pager->getQuery()->orderby('name');
     }
-    if ( $organism_id = intval($request->getParameter('organism_id')) )
-      $this->pager->getQuery()->andWhere('o.id = ?', $organism_id);
   }
   public function executeAjax(sfWebRequest $request)
   {
     //$this->getResponse()->setContentType('application/json');
-    $this->useClassicTemplateDir(true);
-    if ( $request->hasParameter('debug') && $this->getContext()->getConfiguration()->getEnvironment() == 'dev' )
-    {
-      $this->getResponse()->setContentType('text/html');
-      sfConfig::set('sf_debug',true);
-      $this->setLayout('layout');
-    }
-    else
-    {
-      sfConfig::set('sf_debug',false);
-      sfConfig::set('sf_escaping_strategy', false);
-    }
     
     $charset = sfConfig::get('software_internals_charset');
     $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q'));
@@ -365,7 +334,7 @@ class contactActions extends autoContactActions
     foreach ( $request as $contact )
       $contacts[$contact->id] = (string) $contact;
     
-    $this->contacts = $contacts;
+    return $this->renderText(json_encode($contacts));
   }
   
   public function executeCsv(sfWebRequest $request, $labels = false)
@@ -415,12 +384,6 @@ class contactActions extends autoContactActions
     $this->processForm($request, $this->form);
     
     $this->setTemplate('edit');
-  }
-  
-  public function executeVcf(sfWebRequest $request)
-  {
-    $this->executeShow($request);
-    $this->useClassicTemplateDir(true);
   }
   
   public function executeCard(sfWebRequest $request)
