@@ -49,9 +49,6 @@
     }
     $this->transaction = $q->fetchOne();
     
-    // if any ticket needs a seat, do what's needed
-    $this->redirectToSeatsAllocationIfNeeded('integrate');
-    
     $this->tickets = array();
     foreach ( $this->transaction->Tickets as $ticket )
     if ( !$ticket->printed_at && !$ticket->integrated_at )

@@ -170,13 +170,12 @@ GroupUser:
       onUpdate: CASCADE
 GroupDeleted:
   package: group
-  actAs: [Timestampable]
+  inheritance:
+    extends: GroupDetail
+    type: concrete
   columns:
-    group_id:
-      type: integer
-      notnull: true
   relations:
     Group:
-      foreignAlias: DeletedMembers
+      foreignAlias: UserGroups
       onDelete: CASCADE
       onUpdate: CASCADE

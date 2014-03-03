@@ -1,12 +1,3 @@
-filter:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                filter
-    module:               filter
-    prefix_path:          /filter
-    column:               id
-    with_wildcard_routes: true
-
 jabber:
   class: sfDoctrineRouteCollection
   options:

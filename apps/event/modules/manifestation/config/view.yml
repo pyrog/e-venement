@@ -3,22 +3,17 @@ all:
   javascripts: [manifestation,manifestation-duration]
 
 showSuccess:
-  stylesheets: [manifestation-view, view, event-seated-plan]
-  javascripts:  [event-seated-plan]
+  stylesheets: [manifestation-view,view]
 editSuccess:
-  stylesheets: [manifestation-view,view, event-seated-plan]
-  javascripts:  [event-seated-plan]
+  stylesheets: [manifestation-view,view]
 newSuccess:
   stylesheets: [manifestation-view,view]
-  javascripts:  [event-seated-plan]
 periodicitySuccess:
   stylesheets: [manifestation-view,view]
 updateSuccess:
-  stylesheets: [manifestation-view,view, event-seated-plan]
-  javascripts:  [event-seated-plan]
+  stylesheets: [manifestation-view,view]
 createSuccess:
-  stylesheets: [manifestation-view,view, event-seated-plan]
-  javascripts:  [event-seated-plan]
+  stylesheets: [manifestation-view,view]
 versionsSuccess:
   javascripts: [manifestation-versionning]
 
@@ -41,9 +36,3 @@ csvSuccess:
   http_metas:
     content-type: text/comma-separated-values
     content-disposition: attachment; filename=spectators.csv
-
-ajaxSuccess:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-        

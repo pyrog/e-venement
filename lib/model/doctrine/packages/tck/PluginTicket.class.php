@@ -79,10 +79,6 @@ abstract class PluginTicket extends BaseTicket
         ->findOneById($this->Manifestation->id)
         ->Vat->value;
     
-    // force numerotation to null if needed
-    if ( !$this->numerotation )
-      $this->numerotation = NULL;
-    
     parent::preSave($event);
   }
 
@@ -112,14 +108,6 @@ abstract class PluginTicket extends BaseTicket
         $mcp->save();
         break;
       }
-    }
-    
-    // cancelling a seated ticket
-    if ( !is_null($this->cancelling) && !is_null($this->numerotation) && $this->numerotation )
-    {
-      $this->numerotation = NULL;
-      $this->Cancelled->numerotation = NULL;
-      $this->Cancelled->save();
     }
     
     // if the ticket's manifestation depends on an other one (and the ticket is not a cancellation nor a duplication

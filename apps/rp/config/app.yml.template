@@ -13,7 +13,6 @@ all:
     design: tdp
     #social_informations: true
     #no_event_archives: false
-    #force_fields: [firstname, postalcode, city]
   #controls:
   #  enable: true
   cards:

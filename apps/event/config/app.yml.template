@@ -35,7 +35,7 @@ all:
     #security_token:
     #  xxxxxxxmytokenxxxxxxx: my_username
     cron_period: 1 hour
-    email_from: no-reply@domain.tld
+    email_from: no-reply@mydomain.tld
     alarms:
       when: [-4 hours, -1 hour]
       what: [display, email]
