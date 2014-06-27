@@ -27,9 +27,9 @@ Contact:
     type: concrete
   actAs: 
     Searchable:
-      fields: [name,firstname]
+      fields: [name, firstname, city]
     Sluggable:
-      fields: [name,firstname]
+      fields: [name, firstname]
     Versionable: ~
   indexes:
     contact_name_idx:
@@ -83,27 +83,11 @@ Contact:
       foreignAlias: BackRelations
       local: from_contact_id
       foreign: to_contact_id
-ContactArchive:
-  package: rp
-  indexes:
-    old_id_idx:
-      fields: [old_id]
-  columns:
-    contact_id:
-      type: integer
-      notnull: true
-    old_id:
-      type: integer
-      notnull: true
-  relations:
-    Contact:
-      foreignAlias: Archives
-      onDelete: CASCADE
 Organism:
   package: rp
   actAs:
     Searchable:
-      fields: [name, administrative_number]
+      fields: [name, administrative_number, city]
     Versionable: ~
   inheritance:
     extends: Addressable
@@ -307,7 +291,6 @@ GeoFrDepartment:
     num:
       type: string(3)
       notnull: true
-      unique: true
     name:
       type: string(255)
       notnull: true

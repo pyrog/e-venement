@@ -63,7 +63,7 @@
       'allDay' => false,
       'hackurl' => url_for('manifestation/show?id='.$manif->id),
       'hacktitle' => (string)$manif->Location,
-      'editable' => sfConfig::get('app_manifestation_editable_in_calendar', true) && $sf_user->hasCredential('event-manif-edit'),
+      'editable' => $sf_user->hasCredential('event-manif-edit'),
       'css' => array_merge($css_base = array(
           'border-style'  => $manif->reservation_confirmed ? 'solid' : 'dashed',
           'font-style'    => $manif->blocking ? 'normal' : 'italic',
@@ -73,7 +73,7 @@
     );
     
     if ( $manif->color_id )
-      $manifs[count($manifs)-1]['backgroundColor'] = $manif->Color->color;
+      $manifs[count($manifs)-1]['backgroundColor'] = '#'.$manif->Color->color;
     
     // to show preparation and finition stuff or not to show
     if ( !$display_reservations )
@@ -95,7 +95,7 @@
         'border-bottom-width' => '0',
       ));
       if ( $manif->color_id )
-        $manifs[count($manifs)-1]['backgroundColor'] = $manif->Color->color;
+        $manifs[count($manifs)-1]['backgroundColor'] = '#'.$manif->Color->color;
       unset($manifs[count($manifs)-1]['hackurl']);
     }
     
@@ -114,7 +114,7 @@
         'border-top-width' => '0',
       ));
       if ( $manif->color_id )
-        $manifs[count($manifs)-1]['backgroundColor'] = $manif->Color->color;
+        $manifs[count($manifs)-1]['backgroundColor'] = '#'.$manif->Color->color;
       unset($manifs[count($manifs)-1]['hackurl']);
     }
   }

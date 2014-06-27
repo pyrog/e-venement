@@ -12,11 +12,9 @@ class sfGuardGroupForm extends PluginsfGuardGroupForm
 {
   public function configure()
   {
-    $this->widgetSchema['users_list']
-      ->setOption('order_by',array('first_name, last_name, username',''))
-      ->setOption('expanded',true);
-    $this->widgetSchema['permissions_list']
-      ->setOption('order_by',array('name',''))
-      ->setOption('expanded',true);
+    $this->widgetSchema['permissions_list']->setOption('order_by',array('name',''));
+    $this->widgetSchema['users_list']->setOption('order_by',array('first_name, last_name, username',''));
+    $this->widgetSchema['users_list']->setOption('expanded',true);
+    $this->widgetSchema['permissions_list']->setOption('expanded',true);
   }
 }

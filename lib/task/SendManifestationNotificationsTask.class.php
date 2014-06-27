@@ -108,10 +108,10 @@ EOF;
         $orgs = array();
         foreach ( $manif->Organizers as $org )
           $orgs[] = $org;
-        $state = array();
+        $state = '';
         foreach ( array(
-          '!reservation_confirmed' => __('To be confirmed'),
-          '!blocking'              => __('Not blocking'),
+          '!reservation_confirmed' => __('A confirmer'),
+          '!blocking'              => __('Non bloquante')
         ) as $prop => $msg )
         {
           $bool = true;
@@ -123,7 +123,7 @@ EOF;
           }
           
           if ( $manif->$field === $bool )
-            $state[] = $msg;
+            $state .= $msg;
         }
         
         // content
@@ -137,7 +137,7 @@ EOF;
           %s: %s<br/><br/>
 EOF
           , (string)$manif
-          , __('State'), implode(', ',$state)
+          , __('State'), $state
           , __('When'), $manif->mini_date, $manif->mini_end_date
           , __('Where'), (string)$manif->Location
           , __('Applicant'), (string)$manif->Applicant

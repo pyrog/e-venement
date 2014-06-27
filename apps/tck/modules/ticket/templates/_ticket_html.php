@@ -22,7 +22,6 @@
       <span class="price"><?php echo format_currency($ticket->value,'€') ?></span>
     </p>
     <p class="price_name"><span class="description"><?php echo $ticket->Price->description ?></span><span class="name"><?php echo $ticket->price_name ?></span> <span class="price"><?php echo format_currency($ticket->value,'€') ?></span></p>
-    <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span><span class="value"><?php echo format_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
     <p class="event"><?php echo strlen($buf = (string)$ticket->Manifestation->Event) > $maxsize['event_name'] ? substr(nl2br($buf),0,$maxsize['event_name']).'...' : nl2br($buf) ?></p>
     <p class="event-short"><?php echo strlen($buf = $ticket->Manifestation->Event->short_name) > $maxsize['event_shortname'] ? substr($buf,0,$maxsize['event_shortname']).'...' : $buf ?></p>
     <p class="cie"><?php $creators = array(); $cpt = 0; foreach ( $ticket->Manifestation->Event->Companies as $company ) { if ( $cpt++ > 1 ) break; $creators[] .= $company->name; } echo implode(', ',$creators); ?></p>
@@ -51,7 +50,7 @@
       <?php endif ?>
       <span class="ticket-id">#<?php echo $ticket->id ?></span>
       <span class="keep-it"><?php echo __('Keep it') ?></span>
-      <span class="seating"><span><?php echo $ticket->numerotation ? '' : __('Free seating') ?></span></span>
+      <span class="seating"><span><?php echo __('Free seating') ?></span></span>
     </p>
     <p class="workspace <?php echo $ticket->Manifestation->Gauges->count() > 1 ? 'has_many' : 'one' ?>">
       <?php echo $ticket->Gauge->Workspace->getNameForTicket() ?>
@@ -72,8 +71,6 @@
       /
       <span class="price"><?php echo format_currency($ticket->value,'€') ?></span>
     </p>
-    <p class="price_name"><span class="name"><?php echo $ticket->price_name ?></span> <span class="price"><?php echo format_currency($ticket->value,'€') ?></span></p>
-    <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span><span class="value"><?php echo format_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
     <p class="spectator"><?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?></p>
     <p class="event"><?php echo strlen($buf = (string)$ticket->getRaw('Manifestation')->Event) > $maxsize['event_name_right'] ? substr($buf,0,$maxsize['event_name_right']-3).'...' : $buf ?></p>
     <p class="cie"><?php echo strlen($buf = implode(', ',$creators)) > 20 ? substr($buf,0,17).'...' : $buf; ?></p>

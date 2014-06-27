@@ -21,22 +21,4 @@ class Location extends PluginLocation
       ->getPlugin()
       ->setOption('analyzer',new MySearchAnalyzer());
   }
-  
-  /**
-   * function getWorkspaceSeatedPlan
-   * @param $workspace_id integer
-   * @return FALSE if no seated plan has been found, SeatedPlan elsewhere
-   **/
-  public function getWorkspaceSeatedPlan($workspace_id)
-  {
-    if ( intval($workspace_id) == 0 )
-      throw new liSeatedException('Bad workspace_id given.');
-    
-    foreach ( $this->SeatedPlans as $seated_plan )
-    foreach ( $seated_plan->Workspaces as $ws )
-    if ( $ws->id == $workspace_id )
-      return $seated_plan;
-    
-    return false;
-  }
 }

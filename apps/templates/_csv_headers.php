@@ -35,7 +35,6 @@
     'description' 				=> __('Keywords'),
     'phonename'  					=> __('Phonetype'),
     'phonenumber' 				=> __('Phonenumber'),
-    '__YOBs__year'        => __('Birthdays'),
     '__Groups__name'      => __('Groups'),
     'events'              => __('Events'),
     'organism_category' 	=> __('Category of organism'),

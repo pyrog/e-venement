@@ -14,8 +14,8 @@ invoiceSuccess:
 gaugeSuccess:
   stylesheets: [gauge]
 sellSuccess:
-  javascripts: [/private/ticket.js, event-seated-plan]
-  stylesheets: [print-sell: { media: print }, /private/ticket.css, event-seated-plan]
+  javascripts: [/private/ticket.js]
+  stylesheets: [print-sell: { media: print }, /private/ticket.css]
 touchscreenSuccess:
   stylesheets: [ticket-touchscreen]
 
@@ -49,6 +49,3 @@ cancelBootSuccess:
   javascripts: [jquery,menu,/sfFormExtraPlugin/js/jquery.autocompleter.js,/cxFormExtraPlugin/js/cx_open_list.js]
   stylesheets: [/sfFormExtraPlugin/css/jquery.autocompleter.css]
 
-seatsAllocationSuccess:
-  javascripts: [event-seated-plan]
-  stylesheets: [event-seated-plan]

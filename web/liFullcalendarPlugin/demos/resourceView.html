@@ -21,7 +21,7 @@
 				center: 'title',
 				right: 'resourceDay,resourceWeek,resourceNextWeeks,resourceMonth'
 			},
-			defaultView: 'resourceWeek',
+			defaultView: 'resourceDay',
 			firstDay: 1, 	
 			editable: true,
 			selectable: true,
@@ -31,32 +31,12 @@
 			resources: 'json-resources.php',
 			events: [
 				{
-					title: 'Lunch 12.15-14.45',
-					start: new Date(y, m, d, 12, 15),
-					end: new Date(y, m, d, 14, 45),
+					title: 'Lunch 12.15-12.45',
+					start: new Date(y, m, d, 12, 00),
+					end: new Date(y, m, d, 12, 30),
 					allDay: false,
-					resource: ['resource1','resource2']
-				},				
-				{
-					title: 'Meeting from this day to this +4',
-					start: new Date(y, m, d, 10, 30),
-					end: new Date(y, m, d+4, 11, 00),
-					allDay: false,
-					resource: 'resource1'
-				},
-				{
-					title: 'Meeting 11.00',
-					start: new Date(y, m-2, d, 11, 00),
-					allDay: true,
-					resource: 'resource2'
-				},
-				{
-					title: 'Lunch 12-14',
-					start: new Date(y, m, d, 12, 0),
-					end: new Date(y, m, d, 14, 0),
-					allDay: false,
-					resource: 'resource1'
-				}		
+					resource: ['resource1']
+				},						
 			],
 			select: function(start, end, allDay, jsEvent, view, resource) {
 				var title = prompt('event title:');

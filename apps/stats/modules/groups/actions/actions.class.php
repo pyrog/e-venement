@@ -31,6 +31,7 @@ class groupsActions extends sfActions
         $this->redirect($this->getContext()->getModuleName().'/index');
       }
       
+      die(print_r($this->criterias,true));
       $this->criterias = array();
     }
     

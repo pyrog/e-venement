@@ -57,11 +57,6 @@ class ProjectConfiguration extends sfProjectConfiguration
     $this->enablePlugins('sfFeed2Plugin');
     $this->enablePlugins('liCardDavPlugin');
     
-    $modules = array();
-    @include(dirname(__FILE__).'/extra-modules.php');
-    foreach ( $modules as $module )
-      $this->enablePlugins($module);
-    
     $this->loadProjectConfiguration();
     
     // transliteration & hyphenation
@@ -77,10 +72,5 @@ class ProjectConfiguration extends sfProjectConfiguration
       require_once $this->getConfigCache()->checkConfig('config/project.yml');
       require_once $this->getConfigCache()->checkConfig('config/e-venement.yml');
     }
-  }
-  
-  public function configureDoctrine(Doctrine_Manager $manager)
-  {
-    $manager->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'liDoctrineQuery');
   }
 }

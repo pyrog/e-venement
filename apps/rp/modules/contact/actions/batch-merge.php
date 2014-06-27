@@ -67,11 +67,11 @@
         
         // email
         if ( !$base_contact->email && $contact->email
-          || $contact->email && $recent )
+          || $recent )
           $base_contact->email = $contact->email;
         
         // password & description
-        if ( $contact->password && $recent )
+        if ( $recent )
           $base_contact->password = $contact->password;
         
         $arr = array();
@@ -85,19 +85,11 @@
         
         // phonenumbers
         foreach ( $contact->Phonenumbers as $phone )
-        {
           $base_contact->Phonenumbers[] = $phone;
-          $phone->contact_id = $base_contact->id;
-          $phone->save();
-        }
         
         // membercards
         foreach ( $contact->MemberCards as $mc )
-        {
           $base_contact->MemberCards[] = $mc;
-          $mc->contact_id = $base_contact->id;
-          $mc->save();
-        }
         
         // pro + groups
         foreach ( $contact->Professionals as $pro )
@@ -136,8 +128,6 @@
           
           // nothing to merge
           $base_contact->Professionals[] = $pro;
-          $pro->contact_id = $base_contact->id;
-          $pro->save();
         }
         
         // contact's groups
@@ -174,17 +164,6 @@
         // Relationships
         foreach ( $contact->Relationships as $relationship )
           $base_contact->Relationships[] = $relationship;
-          
-        // Archives
-        foreach ( $contact->Archives as $old_archive )
-        {
-          $archive = new ContactArchive;
-          $archive->old_id = $old_archive->old_id;
-          $base_contact->Archives[] = $archive;
-        }
-        $archive = new ContactArchive;
-        $archive->old_id = $contact->id;
-        $base_contact->Archives[] = $archive;
         
         // for multiple merges
         if ( $recent )

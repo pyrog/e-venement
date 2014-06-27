@@ -42,9 +42,7 @@ tr.method td, tr.event td { padding-top: 5px; }
 table tbody a { text-decoration: none; }
 table tbody a:hover { text-decoration: underline; }
 
-.criterias { min-height: 0; margin: 10px 245px 10px 5px; }
-.criterias .ui-widget-header { cursor: pointer; }
-.criterias.hide { display: none; }
+#users.criterias, #workspaces.criterias { min-height: 0; margin: 10px 245px 10px 0px; }
 .criterias .dates, .criterias ul { margin: 10px 30px; }
 
 #criterias {
@@ -63,7 +61,7 @@ table tbody a:hover { text-decoration: underline; }
 #criterias input[type=text][size="4"] { text-align: right; }
 #criterias input[type=text][size="2"] { width: 22px; }
 #criterias input[type=text][size="4"] { width: 44px; }
-#criterias select { width: 220px; }
+
 
 #cash-ledger .workspaces { display: none; }
 

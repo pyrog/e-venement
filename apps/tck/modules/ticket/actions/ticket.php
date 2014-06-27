@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
     $values = $request->getParameter('ticket');
     
     $tid = intval(
@@ -42,8 +42,6 @@
     
     if ( $values )
     {
-      if ( !$values['numerotation'] )
-        unset($values['numerotation']);
       $this->form->bind($values);
       
       try { if ( $this->form->isValid() )

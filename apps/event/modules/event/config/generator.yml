@@ -43,19 +43,11 @@ generator:
         display: [MetaEvent, name, EventCategory, duration_h_r, age_min_h_r, _list_manifestations,_list_manifestations_gauges, _list_manifestations_places, _list_manifestations_extra_informations]
         table_method: RetrieveList
         max_per_page: <?php echo sfConfig::get('app_listing_max_per_page',20).PHP_EOL ?>
-        object_actions:
-          _show: ~
-          _edit: ~
-          _delete: ~
-          add_manif:
-            action: addManifestation
-            credentials: [event-manif-new]
-            label: Add a manifestation
       filter:
         display:
           Event:              [meta_event_id, event_category_id, name, duration]
           Bookings:           [resource_id, contact_id, manif_confirmed, manif_blocking, manif_conflict, manif_optional]
-          Extra informations: [staging, writer, age_min, age_max, companies_list, display_by_default]
+          Extra informations: [staging, writer, age_min, age_max, companies_list]
       form: ~
       edit:
         title: Edit Event %%name%%

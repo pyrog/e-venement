@@ -69,24 +69,13 @@ class ContactForm extends BaseContactForm
     $this->widgetSchema['familial_situation_id']->setOption('order_by',array('name',''));
     $this->widgetSchema['familial_quotient_id']->setOption('order_by',array('name',''));
     
-    $this->widgetSchema['organism_category_id']->setOption('order_by',array('name',''));
-    
-    // adding artificial mandatory fields
-    if ( is_array($force = sfConfig::get('app_options_force_fields', array())) )
-    foreach ( $force as $field )
-    {
-      if ( isset($this->validatorSchema[$field]) )
-        $this->validatorSchema[$field]->setOption('required', true);
-    }
-    
     parent::configure();
   }
   
   public function isValid()
   {
     $v = parent::isValid();
-    $su = !sfContext::hasInstance()
-       || sfContext::hasInstance() && sfContext::getInstance()->getUser()->hasCredential('pr-admin');
+    $su = sfContext::hasInstance() && sfContext::getInstance()->getUser()->hasCredential('pr-admin');
     if ( !sfConfig::get('app_options_contact_force_one_phonenumber',false) || $su )
       return $v;
     

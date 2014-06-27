@@ -23,62 +23,27 @@
 ?>
 <?php
   $bank = new BankPayment;
+  $bank->code = $request->getParameter('error');
+  $bank->payment_certificate = $request->getParameter('signature');
+  $bank->authorization_id = $request->getParameter('authorization');
+  $bank->merchant_id = $request->getParameter('paybox_id');
+  $bank->customer_ip_address = $request->getParameter('ip_country');
+  $bank->capture_mode = $request->getParameter('card_type');
+  $bank->transaction_id = $request->getParameter('transaction_id');
+  $bank->amount = $request->getParameter('amount');
+  $bank->raw = $_SERVER['QUERY_STRING'];
   
-  switch ( sfConfig::get('app_payment_type','paybox') ) {
-  case 'tipi':
-    $bank->code = $request->getParameter('resultrans');
-    $bank->payment_certificate = $request->getRemoteAddress();
-    $bank->authorization_id = $request->getParameter('numauto');
-    $bank->merchant_id = $request->getParameter('numcli');
-    $bank->customer_ip_address = $request->getParameter('mel');
-    $bank->capture_mode = 'tipi';
-    $bank->transaction_id = $request->getParameter('transaction_id');
-    $bank->amount = $request->getParameter('montant');
-    $bank->raw = http_build_query($_POST);
-    
-    try {
-      TipiPayment::response(array(
-        'result'          => $request->getParameter('resultrans',false),
-        'token'           => TipiPayment::getToken($bank->transaction_id, $bank->amount/100),
-        'given_token'     => $request->getParameter('token'),
-        'ip_address'      => $request->getRemoteAddress(),
-        'transaction_id'  => $bank->transaction_id,
-      ));
-    }
-    catch ( sfException $e )
-    {
-      $bank->error = $bank->code;
-      $bank->save();
-      throw $e;
-    }
-    
-    break;
-  case 'paybox':
-    $bank->code = $request->getParameter('error');
-    $bank->payment_certificate = $request->getParameter('signature');
-    $bank->authorization_id = $request->getParameter('authorization');
-    $bank->merchant_id = $request->getParameter('paybox_id');
-    $bank->customer_ip_address = $request->getParameter('ip_country');
-    $bank->capture_mode = $request->getParameter('card_type');
-    $bank->transaction_id = $request->getParameter('transaction_id');
-    $bank->amount = $request->getParameter('amount');
-    $bank->raw = $_SERVER['QUERY_STRING'];
-    
-    try {
-      $r = PayboxPayment::response($_GET);
-      if ( !$r['success'] )
-        throw new liOnlineSaleException('An error occurred during the bank verifications');
-    }
-    catch ( sfException $e )
-    {
-      $bank->error = $bank->code;
-      $bank->save();
-      throw $e;
-    }
-    
-    break;
+  try {
+    $r = PayboxPayment::response($_GET);
+    if ( !$r['success'] )
+      throw new liOnlineSaleException('An error occurred during the bank verifications');
   }
-  
+  catch ( sfException $e )
+  {
+    $bank->error = $bank->code;
+    $bank->save();
+    throw $e;
+  }
   $bank->save();
   
   // direct payment
@@ -87,27 +52,25 @@
   $payment->payment_method_id = sfConfig::get('app_tickets_payment_method_id');
   $payment->value = $bank->amount/100;
   
-  // confirm already recorded data
+  $mc_pm = $this->getMemberCardPaymentMethod();
+  
+  // payments linked to member cards' credit
   $this->getUser()->setAttribute('transaction_id',$bank->transaction_id);
   $transaction = $this->getUser()->getTransaction();
-  
-  if ( $mc_pm = $this->getMemberCardPaymentMethod() )
+  $transaction->Contact->confirmed = true;
+  foreach ( $transaction->MemberCards as $mc )
   {
-    // payments linked to member cards' credit
-    foreach ( $transaction->MemberCards as $mc )
-    {
-      $mc->active = true;
-      $mc->contact_id = $transaction->contact_id;
-      $p = new Payment;
-      $p->transaction_id = $transaction->id;
-      $p->value = -$mc->MemberCardType->value;
-      $p->Method = $mc_pm;
-      $mc->Payments[] = $p;
-    }
-    
-    // payments done by member card
-    $this->createPaymentsDoneByMemberCards($mc_pm);
+    $mc->active = true;
+    $mc->contact_id = $transaction->contact_id;
+    $p = new Payment;
+    $p->transaction_id = $transaction->id;
+    $p->value = -$mc->MemberCardType->value;
+    $p->Method = $mc_pm;
+    $mc->Payments[] = $p;
   }
+  
+  // payments done by member card
+  $this->createPaymentsDoneByMemberCards($mc_pm);
   
   // contact
   $transaction->Contact->confirmed = true;

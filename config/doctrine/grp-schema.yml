@@ -25,6 +25,9 @@ ContactEntry:
   package: grp
   actAs:
     Timestampable: ~
+  indexes:
+    contact_entry_confirmed_idx:
+      fields: [confirmed]
   columns:
     professional_id:
       type: integer
@@ -50,8 +53,9 @@ ContactEntry:
       onUpdate: CASCADE
       onDelete: SET NULL
   indexes:
-    contact_entry_confirmed_idx:
-      fields: [confirmed]
+    contact_entry_index_idx:
+      fields: [professional_id,entry_id]
+      unique: true
 
 ManifestationEntry:
   package: grp
@@ -76,7 +80,7 @@ ManifestationEntry:
   indexes:
     manif_entry_index_idx:
       fields: [manifestation_id,entry_id]
-      type: unique
+      unique: true
 
 Entry:
   package: grp
@@ -160,7 +164,7 @@ EntryTickets:
   indexes:
     entry_price_index_idx:
       fields: [entry_element_id,price_id]
-      type: unique
+      unique: true
 
 GroupWorkspace:
   package: grp

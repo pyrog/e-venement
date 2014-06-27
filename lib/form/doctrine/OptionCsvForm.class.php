@@ -40,7 +40,6 @@ class OptionCsvForm extends BaseOptionCsvForm
         'description' => 'Keywords',
         'phonename' => 'Phonetype',
         'phonenumber' => 'Phonenumber',
-        '__YOBs__year'   => 'Birthdays',
         '__Groups__name' => 'Groups',
       ),
       'organism' => array(
@@ -106,7 +105,6 @@ class OptionCsvForm extends BaseOptionCsvForm
   	  'description'         => 'Keywords',
     	'phonename'           => 'Phonetype',
 	    'phonenumber'         => 'Phonenumber',
-	    '__YOBs__year'        => 'Birthdays',
 	    '__Groups__name'      => 'Groups',
   	  'organism_category'   => 'Category of organism',
     	'organism_name'       => 'Organism',
@@ -135,7 +133,7 @@ class OptionCsvForm extends BaseOptionCsvForm
     foreach ( $fields as $fieldname => $field )
  	  if ( in_array($fieldname,$data) )
 			$ordered[] = $fieldname;
-		elseif ( !$data )
+		else if ( !$data )
 			$ordered[] = $fieldname;
     
     return $ordered;

@@ -35,42 +35,18 @@
     $vars[$value] = $$value;
     unset($vars[$key]);
   }
+  $vars['options']['header'] = array_merge(array(
+    'organism_an'   => __('Admin. ID'),
+    'organism'      => __('Organism'),
+    'contact'       => __('Contact'),
+    'department'    => __('Department'),
+  ),$prices,array(
+    'total_qty'     => __('Qty'),
+    'total_value'   => __('Value'),
+    'transaction'   => __('Transaction'),
+    'accounting'    => __('Acc.'),
+  ));
+  foreach ( $prices as $id => $price )
+    $vars['options']['header'][$id] = $price;
   
-  switch ( $type ) {
-  case 'spectators_list':
-    $vars['options']['header'] = array_merge(array(
-      'organism_an'   => __('Admin. ID'),
-      'organism'      => __('Organism'),
-      'contact'       => __('Contact'),
-      'department'    => __('Department'),
-    ),$prices,array(
-      'total_qty'     => __('Qty'),
-      'total_value'   => __('Value'),
-      'transaction'   => __('Transaction'),
-      'accounting'    => __('Acc.'),
-    ));
-    break;
-  case 'manifestations_list':
-    $vars['options']['header'] = array(
-      'manifid'            => __('Id'),
-      'meta_event'    => __('Meta event'),
-      'event'         => __('Event'),
-      'date_from'     => __('Happens at'),
-      'date_to'       => __('Ends at'),
-      'duration'      => __('Duration'),
-      'age_min'       => __('Age min'),
-      'age_max'       => __('Age max'),
-      'event_description' => __('Description'),
-      'category'      => __('Category'),
-      'location'      => __('Location'),
-      'reservation_from'  => __('Booked from'),
-      'reservation_to'    => __('Booked until'),
-      'applicant'     => __('Applicant'),
-      'booking'       => __('Bookings'),
-      'confirmed'     => __('Confirmed'),
-      'description'   => __('Memo'),
-      'extra_informations' => __('Extra informations'),
-    );
-    break;
-  }
   include_partial('global/csv',$vars);

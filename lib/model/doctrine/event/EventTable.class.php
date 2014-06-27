@@ -55,8 +55,7 @@ class EventTable extends PluginEventTable
     
     return $this->createQuery('e')
       ->select('e.*, ec.*, me.*, m.*, l.*, c.*, g.*')
-      ->addSelect('(SELECT max(mm2.happens_at) AS max FROM Manifestation mm2 WHERE mm2.event_id = e.id) AS max_date')
-      ->addSelect('(SELECT min(mm3.happens_at) AS min FROM Manifestation mm3 WHERE mm3.event_id = e.id) AS min_date')
+      ->addSelect('(SELECT max(mm2.happens_at) AS max_date FROM Manifestation mm2 WHERE mm2.event_id = e.id) AS max_date')
       ->leftJoin('e.Manifestations m ON m.event_id = e.id AND (m.reservation_confirmed = TRUE '.
         (!is_null($cid) ? 'OR m.contact_id = '.$cid.' OR '.($admin ? 'TRUE' : 'FALSE') : '')
       .')')

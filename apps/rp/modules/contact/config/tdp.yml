@@ -25,8 +25,6 @@ all:
         labels:
           credential: pr-contact-labels
           label: Labels
-          attributes:
-            target: _blank
         duplicates:
           label: Duplicates
         batchMerge:
@@ -38,7 +36,7 @@ all:
         #  label: Geolocalize
     edit:
       object:
-        title: [title, name, firstname, _show_dates, _duplicate]
+        title: [title, name, firstname]
         new_title: [title, name, firstname]
         lines:
           Complements:
@@ -85,8 +83,8 @@ all:
           class: Professional
           parentAlias: Contact
           credentials: pr-organism
-          title: [Organism, _organism_category]
-          new_title: [organism_id, _new_organism]
+          title: [Organism]
+          new_title: [organism_id]
           lines:
             line1:
               fields: [professional_type_id, name, department, _organism_category, _groups_picto]

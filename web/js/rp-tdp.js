@@ -1,7 +1,3 @@
-// the global var that can be used everywhere as a "root"
-if ( LI == undefined )
-  var LI = {};
-
 $(document).ready(function(){
   var object_elts = 'td:first-child:not([class]), .sf_admin_list_td_name, .sf_admin_list_td_firstname, .sf_admin_list_td_postalcode, .sf_admin_list_td_city, .sf_admin_list_td_list_emails, .sf_admin_list_td_list_phones, .sf_admin_list_td_organisms_list, .sf_admin_list_td_list_see_orgs, .sf_admin_list_td_list_contact, td:last-child';
   var subobjects_elts = '.sf_admin_list_td_list_professional_id, .sf_admin_list_td_list_organism, .sf_admin_list_td_list_professional, .sf_admin_list_td_list_organism_postalcode, .sf_admin_list_td_list_organism_city, .sf_admin_list_td_list_professional_emails, .sf_admin_list_td_list_organism_phones_list, .sf_admin_list_td_list_professional_description, .sf_admin_list_td_list_professional_groups_picto';
@@ -75,11 +71,11 @@ $(document).ready(function(){
     }
   });  
   
-  // FORMS: submitting subobjects though AJAX
+  // FORMS: submitting subobjects though AJ$AX
   $('.tdp-subobject form, .tdp-object #sf_admin_content > form').submit(function(){
     $("html, body").animate({ scrollTop: 0 }, "slow");
     $('.sf_admin_flashes *').fadeOut('fast',function(){ $(this).remove(); });
-    LI.tdp_submit_forms();
+    contact_tdp_submit_forms();
     return false;
   });
   
@@ -96,7 +92,6 @@ $(document).ready(function(){
   
   // CONTENT: MULTIPLE PROFESSIONALS
   $('#tdp-content .sf_admin_row').each(function(){
-    $(this).prop('title', $.trim($(this).find('.sf_admin_list_td_description').html()));
     if ( (length = $(this).find('.sf_admin_list_td_list_organism .pro').length) > 1 )
     {
       // duplicating professional lines
@@ -181,13 +176,13 @@ $(document).ready(function(){
   });
   
   // CONTENT: SEEING CONTACT'S ORGANISMS
-  LI.tdp_show_orgs();
+  contact_tdp_show_orgs();
   if ( window.list_scroll_end == undefined )
     window.list_scroll_end = new Array();
-  window.list_scroll_end[window.list_scroll_end.length] = LI.tdp_show_orgs;
+  window.list_scroll_end[window.list_scroll_end.length] = contact_tdp_show_orgs;
   if ( window.integrated_search_end == undefined )
     window.integrated_search_end = new Array();
-  window.integrated_search_end[window.integrated_search_end.length] = LI.tdp_show_orgs;
+  window.integrated_search_end[window.integrated_search_end.length] = contact_tdp_show_orgs;
   
   // CONTENT: NEW FUNCTION FOR A CONTACT
   $('.tdp-subobject.tdp-object-new .tdp-widget-header input[type=text]').each(function(){
@@ -331,19 +326,10 @@ $(document).ready(function(){
   $('.tdp-email_no_newsletter, .tdp-contact_email_no_newsletter').each(function(){
     $(this).find('input').prop('title',$(this).find('label').html());
   });
-  
-  // slide down objects
-  var showupfct = function(){
-    $('#tdp-content .sf_admin_list .sf_admin_action_showup a').unbind().click(function(){
-      return LI.tdp_open_object(this);
-    });
-  }
-  showupfct();
-  window.list_scroll_end.push(showupfct);
 });
 
 // CONTENT: SEEING CONTACT'S ORGANISMS
-LI.tdp_show_orgs = function()
+function contact_tdp_show_orgs()
 {
   $('#tdp-content .sf_admin_list_td_list_see_orgs').unbind().click(function(){
     if ( !$(this).closest('table').hasClass('see-orgs') )
@@ -382,7 +368,7 @@ LI.tdp_show_orgs = function()
     $('#tdp-content .sf_admin_list_td_list_see_orgs:first').click();
 }
 
-LI.tdp_submit_forms = function(i = 0)
+function contact_tdp_submit_forms(i = 0)
 {
   if ( i < $('.tdp-subobject form').length )
   {
@@ -420,11 +406,11 @@ LI.tdp_submit_forms = function(i = 0)
       });
       
       i++;
-      LI.tdp_submit_forms(i);
+      contact_tdp_submit_forms(i);
     })
     .fail(function(){
       i++;
-      LI.tdp_submit_forms(i);
+      contact_tdp_submit_forms(i);
     });
   }
   else
@@ -451,39 +437,4 @@ LI.tdp_submit_forms = function(i = 0)
       });
     }
   }
-}
-
-LI.tdp_open_object = function(elt)
-{
-  $('#transition').fadeIn();
-  var tobeclosed = $(elt).hasClass('tdp-opened');
-  $('#tdp-content .fg-button.tdp-opened').not(elt).click();
-  
-  if ( tobeclosed )
-  {
-    var tr = $(elt).closest('tr').next();
-    tr.find('iframe').contents().find('#tdp-top-bar .update').click();
-    setTimeout(function(){
-      $('#transition .close').click();
-      tr.remove();
-      $(elt).removeClass('tdp-opened');
-    },2000);
-  }
-  else
-  {
-    var colspan = $(elt).closest('tr').find('> td').length;
-    var iframe = $('<div><iframe src="'+$(elt).prop('href')+'"></iframe></div>')
-      .addClass('inner-edition').addClass('ui-widget').addClass('ui-corner-all');
-    iframe.find('iframe').load(function(){
-      $(elt).addClass('tdp-opened');
-      $('#transition .close').click();
-      $(this).contents().find('html').addClass('tdp-iframe');
-      $(this).contents().find('a[href]').prop('target', '_parent');
-      $(this).parent().slideDown('slow', function(){ $('#tdp-content .inner-actions').fadeIn(); });
-    });
-    $('<tr></tr>').addClass('tdp-content').addClass('ui-widget-content')
-      .append($('<td colspan="'+colspan+'"></td>').append(iframe))
-      .insertAfter($(elt).closest('tr'));
-  }
-  return false;
 }

@@ -28,9 +28,6 @@
   <div class="calendar">
   </div>
 <script type="text/javascript"><!--
-if ( li == undefined )
-  var li = {};
-
 $(document).ready(function(){
   $('#fullcalendar .calendar, #more .calendar').fullCalendar({
     <?php if ( isset($start_date) && $start_date && strtotime($start_date) > 0 ): ?>
@@ -60,14 +57,14 @@ $(document).ready(function(){
     },
     titleFormat: { month: 'MMMM yyyy', week: "d[ MMM][ yyyy]{ - d MMM yyyy}", day: 'dddd d MMM yyyy', resourceDay: 'dddd d MMM yyyy', resourceWeek: "d[ MMM][ yyyy]{ - d MMM yyyy}" },
     columnFormat: { week: 'ddd d/M', day: 'dddd d/M', resourceWeek: 'ddd d/M' },
-    timeFormat: {'': 'H:mm', agenda: 'H:mm' },
+    timeFormat: {'': 'H(:mm)', 'agenda': 'H:mm'},
     axisFormat: {'': 'H:mm'},
     allDayText: "<?php echo __('All day long') ?>",
     allDayDefault: false,
     allDaySlot: false,
     header: { left: 'today prev,next', center: 'title', right: 'month,agendaWeek,resourceWeek,agendaDay,resourceDay' },
     
-    <?php $resources = Doctrine::getTable('Location')->createQuery('l')->andWhere('l.place = TRUE')->orderBy('l.rank IS NULL, l.rank, l.name')->execute() ?>
+    <?php $resources = Doctrine::getTable('Location')->createQuery('l')->andWhere('l.place = TRUE')->orderBy('l.name')->execute() ?>
     resources: [
       <?php foreach ( $resources as $res ): ?>
       { name: '<?php echo str_replace("'", "\\'", $res) ?>', id: 'resource-<?php echo $res->id ?>', readonly: true },
@@ -135,9 +132,7 @@ $(document).ready(function(){
     },
   });
   
-  
-  LI.addCalendarBars = function()
-  {
+  $('#fullcalendar .fc-header .fc-button').click(function(){
     $('#fullcalendar .fc-view').animate({scrollLeft: 0}, 150);
     
     if ( $('.fc-view.fc-view-resourceDay').length > 0 && $('.fc-view.fc-view-resourceDay tfoot').length == 0 )
@@ -150,9 +145,7 @@ $(document).ready(function(){
         $(this).append($(this).find('td.fc-resourceName').clone());
       });
     }
-  }
-  $('#fullcalendar .fc-header .fc-button').click(LI.addCalendarBars);
-  LI.addCalendarBars();
+  });
 });
 --></script>
 </div>
