@@ -21,7 +21,7 @@
 *
 ***********************************************************************************/
 ?>
-      <li class="menu-file">
+      <li>
         <ul class="second">
           <li><a href="" target="_blank"><?php echo __('New screen',array(),'menu') ?></a></li>
           <li><a href="<?php echo cross_app_url_for('default','default') ?>"><?php echo __('Index',array(),'menu') ?></a></li>
@@ -35,7 +35,6 @@
           <li><a href="<?php echo cross_app_url_for('default','sf_guard_signout') ?>"><?php echo __('Logout',array(),'menu') ?></a></li>
           <?php endif ?>
           <li><a href="<?php echo cross_app_url_for('default','sf_guard_signout') ?>" onclick="javascript: window.close()"><?php echo __('Close',array(),'menu') ?></a></li>
-          <?php include_partial('global/menu_extra', array('name' => 'file')) ?>
         </ul>
         <span class="title"><?php echo __('Screen',array(),'menu') ?></span>
       </li>

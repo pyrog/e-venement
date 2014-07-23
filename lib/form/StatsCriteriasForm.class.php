@@ -35,7 +35,6 @@ class StatsCriteriasForm extends BaseForm
       'url' => cross_app_url_for('event','manifestation/ajax'),
       'model' => 'Manifestation',
       'config'=> '{ max: 50 }',
-      'label' => 'Manifestations',
     ));
     $this->validatorSchema['manifestations_list'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Manifestation',
@@ -45,47 +44,27 @@ class StatsCriteriasForm extends BaseForm
   }
   public function addEventCriterias()
   {
-    sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url','CrossAppLink'));
-    
-    $this->widgetSchema['events_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
-      'url' => cross_app_url_for('event','event/ajax'),
-      'model' => 'Event',
-      'label' => 'Events',
-    ));
-    $this->validatorSchema['events_list'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Event',
-      'required' => false,
-      'multiple' => true,
-    ));
-    
     $this->widgetSchema['workspaces_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Workspace',
-      'query' => Doctrine::getTable('Workspace')->createQuery('ws')
-        ->andWhereIn('ws.id',array_keys(sfContext::getInstance()->getUser()->getWorkspacesCredentials())),
       'order_by' => array('name',''),
       'multiple' => true,
-      'label' => 'Workspaces',
     ));
     $this->validatorSchema['workspaces_list'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Workspace',
       'multiple' => true,
       'required' => false,
     ));
-    
+
     $this->widgetSchema['meta_events_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'MetaEvent',
-      'query' => Doctrine::getTable('MetaEvent')->createQuery('me')
-        ->andWhereIn('me.id',array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials())),
       'order_by' => array('name',''),
       'multiple' => true,
-      'label' => 'Meta events',
     ));
     $this->validatorSchema['meta_events_list'] = new sfValidatorDoctrineChoice(array(
       'model' => 'MetaEvent',
       'multiple' => true,
       'required' => false,
     ));
-    
     return $this;
   }
   
@@ -95,7 +74,6 @@ class StatsCriteriasForm extends BaseForm
       'model'     => 'sfGuardUser',
       'order_by'  => array('first_name, last_name',''),
       'multiple'  => true,
-      'label' => 'Users',
     ));
     $this->validatorSchema['users'] = new sfValidatorDoctrineChoice(array(
       'model' => 'sfGuardUser',
@@ -130,7 +108,6 @@ class StatsCriteriasForm extends BaseForm
     
     $this->widgetSchema   ['with_contact'] = new sfWidgetFormChoice(array(
       'choices' => $choices,
-      'label' => 'Tickets with contact',
     ));
     $this->validatorSchema['with_contact'] = new sfValidatorChoice(array(
       'choices' => array_keys($choices),
@@ -154,37 +131,11 @@ class StatsCriteriasForm extends BaseForm
       'model' => 'Group',
       'multiple' => true,
       'order_by' => array('sf_guard_user_id DESC, name',''),
-      'label' => 'Groups',
     ));
     $this->validatorSchema['groups_list'] = new sfValidatorDoctrineChoice(array(
       'required' => false,
       'model' => 'Group',
       'multiple' => true,
-    ));
-    return $this;
-  }
-  public function addByTicketsCriteria()
-  {
-    $this->widgetSchema   ['by_tickets'] = new sfWidgetFormInputCheckbox(array(
-      'value_attribute_value'   => 'y',
-      'label' => 'Counting tickets',
-    ));
-    $this->validatorSchema['by_tickets'] = new sfValidatorBoolean(array(
-      'required' => false,
-      'true_values' => array('y'),
-    ));
-    return $this;
-  }
-  public function addStrictContactsCriteria()
-  {
-    sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');
-    $this->widgetSchema   ['strict_contacts'] = new sfWidgetFormChoice(array(
-      'choices' => array('0' => __('no',null,'sf_admin'), '1' => __('yes',null,'sf_admin')),
-      'label' => 'Counting only contacts (not family members)',
-    ));
-    $this->validatorSchema['strict_contacts'] = new sfValidatorBoolean(array(
-      'required' => false,
-      'true_values' => array('1'),
     ));
     return $this;
   }

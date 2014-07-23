@@ -5,86 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Counting only contacts (not family members)</source>
-        <target>Compter les contacts seuls (pas les membres de la famille)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Printed with a payment</source>
-        <target>Imprimés + paiement</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Printed for free</source>
-        <target>Imprimés gratuits</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Printed for deposit</source>
-        <target>Dépôts</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Time</source>
-        <target>Heure</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Description</source>
-        <target>Description</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Quantity</source>
-        <target>Quantité</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Percent</source>
-        <target>Pourcentage</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Counting tickets</source>
-        <target>Décompte les billets</target>
-      </trans-unit>
-      <trans-unit>
-        <source>From your localization</source>
-        <target>Depuis votre localité</target>
-      </trans-unit>
-      <trans-unit>
-        <source>By postalcode</source>
-        <target>Par code postal</target>
-      </trans-unit>
-      <trans-unit>
-        <source>By department</source>
-        <target>Par département</target>
-      </trans-unit>
-      <trans-unit>
-        <source>By region</source>
-        <target>Par région</target>
-      </trans-unit>
-      <trans-unit>
-        <source>By country</source>
-        <target>Par pays</target>
-      </trans-unit>
-      <trans-unit>
-        <source>others</source>
-        <target>autres</target>
-      </trans-unit>
-      <trans-unit>
-        <source>department</source>
-        <target>département</target>
-      </trans-unit>
-      <trans-unit>
-        <source>region</source>
-        <target>région</target>
-      </trans-unit>
-      <trans-unit>
-        <source>exact</source>
-        <target>exacte</target>
-      </trans-unit>
-      <trans-unit>
-        <source>country</source>
-        <target>pays</target>
-      </trans-unit>
-      <trans-unit>
-        <source></source>
-        <target></target>
-      </trans-unit>
-      <trans-unit>
         <source>Are you sure?</source>
         <target>Êtes-vous sûr(e) ?</target>
       </trans-unit>
@@ -113,10 +33,6 @@
         <target>Avec</target>
       </trans-unit>
       <trans-unit>
-        <source>%%nb%% group(s)</source>
-        <target>%%nb%% groupe(s)</target>
-      </trans-unit>
-      <trans-unit>
         <source>%%nb%% workspace(s)</source>
         <target>%%nb%% espace(s) de travail</target>
       </trans-unit>
@@ -125,20 +41,8 @@
         <target>%%nb%% Méta-Événement(s)</target>
       </trans-unit>
       <trans-unit>
-        <source>%%nb%% event(s)</source>
-        <target>%%nb%% événement(s)</target>
-      </trans-unit>
-      <trans-unit>
         <source>%%nb%% user(s)</source>
         <target>%%nb%% utilisateur(s)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>From %%from%%</source>
-        <target>Du %%from%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>To %%to%%</source>
-        <target>Jusqu'au %%to%%</target>
       </trans-unit>
       <trans-unit>
         <source>From %%from%% to %%to%%</source>

@@ -12,8 +12,4 @@
  */
 class Payment extends PluginPayment
 {
-  public function getWeightValue()
-  {
-    return $this->value*$this->ratio;
-  }
 }

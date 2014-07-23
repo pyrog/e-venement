@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
     
     $tmp = explode(',',$request->getParameter('ticket_id'));
     $ticket_ids = array(0);

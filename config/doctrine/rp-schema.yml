@@ -27,9 +27,9 @@ Contact:
     type: concrete
   actAs: 
     Searchable:
-      fields: [name,firstname,email]
+      fields: [name, firstname, city]
     Sluggable:
-      fields: [name,firstname]
+      fields: [name, firstname]
     Versionable: ~
   indexes:
     contact_name_idx:
@@ -83,27 +83,11 @@ Contact:
       foreignAlias: BackRelations
       local: from_contact_id
       foreign: to_contact_id
-ContactArchive:
-  package: rp
-  indexes:
-    old_id_idx:
-      fields: [old_id]
-  columns:
-    contact_id:
-      type: integer
-      notnull: true
-    old_id:
-      type: integer
-      notnull: true
-  relations:
-    Contact:
-      foreignAlias: Archives
-      onDelete: CASCADE
 Organism:
   package: rp
   actAs:
     Searchable:
-      fields: [name, administrative_number, email]
+      fields: [name, administrative_number, city]
     Versionable: ~
   inheritance:
     extends: Addressable
@@ -116,14 +100,10 @@ Organism:
     description: string
     organism_category_id: integer
     administrative_number: string(255)
-    professional_id: integer
   relations:
     Category:
       class: OrganismCategory
       foreignAlias: Organisms
-    CloseContact:
-      class: Professional
-      foreignAlias: ImportantOrganism
 
 ContactPhonenumber:
   package: rp
@@ -301,17 +281,6 @@ OptionLabels:
     type: column_aggregation
     keyField: type
     keyValue: 'labels'
-OptionMandatoryField:
-  package: rp
-  inheritance:
-    extends: Option
-    type: column_aggregation
-    keyField: type
-    keyValue: 'rp_mandatory_field'
-  relations:
-    sfGuardUser:
-      foreignAlias: RpMandatoryFields
-      onDelete: CASCADE
 
 GeoFrDepartment:
   package: rp
@@ -322,7 +291,6 @@ GeoFrDepartment:
     num:
       type: string(3)
       notnull: true
-      unique: true
     name:
       type: string(255)
       notnull: true

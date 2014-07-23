@@ -28,8 +28,6 @@ class GaugeForm extends BaseGaugeForm
     $this->validatorSchema['workspace_id']
       ->setOption('query',$q);
     
-    $this->widgetSchema['manifestation_id'] = new sfWidgetFormInputHidden;
-    
     $this->validatorSchema['value']->setOption('required',false);
   }
   public function setHidden($hides = array('manifestation_id','workspace_id'))

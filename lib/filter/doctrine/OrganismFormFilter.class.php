@@ -38,14 +38,6 @@ class OrganismFormFilter extends BaseOrganismFormFilter
     $this->widgetSchema   ['not_groups_list'] = $this->widgetSchema   ['groups_list'];
     $this->validatorSchema['not_groups_list'] = $this->validatorSchema['groups_list'];
     
-    $this->widgetSchema   ['has_close_contact'] = new sfWidgetFormChoice(array(
-      'choices' => $arr = array('' => 'yes or no', 1 => 'yes', 2 => 'no'),
-    ));
-    $this->validatorSchema['has_close_contact'] = new sfValidatorChoice(array(
-      'choices' => array_keys($arr),
-      'required' => false,
-    ));
-    
     $this->widgetSchema['professional_meta_event_id'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'MetaEvent',
       'order_by' => array('name',''),
@@ -82,7 +74,6 @@ class OrganismFormFilter extends BaseOrganismFormFilter
     $fields['duplicates']           = 'Duplicates';
     $fields['postalcode']           = 'Postalcode';
     $fields['contacts_groups']      = 'ContactsGroups';
-    $fields['has_close_contact']    = 'HasCloseContact';
     $fields['professional_meta_event_id'] = 'ProfessionalMetaEventId';
     $fields['not_groups_list']      = 'NotGroupsList';
     $fields['region']               = 'RegionId';
@@ -124,16 +115,6 @@ class OrganismFormFilter extends BaseOrganismFormFilter
         ->orWhereIn("gc.id",$value)
         ->andWhere('TRUE)');
     }
-    
-    return $q;
-  }
-  public function addHasCloseContactColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $c = $q->getRootAlias();
-    if ( $value === '1' )
-      $q->andWhere("$c.professional_id IS NOT NULL");
-    if ( $value === '0' )
-      $q->andWhere("$c.professional_id IS NULL");
     
     return $q;
   }
@@ -192,9 +173,9 @@ class OrganismFormFilter extends BaseOrganismFormFilter
     if ( is_array($value) )
     {
       $q1 = new Doctrine_Query();
-      $q1->select('gotmp.organism_id')
-        ->from('GroupOrganism gotmp')
-        ->andWhereIn('gotmp.group_id',$value);
+      $q1->select('tmp1.organism_id')
+        ->from('GroupOrganism tmp1')
+        ->andWhereIn('tmp1.group_id',$value);
       
       $q->andWhere("$a.id NOT IN (".$q1.")",$value); // hack for inserting $value
     }

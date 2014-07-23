@@ -24,9 +24,7 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
     
     $this->widgetSchema['happens_at']->setOption('template', '<span class="from">'.__('From %from_date%').'</span> <span class="to">'.__('to %to_date%').'</span>');
     
-    $this->widgetSchema['location_id']->setOption('order_by', array('l.place DESC, l.name',''))
-      ->setOption('query', Doctrine::getTable('Location')->retrievePlaces());
-    $this->widgetSchema['booking_list']->setOption('order_by', array('place ASC, name',''));
+    $this->widgetSchema['location_id']->setOption('order_by', array('place DESC, name',''));
     
     $this->widgetSchema ['meta_event_id'] = new sfWidgetFormDoctrineChoice(array(
       'model'     => 'MetaEvent',
@@ -53,30 +51,13 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       'query'     => $q,
       'required'  => false,
     ));
-    
-    $this->widgetSchema['color_id']->setOption('method', 'getName');
-    
-    $this->widgetSchema   ['has_description'] =
-    $this->widgetSchema   ['has_extra_infos'] = new sfWidgetFormChoice(array(
-      'choices' => $choices = array('' => 'yes or no', 1 => 'yes', 0 => 'no'),
-    ));
-    $this->validatorSchema['has_extra_infos'] =
-    $this->validatorSchema['has_description'] = new sfValidatorChoice(array(
-      'choices' => array_keys($choices),
-      'required' => false,
-    ));
   }
 
   public function getFields()
   {
-    $arr = parent::getFields();
-    unset($arr['location_id']);
-    return array_merge($arr,array(
+    return array_merge(parent::getFields(),array(
       'meta_event_id'   => 'MetaEventId',
       'workspace_id'    => 'WorkspaceId',
-      'has_extra_infos' => 'HasExtraInfos',
-      'has_description' => 'HasDescription',
-      'location_id'     => 'LocationId',
     ));
   }
   
@@ -86,13 +67,7 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       return $q;
     
     $a = $q->getRootAlias();
-    
-    if ( !$q->contains("LEFT JOIN $a.LocationBooking LocationBooking") )
-      $q->leftJoin("$a.LocationBooking LocationBooking");
-    $q->andWhere('(TRUE')
-      ->andWhere("$a.$field = ?",$value)
-      ->orWhere("LocationBooking.$field = ?",$value)
-      ->andWhere('TRUE)');
+    $q->andWhere("$a.$field = ? OR $a.id IN (SELECT lb.manifestation_id FROM LocationBooking lb WHERE lb.location_id = ?)",array($value, $value));
     
     return $q;
   }
@@ -121,27 +96,6 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       $q->andWhereIn("g.$field", $value);
     else
       $q->andWhere("g.$field = ?", $value);
-    
-    return $q;
-  }
-  
-  public function addHasDescriptionColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    if ( $value === '0' )
-      $q->andWhere("$a.description IS NULL OR trim($a.description) = ?",'');
-    elseif ( $value === '1' )
-      $q->andWhere("$a.description IS NOT NULL AND trim($a.description) != ?",'');
-    
-    return $q;
-  }
-  public function addHasExtraInfosColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    if ( $value === '0' )
-      $q->andWhere("$a.id NOT IN (SELECT DISTINCT mei.manifestation_id FROM ManifestationExtraInformation mei)");
-    elseif ( $value === '1' )
-      $q->andWhere("$a.id IN (SELECT DISTINCT mei.manifestation_id FROM ManifestationExtraInformation mei)");
     
     return $q;
   }

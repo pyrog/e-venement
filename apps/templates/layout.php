@@ -9,8 +9,7 @@
     <?php use_javascript('jquery.datepicker-fr.js') ?>
     
     <?php $module_name = $sf_context->getModuleName() ?>
-    <?php $client_about = sfConfig::get('project_about_client') ?>
-    <?php $sf_response->setTitle('e-venement - '.$client_about['name'].' - '.($sf_user->isAuthenticated() ? __(ucwords($module_name)) : __('The free ticketting system',null,'menu'))) ?>
+    <?php $sf_response->setTitle('e-venement, '.($sf_user->isAuthenticated() ? __(ucwords($module_name)) : __('The free ticketting system',null,'menu'))) ?>
     <?php include_http_metas() ?>
     <?php include_metas() ?>
     <?php include_title() ?>
@@ -18,7 +17,7 @@
     <?php include_stylesheets() ?>
     <?php include_javascripts() ?>
   </head>
-  <body class="<?php echo 'app-'.$sf_context->getConfiguration()->getApplication().' mod-'.$module_name ?>">
+  <body>
     <div id="content">
       <?php echo $sf_content ?>
     </div>

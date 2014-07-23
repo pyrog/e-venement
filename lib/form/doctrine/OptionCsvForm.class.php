@@ -40,7 +40,6 @@ class OptionCsvForm extends BaseOptionCsvForm
         'description' => 'Keywords',
         'phonename' => 'Phonetype',
         'phonenumber' => 'Phonenumber',
-        '__YOBs__year'   => 'Birthdays',
         '__Groups__name' => 'Groups',
       ),
       'organism' => array(
@@ -65,7 +64,6 @@ class OptionCsvForm extends BaseOptionCsvForm
         'professional_name' => 'Professional',
         'professional_department' => 'Department',
         '__Professionals__Groups__name' => 'Professional groups',
-        'professional_important' => 'Close contact / Important organism',
       ),
       'extra' => array(
         'information' => 'More informations',
@@ -107,7 +105,6 @@ class OptionCsvForm extends BaseOptionCsvForm
   	  'description'         => 'Keywords',
     	'phonename'           => 'Phonetype',
 	    'phonenumber'         => 'Phonenumber',
-	    '__YOBs__year'        => 'Birthdays',
 	    '__Groups__name'      => 'Groups',
   	  'organism_category'   => 'Category of organism',
     	'organism_name'       => 'Organism',
@@ -117,7 +114,6 @@ class OptionCsvForm extends BaseOptionCsvForm
 	    'professional_type_name' => 'Type of function',
   	  'professional_name'   => 'Function',
   	  '__Professionals__Groups__name' => "Professionals groups",
-  	  'professional_important' => 'Close contact / Important organism',
     	'organism_address'    => 'Address',
 	    'organism_postalcode' => 'Postalcode',
   	  'organism_city'       => 'City',
@@ -137,7 +133,7 @@ class OptionCsvForm extends BaseOptionCsvForm
     foreach ( $fields as $fieldname => $field )
  	  if ( in_array($fieldname,$data) )
 			$ordered[] = $fieldname;
-		elseif ( !$data )
+		else if ( !$data )
 			$ordered[] = $fieldname;
     
     return $ordered;
@@ -202,7 +198,7 @@ class OptionCsvForm extends BaseOptionCsvForm
       return $contact;
   }
   
-  static function getImplodedData($data, $fields, $separator = "\n")
+  static function getImplodedData($data, $fields, $separator = ' + ')
   {
     if ( !isset($fields[0]) )
       return false;

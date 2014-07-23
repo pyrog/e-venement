@@ -64,10 +64,9 @@ body.labels .labels { display: block; }
 body.labels .labels > div { display: block; }
 body.labels .labels > div > div { display: inline-block; }
 
-body.labels .labels > div > div {
-  outline: 1px solid red;
-  width:  <?php echo ( $width-floatval($params['margin-x'])*(intval($params['nb-x'])-1) )/intval($params['nb-x']) ?>mm;
-  height: <?php echo $cellheight = ( $height-$ptop*2-floatval($params['margin-y'])*(intval($params['nb-y'])-1) )/intval($params['nb-y']) ?>mm;
+body.labels .labels > li > div {
+  width:  <?php echo round(( $width-floatval($params['margin-x'])*(intval($params['nb-x'])-1) )/intval($params['nb-x'])) ?>mm;
+  height: <?php echo $cellheight = round(( $height-$ptop*2-floatval($params['margin-y'])*(intval($params['nb-y'])-1) )/intval($params['nb-y'])) ?>mm;
   overflow: hidden;
   vertical-align: middle;
 }
@@ -78,9 +77,8 @@ body.labels .labels > div > div.margin {
 }
 body.labels .labels > div > div div.content {
   /* removal proposition // height: <?php echo $cellheight - floatval($params['padding-y'])*2 ?>mm; */
-  padding: <?php echo $cellpad = floatval($params['padding-y']).'mm '.floatval($params['padding-x']).'mm' ?>;
+  padding: <?php echo floatval($params['padding-y']).'mm '.floatval($params['padding-x']).'mm' ?>;
   overflow: hidden;
-  max-height: <?php echo $cellheight - $cellpad*2 ?>mm;
 }
 
 /* compensating printer margins */

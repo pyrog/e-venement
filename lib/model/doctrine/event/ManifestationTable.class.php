@@ -35,11 +35,6 @@ class ManifestationTable extends PluginManifestationTable
       return Doctrine_Core::getTable('Manifestation');
   }
   
-  public function retrieveList()
-  {
-    return $this->createQuery()
-      ->removeDqlQueryPart('orderby');
-  }
   public function createQuery($alias = 'm', $light = false)
   {
     $e  = $alias != 'e'  ? 'e'  : 'e1';
@@ -99,7 +94,7 @@ class ManifestationTable extends PluginManifestationTable
         //->leftJoin("$w.WorkspacePrices $wwp ON $wwp.workspace_id = $w.id AND $wwp.price_id = $p.id")
         //->leftJoin("$p.WorkspacePrices $pwp ON $pwp.workspace_id = $w.id AND $pwp.price_id = $p.id")
         //->andWhere("$meu.id = ? AND ($wu.id = ? OR $wu.id IS NULL) AND ($pu.id = ? OR $pu.id IS NULL)",array($uid,$uid,$uid))
-      ;
+        ;
       
       //if ( sfContext::hasInstance() && $uid = sfContext::getInstance()->getUser()->getId() )
       //  $q->andWhere("$pm.id IS NULL OR $pm.price_id IN (SELECT price_id FROM UserPrice up WHERE up.user_id = ?)",$uid);
@@ -113,10 +108,7 @@ class ManifestationTable extends PluginManifestationTable
     $q = $this->createQuery('m',true);
     $a = $q->getRootAlias();
     $q
-      ->leftJoin("$a.Gauges g")
-      ->leftJoin("g.Workspace w")
-      ->leftJoin("w.Order wuo ON wuo.workspace_id = w.id AND wuo.sf_guard_user_id = ".($uid = sfContext::getInstance()->getUser()->getId() ))
-      ->andWhere('e.id = ?',$id)
+      ->where('e.id = ?',$id)
       ->orderby("e.name, $a.happens_at DESC, l.name");
     return $q;
   }
@@ -125,7 +117,7 @@ class ManifestationTable extends PluginManifestationTable
     $q = $this->createQuery();
     $a = $q->getRootAlias();
     $q
-      ->andWhere('l.id = ?',$id)
+      ->where('l.id = ?',$id)
       ->orderby("e.name, $a.happens_at DESC, l.name");
     return $q;
   }

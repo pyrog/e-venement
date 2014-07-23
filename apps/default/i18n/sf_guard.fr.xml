@@ -5,24 +5,8 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Ability to export/extract data... It inclues CSV extraction, labels creation, group export...</source>
-        <target>Capacité à extraire et exporter des données... Ce qui inclut les extractions CSV, la création d'étiquettes, l'export de groupes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Permission to administrate reservations, editting confirmed manifestations</source>
-        <target>Permission d'administrer les réservations, d'éditer les manifestations confirmées</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Permission to access the geographical statistics</source>
-        <target>Permission d'accéder aux statistiques géographiques</target>
-      </trans-unit>
-      <trans-unit>
         <source>users admin</source>
         <target>Administration des utilisateurs</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to manage seated plans</source>
-        <target>Capacité à administrer les plans numérotés</target>
       </trans-unit>
       <trans-unit>
         <source>Ability to add, del &amp; modify one's own manifestations and events</source>
@@ -97,7 +81,7 @@
         <target>Capacité d'accéder aux données sociales des contacts</target>
       </trans-unit>
       <trans-unit>
-        <source>The right to view contacts, organisms, groups But only this</source>
+        <source>The right to view contacts, organisms, groups... But only this</source>
         <target>Capacité d'accéder en lecture aux contacts, organismes et aux groupes, mais seulement cela</target>
       </trans-unit>
       <trans-unit>
@@ -142,10 +126,6 @@
       </trans-unit>
       <trans-unit>
         <source>Permission to use seated ticketting</source>
-        <target>Capacité à utiliser le placement numéroté</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to deal with seated ticketting</source>
         <target>Capacité à utiliser le placement numéroté</target>
       </trans-unit>
       <trans-unit>

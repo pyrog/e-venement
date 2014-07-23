@@ -5,100 +5,12 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Dates range</source>
-        <target>Intervalle de dates</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Today</source>
-        <target>Aujourd'hui</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This week</source>
-        <target>Cette semaine</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This month</source>
-        <target>Ce mois</target>
-      </trans-unit>
-      <trans-unit>
-        <source>No color</source>
-        <target>Sans couleur</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Apply to</source>
-        <target>Appliquer à</target>
-      </trans-unit>
-      <trans-unit>
-        <source>If only one workspace's order is less than 0 (be careful, try to have only one workspace like this), then this workspace's gauges will be displaid alone in the mini-gauges, replacing the merging gauge.</source>
-        <target>Si la priorité d'un seul espace de travail est inférieure à 0 (attention à essayer de n'en avoir qu'un), alors les jauges de cet espace de travail seront afficher seules en priorité dans les mini-jauges, remplaçant celle représentant la fusion de l'ensemble des jauges disponibles.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>If only one workspace's order is more than 999, then the displaid mini-gauges will be based on profitability, in relation with the expected income and what is really being realized on every manifestation (only in the case where the expected income is given).</source>
-        <target>Si la priorité d'un seul des espaces de travail est supérieure à 999, alors les mini-jauges affichées seront économiques, en rapport avec le chiffre d'affaire visé et réalisé sur chaque manifestation (à condition qu'il soit défini).</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Expected income</source>
-        <target>Chiffre d'affaire attendu</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Number</source>
-        <target>Nombre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>To be confirmed</source>
-        <target>À confirmer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Not blocking</source>
-        <target>Non bloquant</target>
-      </trans-unit>
-      <trans-unit>
-        <source>State</source>
-        <target>État</target>
-      </trans-unit>
-      <trans-unit>
-        <source>%%d%% day(s)</source>
-        <target>%%d%% jour(s)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>The filters on events have been all removed.</source>
-        <target>Les filtres sur les événements ont été remis à zéro.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Reset filters</source>
-        <target>Effacer les filtres</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Has a memo</source>
-        <target>A un memo</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Has extra informations</source>
-        <target>A des informations suppl.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>No extra information</source>
-        <target>Pas d'information suppl.</target>
-      </trans-unit>
-      <trans-unit>
         <source>Search</source>
         <target>Recherche</target>
       </trans-unit>
       <trans-unit>
         <source>Refresh</source>
         <target>Rafraîchir</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Total: %%total%% Free: %%free%%</source>
-        <target>Total: %%total%% Libres: %%free%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Sells: %%printed%% Orders: %%ordered%% Demands: %%asked%%</source>
-        <target>Ventes: %%printed%% Réservations: %%ordered%% Demandes: %%asked%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Sells: %%printed%% Orders: %%ordered%%</source>
-        <target>Ventes: %%printed%% Réservations: %%ordered%%</target>
       </trans-unit>
       <trans-unit>
         <source>Notification for %%manif%%</source>
@@ -115,82 +27,6 @@
       <trans-unit>
         <source>When</source>
         <target>Quand</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Search</source>
-        <target>Recherche</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Content file</source>
-        <target>Fichier</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Online Sales</source>
-        <target>Vente en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This is the number of seats when the screen loaded.</source>
-        <target>Ceci est le nombre de place au moment du chargement de l'écran.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Add a manifestation</source>
-        <target>Ajouter une manifestation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Size</source>
-        <target>Taille</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Nb of seats</source>
-        <target>Nb de places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>An error occurred during the plot recording. Try again.</source>
-        <target>Nb de places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Magnify</source>
-        <target>Effet loupe</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New Seated plan</source>
-        <target>Nouveau plan de salle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Edit Seated plan</source>
-        <target>Modification du plan de salle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Seated plan List</source>
-        <target>Liste des plans de salle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Plot diameter behind a seat</source>
-        <target>Diamètre du point derrière un siège</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Background color</source>
-        <target>Couleur de fond</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This seat's name has already been given.</source>
-        <target>Ce nom de place a déjà été donné.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Do not ask</source>
-        <target>Directement</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Hop</source>
-        <target>Saut</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Picture</source>
-        <target>Plan</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Seat's name</source>
-        <target>Nom de la place</target>
       </trans-unit>
       <trans-unit>
         <source>You have requested the version %%v%% that does not exist</source>
@@ -605,8 +441,8 @@
         <target>Liste des taxes</target>
       </trans-unit>
       <trans-unit>
-        <source>This field is updated automagically</source>
-        <target>Les champs se mettent à jour automagiquement</target>
+        <source>This field's update is done automagically</source>
+        <target>La mise à jour de champs est fait automagiquement</target>
       </trans-unit>
       <trans-unit>
         <source>Display in ticketting</source>
@@ -785,10 +621,6 @@
         <target>Limite vente en ligne</target>
       </trans-unit>
       <trans-unit>
-        <source>Online limit per transaction</source>
-        <target>Limite vente en ligne par transaction</target>
-      </trans-unit>
-      <trans-unit>
         <source>[0]|[1]%y% year|(1,+Inf]%y% years old</source>
         <target>[0]|[1]%y% an|(1,+Inf]%y% ans</target>
       </trans-unit>
@@ -945,8 +777,8 @@
         <target>Modèle de manifestation</target>
       </trans-unit>
       <trans-unit>
-        <source>Templating</source>
-        <target>Gabarit</target>
+        <source>Templating prices</source>
+        <target>Gabarit pour les prix</target>
       </trans-unit>
       <trans-unit>
         <source>Deleting this object has been canceled because of remaining links to externals (like tickets).</source>
@@ -1029,10 +861,6 @@
         <target>Technique</target>
       </trans-unit>
       <trans-unit>
-        <source>Technical informations</source>
-        <target>Informations techniques</target>
-      </trans-unit>
-      <trans-unit>
         <source>Details</source>
         <target>Détails</target>
       </trans-unit>
@@ -1085,10 +913,6 @@
         <target>Jauges</target>
       </trans-unit>
       <trans-unit>
-        <source>Direct phonenumber</source>
-        <target>Numéro pro.</target>
-      </trans-unit>
-      <trans-unit>
         <source>Postalcode</source>
         <target>Code Postal</target>
       </trans-unit>
@@ -1123,10 +947,6 @@
       <trans-unit>
         <source>Gauge</source>
         <target>Jauge</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Gauges</source>
-        <target>Jauges</target>
       </trans-unit>
       <trans-unit>
         <source>Gauge min</source>

@@ -13,7 +13,6 @@ class ContactFormFilter extends BaseContactFormFilter
   protected $noTimestampableUnset = true;
   protected $showProfessionalData = true;
   protected $tickets_having_query = NULL; // Doctrine_Query
-  protected $grpintersection = false;
 
   /**
    * @see AddressableFormFilter
@@ -26,12 +25,6 @@ class ContactFormFilter extends BaseContactFormFilter
       ->groupBy('hqc.id')
       ->select('hqc.id');
     
-    $this->widgetSchema   ['groups_intersection'] = new sfWidgetFormInputCheckbox(array(
-      'value_attribute_value' => 1,
-    ));
-    $this->validatorSchema['groups_intersection'] = new sfValidatorBoolean(array(
-      'true_values' => array('1'),
-    ));
     $this->widgetSchema['groups_list']->setOption(
       'order_by',
       array('u.id IS NULL DESC, u.username, name','')
@@ -87,24 +80,6 @@ class ContactFormFilter extends BaseContactFormFilter
       'model'    => 'ProfessionalType',
       'required' => false,
       'multiple' => true,
-    ));
-    $this->widgetSchema   ['has_professional_type_id'] = new sfWidgetFormChoice(array(
-      'choices' => $arr = array('' => 'yes or no', 0 => 'no', 1 => 'yes'),
-    ));
-    $this->validatorSchema['has_professional_type_id'] = new sfValidatorChoice(array(
-      'choices' => array_keys($arr),
-      'required' => false,
-    ));
-    // organism's prefered contact
-    $this->widgetSchema   ['organism_professional_id'] = new sfWidgetFormChoice(array(
-      'choices' => $arr = array(
-        '' => '',
-        1  => 'yes',
-      ),
-    ));
-    $this->validatorSchema['organism_professional_id'] = new sfValidatorChoice(array(
-      'choices' => array_keys($arr),
-      'required' => false,
     ));
     
     $this->widgetSchema   ['not_groups_list'] = $this->widgetSchema   ['groups_list'];
@@ -224,23 +199,17 @@ class ContactFormFilter extends BaseContactFormFilter
       'multiple' => true,
       'model' => 'MemberCardType',
     ));
-    $this->widgetSchema   ['member_cards_valid_at'] = new liWidgetFormJQueryDateText(array(
+    $this->widgetSchema   ['member_cards_valid_at'] = new liWidgetFormDateText(array(
       'culture' => sfContext::getInstance()->getUser()->getCulture(),
     ));
     $this->validatorSchema['member_cards_valid_at'] = new sfValidatorDate(array(
       'required' => false,
     ));
-    $this->widgetSchema   ['member_cards_not_valid_at'] = new liWidgetFormJQueryDateText(array(
+    $this->widgetSchema   ['member_cards_not_valid_at'] = new liWidgetFormDateText(array(
       'culture' => sfContext::getInstance()->getUser()->getCulture(),
     ));
     $this->validatorSchema['member_cards_not_valid_at'] = new sfValidatorDate(array(
       'required' => false,
-    ));
-    $this->widgetSchema   ['member_cards_only_last'] = new sfWidgetFormChoice(array(
-      'choices' => array('0' => 'no', '1' => 'yes'),
-    ));
-    $this->validatorSchema['member_cards_only_last'] = new sfValidatorBoolean(array(
-      'true_values' => array('1'),
     ));
     
     // flow control
@@ -305,9 +274,7 @@ class ContactFormFilter extends BaseContactFormFilter
     $fields['not_professionals_list'] = 'NotProfessionalsList';
     $fields['organism_id']          = 'OrganismId';
     $fields['organism_category_id'] = 'OrganismCategoryId';
-    $fields['organism_professional_id']   = 'OrganismProfessionalId';
-    $fields['professional_type_id']       = 'ProfessionalTypeId';
-    $fields['has_professional_type_id']   = 'HasProfessionalTypeId';
+    $fields['professional_type_id'] = 'ProfessionalTypeId';
     $fields['has_email']            = 'HasEmail';
     $fields['email_newsletter']     = 'EmailNewsletter';
     $fields['has_address']          = 'HasAddress';
@@ -322,13 +289,12 @@ class ContactFormFilter extends BaseContactFormFilter
     $fields['event_archives']       = 'EventArchives';
     $fields['prices_list']          = 'PricesList';
     $fields['member_cards']         = 'MemberCards';
-    $fields['member_cards_valid_at']      = 'MemberCardsValidAt';
-    $fields['member_cards_not_valid_at']  = 'MemberCardsNotValidAt';
-    $fields['member_cards_only_last']     = 'MemberCardsOnlyLast';
-    $fields['control_manifestation_id']   = 'ControlManifestationId';
-    $fields['control_checkpoint_id']      = 'ControlCheckpointId';
+    $fields['member_cards_valid_at'] = 'MemberCardsValidAt';
+    $fields['member_cards_not_valid_at'] = 'MemberCardsNotValidAt';
+    $fields['control_manifestation_id'] = 'ControlManifestationId';
+    $fields['control_checkpoint_id'] = 'ControlCheckpointId';
     $fields['control_created_at']   = 'ControlCreatedAt';
-    $fields['region']               = 'RegionId';
+    $fields['region']   = 'RegionId';
     
     // must be the last ones, because of a having() part which needs to be added lately
     $fields['tickets_amount_min']   = 'TicketsAmountMin';
@@ -607,28 +573,16 @@ class ContactFormFilter extends BaseContactFormFilter
     
     if ( is_array($value) && count($value) )
     {
-      if ( !$this->values['groups_intersection'] )
-      {
-        if ( !$q->contains("LEFT JOIN $a.Groups gc") )
-          $q->leftJoin("$a.Groups gc");
-        
-        if ( !$q->contains("LEFT JOIN p.Groups gp") )
-          $q->leftJoin("p.Groups gp");
-        
-        $q->andWhere('(TRUE')
-          ->andWhereIn("gc.id",$value)
-          ->orWhereIn("gp.id",$value)
-          ->andWhere('TRUE)');
-      }
-      else
-      // if we are looking for the intersection, not the union
-      foreach ( $value as $gid )
-      {
-        $q->andWhere('(TRUE')
-          ->andWhere('c.id IN (SELECT s'.$gid.'gc.id FROM Group s'.$gid.'gtc LEFT JOIN s'.$gid.'gtc.Contacts s'.$gid.'gc WHERE s'.$gid.'gtc.id = ?)',$gid)
-          ->orWhere('p.id IN (SELECT s'.$gid.'gp.id FROM Group s'.$gid.'gtp LEFT JOIN s'.$gid.'gtp.Professionals s'.$gid.'gp WHERE s'.$gid.'gtp.id = ?)',$gid)
-          ->andWhere('TRUE)');
-      }
+      if ( !$q->contains("LEFT JOIN $a.Groups gc") )
+        $q->leftJoin("$a.Groups gc");
+      
+      if ( !$q->contains("LEFT JOIN p.Groups gp") )
+        $q->leftJoin("p.Groups gp");
+      
+      $q->andWhere('(TRUE')
+        ->andWhereIn("gc.id",$value)
+        ->orWhereIn("gp.id",$value)
+        ->andWhere('TRUE)');
     }
     
     return $q;
@@ -698,17 +652,6 @@ class ContactFormFilter extends BaseContactFormFilter
     else
       return $q->addWhere("$a.email_no_newsletter = TRUE AND p.contact_email_no_newsletter = TRUE");
   }
-  public function addNpaiColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    if ( $value === '' )
-      return $q;
-    
-    $a = $q->getRootAlias();
-    return $q->andWhere("$a.npai = ? AND (o.npai = ? OR o.id IS NULL)", array(
-      $value ? true : false,
-      $value ? true : false,
-    ));
-  }
   public function addEmailColumnQuery(Doctrine_Query $q, $field, $values)
   {
     $a = $q->getRootAlias();
@@ -724,33 +667,7 @@ class ContactFormFilter extends BaseContactFormFilter
     if ( $value )
     {
       $this->setProfessionalData(true);
-      $q->andWhereIn('pt.id',$value);
-    }
-    return $q;
-  }
-  public function addHasProfessionalTypeIdColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    if ( $value === '0' )
-    {
-      $this->setProfessionalData(true);
-      $q->andWhere('pt.id IS NULL')
-        ->andWhere('p.id IS NOT NULL');
-    }
-    if ( $value === '1' )
-    {
-      $this->setProfessionalData(true);
-      $q->andWhere('pt.id IS NOT NULL');
-    }
-    return $q;
-  }
-  public function addOrganismProfessionalIdColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    if ( $value )
-    {
-      $this->setProfessionalData(true);
-      $q->andWhere("o.professional_id = p.id");
+      $q->andWhereIn("pt.id",$value);
     }
     return $q;
   }
@@ -831,19 +748,6 @@ class ContactFormFilter extends BaseContactFormFilter
       if ( !$q->contains("LEFT JOIN $c.MemberCards mc") )
         $q->leftJoin("$c.MemberCards mc");
       $q->andWhere("mc.expire_at <= ?",date('Y-m-d',strtotime($value)))
-        ->andWhere('mc.active = ?',true);
-    }
-    
-    return $q;
-  }
-  public function addMemberCardsOnlyLastColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $c = $q->getRootAlias();
-    if ( $value )
-    {
-      if ( !$q->contains("LEFT JOIN $c.MemberCards mc") )
-        $q->leftJoin("$c.MemberCards mc");
-      $q->andWhere("mc.id = (SELECT max(mc2.id) FROM MemberCard mc2 WHERE mc2.contact_id = $c.id AND mc2.active = TRUE)")
         ->andWhere('mc.active = ?',true);
     }
     
@@ -942,7 +846,6 @@ class ContactFormFilter extends BaseContactFormFilter
   }
   public function buildQuery(array $values)
   {
-    $this->values = $values;
     $this->setProfessionalData(false);
     
     // to limit execution time

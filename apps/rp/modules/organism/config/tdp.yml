@@ -9,19 +9,12 @@ all:
           credential: pr-organism-del
           attributes:
             onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
-        actions:
-          label: Actions
-          attributes:
-            onclick: "javascript: return false;"
-            target: _blank
         csv:
           credential: pr-contact-csv
           label: Extract
         labels:
           credential: pr-contact-labels
           label: Labels
-          attributes:
-            target: _blank
         batchMerge:
           credential: pr-contact-edit
           label: Merge
@@ -31,7 +24,7 @@ all:
         #  label: Geolocalize
     edit:
       object:
-        title: [name, _show_dates]
+        title: [name]
         new_title: [name]
         lines:
           Complements:
@@ -47,7 +40,7 @@ all:
           More:
             show_labels: true
             extra_class: tdp-vertical
-            fields: [administrative_number, npai, professional_id]
+            fields: [administrative_number, npai]
           Correspondence:
             show_title: true
             fields: [description]
@@ -72,7 +65,7 @@ all:
           class: Professional
           parentAlias: Organism
           title: [Contact]
-          new_title: [contact_id, _new_contact]
+          new_title: [contact_id]
           credentials: pr-contact
           lines:
             line1:

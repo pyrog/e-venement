@@ -58,22 +58,6 @@ class Manifestation extends PluginManifestation
     $this->duration = strtotime($ends_at) - strtotime($this->happens_at);
     return $this;
   }
-  public function getEndsAtTime()
-  {
-    return strtotime($this->happens_at)+$this->duration;
-  }
-  public function getHappensAtTime()
-  {
-    return strtotime($this->happens_at);
-  }
-  public function getCreatedAtTime()
-  {
-    return strtotime($this->created_at);
-  }
-  public function getUpdatedAtTime()
-  {
-    return strtotime($this->happens_at);
-  }
   public function __toString()
   {
     return $this->getName();
@@ -89,9 +73,6 @@ class Manifestation extends PluginManifestation
     **/
   public function hasAnyConflict()
   {
-    if ( !$this->blocking )
-      return false;
-    
     $rids = array();
     foreach ( $this->Booking as $r )
       $rids[] = $r->id;
@@ -107,13 +88,11 @@ class Manifestation extends PluginManifestation
       ->andWhere("$m2_start < ? AND $m2_stop > ?", array($stop, $start))
       ->andWhere('m.reservation_confirmed = ?', true)
       ->andWhere('m.blocking = ?', true)
+      ->andWhere('m.id != ?', $this->id)
       ->andWhere('(TRUE')
       ->andWhereIn('b.id',$rids)
       ->orWhereIn('m.location_id',$rids)
       ->andWhere('TRUE)');
-    
-    if ( !$this->isNew() )
-      $q->andWhere('m.id != ?', $this->id);
     
     return $q->count() > 0;
   }

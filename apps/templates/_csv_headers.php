@@ -35,7 +35,6 @@
     'description' 				=> __('Keywords'),
     'phonename'  					=> __('Phonetype'),
     'phonenumber' 				=> __('Phonenumber'),
-    '__YOBs__year'        => __('Birthdays'),
     '__Groups__name'      => __('Groups'),
     'events'              => __('Events'),
     'organism_category' 	=> __('Category of organism'),
@@ -61,29 +60,20 @@
     'information'         => __('Informations'),
   );
   
-  // for organisms' close contact
-  $fields['professional_important'] = __('Close contact');
-  $fields['cc_title']     = __('Title');
-  $fields['cc_name']      = __('Name');
-  $fields['cc_firstname'] = __('Firstname');
-  $fields['cc_type']      = __('Type');
-  $fields['cc_function']    = __('Function');
-  $fields['cc_phonenumber'] = __('Phonenumber');
-  $fields['cc_email']     = __('Email');
-  
   $line = array();
   if ( !$options['noheader'] )
   {
     if ( !isset($options['header']) )
     {
-      foreach ( $options['fields'] as $fieldName )
- 	      $line[] = isset($fields[$fieldName]) ? $fields[$fieldName] : $fieldName;
+    	foreach ( $options['fields'] as $fieldName )
+  	    	$line[] = isset($fields[$fieldName]) ? $fields[$fieldName] : $fieldName;
     }
     else
     {
-      foreach ( $options['fields'] as $fieldname )
-      {
-        $line[$fieldname] = $options['header'][$fieldname];
+    	foreach ( $options['header'] as $fieldname => $field )
+    	{
+	    	if ( in_array($fieldname,$options['fields']) )
+  	    	$line[$fieldname] = $field;
   	  }
     }
     

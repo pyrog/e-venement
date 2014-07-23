@@ -34,13 +34,9 @@
       ->leftJoin('o.Category oc')
       ->addSelect("oc.name AS organism_category, o.name AS organism_name")
       ->addSelect('p.department AS professional_department, p.contact_number AS professional_number, p.contact_email AS professional_email')
-      ->addSelect('pt.name AS professional_type_name, p.name AS professional_name, (p.id = o.professional_id) AS professional_important')
+      ->addSelect('pt.name AS professional_type_name, p.name AS professional_name')
       ->addSelect("o.address AS organism_address, o.postalcode AS organism_postalcode, o.city AS organism_city, o.country AS organism_country, o.email AS organism_email, o.url AS organism_url, o.npai AS organism_npai, o.description AS organism_description")
       ->orderBy("$a.name, $a.firstname");
-    
-    if ( $labels )
-      $q->limit($request->getParameter('limit', 500))
-        ->offset($request->getParameter('offset', 0));
     
     // phonembers
     if ( in_array('phonename',$params['field']) )
@@ -72,9 +68,6 @@
     if ( in_array('__Professionals__Groups__name', $params['field']) )
       $q->leftJoin('p.Groups ggp')
         ->addSelect('ggp.id, ggp.name');
-    if ( in_array('__YOBs__year', $params['field']) )
-      $q->leftJoin("$a.YOBs yobs")
-        ->addSelect('yobs.id, yobs.name, yobs.year, yobs.month, yobs.day');
     
     // only when groups are a part of filters
     if ( in_array("LEFT JOIN $a.Groups gc",$q->getDqlPart('from')) )
@@ -114,7 +107,7 @@
       }
       
       // removing professionals objects to get a flat array
-      unset($this->lines[$key]['YOBs'], $this->lines[$key]['Groups'], $this->lines[$key]['Professionals'], $this->lines[$key]['ContactGroups']);
+      unset($this->lines[$key]['Groups'], $this->lines[$key]['Professionals'], $this->lines[$key]['ContactGroups']);
       
       // empty-ing links to professionals and organisms if not needed
       if ( !$this->filters->showProfessionalData() && !$group_pro )
@@ -128,7 +121,6 @@
       'tunnel'    => in_array('tunnel',$params['option']),       // tunnel effect on fields to prefer organism fields when they exist
       'noheader'  => in_array('noheader',$params['option']),     // no header
       'fields'    => $params['field'],
-      'class'     => 'Contact',
     );
     
     $this->outstream = 'php://output';

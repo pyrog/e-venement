@@ -40,7 +40,6 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
   
   public function preSave($event)
   {
-    sfApplicationConfiguration::getActive()->loadHelpers(array('I18N'));
     parent::preSave($event);
     
     // converting duration from "1:00" to 3600 (seconds)
@@ -112,6 +111,8 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
       // manifestation confirmed
       if ( $this->reservation_confirmed )
       {
+        sfApplicationConfiguration::getActive()->loadHelpers(array('I18N'));
+        
         // no credential to tolerate conflicts
         if ( sfContext::hasInstance()
           && !sfContext::getInstance()->getUser()->hasCredential(self::$credentials['authorize_conflicts']) )
@@ -164,11 +165,9 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
     if ( intval($this->duration).'' != ''.$this->duration )
       return $this->duration;
     
-    sfApplicationConfiguration::getActive()->loadHelpers(array('I18N'));
-    $days = floor($this->duration/(3600*24));
-    $hours = floor($this->duration%(3600*24)/3600);
+    $hours = floor($this->duration/3600);
     $minutes = str_pad(floor($this->duration%3600/60), 2, '0', STR_PAD_LEFT);
-    return ($days > 0 ? __('%%d%% day(s)',array('%%d%%' => $days)) : '').' '.$hours.':'.$minutes;
+    return $hours.':'.$minutes;
   }
   
   public function getMEid()

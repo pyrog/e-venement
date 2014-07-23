@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 /**
  * Event form.
@@ -17,18 +17,6 @@ class EventForm extends BaseEventForm
     $tinymce = array(
       'width'   => 425,
       'height'  => 300,
-      'config'  => array(
-        'extended_valid_elements' => 'html,head,body,hr[class|width|size|noshade],iframe[src|width|height|name|align],style',
-        'convert_urls' => false,
-        'urlconvertor_callback' => 'email_urlconvertor',
-        'paste_as_text' => false,
-        'plugins' => 'textcolor link image',
-        'toolbar1' => 'formatselect fontselect fontsizeselect | link image | forecolor backcolor | undo redo',
-        'toolbar2' => 'bold underline italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote',
-        'force_br_newlines' => false,
-        'force_p_newlines'  => false,
-        'forced_root_block' => '',
-      ),
     );
     $this->widgetSchema['description'] = new liWidgetFormTextareaTinyMCE($tinymce);
     $this->widgetSchema['extradesc'] = new liWidgetFormTextareaTinyMCE($tinymce);
@@ -36,7 +24,6 @@ class EventForm extends BaseEventForm
     $this->widgetSchema['name'] = new sfWidgetFormTextarea(array(), array('rows' => '1', 'cols' => 58));
     
     $this->widgetSchema['meta_event_id']
-      ->setOption('add_empty', true)
       ->setOption('query',EventFormFilter::addCredentialsQueryPart(Doctrine::getTable('MetaEvent')->createQuery('me')))
       ->setOption('order_by', array('me.name',''));
     $this->widgetSchema['event_category_id']->setOption('order_by', array('name',''));

@@ -13,6 +13,16 @@ require_once dirname(__FILE__).'/../lib/locationGeneratorHelper.class.php';
  */
 class locationActions extends autoLocationActions
 {
+  public function executeIndex(sfWebRequest $request)
+  {
+    parent::executeIndex($request);
+    if ( !$this->sort[0] )
+    {
+      $this->sort = array('name','');
+      $this->pager->getQuery()->orderby('name');
+    }
+  }
+  
   public function executeCalendar(sfWebRequest $request)
   {
     $this->executeEdit($request);
@@ -58,12 +68,6 @@ class locationActions extends autoLocationActions
   {
     $nb = strlen($search);
     $charset = sfConfig::get('software_internals_charset');
-    $transliterate = sfConfig::get('software_internals_transliterate',array());
-    
-    
-    $search = str_replace(array('-','+',',',"'"),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
-    $search = str_replace(array_keys($transliterate), array_values($transliterate), $search);
-    
-    return $search;
+    return str_replace(array('-','+',','),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
   }
 }

@@ -66,6 +66,7 @@ class contactActions extends autoContactActions
         $this->hasFilters = $this->getUser()->getAttribute('contact.filters', $this->configuration->getFilterDefaults(), 'admin_module');
       if ( !isset($this->filters) )
         $this->filters = $this->configuration->getFilterForm($this->getFilters());
+      //if ( !in_array($this->getActionName(), array('error404','index','search','map','labels','getSpecializedForm','csv','groupList','group')) )
       if ( in_array($this->getActionName(), array('edit','new','show','create','update','delete')) )
         $this->setTemplate('edit');
       if ( in_array($this->getActionName(), array('duplicates')) )
@@ -146,7 +147,6 @@ class contactActions extends autoContactActions
     }
     catch (sfValidatorError $e)
     {
-      error_log($e->getMessage());
       $this->getUser()->setFlash('error', 'A problem occurs when adding the selected items as some items do not exist anymore.');
       return $this->redirect('@contact');
     }
@@ -161,7 +161,7 @@ class contactActions extends autoContactActions
       $gc->group_id = $group_id;
       
       try { $gc->save(); }
-      catch(Doctrine_Exception $e) { error_log($e->getMessage()); }
+      catch(Doctrine_Exception $e) {}
     }
     
     // professionals
@@ -217,7 +217,7 @@ class contactActions extends autoContactActions
   {
     // hack for the title to be recorded properly
     $params = $request->getParameter('contact');
-    if ( !isset($params['title']) && $autocomplete = $request->getParameter('autocomplete_contact') )
+    if ( !$params['title'] && $autocomplete = $request->getParameter('autocomplete_contact') )
       $params['title'] = $autocomplete['title'];
     $request->setParameter('contact',$params);
     
@@ -427,45 +427,6 @@ class contactActions extends autoContactActions
     return require(dirname(__FILE__).'/card.php');
   }
   
-  protected function processForm(sfWebRequest $request, sfForm $form)
-  {
-    $form->bind($request->getParameter($form->getName()), $request->getFiles($form->getName()));
-    if ($form->isValid())
-    {
-      $notice = $form->getObject()->isNew() ? 'The item was created successfully.' : 'The item was updated successfully.';
-
-      $contact = $form->save();
-
-      $this->dispatcher->notify(new sfEvent($this, 'admin.save_object', array('object' => $contact)));
-
-      if ($request->hasParameter('_duplicate'))
-      {
-        $this->getUser()->setFlash('notice', $notice.' You can add another one below.');
-
-        $contact = $contact->copy();
-        $contact->slug = NULL;
-        $contact->save();
-        $this->redirect(array('sf_route' => 'contact_edit', 'sf_subject' => $contact));
-      }
-      elseif ($request->hasParameter('_save_and_add'))
-      {
-        $this->getUser()->setFlash('notice', $notice.' You can add another one below.');
-
-        $this->redirect('@contact_new');
-      }
-      else
-      {
-        $this->getUser()->setFlash('notice', $notice);
-
-        $this->redirect(array('sf_route' => 'contact_edit', 'sf_subject' => $contact));
-      }
-    }
-    else
-    {
-      $this->getUser()->setFlash('error', 'The item has not been saved due to some errors.', false);
-    }
-  }
-  
   public function executeFilter(sfWebRequest $request)
   {
     if ( sfConfig::get('app_options_design',false) == 'tdp' && sfConfig::get(sfConfig::get('app_options_design').'_active',false) )
@@ -499,11 +460,6 @@ class contactActions extends autoContactActions
   {
     $nb = strlen($search);
     $charset = sfConfig::get('software_internals_charset');
-    $transliterate = sfConfig::get('software_internals_transliterate',array());
-    
-    $search = str_replace(array('-','+',',',"'"),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
-    $search = str_replace(array_keys($transliterate), array_values($transliterate), $search);
-    
-    return $search;
+    return str_replace(array('-','+',','),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
   }
 }

@@ -24,7 +24,7 @@
     <?php if ( $sf_user->hasCredential('tck-reports')
             || $sf_user->hasCredential('tck-ledger-sales')
             || $sf_user->hasCredential('tck-ledger-cash') ): ?>
-      <li class="menu-accounting">
+      <li>
         <ul class="second">
           <?php if ( $sf_user->hasCredential('tck-reports') ): ?>
           <?php if ( sfConfig::get('project_tickets_count_demands',false) ): ?>
@@ -52,7 +52,6 @@
             <a href="<?php echo cross_app_url_for('tck','ledger/both') ?>"><?php echo __('Detailed Ledger',array(),'menu') ?></a>
           </li>
           <?php endif ?>
-          <?php include_partial('global/menu_extra', array('name' => 'accounting')) ?>
         </ul>
         <span class="title"><?php echo __('Accounting',array(),'menu') ?></span>
       </li>

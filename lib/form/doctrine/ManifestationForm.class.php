@@ -18,9 +18,7 @@ class ManifestationForm extends BaseManifestationForm
       'url'   => cross_app_url_for('rp','organism/ajax'),
     ));
     $this->widgetSchema['workspaces_list']->setOption('renderer_class','sfWidgetFormSelectDoubleList');
-    $this->widgetSchema['event_id']
-      ->setOption('query',EventFormFilter::addCredentialsQueryPart(Doctrine::getTable('Event')->createQuery()))
-      ->setOption('order_by', array('name', ''));
+    $this->widgetSchema['event_id']->setOption('query',EventFormFilter::addCredentialsQueryPart(Doctrine::getTable('Event')->createQuery()));
     $this->widgetSchema['color_id']
       ->setOption('order_by',array('name',''))
       ->setOption('method', 'getName');
@@ -39,8 +37,7 @@ class ManifestationForm extends BaseManifestationForm
     $this->validatorSchema['ends_at'] = new sfValidatorDateTime(array('required' => false));
     $this->validatorSchema['duration'] = new sfValidatorString(array('required' => false));
     
-    $this->widgetSchema['vat_id']
-      ->setOption('order_by', array('value, name', ''));
+    $this->widgetSchema['vat_id']->setOption('add_empty',true);
     $this->widgetSchema['depends_on'] = new sfWidgetFormDoctrineJQueryAutocompleter(array(
       'model' => 'Manifestation',
       'url'   => url_for('manifestation/ajax?except='.$this->object->id),
@@ -71,7 +68,7 @@ class ManifestationForm extends BaseManifestationForm
     foreach ( array('reservation_begins_at', 'reservation_ends_at',) as $fieldName )
       $this->validatorSchema[$fieldName]->setOption('required', false);
     $this->widgetSchema['booking_list']->setOption('expanded', true)
-      ->setOption('order_by', array('place, rank IS NULL, rank, name',''));
+      ->setOption('order_by', array('place, name',''));
     if (!( isset($config['enable']) && $config['enable'] ))
     foreach ( array('contact_id', 'reservation_begins_at', 'reservation_ends_at', 'blocking', 'reservation_confirmed', 'reservation_optional', 'reservation_description') as $fieldName )
       $this->widgetSchema[$fieldName] = new sfWidgetFormInputHidden;

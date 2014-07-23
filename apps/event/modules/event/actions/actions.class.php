@@ -21,17 +21,10 @@ class eventActions extends autoEventActions
       $this->sort = array('name','');
       $a = $this->pager->getQuery()->getRootAlias();
       $this->pager->getQuery()
-        //->addSelect("(SELECT min(m2.happens_at) FROM manifestation m2 WHERE m2.event_id = $a.id) AS min_happens_at")
+        ->addSelect("(SELECT min(m2.happens_at) FROM manifestation m2 WHERE m2.event_id = $a.id) AS min_happens_at")
         ->addSelect("(SELECT (CASE WHEN max(m3.happens_at) IS NULL THEN false ELSE max(m3.happens_at) > now() END) FROM manifestation m3 WHERE m3.event_id = $a.id) AS now")
-        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date','DESC') != 'ASC' ? 'DESC' : 'ASC').", $a.name");
+        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date') != 'ASC' ? 'DESC' : 'ASC').", $a.name");
     }
-  }
-  
-  public function executeOnlyFilters(sfWebRequest $request)
-  {
-    parent::executeIndex($request);
-    $a = $this->pager->getQuery()->getRootAlias();
-    $this->pager->getQuery()->select("$a.id");
   }
   
   public function executeSearch(sfWebRequest $request)
@@ -40,6 +33,7 @@ class eventActions extends autoEventActions
     $table = Doctrine::getTable('Event');
     
     $search = $this->sanitizeSearch($request->getParameter('s'));
+    $transliterate = sfConfig::get('software_internals_transliterate',array());
     
     $this->pager->setQuery($table->search($search.'*',$this->pager->getQuery()));
     $this->pager->setPage($request->getParameter('page') ? $request->getParameter('page') : 1);
@@ -130,90 +124,6 @@ class eventActions extends autoEventActions
 
     $this->redirect('@event');
   }
-  public function executeBatchMerge(sfWebRequest $request)
-  {
-    $ids = $request->getParameter('ids');
-
-    $events = Doctrine::getTable('Event')->retrieveList()->orderBy('e.updated_at DESC')
-      ->andWhereIn('e.id', $ids)
-      ->execute();
-    if ( $events->count() <= 1 )
-    {
-      $this->getUser()->setFlash('error', 'You must at least select two items.');
-      $this->redirect('@event');
-    }
-    
-    $count = 0;
-    $orig = $events[0];
-    foreach ( $events as $event )
-    {
-      if ( $count == 0 )
-      {
-        $count++;
-        continue;
-      }
-      
-      foreach ( array('Manifestations', 'Companies', 'Checkpoints', 'Entries', 'MemberCardPrices', 'MemberCardPriceModels') as $relation )
-      foreach ( $event->$relation as $relobj )
-        $orig->{$relation}[] = $relobj;
-      
-      $orig->save();
-      $event->delete();
-      $count++;
-    }
-    
-    if ($count >= count($ids))
-    {
-      $this->getUser()->setFlash('notice', 'The selected items have been merged successfully.');
-    }
-    else
-    {
-      $this->getUser()->setFlash('error', 'A problem occurs when merging some of the selected items.');
-    }
-
-    $this->redirect('@event');
-  }
-  public function executeBatchDuplicate(sfWebRequest $request)
-  {
-    $ids = $request->getParameter('ids');
-
-    $events = Doctrine::getTable('Event')->retrieveList()->orderBy('e.updated_at DESC')
-      ->andWhereIn('e.id', $ids)
-      ->execute();
-    if ( $events->count() == 0 )
-    {
-      $this->getUser()->setFlash('error', 'You must at least select one item.');
-      $this->redirect('@event');
-    }
-    
-    $count = 0;
-    foreach ( $events as $event )
-    {
-      $new = $event->copy();
-      
-      foreach ( array('Companies', 'Checkpoints', 'MemberCardPrices', 'MemberCardPriceModels') as $relation )
-      foreach ( $event->$relation as $relobj )
-        $new->{$relation}[] = $relobj;
-      foreach ( array('MetaEvent', 'EventCategory') as $relation )
-        $new->$relation = $event->$relation;
-      foreach ( array('slug') as $prop )
-        $new->$prop = NULL;
-      
-      $new->save();
-      $count++;
-    }
-    
-    if ($count >= count($ids))
-    {
-      $this->getUser()->setFlash('notice', 'The selected items have been duplicated successfully.');
-    }
-    else
-    {
-      $this->getUser()->setFlash('error', 'A problem occurs when merging some of the selected items.');
-    }
-
-    $this->redirect('@event');
-  }
   
   public function executeAjax(sfWebRequest $request)
   {
@@ -239,22 +149,11 @@ class eventActions extends autoEventActions
   public function executeError404(sfWebRequest $request)
   {
   }
-  
-  public function executeAddManifestation(sfWebRequest $request)
-  {
-    $this->executeEdit($request);
-    $this->redirect('manifestation/new?event='.$this->event->slug);
-  }
 
   public static function sanitizeSearch($search)
   {
-    $nb = mb_strlen($search);
+    $nb = strlen($search);
     $charset = sfConfig::get('software_internals_charset');
-    $transliterate = sfConfig::get('software_internals_transliterate',array());
-    
-    $search = str_replace(array('-','+',',',"'"),' ',strtolower(iconv($charset['db'],$charset['ascii'],mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search)));
-    $search = str_replace(array_keys($transliterate), array_values($transliterate), $search);
-    
-    return $search;
+    return str_replace(array('-','+',','),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
   }
 }
