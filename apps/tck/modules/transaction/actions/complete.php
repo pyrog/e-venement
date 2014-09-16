@@ -83,9 +83,6 @@
       return;
     }
     
-    // weird cases pre-processing
-    $this->form['store_integrate'] = $this->form['content']['store']->integrate;
-    
     $success = array(
       'data' => array(),
       'remote_content' => array(
@@ -140,71 +137,75 @@
     }
     
     // more complex data
-    foreach ( array('price_new', 'payment_new', 'payments_list', 'store_integrate', 'close') as $field )
+    foreach ( array('price_new', 'payment_new', 'payments_list', 'close') as $field )
     if ( isset($params[$field]) && is_array($params[$field]) && isset($this->form[$field]) )
     {
       $this->json['success']['success_fields'][$field] = $success;
       
-      // pre-processing
-      switch ( $field ) {
-      case 'price_new':
-        foreach ( array('pdt-declination' => 'declination') as $orig => $real )
-        if ( $params[$field]['type'] == $orig )
-          $params[$field]['type'] = $real;
-        
-        // security
-        $security = array('declination' => 'tck-pos');
-        if ( isset($security[$params[$field]['type']]) && !$this->getUser()->hasCredential($security[$params[$field]['type']]) )
-          break;
-        
-        $q = Doctrine_Query::create();
-        $model = NULL;
-        switch ( $params[$field]['type'] ) {
-        case 'gauge':
-          $model = 'Gauge';
-          $q->from($model.' g')
-            ->leftJoin('g.Manifestation m')
-            ->leftJoin('m.Event e')
-            ->andWhereIn('e.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
-            ->andWhereIn('g.workspace_id', array_keys($this->getUser()->getWorkspacesCredentials()))
-          ;
-          break;
-        case 'declination':
-          $model = 'ProductDeclination';
-          $q->from($model.' d')
-            ->leftJoin('d.Product p')
-            ->andWhereIn('p.meta_event_id IS NULL OR p.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
-          ;
-          break;
-        }
-        
-        $vs = $this->form[$field]->getValidatorSchema();
-        $vs['declination_id'] = new sfValidatorDoctrineChoice(array(
-          'model' => $model,
-          'query' => $q,
-        ));
-        break;
-      }
-      
-      // processing
       $this->form[$field]->bind($params[$field]);
-      
-      // post-processing
       if ( $this->form[$field]->isValid() )
       switch ( $field ) {
       case 'price_new':
         if ( !$params[$field]['qty'] )
           $params[$field]['qty'] = 1;
         
-        require(__DIR__.'/complete-price-new.php');
+        // preparing the DELETE and COUNT queries
+        $q = Doctrine_Query::create()->from('Ticket tck')
+          ->andWhere('tck.gauge_id = ?',$params[$field]['gauge_id'])
+          ->andWhere('tck.price_id = ?',$params[$field]['price_id'])
+          ->andWhere('tck.transaction_id = ?',$request->getParameter('id'))
+          ->andWhere('tck.printed_at IS NULL')
+          ->orderBy('tck.integrated_at IS NULL DESC, tck.integrated_at, tck.numerotation IS NULL DESC, id DESC');
+        
+        $state = 'false';
+        if ( isset($params[$field]['state']) && $params[$field]['state'] == 'integrated' )
+        {
+          $state = 'integrated';
+          $q->andWhere('tck.integrated_at IS NOT NULL');
+        }
+        else
+          $q->andWhere('tck.integrated_at IS NULL');
+        
+        $this->json['success']['success_fields'][$field]['data'] = array(
+          'type'  => 'gauge_price',
+          'reset' => true,
+          'content' => array(
+            'qty'   => $q->count() + $params[$field]['qty'],
+            'price_id'  => $params[$field]['price_id'],
+            'gauge_id'  => $params[$field]['gauge_id'],
+            'state'   => isset($params[$field]['state']) && $params[$field]['state'] ? $params[$field]['state'] : NULL,
+            'transaction_id' => $request->getParameter('id'),
+          ),
+        );
+        
+        $manifs = array();
+        if ( $params[$field]['qty'] > 0 ) // add
+        for ( $i = 0 ; $i < $params[$field]['qty'] ; $i++ )
+        {
+          $ticket = new Ticket;
+          $ticket->gauge_id = $params[$field]['gauge_id'];
+          $ticket->price_id = $params[$field]['price_id'];
+          $ticket->transaction_id = $request->getParameter('id');
+          $ticket->save();
+        }
+        else // delete
+        {
+          $q->limit(abs($params[$field]['qty']))
+            ->execute()
+            ->delete();
+        }
+        
+        $this->json['success']['success_fields'][$field]['remote_content']['load']['type']
+          = 'gauge_price';
+        $this->json['success']['success_fields'][$field]['remote_content']['load']['url']
+          = url_for('transaction/getManifestations?id='.$request->getParameter('id').'&state='.$state.'&gauge_id='.$params[$field]['gauge_id'].'&price_id='.$params[$field]['price_id'], true);
+        
         break;
       case 'payment_new':
         try {
           $p = new Payment;
           $p->transaction_id = $this->transaction->id;
-          $p->value = $this->form[$field]->getValue('value')
-            ? $this->form[$field]->getValue('value')
-            : $this->transaction->price - $this->transaction->paid;
+          $p->value = $this->form[$field]->getValue('value') ? $this->form[$field]->getValue('value') : $this->transaction->price - $this->transaction->paid;
           $p->payment_method_id = $this->form[$field]->getValue('payment_method_id');
           $p->created_at = $this->form[$field]->getValue('created_at');
           if ( $this->form[$field]->getValue('member_card_id') )
@@ -235,37 +236,14 @@
         $this->json['success']['success_fields'][$field]['remote_content']['load']['url']  = url_for('transaction/getPayments?id='.$request->getParameter('id'), true);
         
         break;
-      case 'store_integrate':
-        $this->json['success']['success_fields'][$field] = $success;
-        foreach ( $products = Doctrine::getTable('BoughtProduct')->createQuery('bp')
-          ->andWhere('bp.transaction_id = ?', $this->form[$field]->getValue('id'))
-          ->andWhere('bp.integrated_at IS NULL')
-          ->leftJoin('bp.Transaction t')
-          ->execute() as $bp )
-        {
-          $bp->integrated_at = date('Y-m-d H:i:s');
-          $bp->save();
-        }
-        
-        if ( $products->count() > 0 )
-          $this->dispatcher->notify(new sfEvent($this, 'tck.products_integrate', array(
-            'transaction' => $products[0]->Transaction,
-            'products'    => $products,
-            'duplicate'   => false,
-            'user'        => $this->getUser(),
-          )));
-        
-        $this->json['success']['success_fields'][$field]['remote_content']['load']['type']  = 'store_price';
-        $this->json['success']['success_fields'][$field]['remote_content']['load']['url']   = url_for('transaction/getStore?id='.$request->getParameter('id'), true);
-        break;
       case 'close':
         $semaphore = array('products' => true, 'amount' => 0);
-        foreach ( $this->transaction->getItemables() as $pdt )
+        foreach ( $this->transaction->Tickets as $ticket )
         {
-          if ( $pdt->isSold() )
+          if ( !$ticket->printed_at && !$ticket->cancelling && !$ticket->integrated_at )
             $semaphore['products'] = false;
-          elseif (!( method_exists($pdt, 'isDuplicata') && $pdt->isDuplicata() ))
-            $semaphore['amount'] += $pdt->value;
+          elseif ( !$ticket->duplicating )
+            $semaphore['amount'] += $ticket->value;
         }
         foreach ( $this->transaction->Payments as $payment )
         {
@@ -279,7 +257,7 @@
           
           $this->json['success']['error_fields']['close']['data']['generic'] = __('This transaction cannot be closed properly:');
           if ( !$semaphore['products'] )
-            $this->json['success']['error_fields']['close']['data']['pdt'] = __('Some products are not sold (printed?) yet');
+            $this->json['success']['error_fields']['close']['data']['tck'] = __('Some tickets are not printed yet');
           if ( $semaphore['amount'] > 0 )
             $this->json['success']['error_fields']['close']['data']['pay'] = __('This transaction is not yet totally paid');
           if ( $semaphore['amount'] < 0 )

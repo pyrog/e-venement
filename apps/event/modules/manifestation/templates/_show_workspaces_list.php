@@ -17,24 +17,14 @@
       ksort($gauges);
     ?>
     <?php foreach ( $gauges as $gauge ): ?>
-    <li class="ui-corner-all gauge"
-        data-gauge-id="<?php echo $gauge->id ?>"
-        title="<?php echo __('If a seated plan exists, it will show up if you click on the gauge') ?>"
-    >
+    <li class="ui-corner-all">
       <a href="<?php echo url_for('workspace/show?id='.$gauge->Workspace->id) ?>"><?php echo $gauge->Workspace ?></a>
       (<?php echo $gauge->online ? __('Online') : '' ?>)
       <a class="gauge-gfx" href="<?php echo cross_app_url_for('tck','ticket/gauge?id='.$form->getObject()->id.'&wsid='.$gauge->Workspace->id) ?>">gauge</a>
       <?php if ( $gauge->Workspace->seated && $seated_plan = $form->getObject()->Location->getWorkspaceSeatedPlan($gauge->workspace_id) ): ?>
-      <div class="seated-plan-parent" title="">
-        <?php include_partial('global/magnify') ?>
-        <div class="seated-plan-actions">
-          <?php include_partial('global/seated_plan_actions', array('gauge' => $gauge, 'seated_plan' => $seated_plan)) ?>
-        </div>
-        <a class="picture seated-plan on-demand" href="<?php echo url_for('seated_plan/getSeats?id='.$seated_plan->id.'&gauge_id='.$gauge->id) ?>" style="background-color: <?php echo $seated_plan->background ?>;">
-          <?php use_stylesheet('/private/event-seated-plan?'.date('Ymd')) ?>
-          <?php echo $seated_plan->Picture->getHtmlTag(array('title' => $seated_plan->Picture)) ?>
-        </a>
-      </div>
+      <a class="picture seated-plan" href="<?php echo url_for('seated_plan/getSeats?id='.$seated_plan->id.'&gauge_id='.$gauge->id) ?>" style="background-color: <?php echo $seated_plan->background ?>;">
+        <?php echo $seated_plan->Picture->getHtmlTag(array('title' => $seated_plan->Picture)) ?>
+      </a>
       <?php endif ?>
     </li>
     <?php endforeach ?>
@@ -45,19 +35,8 @@
     {
       if( $('a.gauge-gfx').length > 0 )
       {
-        var gauge = $('a.gauge-gfx:first');
-        $.get(gauge.prop('href'),function(data){
-          var new_gauge = $($.parseHTML(data)).find('.gauge');
-          gauge.replaceWith(new_gauge);
-          
-          // seated plans
-          new_gauge.click(function(){
-            $('.sf_admin_field_workspaces_list .gauge').removeClass('active');
-            $(this).parent().closest('.gauge').addClass('active');
-            $(this).parent().closest('.gauge').find('.seated-plan-actions a:first').click();
-          });
-          
-          // next
+        $.get($('a.gauge-gfx:first').attr('href'),function(data){
+          $('a.gauge-gfx:first').replaceWith($($.parseHTML(data)).find('.gauge'));
           manifestation_gauge_gfx();
         });
       }

@@ -22,18 +22,4 @@ class TicketTable extends PluginTicketTable
     return parent::createQuery($alias)
       ->leftJoin("$alias.Duplicatas duplicatas");
   }
-  
-  public function createQueryPreparedForRanks($alias = 'tck')
-  {
-    return parent::createQuery($alias)
-      ->leftJoin("$alias.Seat {$alias}_s")
-      ->andWhere("$alias.printed_at IS NOT NULL OR $alias.integrated_at IS NOT NULL")
-      ->andWhere("$alias.seat_id IS NOT NULL")
-      
-      ->leftJoin("$alias.Transaction {$alias}_t")
-      
-      //->having("{$sql_fct}({$alias}_s.rank) $operand $value")
-      //->groupBy("{$alias}_t.contact_id')
-    ;
-  }
 }

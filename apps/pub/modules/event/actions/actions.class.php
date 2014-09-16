@@ -18,13 +18,6 @@ class eventActions extends autoEventActions
     $this->dispatcher->notify(new sfEvent($this, 'pub.pre_execute', array('configuration' => $this->configuration)));
     parent::preExecute();
   }
-  
-  public function executeIndex(sfWebRequest $request)
-  {
-    $this->getUser()->setDefaultCulture($request->getLanguages());
-    // continue normal operations
-    parent::executeIndex($request);
-  }
   public function executeEdit(sfWebRequest $request)
   {
     $this->event = $this->getRoute()->getObject();
@@ -47,14 +40,5 @@ class eventActions extends autoEventActions
   public function executeUpdate(sfWebRequest $request)
   {
     $this->executeEdit($request);
-  }
-  protected function getFilters()
-  {
-    return $this->getUser()->getAttribute('event.filters', $this->configuration->getFilterDefaults(), 'pub_module');
-  }
-
-  protected function setFilters(array $filters)
-  {
-    return $this->getUser()->setAttribute('event.filters', $filters, 'pub_module');
   }
 }

@@ -31,22 +31,6 @@ class TransactionTable extends PluginTransactionTable
     return $q;
   }
   
-  public function createQueryForStore($alias = 't', $culture = NULL)
-  {
-    $q = Doctrine_Query::create()->from('Transaction '.$alias)
-      ->leftJoin("$alias.BoughtProducts bp")
-      ->leftJoin('bp.Declination d')
-      ->leftJoin('d.Translation dt WITH dt.lang '.($culture ? '=' : '!=').' ?', $culture)
-      ->leftJoin('d.Product pdt')
-      ->leftJoin('pdt.Translation pdtt WITH pdtt.lang '.($culture ? '=' : '!=').' ?', $culture)
-      ->leftJoin('pdt.Category c')
-      ->leftJoin('c.Translation ct WITH ct.lang '.($culture ? '=' : '!=').' ?', $culture)
-      ->leftJoin('bp.Price price')
-      ->leftJoin('pdt.Prices pdtp WITH pdtp.id = price.id')
-    ;
-    return $q;
-  }
-  
   public function createQueryForLineal($a = 't')
   {
     $q = parent::createQuery($a);
@@ -72,37 +56,28 @@ class TransactionTable extends PluginTransactionTable
   public function retrieveDebtsList()
   {
     $q = Doctrine_Query::create()->from('Transaction t');
-    $this->addDebtsListBaseSelect($q)
-      ->addSelect(str_replace(array('%%tck%%', '%%pdt%%'), array('tck', 'pdt'), $outcomes = '((SELECT (CASE WHEN COUNT(%%tck%%.id) = 0 THEN 0 ELSE SUM(%%tck%%.value) END) FROM Ticket %%tck%% WHERE '.$this->getDebtsListTicketsCondition('%%tck%%', NULL, NULL).') + (SELECT (CASE WHEN COUNT(%%pdt%%.id) = 0 THEN 0 ELSE SUM(%%pdt%%.value) END) FROM BoughtProduct %%pdt%% WHERE '.$this->getDebtsListProductsCondition('%%pdt%%', NULL, NULL).'))').' AS outcomes')
-      ->addSelect(str_replace('%%pp%%' , 'pp' , $incomes  = '(SELECT (CASE WHEN COUNT(%%pp%%.id)  = 0 THEN 0 ELSE SUM(%%pp%%.value ) END) FROM Payment %%pp%% WHERE %%pp%%.transaction_id = t.id)').' AS incomes') // AND pp.created_at < '2014-01-01' AND pp.created_at >= '2013-09-01') AS incomes")
+    $this->addDebtsListBaseSelect($q);
+    $q->addSelect('(SELECT (CASE WHEN COUNT(tck.id) = 0 THEN 0 ELSE SUM(tck.value) END) FROM Ticket tck WHERE '.$this->getDebtsListTicketsCondition('tck', NULL, NULL).') AS outcomes')
+      ->addSelect("(SELECT (CASE WHEN COUNT(pp.id)  = 0 THEN 0 ELSE SUM(pp.value)  END) FROM Payment pp WHERE pp.transaction_id = t.id) AS incomes") // AND pp.created_at < '2014-01-01' AND pp.created_at >= '2013-09-01') AS incomes")
       ->leftJoin('t.Contact c')
       ->leftJoin('t.Professional p')
       ->leftJoin('p.ProfessionalType pt')
       ->leftJoin('p.Organism o')
       ->leftJoin('t.Invoice i')
-      ->andWhere(str_replace(array('%%tck%%', '%%pdt%%'), array('tck2', 'pdt2'), $outcomes).' - '.str_replace('%%pp%%', 'p2', $incomes).' != 0')
+      ->andWhere("((SELECT (CASE WHEN COUNT(tck2.id) = 0 THEN 0 ELSE SUM(tck2.value) END) FROM Ticket tck2 WHERE ".$this->getDebtsListTicketsCondition('tck2', NULL, NULL).") - (SELECT (CASE WHEN count(p2.id) = 0 THEN 0 ELSE SUM(p2.value) END) FROM Payment p2 WHERE p2.transaction_id = t.id)) != 0") // AND p2.created_at < '2014-01-01' AND p2.created_at >= '2013-09-01')) != 0")
     ;
     return $q;
   }
-  protected static function getDebtsListTicketsCondition($table = 'tck', $date = NULL, $from = NULL)
+  public static function getDebtsListTicketsCondition($ticket_table = 'tck', $date = NULL, $from = NULL)
   {
-    $r = $table.'.transaction_id = t.id AND '.$table.'.duplicating IS NULL AND ('.$table.'.printed_at IS NOT NULL OR '.$table.'.integrated_at IS NOT NULL OR '.$table.'.cancelling IS NOT NULL)';
+    $r = $ticket_table.'.transaction_id = t.id AND '.$ticket_table.'.duplicating IS NULL AND ('.$ticket_table.'.printed_at IS NOT NULL OR '.$ticket_table.'.integrated_at IS NOT NULL OR '.$ticket_table.'.cancelling IS NOT NULL)';
     if ( !is_null($date) )
-      $r .= " AND ($table.cancelling IS NULL AND ($table.printed_at IS NOT NULL AND $table.printed_at < '$date' OR $table.integrated_at IS NOT NULL AND $table.integrated_at < '$date') OR $table.cancelling IS NOT NULL AND $table.created_at < '$date')";
+      $r .= " AND ($ticket_table.cancelling IS NULL AND ($ticket_table.printed_at IS NOT NULL AND $ticket_table.printed_at < '$date' OR $ticket_table.integrated_at IS NOT NULL AND $ticket_table.integrated_at < '$date') OR $ticket_table.cancelling IS NOT NULL AND $ticket_table.created_at < '$date')";
     if ( !is_null($from) )
-      $r .= " AND ($table.cancelling IS NULL AND ($table.printed_at IS NOT NULL AND $table.printed_at >= '$from' OR $table.integrated_at IS NOT NULL AND $table.integrated_at >= '$from') OR $table.cancelling IS NOT NULL AND $table.created_at >= '$from')";
+      $r .= " AND ($ticket_table.cancelling IS NULL AND ($ticket_table.printed_at IS NOT NULL AND $ticket_table.printed_at >= '$from' OR $ticket_table.integrated_at IS NOT NULL AND $ticket_table.integrated_at >= '$from') OR $ticket_table.cancelling IS NOT NULL AND $ticket_table.created_at >= '$from')";
     return $r;
   }
-  protected static function getDebtsListProductsCondition($table = 'pdt', $date = NULL, $from = NULL)
-  {
-    $r = $table.'.transaction_id = t.id AND '.$table.'.integrated_at IS NOT NULL';
-    if ( !is_null($date) )
-      $r .= " AND $table.integrated_at < '$date'";
-    if ( !is_null($from) )
-      $r .= " AND $table.integrated_at >= '$from'";
-    return $r;
-  }
-  protected static function addDebtsListBaseSelect(Doctrine_Query $q)
+  public static function addDebtsListBaseSelect(Doctrine_Query $q)
   {
     return $q
       ->select($fields = 't.id, t.closed, t.updated_at, c.id, c.name, c.firstname, p.id, p.name, pt.id, pt.name, o.id, o.name, o.city, i.id')

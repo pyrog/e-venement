@@ -93,7 +93,7 @@ EOF;
         }
         
         // email direct sending
-        $email->isATest(false);
+        $email->not_a_test = true;
         $email->save();
       }
       catch ( Swift_SwiftException $e )

@@ -80,7 +80,7 @@
       $this->ticket = $ticket->copy();
       
       // removing the numerotation before saving the duplicata
-      $ticket->seat_id = NULL;
+      $ticket->numerotation = NULL;
       $ticket->save();
       
       // creating a duplicata

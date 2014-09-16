@@ -1,12 +1,3 @@
-product:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                Product
-    module:               store
-    prefix_path:          /store
-    column:               id
-    with_wildcard_routes: true
-
 picture:
   class: sfDoctrineRouteCollection
   options:

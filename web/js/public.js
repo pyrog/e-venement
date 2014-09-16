@@ -1,16 +1,6 @@
-// the global var that can be used everywhere as a "root"
-if ( LI == undefined )
-  var LI = {};
-
-if ( LI.pubCartReady == undefined )
-  LI.pubCartReady = [];
-
 $(document).ready(function(){
   $.get($('#cart-widget-url').prop('href'),function(data){
     $('body').prepend($($.parseHTML(data)).find('#cart-widget'));
-    
-    for ( i = 0 ; LI.pubCartReady[i] != undefined ; i++ )
-      LI.pubCartReady[i]();
   });
   
   // if treating month as a structural data
@@ -77,10 +67,5 @@ $(document).ready(function(){
       $(this).html('');
     });
   }
-  
-  // flashes
-  setTimeout(function(){
-    $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  },4000);
 });
         

@@ -24,7 +24,7 @@
 <?php
     // get all selected workspaces
     $this->workspaces = false;
-    if ( isset($criterias['workspaces']) && count($criterias['workspaces']) > 0 )
+    if ( count($criterias['workspaces']) > 0 )
     {
       $q = Doctrine::getTable('Workspace')->createQuery('w')
         ->andWhereIn('w.id',$criterias['workspaces']);

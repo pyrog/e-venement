@@ -13,51 +13,6 @@ require_once dirname(__FILE__).'/../lib/transactionGeneratorHelper.class.php';
  */
 class transactionActions extends autoTransactionActions
 {
-  public function executeRegistered(sfWebRequest $request)
-  {
-    $this->transaction = $this->getRoute()->getObject();
-    $this->forms = array();
-    
-    foreach ( $this->transaction->Tickets as $ticket )
-    if ( $ticket->gauge_id == $request->getParameter('gauge_id', 0)
-      && $ticket->price_id == $request->getParameter('price_id', 0)
-      && !$ticket->duplicating && !$ticket->cancelling )
-    {
-      $form = new TicketRegisteredForm($ticket);
-      $this->forms[] = $form;
-    }
-  }
-  public function executeRegister(sfWebRequest $request)
-  {
-    $data = $request->getParameter('ticket');
-    $this->form = new TicketRegisteredForm;
-    if ( !$this->getUser()->hasCredential('tck-transaction-reduc') && isset($data['reduc']) )
-      unset($data['reduc']);
-    $this->form->bind($data);
-    
-    if ( $request->hasParameter('debug') && sfConfig::get('sf_web_debug') )
-    {
-      $this->debug = true;
-      $this->getResponse()->setContentType('text/html');
-      $this->getResponse()->sendHttpHeaders();
-      $this->setLayout('layout');
-    }
-    
-    if ( !$this->form->isValid() )
-      return 'Error';
-    
-    $this->getContext()->getConfiguration()->loadHelpers(array('Url', 'I18N'));
-    
-    $ticket = $this->form->save();
-    $this->json = array('success' => array(
-      'message'   => __('Ticket #%%id%% registered', array('%%id%%' => $ticket->id)),
-      'url_back' => url_for('transaction/registered'
-        .'?id='.$ticket->transaction_id
-        .'&price_id='.$ticket->price_id
-        .'&gauge_id='.$ticket->gauge_id
-      ),
-    ));
-  }
   public function executeEdit(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
@@ -106,11 +61,11 @@ class transactionActions extends autoTransactionActions
       'required' => false,
     ));
     
-    // Deposit (calling the "more" template)
-    $this->form['more'] = new sfForm;
-    $this->form['more']->setDefault('deposit', $this->transaction->deposit);
-    $ws = $this->form['more']->getWidgetSchema()->setNameFormat('transaction[%s]');
-    $vs = $this->form['more']->getValidatorSchema();
+    // Deposit
+    $this->form['deposit'] = new sfForm;
+    $this->form['deposit']->setDefault('deposit', $this->transaction->deposit);
+    $ws = $this->form['deposit']->getWidgetSchema()->setNameFormat('transaction[%s]');
+    $vs = $this->form['deposit']->getValidatorSchema();
     $ws['deposit'] = new sfWidgetFormInputCheckbox(array(
     ));
     $vs['deposit'] = new sfValidatorBoolean(array(
@@ -139,11 +94,13 @@ class transactionActions extends autoTransactionActions
       'model' => 'Price',
       // already includes in PriceTable the control of user's credentials
     ));
-    $ws['declination_id'] = new sfWidgetFormInputHidden;
-    //$vs['declination_id'] <-- this is done depending on the submitted type, in the "complete" action
-    $ws['type'] = new sfWidgetFormInputHidden;
-    $vs['type'] = new sfValidatorChoice(array(
-      'choices' => array('declination', 'gauge'),
+    $ws['gauge_id'] = new sfWidgetFormInputHidden;
+    $vs['gauge_id'] = new sfValidatorDoctrineChoice(array(
+      'model' => 'Gauge',
+      'query' => Doctrine_Query::create()->from('Gauge g')
+        ->leftJoin('g.Workspace w')
+        ->leftJoin('w.Users wu')
+        ->andWhere('wu.id = ?', $this->getUser()->getId()),
     ));
     $ws['id'] = new sfWidgetFormInputHidden;
     $vs['id'] = new sfValidatorDoctrineChoice(array(
@@ -158,12 +115,6 @@ class transactionActions extends autoTransactionActions
       'choices' => array('', 'integrated'),
       'required' => false,
     ));
-    $ws['free-price'] = new sfWidgetFormInputHidden;
-    $ws['free-price']->setDefault((float)sfConfig::get('project_tickets_free_price_default', 1));
-    $vs['free-price'] = new sfValidatorNumber(array(
-      'min' => 0,
-      'required' => false,
-    ));
     
     // NEW "PRODUCTS"
     $this->form['content'] = array();
@@ -176,28 +127,6 @@ class transactionActions extends autoTransactionActions
         ->andWhere('m.reservation_confirmed = ? AND m.blocking = ?',array(true,true))
         ->andWhere('pu.sf_guard_user_id = ?', $this->getUser()->getId()),
     ));
-    $this->form['content']['store'] = new sfForm;
-    $ws = $this->form['content']['store']->getWidgetSchema();
-    $vs = $this->form['content']['store']->getValidatorSchema();
-    $vs['product_id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Product',
-      'query' => Doctrine::getTable('Product')->createQuery('pdt')->select('pdt.id')
-        ->andWhereIn('pdt.meta_event_id IS NULL OR pdt.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
-        ->leftJoin('pdt.Prices p')
-        ->leftJoin('p.Users pu')
-        ->andWhere('pu.sf_guard_user_id = ?', $this->getUser()->getId()),
-    ));
-    $this->form['content']['store']->integrate = new sfForm;
-    $ws = $this->form['content']['store']->integrate->getWidgetSchema()->setNameFormat('transaction[store_integrate][%s]');
-    $vs = $this->form['content']['store']->integrate->getValidatorSchema();
-    $ws['id'] = new sfWidgetFormInputHidden;
-    $vs['id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Transaction',
-      'query' => Doctrine::getTable('Transaction')->createQuery('t')
-        ->andWhere('t.closed = ?', false)
-        ->andWhere('t.id = ?', $this->transaction->id),
-    ));
-    $this->form['content']['store']->integrate->setDefault('id', $this->transaction->id);
 
     // NEW PAYMENT
     $this->form['payment_new'] = new sfForm;
@@ -281,30 +210,18 @@ class transactionActions extends autoTransactionActions
     // initialization
     $this->executeEdit($request);
     $this->dealWithDebugMode($request);
-    $vs['declination_id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Gauge',
-      'query' => Doctrine_Query::create()->from('Gauge g')
-        ->leftJoin('g.Workspace w')
-        ->leftJoin('w.Users wu')
-        ->andWhere('wu.id = ?', $this->getUser()->getId()),
-    ));
     
     require(dirname(__FILE__).'/complete.php');
     return '';
   }
   
   public function executeGetManifestations(sfWebRequest $request)
-  { return $this->getAbstract($request, 'manifestations'); }
-  
-  public function executeGetStore(sfWebRequest $request)
-  { return $this->getAbstract($request, 'store'); }
-  protected function getAbstract(sfWebRequest $request, $type)
   {
     // initialization
     $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink', 'Number'));
     $this->dealWithDebugMode($request);
     
-    require(dirname(__FILE__).'/get-abstract.php');
+    require(dirname(__FILE__).'/get-manifestations.php');
     return '';
   }
   
@@ -323,9 +240,7 @@ class transactionActions extends autoTransactionActions
     $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
     parent::executeNew($request);
     
-    $this->dispatcher->notify(new sfEvent($this, 'tck.before_transaction_creation', array('transaction' => $this->transaction)));
     $this->transaction->save();
-    $this->dispatcher->notify(new sfEvent($this, 'tck.after_transaction_creation', array('transaction' => $this->transaction)));
     
     $this->getUser()->setFlash('success', __('Transaction created'));
     $this->redirect('transaction/edit?id='.$this->transaction->id);
@@ -341,22 +256,14 @@ class transactionActions extends autoTransactionActions
   public function executeUpdate(sfWebRequest $request)
   { $this->forward404('You are not supposed to be here...'); }
   
-  public function executeSeatsFirst(sfWebRequest $request)
-  {
-    $this->getContext()->getConfiguration()->loadHelpers(array('Url'));
-    $this->getUser()->setFlash('referer', url_for('transaction/closeWindow'));
-    $this->redirect('ticket/seatsAllocation?id='.$request->getParameter('id').'&gauge_id='.$request->getParameter('gauge_id').'&add_tickets=true');
-  }
-  public function executeCloseWindow(sfWebRequest $request)
-  { }
-  
   protected function dealWithDebugMode(sfWebRequest $request)
   {
     $this->setTemplate('json');
     
-    if ( $request->hasParameter('debug') && sfConfig::get('sf_web_debug', false) )
+    if ( $request->hasParameter('debug') && $this->getContext()->getConfiguration()->getEnvironment() == 'dev' )
     {
       $this->getResponse()->setContentType('text/html');
+      sfConfig::set('sf_debug',true);
       $this->setLayout('layout');
     }
     else

@@ -107,20 +107,6 @@ class EventFormFilter extends BaseEventFormFilter
       )),
       'required' => false,
     ));
-    
-    $this->widgetSchema   ['participants_list'] = new sfWidgetFormDoctrineChoice($arr = array(
-      'model' => 'Contact',
-      'query' => Doctrine::getTable('Contact')->createQuery('c')
-        ->leftJoin('c.InvolvedIn m')
-        ->andWhere('m.id IS NOT NULL')
-        ->andWhere('c.confirmed = ?', true)
-        ->orderBy('m.happens_at DESC')
-        ->limit(50),
-      'multiple' => true,
-    ));
-    $this->validatorSchema['participants_list'] = new sfValidatorDoctrineChoice($arr + array(
-      'required' => false,
-    ));
   }
   public function buildQuery(array $values)
   {
@@ -132,11 +118,10 @@ class EventFormFilter extends BaseEventFormFilter
   public function getFields()
   {
     return array_merge(parent::getFields(),array(
-      'workspaces_list'   => 'WorkspacesList',
-      'location_id'       => 'LocationId',
-      'colors_list'       => 'ColorsList',
-      'dates_range'       => 'DatesRange',
-      'participants_list' => 'ParticipantsList',
+      'workspaces_list' => 'WorkspacesList',
+      'location_id'     => 'LocationId',
+      'colors_list'     => 'ColorsList',
+      'dates_range'     => 'DatesRange',
     ));
   }
   protected function getTranslatedFields($fieldName = NULL)
@@ -160,18 +145,6 @@ class EventFormFilter extends BaseEventFormFilter
       ->orWhereIn("$me.id",array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials()))
       ->andWhere('TRUE)');
   }
-  
-  // I18N
-  public function addNameColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
-  public function addShortNameColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
-  public function addDescriptionColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
-  public function addExtradescColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
-  public function addExtraspecColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
   
   public function addDatesRangeColumnQuery(Doctrine_Query $q, $field, $values)
   {
@@ -297,22 +270,5 @@ class EventFormFilter extends BaseEventFormFilter
     $a = $q->getRootAlias();
     if ( isset($value['text']) && $value['text'] )
       $q->andWhere("$a.$field >= ?",$value['text']);
-  }
-  
-  public function addParticipantsListColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    if ( $value && !is_array($value) )
-      $value = array($value);
-    if ( count($value) == 0 )
-      return $q;
-    
-    if ( !$q->contains("LEFT JOIN $a.Manifestations m") )
-      $q->leftJoin("$a.Manifestations m");
-    if ( !$q->contains("LEFT JOIN m.Participants participant") )
-      $q->leftJoin("m.Participants participant");
-    $q->andWhereIn('participant.id',$value);
-    
-    return $q;
   }
 }

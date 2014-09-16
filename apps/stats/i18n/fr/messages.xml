@@ -5,10 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>empty information</source>
-        <target>information vide</target>
-      </trans-unit>
-      <trans-unit>
         <source>Counting only contacts (not family members)</source>
         <target>Compter les contacts seuls (pas les membres de la famille)</target>
       </trans-unit>

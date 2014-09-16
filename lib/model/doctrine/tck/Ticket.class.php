@@ -61,28 +61,9 @@ class Ticket extends PluginTicket
     return $this->Duplicated->getOriginal();
   }
   
-  public function getBarcode($salt = NULL)
+  public function getBarcode($salt = '')
   {
-    $salt = $salt
-      ? $salt
-      : sfConfig::get('project_eticketting_salt', '');
-    
-    if ( !$this->rawGet('barcode') )
-      $this->barcode = md5('#'.$this->id.'-'.$salt);
-    return $this->rawGet('barcode');
-  }
-  
-  public function renderBarcode($file = NULL) // PNG output directly to stdout
-  {
-    $bc = new liBarcode($this->barcode);
-    $bc->render($file);
-    return $this;
-  }
-  
-  public function getBarcodePng()
-  {
-    $bc = new liBarcode($this->barcode);
-    return (string)$bc;
+    return md5('#'.$this->id.'-'.$salt);
   }
   
   public function getIdBarcoded()
@@ -94,74 +75,51 @@ class Ticket extends PluginTicket
     return $c;
   }
   
-  public function getTotal()
-  {
-    return $this->value + $this->taxes;
-  }
-  
-  public function renderSimplified($type = 'html')
+  public function renderSimplified()
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('Url', 'Number'));
     
     // the barcode
-    if ( sfConfig::get('app_tickets_id', 'id') == 'id' )
-    {
-      $c = curl_init();
-      curl_setopt_array($c, array(
-        CURLOPT_URL => $url = public_path('/liBarcodePlugin/php-barcode/barcode.php?scale=3'.($type == 'html' ? '&mode=html' : '').'&code='.$this->getIdBarcoded(),true),
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        CURLOPT_RETURNTRANSFER => true,
-      ));
-      if (!( $barcode = curl_exec($c) ))
-        error_log('Error loading the barcode: '.curl_error($c));
-      curl_close($c);
-    }
-    else
-      $barcode = $this->getBarcodePng();
-    
-    if ( $type != 'html' || sfConfig::get('app_tickets_id', 'id') != 'id' )
-      $barcode = '<span><img src="data:image/jpg;base64,'.base64_encode($barcode).'" alt="#'.$this->id.'" /></span>';
+    $c = curl_init();
+    curl_setopt_array($c, array(
+      CURLOPT_URL => $url = public_path('/liBarcodePlugin/php-barcode/barcode.php?mode=html&scale=3&code='.$this->getIdBarcoded(),true),
+      CURLOPT_SSL_VERIFYPEER => false,
+      CURLOPT_SSL_VERIFYHOST => false,
+      CURLOPT_RETURNTRANSFER => true,
+    ));
+    if (!( $barcode = curl_exec($c) ))
+      error_log('Error loading the barcode: '.curl_error($c));
+    curl_close($c);
     
     // the HTML code
     return sprintf(<<<EOF
-  <div class="cmd-element ticket">
-  <table><tr>
-    <td class="desc">
-      <div class="event"><table><tbody><tr><td><span>%s:</span> <span>%s</span></td></tr></tbody></table></div>
-      <p class="event-2nd"><span>%s:</span> <span>%s</span></p>
-      <p class="description"><span>%s:</span> <span>%s</span></p>
-      <p class="location"><span>%s:</span> <span>%s</span></p>
-      <p class="address"><span>%s:</span> <span>%s</span></p>
-      <p class="gauge"><span>%s:</span> <span>%s</span></p>
-      <p class="date"><span>%s:</span> <span>%s</span></p>
-      <p class="price"><span>%s:</span> <span>%s</span> <span>%s</span></p>
-      <p class="seat"><span>%s</span><span>%s</span></p>
-      <div class="comment"><table><tbody><tr><td><div>%s</div></td></tr></tbody></table></div>
-      <p class="ids"><span class="transaction">#%s</span> <span class="id">#%s</span></p>
-      <p class="contact">%s</p>
-      <p class="duplicate">%s</p>
-    </td>
-    <td class="bc">%s</td>
-  <tr></table>
-  <img class="background" src="data:image/png;base64,%s" alt="" />
-  </div>
+  <div class="cmd-ticket">
+    <div class="bc">%s</div>
+    <div class="desc"><p>%s: %s</p>
+      <p>%s: %s, %s</p>
+      <p>%s: %s</p>
+      <p>%s: %s %s</p>
+      <p>%s</p>
+      <p>#%s-%s<!-- transaction_id --></p>
+      <p>%s</p>
+      <p class="duplicate">%s</p></div><div class="clear"></div></div>
 EOF
-      , __('Event', null, 'li_tickets_email'), nl2br($this->Manifestation->Event)
-      , '', $this->Manifestation->Event->short_name
-      , '', $this->Manifestation->Event->description
-      , __('Venue', null, 'li_tickets_email'), (string)$this->Manifestation->Location
-      , __('Address', null, 'li_tickets_email'), (string)$this->Manifestation->Location->full_address
-      , __('Category', null, 'li_tickets_email'), (string)$this->Gauge
-      , __('Date', null, 'li_tickets_email'), $this->Manifestation->getFormattedDate()
-      , __('Price', null, 'li_tickets_email'), $this->price_name, format_currency($this->value,'€')
-      , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : '', $this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : '')
-      , $this->comment
-      , $this->transaction_id, $this->id
-      , $this->contact_id ? $this->Contact->name_with_title : ($this->Transaction->professional_id ? $this->Transaction->Professional->getFullName() : $this->Transaction->Contact->name_with_title)
-      , !$this->duplicating ? '' : __('This ticket is a duplicate of #%%tid%%, it replaces and cancels any previous version of this ticket you might have recieved', array('%%tid%%' => $this->transaction_id.'-'.$this->duplicating), 'li_tickets_email')
       , $barcode
-      , base64_encode(file_get_contents(sfConfig::get('sf_web_dir').'/images/ticket-simplified-layout-100dpi.png'))
+      , __('Event', null, 'li_tickets_email')
+      , (string)$this->Manifestation->Event
+      , __('Venue', null, 'li_tickets_email')
+      , (string)$this->Manifestation->Location
+      , (string)$this->Gauge
+      , __('Date', null, 'li_tickets_email')
+      , $this->Manifestation->getShortenedDate()
+      , __('Price', null, 'li_tickets_email')
+      , $this->price_name
+      , format_currency($this->value,'€')
+      , $this->numerotation ? __('Seat #%%num%%', array('%%num%%' => $this->numerotation), 'li_tickets_email') : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : __('Seat #%%num%%', array('%%num%%' => ' N/A'), 'li_tickets_email'))
+      , $this->transaction_id
+      , $this->id
+      , $this->Transaction->professional_id ? $this->Transaction->Professional->getFullName() : (string)$this->Transaction->Contact
+      , !$this->duplicating ? '' : __('This ticket is a duplicate of #%%tid%%, it replaces and cancels any previous version of this ticket you might have recieved', array('%%tid%%' => $this->transaction_id.'-'.$this->duplicating), 'li_tickets_email')
     );
   }
   

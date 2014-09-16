@@ -1,9 +1,10 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
+ * @link    http://www.dompdf.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id$
  */
 
 /**
@@ -55,7 +56,6 @@ class Absolute_Positioner extends Positioner {
     if ( $left === "auto" ) {
       if ( $right === "auto" ) {
         // A or E - Keep the frame at the same position
-        $x = $x + $frame->find_block_parent()->get_current_line_box()->w;
       }
       else {
         if ( $orig_width === "auto" ) {
@@ -89,7 +89,7 @@ class Absolute_Positioner extends Positioner {
     if ( $top === "auto" ) {
       if ( $bottom === "auto" ) {
         // A or E - Keep the frame at the same position
-        $y = $frame->find_block_parent()->get_current_line_box()->y;
+        $y = $frame->get_parent()->get_current_line_box()->y;
       }
       else {
         if ( $orig_height === "auto" ) {

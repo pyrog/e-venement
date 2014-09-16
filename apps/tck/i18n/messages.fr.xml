@@ -5,74 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>You cannot remove a product linked with a member card, you should better try to remove the member card...</source>
-        <target>Vous ne pouvez pas retirer un produit lié à une carte d'abo, vous feriez mieux d'essayer de supprimer la carte d'abo...</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Pay what you want</source>
-        <target>Prix libre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Products delivered</source>
-        <target>Produits donnés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Product</source>
-        <target>Produit</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Tax %%name%%</source>
-        <target>Taxe %%name%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Tax</source>
-        <target>Taxe</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Extra taxes</source>
-        <target>Taxes add.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Even if something has more than one link that lead to this tax, it will only count once.</source>
-        <target>Même si quelque chose a plusieurs liens menant à cette taxe, elle ne sera comptée qu'une seule fois.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Taxes by value are expressed with VAT. The Duty Free amount of tickets includes the Duty Free amount of taxes.</source>
-        <target>Les taxes par valeur sont exprimées en TTC. Le montant HT des billets inclut le montant HT des taxes.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>for percentages 7 means 7%, for fixed value VAT is included and depends on each manifestation</source>
-        <target>pour les pourcentages 7 signifie 7%, pour les valeurs fixes la TVA est incluse et dépend de chaque manifestation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Offered by</source>
-        <target>Offert par</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Please fill in the form correctly before you submit it</source>
-        <target>Remplir correctement le formulaire avant de le valider SVP</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ticket #%%id%% registered</source>
-        <target>Billets #%%id%% associé</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Registered tickets</source>
-        <target>Billets nominatifs</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Seats first</source>
-        <target>Placer en 1er</target>
-      </trans-unit>
-      <trans-unit>
-        <source>[1]1 answer to a survey|(1,+Inf]%%nb%% answers to surveys</source>
-        <target>[1]1 réponse à un questionnaire|(1,+Inf]%%nb%% réponses aux questionnaires</target>
-      </trans-unit>
-      <trans-unit>
-        <source>You always need to give a price to every seated-only tickets before printing or booking.</source>
-        <target>Avant toute impression ou réservation, vous devez toujours fixer un tarif aux billets n'ayant été que placés.</target>
-      </trans-unit>
-      <trans-unit>
         <source>From %from_date%</source>
         <target>Entre le %from_date%</target>
       </trans-unit>
@@ -137,8 +69,8 @@
         <target>Cette opération n'a pas été totalement payée</target>
       </trans-unit> 
       <trans-unit>
-        <source>Some products are not sold (printed?) yet</source>
-        <target>Plusieurs produits n'ont pas encore été vendus</target>
+        <source>Some tickets are not printed yet</source>
+        <target>Plusieurs billets n'ont pas été encore imprimés</target>
       </trans-unit> 
       <trans-unit>
         <source>This transaction has more money than needed</source>
@@ -181,8 +113,8 @@
         <target>Opération créée</target>
       </trans-unit> 
       <trans-unit>
-        <source>your order #%%transaction_id%% has been updated</source>
-        <target>votre commande #%%transaction_id%% a été mise à jour</target>
+        <source>seat allocations for your order #%%transaction_id%%</source>
+        <target>affectation des places numérotées pour votre commande #%%transaction_id%%</target>
       </trans-unit> 
       <trans-unit>
         <source>seat</source>
@@ -809,8 +741,8 @@
         <target>Compte</target>
       </trans-unit>
       <trans-unit>
-        <source>Ticketting Detailed Ledger</source>
-        <target>Journal de billetterie détaillé</target>
+        <source>Detailed Ledger</source>
+        <target>Journal détaillé</target>
       </trans-unit>
       <trans-unit>
         <source>from %%from%% to %%to%%</source>
@@ -1559,38 +1491,6 @@
       <trans-unit>
         <source>Get a PDF</source>
         <target>Format PDF</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Users</source>
-        <target>Utilisateurs</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Taxes list</source>
-        <target>Liste des taxes additionnelles</target>
-      </trans-unit>
-      <trans-unit>
-        <source>value</source>
-        <target>valeur en euros</target>
-      </trans-unit>
-      <trans-unit>
-        <source>percentage</source>
-        <target>pourcentage</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New tax</source>
-        <target>Nouvelle taxe</target>
-      </trans-unit>
-      <trans-unit>
-        <source>View Tax</source>
-        <target>Voir la taxe</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Created_at</source>
-        <target>Crée le</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Updated_at</source>
-        <target>Mise à jour le</target>
       </trans-unit>
     </body>
   </file>

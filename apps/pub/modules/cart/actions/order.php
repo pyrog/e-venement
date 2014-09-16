@@ -25,39 +25,28 @@
     if ( !($this->getUser()->getTransaction() instanceof Transaction) )
       return $this->redirect('event/index');
     
-    // harden data
-    $this->getContext()->getConfiguration()->hardenIntegrity();
-    
     try { $this->form = new ContactPublicForm($this->getUser()->getContact()); }
     catch ( liEvenementException $e )
     { $this->form = new ContactPublicForm; }
     
-    if (!( $this->getUser()->getContact()->id && !$request->hasParameter('contact') ))
+    // add the contact to the DB
+    if ( !$this->form->getObject()->isNew() )
+      $this->form->removePassword();
+    $this->form->bind($request->getParameter('contact'));
+    try
     {
-      // add the contact to the DB
-      if ( !$this->form->getObject()->isNew() )
-        $this->form->removePassword();
-      $this->form->bind($request->getParameter('contact'));
-      try
+      if ( !$this->form->isValid() )
       {
-        if ( !$this->form->isValid() )
-        {
-          $this->executeRegister($request);
-          $this->setTemplate('register');
-          return;
-        }
+        $this->executeRegister($request);
+        $this->setTemplate('register');
+        return;
       }
-      catch ( liOnlineSaleException $e )
-      {
-        $this->getContext()->getConfiguration()->loadHelpers('I18N');
-        $this->getUser()->setFlash('error',__($e->getMessage()));
-        return $this->redirect('login/index');
-      }
-      
-      // save the contact, with a non-confirmed attribute
-      if ( !$this->getUser()->getTransaction()->contact_id )
-        $this->form->getObject()->Transactions[] = $this->getUser()->getTransaction();
-      $this->contact = $this->form->save();
+    }
+    catch ( liOnlineSaleException $e )
+    {
+      $this->getContext()->getConfiguration()->loadHelpers('I18N');
+      $this->getUser()->setFlash('error',__($e->getMessage()));
+      return $this->redirect('login/index');
     }
     
     // remember the contact's informations
@@ -124,14 +113,10 @@
       }
     }
     
-    // surveys to apply
-    $surveys = $this->getUser()->getTransaction()->getSurveysToFillIn();
-    if ( $surveys->count() > 0 )
-    {
-      $this->getContext()->getConfiguration()->loadHelpers('I18N');
-      $this->getUser()->setFlash('success', __('You are about to complete your order, please fill in those surveys before...'));
-      $this->redirect('cart/surveys');
-    }
+    // save the contact, with a non-confirmed attribute
+    if ( !$this->getUser()->getTransaction()->contact_id )
+      $this->form->getObject()->Transactions[] = $this->getUser()->getTransaction();
+    $this->contact = $this->form->save();
     
     // setting up the vars to commit to the bank
     if ( ($topay = $this->getUser()->getTransaction()->getPrice(true,true)) > 0 && sfConfig::get('app_payment_type','paybox') != 'onthespot' )

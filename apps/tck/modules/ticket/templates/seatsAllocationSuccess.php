@@ -29,15 +29,6 @@
   </div>
   <div class="ui-corner-all ui-widget-content ui-widget">
 
-<p class="first next">
-  <?php $opt = sfConfig::get('app_transaction_seated_plan', array()) ?>
-  <?php if ( !isset($opt['auto_next']) ) $opt['auto_next'] = true; ?>
-  <a href="<?php echo $url_next ?>" onclick="javascript: window.opener.LI.initContent();"
-     class="fg-button ui-state-default fg-button-icon-right <?php echo $opt['auto_next'] ? 'auto-click' : '' ?>">
-    <?php echo __('Next') ?>
-  </a>
-</p>
-
 <p id="reload">
   <a href="javascript: location.reload();"
      class="fg-button ui-state-default fg-button-icon-right">
@@ -45,31 +36,24 @@
   </a>
 </p>
 <p id="context">
-  <span class="manifestation"><?php echo $manifestation->getNameWithFullDate() ?></span>
-  <span class="gauge"><?php echo $gauge->Workspace ?></span>
+  <span class="manifestation"><?php echo $transaction->Tickets[0]->Manifestation->getNameWithFullDate() ?></span>
+  <span class="gauge"><?php echo $transaction->Tickets[0]->Gauge->Workspace ?></span>
 </p>
 
-<div id="todo">
-  <?php $nb = 0 ?>
+<form action="<?php echo url_for('ticket/resetASeat?id='.$transaction->id) ?>" method="get" id="todo" class="reset-a-seat">
   <?php foreach ( $transaction->Tickets as $ticket ): ?>
-  <?php if ( !$ticket->numerotation ): $nb++; ?>
   <span class="ticket" title="#<?php echo $ticket->id ?>">
     <?php echo $ticket->price_name ?>
     <input type="hidden" name="ticket_id" value="<?php echo $ticket->id ?>" />
-    <input type="hidden" name="ticket_numerotation" value="" />
   </span>
-  <?php endif ?>
   <?php endforeach ?>
-  <span class="total"><?php echo $nb ?></span>
-  <form action="<?php echo url_for('ticket/resetASeat?id='.$transaction->id) ?>" method="get" class="reset-a-seat">
-    <span style="display: none;">
-      <input type="hidden" name="ticket[_csrf_token]" value="<?php $f = new sfForm; echo $f->getCSRFToken() ?>" />
-      <input type="hidden" name="ticket[numerotation]" value="" />
-      <input type="hidden" name="ticket[gauge_id]" value="<?php echo $gauge->id ?>" />
-      <input type="hidden" name="ticket[transaction_id]" value="<?php echo $transaction->id ?>" />
-    </span>
-  </form>
-</div>
+  <span class="total"><?php echo $transaction->Tickets->count() ?></span>
+  <span style="display: none;">
+    <input type="hidden" name="ticket[_csrf_token]" value="<?php $f = new sfForm; echo $f->getCSRFToken() ?>" />
+    <input type="hidden" name="ticket[numerotation]" value="" />
+    <input type="hidden" name="ticket[gauge_id]" value="<?php echo $transaction->Tickets[0]->gauge_id ?>" />
+  </span>
+</form>
 <p id="arrow">&nbsp;↓</p>
 <div id="done">
   <form action="<?php echo url_for('ticket/giveASeat?id='.$transaction->id) ?>" method="get">
@@ -77,32 +61,20 @@
       <input type="hidden" name="ticket[_csrf_token]" value="<?php $f = new sfForm; echo $f->getCSRFToken() ?>" />
       <input type="hidden" name="ticket[id]" value="" />
       <input type="hidden" name="ticket[numerotation]" value="" />
-      <input type="hidden" name="ticket[gauge_id]" value="<?php echo $gauge->id ?>" />
       <span class="error_msg"><?php echo __('An error occurred during the seat allocation. Please try again.') ?></span>
     </p>
   </form>
-  <?php $nb = 0 ?>
-  <?php foreach ( $transaction->Tickets as $ticket ): ?>
-  <?php if ( $ticket->numerotation ): $nb++; ?>
-  <span class="ticket" title="#<?php echo $ticket->id ?>">
-    <?php echo $ticket->price_name ?>
-    <input type="hidden" name="ticket_id" value="<?php echo $ticket->id ?>" />
-    <input type="hidden" name="ticket_numerotation" value="<?php echo $ticket->numerotation ?>" />
-  </span>
-  <?php endif ?>
-  <?php endforeach ?>
-  <span class="total"><?php echo $nb ?></span>
+  <span class="total">0</span>
 </div>
 
 <p id="plan"><a class="picture seated-plan" href="<?php echo cross_app_url_for('event', 'seated_plan/getSeats?id='.$seated_plan->id.'&gauge_id='.$gauge->id.'&transaction_id='.$transaction->id) ?>" style="background-color: <?php echo $seated_plan->background ?>;">
-  <?php use_stylesheet('/private/event-seated-plan?'.date('Ymd')) ?>
   <?php echo $seated_plan->getRaw('Picture')->getHtmlTag(array('title' => $seated_plan->Picture)) ?>
 </a></p>
 
-<p class="last next">
+<p id="next">
   <?php $opt = sfConfig::get('app_transaction_seated_plan', array()) ?>
   <?php if ( !isset($opt['auto_next']) ) $opt['auto_next'] = true; ?>
-  <a href="<?php echo $url_next ?>" onclick="javascript: window.opener.LI.initContent();"
+  <a href="<?php echo $url_next ?>"
      class="fg-button ui-state-default fg-button-icon-right <?php echo $opt['auto_next'] ? 'auto-click' : '' ?>">
     <?php echo __('Next') ?>
   </a>

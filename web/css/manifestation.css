@@ -8,15 +8,13 @@
 
 select[disabled] { color: #444; }
 
-#content .sf_admin_form_field_participants_list ul,
-#content .sf_admin_form_field_organizers_list ul,
-#content .sf_admin_form_field_workspaces_list ul,
+#content .sf_admin_field_organizers_list ul,
+#content .sf_admin_field_workspaces_list ul,
 #content .sf_admin_form_field_prices_list table td { padding: 0 5px; }
-#content .sf_admin_form_field_prices_list ul { padding: 5px 10px; margin-bottom: 10px; }
-#content .sf_admin_form_field_participants_list ul li,
-#content .sf_admin_form_field_organizers_list ul li,
-#content .sf_admin_form_field_workspaces_list ul li,
-#content .sf_admin_form_field_prices_list ul li { margin-left: 10px; }
+#content .sf_admin_field_prices_list ul { padding: 5px 10px; margin-bottom: 10px; }
+#content .sf_admin_field_organizers_list ul li,
+#content .sf_admin_field_workspaces_list ul li,
+#content .sf_admin_field_prices_list ul li { margin-left: 10px; }
 
 #content .sf_admin_list_td_Price select[name="price_manifestation[price_id]"] { width: 100px; }
 #content .sf_admin_list_td_value input[type=text] { width: 100px; margin-left: 50px; }
@@ -134,8 +132,3 @@ select[disabled] { color: #444; }
 
 #li-direct-access { position: absolute; right: 200px; margin-top: 54px; border: 0; background: none; }
 
-.sf_admin_form_field_gauges_prices { margin-left: -150px; width: calc(100% + 130px); overflow: auto; background-color: white; }
-.sf_admin_form .sf_admin_form_field_gauges_prices .ui-widget-content { padding: 5px; background: transparent; }
-.sf_admin_form .sf_admin_form_field_gauges_prices table label { display: none; }
-.sf_admin_form .sf_admin_form_field_gauges_prices td { padding: 1px 3px; text-align: center; }
-#content .sf_admin_form .sf_admin_form_field_gauges_prices input { width: 4em !important; border: 0; background-color: rgba(255,255,255,0.5); text-align: right; }
