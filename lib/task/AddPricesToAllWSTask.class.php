@@ -39,8 +39,7 @@ class AddPricesToAllWSTask extends sfBaseTask{
 EOF;
   }
 
-  protected function execute($arguments = array(), $options = array())
-  {
+  protected function  execute($arguments = array(), $options = array()) {
     $databaseManager = new sfDatabaseManager($this->configuration);
 
     if(!class_exists('PriceTable') || !class_exists('WorkspaceTable')){
@@ -65,7 +64,7 @@ EOF;
           }
           catch ( sfException $e )
           {
-            $this->logSection('geo', sprintf('ERROR on %s %s', $options['model'],$price->name));
+            $this->logSection('geo', sprintf('ERROR on %s %s', $arguments['model'],$price->name));
           }
         }
       }

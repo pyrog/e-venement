@@ -1,4 +1,0 @@
-all:
-  credentials: [tck-transaction]
-getStore:
-  credentials: [tck-pos]

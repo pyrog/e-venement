@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-  $this->getContext()->getConfiguration()->loadHelpers(array('I18N','CrossAppLink'));
+  sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','CrossAppLink'));
   
   $control = $request->getParameter('control');
   

@@ -63,7 +63,7 @@ body.labels .table .row .cell { display: table-cell; vertical-align: middle; }
 
 body.labels .labels > div > div {
   width:  <?php echo ( floatval($width)-$pleft*2-floatval($params['margin-x'])*(intval($params['nb-x'])-1) )/intval($params['nb-x']) ?>mm;
-  height: <?php echo $cellheight = ( floatval($height)-$ptop*2-(floatval($params['margin-y'])+$error['y'])*(intval($params['nb-y'])-1) )/intval($params['nb-y']) - 0.01 ?>mm; /* the - 1mm is a hack for a small difference between HTML and PDF rendering */
+  height: <?php echo $cellheight = ( floatval($height)-$ptop*2-(floatval($params['margin-y'])+$error['y'])*(intval($params['nb-y'])-1) )/intval($params['nb-y']) ?>mm;
   overflow: hidden;
 }
 body.labels .labels > div > div > * {
@@ -75,9 +75,8 @@ body.labels .labels > div > div.margin {
   height: 0;
 }
 body.labels .labels > div > div div.content {
-  padding: <?php echo $cellpad = floatval($params['padding-y']).'mm' ?> 0;
+  padding: <?php echo floatval($params['padding-y']).'mm' ?> 0; /*.floatval($params['padding-x']).'mm' ?>; */
   overflow: hidden;
-  max-height: <?php echo $cellheight - $cellpad*2 - 1 ?>mm; /* the - 1mm is a hack for a small difference between HTML and PDF rendering */
 }
 
 /* compensating printer margins

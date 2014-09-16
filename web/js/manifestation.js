@@ -62,25 +62,12 @@ $(document).ready(function(){
   });
   
   // highlight the extra-information fieldset if some information is present here
-  if ( $.trim($('#sf_fieldset_extra_informations .sf_admin_form_field_description div:not(.label)').html())
-    || $.trim($('#sf_fieldset_extra_informations .sf_admin_form_field_description textarea').val())
+  if ( $.trim($('#sf_fieldset_technical_informations .sf_admin_form_field_description div:not(.label)').html())
+    || $.trim($('#sf_fieldset_technical_informations .sf_admin_form_field_description textarea').val())
     || $('.sf_admin_form_field_ExtraInformations.show table tr').length > 0
     || $('.sf_admin_form_field_ExtraInformations table table').length > 3 )
   {
-    $('.ui-tabs-nav [href="#sf_fieldset_extra_informations"]')
+    $('.ui-tabs-nav [href="#sf_fieldset_technical_informations"]')
       .prepend('<span class="ui-icon ui-icon-alert floatright"></span>');
   }
-  
-  // PriceGauge sensitivity
-  $('.sf_admin_form .sf_admin_form_field_gauges_prices').click(function(){
-    $(this).addClass('ui-state-highlight');
-  });
-});
-
-if ( LI == undefined )
-  var LI = {};
-if ( LI.seatedPlanInitializationFunctions == undefined )
-  LI.seatedPlanInitializationFunctions = [];  
-LI.seatedPlanInitializationFunctions.push(function(){
-  $('.seated-plan .seat.txt').unbind('contextmenu');
 });

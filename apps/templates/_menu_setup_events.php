@@ -21,17 +21,14 @@
 *
 ***********************************************************************************/
 ?>
-  <?php if ( $sf_user->hasCredential('event-admin') || $sf_user->hasCredential('event-event') || $sf_user->hasCredential('event-manif') ): ?>
-          <li class="menu-setup-events"><a><?php echo __('Events',array(),'menu') ?></a>
+  <?php if ( $sf_user->hasCredential('event-admin') ): ?>
+          <li><a><?php echo __('Events',array(),'menu') ?></a>
             <ul class="third">
               <?php if ( $sf_user->hasCredential('event-admin-metaevt') ): ?>
               <li><a href="<?php echo cross_app_url_for('event','meta_event') ?>"><?php echo __('Meta-events',array(),'menu') ?></a></li>
               <?php endif ?>
               <?php if ( $sf_user->hasCredential('event-admin-workspace') ): ?>
               <li><a href="<?php echo cross_app_url_for('event','workspace') ?>"><?php echo __('Workspaces',array(),'menu') ?></a></li>
-              <?php endif ?>
-              <?php if ( $sf_user->hasCredential('event-event') || $sf_user->hasCredential('event-manif') || $sf_user->hasCredential('event-admin') ): ?>
-              <li class="spaced"><a href="<?php echo cross_app_url_for('event','@workspace_user_ordering') ?>"><?php echo __('Ordering your workspaces',array(),'menu') ?></a></li>
               <?php endif ?>
               <?php if ( $sf_user->hasCredential('event-admin-metaevt') || $sf_user->hasCredential('event-admin-workspace') ): ?>
               <li class="spaced"></li>

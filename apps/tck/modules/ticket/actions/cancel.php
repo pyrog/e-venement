@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
     
     $tmp = explode(',',$request->getParameter('ticket_id'));
     $ticket_ids = array(0);
@@ -51,18 +51,18 @@
       }
       if ( $ticket->Transaction->closed )
       {
-        $this->getUser()->setFlash('error',__("Cannot cancel a ticket #%%i%% because its transaction #%%t%% is already closed. Trick: open its transaction in an other tab when you try to cancel it.",array('%%i%%' => $ticket->id, '%%t%%' => $ticket->transaction_id)));
+        $this->getUser()->setFlash('error',__("Can't cancel a ticket #%%i%% because its transaction #%%t%% is already closed.",array('%%i%%' => $ticket->id, '%%t%%' => $ticket->transaction_id)));
         $this->redirect('ticket/cancel');
       }
       if ( !$ticket->printed_at )
       {
-        $this->getUser()->setFlash('error',__("Cannot cancel the ticket #%%i%% because it has not yet been printed... Just try to suppress it",array('%%i%%' => $ticket->id)));
-        $this->redirect('transaction/edit?id='.$ticket->transaction_id);
+        $this->getUser()->setFlash('error',__("Can't cancel the ticket #%%i%% because it has not yet been printed... Just try to suppress it",array('%%i%%' => $ticket->id)));
+        $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
       if ( $ticket->Duplicatas->count() != 0 )
       {
         $this->getUser()->setFlash('error',__("Can't cancel the ticket #%%i%% because it is a duplicated ticket... Simply try to cancel the last duplicate of the series",array('%%i%%' => $ticket->id)));
-        $this->redirect('transaction/edit?id='.$ticket->transaction_id);
+        $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
       if ( !is_null($ticket->cancelling) )
       {

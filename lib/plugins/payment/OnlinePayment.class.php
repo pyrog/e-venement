@@ -22,19 +22,21 @@
 ?>
 <?php
   
-  abstract class OnlinePayment implements OnlinePaymentInterface
+  abstract class OnlinePayment
   {
-    protected $name = 'generic-payment';
+    protected $name = '';
     protected $url = array();
-    protected $currency = 'EUR';
-    protected $value = 0;
-    protected $return, $transaction;
+    protected $currency, $return;
+    protected $transaction;
     
-    protected function __construct(Transaction $transaction)
+    public static function create(Transaction $transaction)
     {
-      $this->transaction = $transaction;
-      $this->value = $this->transaction->getPrice(true)
-        + $this->transaction->getMemberCardPrice(true)
-        - $this->transaction->getTicketsLinkedToMemberCardPrice(true);
+      return new self($transaction);
     }
+    public static function response($array)
+    {
+      return true;
+    }
+    
+    abstract protected function __construct(Transaction $transaction);
   }

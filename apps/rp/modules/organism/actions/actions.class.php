@@ -38,6 +38,7 @@ class organismActions extends autoOrganismActions
         $this->hasFilters = $this->getUser()->getAttribute('organism.filters', $this->configuration->getFilterDefaults(), 'admin_module');
       if ( !isset($this->filters) )
         $this->filters = $this->configuration->getFilterForm($this->getFilters());
+      //if ( !in_array($this->getActionName(), array('index','search','map','labels','csv','groupList')) )
       if ( in_array($this->getActionName(), array('edit','new','show','create','update','delete')) )
         $this->setTemplate('edit');
     }
@@ -67,14 +68,6 @@ class organismActions extends autoOrganismActions
   public function executeEmailing(sfWebRequest $request)
   {
     $this->redirect('email/new');
-  }
-  public function executeGetSpecializedForm(sfWebRequest $request)
-  {
-    $this->executeEdit($request);
-    $this->form->displayOnly($this->field = $request->getParameter('field'));
-    $this
-      ->useClassicTemplateDir(true)
-      ->setLayout('empty');
   }
   public function executeBatchAddToGroup(sfWebRequest $request)
   {
@@ -303,11 +296,6 @@ class organismActions extends autoOrganismActions
   {
     $nb = strlen($search);
     $charset = sfConfig::get('software_internals_charset');
-    $transliterate = sfConfig::get('software_internals_transliterate',array());
-    
-    $search = str_replace(array('@','.','-','+',',',"'"),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
-    $search = str_replace(array_keys($transliterate), array_values($transliterate), $search);
-    
-    return $search;
+    return str_replace(array('-','+',','),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
   }
 }

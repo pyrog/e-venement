@@ -26,17 +26,16 @@
             || $sf_user->hasCredential('tck-control')
             || $sf_user->hasCredential('tck-cancel')
             || $sf_user->hasCredential('tck-print-ticket') ): ?>
-      <li class="menu-ticketting">
+      <li>
         <ul class="second">
           <?php if ( $sf_user->hasCredential('tck-transaction') ): ?>
-          <li class="old"><a href="<?php echo cross_app_url_for('tck','ticket/sell') ?>"><?php echo __('New transaction',array(),'menu') ?></a></li>
+          <li><a href="<?php echo cross_app_url_for('tck','ticket/sell') ?>"><?php echo __('New transaction',array(),'menu') ?></a></li>
+          <?php endif ?>
+          <?php if ( $sf_user->hasCredential('tck-transaction') && $sf_user->hasCredential('tck-transaction-touchy') ): ?>
+          <li><a href="<?php echo cross_app_url_for('tck','ticket/touchscreen') ?>"><?php echo __('New transaction (touchscreens)',array(),'menu') ?></a></li>
           <?php endif ?>
           <?php if ( $sf_user->hasCredential('tck-unblock') ): ?>
-          <li class="old"><a href="<?php echo cross_app_url_for('tck','ticket/respawn') ?>"><?php echo __('Respawn a transaction',array(),'menu') ?></a></li>
-          <?php endif ?>
-          <?php if ( $sf_user->hasCredential('tck-transaction') ): ?>
-          <li class="spaced"><a href="<?php echo cross_app_url_for('tck','transaction/new') ?>"><?php echo __('New transaction (touchscreens)',array(),'menu') ?></a></li>
-          <li><a href="<?php echo cross_app_url_for('tck','transaction/respawn') ?>"><?php echo __('Respawn a transaction',array(),'menu') ?></a></li>
+          <li><a href="<?php echo cross_app_url_for('tck','ticket/respawn') ?>"><?php echo __('Respawn a transaction',array(),'menu') ?></a></li>
           <?php endif ?>
           
           <?php if ( $sf_user->hasCredential('tck-cancel') && $sf_user->hasCredential('tck-transaction') ): ?>
@@ -53,7 +52,6 @@
           <?php if ( $sf_user->hasCredential('tck-control') ): ?>
           <li class="spaced"><a href="<?php echo cross_app_url_for('tck','ticket/control') ?>"><?php echo __('Ticket control',array(),'menu') ?></a></li>
           <?php endif ?>
-          <?php include_partial('global/menu_extra', array('name' => 'ticketting')) ?>
         </ul>
         <span class="title"><?php echo __('Ticketting',array(),'menu') ?></span>
       </li>

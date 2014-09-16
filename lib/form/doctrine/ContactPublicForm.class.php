@@ -21,7 +21,6 @@ class ContactPublicForm extends ContactForm
         'YOBs_list', 'groups_list', 'emails_list', 'family_contact',
         'organism_category_id', 'description', 'password', 'email_no_newsletter', 'npai',
         'latitude', 'longitude', 'slug', 'confirmed', 'version',
-        'shortname', 'involved_in_list',
         'familial_quotient_id', 'type_of_resources_id', 'familial_situation_id') as $field )
       unset($this->widgetSchema[$field], $this->validatorSchema[$field]);
     
@@ -61,27 +60,31 @@ class ContactPublicForm extends ContactForm
   
   public function bind(array $taintedValues = NULL, array $taintedFiles = NULL)
   {
-    parent::bind($taintedValues, $taintedFiles);
-    
-    // add a validator to avoid duplicates
-    if ( $this->object->isNew() )
-    {
-      $q = Doctrine_Query::create()
-        ->from('Contact c');
-      $this->validatorSchema['duplicate'] = new liValidatorContact(array(
-        'query' => $q,
-        'required' => true,
-      ));
-      $q = $this->validatorSchema['duplicate']->getOption('query');
-      foreach ( array('name', 'firstname', 'email') as $field )
-        $q->andWhere("c.$field ILIKE ?",$this->getValue($field));
-    }
-    
+    parent::bind($taintedValues);
     if ( $this->getValue('password') !== $this->getValue('password_again') )
       $this->errorSchema->addError(new sfValidatorError($this->validatorSchema['password_again'],'Passwords do not match.'));
+  }
+  
+  public function isValid()
+  {
+    if ( !parent::isValid() )
+      return false;
     
-    // bind again for the new validators
-    parent::bind($taintedValues, $taintedFiles);
+    if ( $this->object->isNew() )
+    {
+    // looking for a need of contact merging
+    $q = Doctrine_Query::create()
+      ->from('Contact c')
+      ->andWhere('c.confirmed = TRUE')
+      ->limit(1);
+    foreach ( array('name', 'firstname', 'email') as $field )
+      $q->andWhere("c.$field ILIKE ?",$this->getValue($field));
+    if ( $contact = $q->fetchOne()
+      && (!sfContext::getInstance()->getUser()->hasAttribute('contact_id') || sfContext::getInstance()->getUser()->getAttribute('contact_id') != $login->getContact()->id) )
+        throw new liOnlineSaleException('A contact with the same informations already exists, try to authenticate or maybe you misspelled your email...');
+    }
+    
+    return true;
   }
   
   public function save($con = NULL)

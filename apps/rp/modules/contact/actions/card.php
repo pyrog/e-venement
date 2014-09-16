@@ -54,47 +54,10 @@
     
     if ( $this->card->isValid() )
     {
-      $this->transaction = null;
       if ( !$request->hasParameter('duplicate') )
       {
-        $this->transaction = new Transaction;
-        $this->transaction->MemberCards[] = $this->card->getObject();
         $this->card->save();
         $this->card = $this->card->getObject();
-        
-        if ( $this->card->MemberCardType->value > 0 )
-        try
-        {
-          $payment = new Payment;
-          if ( intval($pmid = $request->getParameter('payment_method_id')) > 0 )
-            $payment->payment_method_id = $pmid;
-          else
-          {
-            $pm = Doctrine::getTable('PaymentMethod')->createQuery('pm')
-              ->andWhere('pm.member_card_linked = true')
-              ->fetchOne();
-            if ( !$pm )
-              throw new liMemberCardPaymentException('You need to define a payment method for member cards.');
-            $payment->payment_method_id = $pm->id;
-          }
-          
-          $pdtval = 0;
-          foreach ( $this->card->BoughtProducts as $bp )
-            $pdtval += $bp->value !== NULL ? $bp->value : $bp->getValueFromSchema();
-          
-          $this->card->Payments[] = $payment;
-          $payment->value = -$this->card->MemberCardType->value + $pdtval;
-          $this->transaction->Contact = $this->card->Contact;
-          $this->transaction->Payments[] = $payment;
-          $this->transaction->save();
-          $this->card->save(); // for linked products...
-        }
-      	catch ( liMemberCardPaymentException $e )
-      	{
-          $this->getContext()->getConfiguration()->loadHelpers('I18N');
-          $this->getUser()->setFlash('error', __($e->getMessage()));
-          $this->redirect('contact/card?id='.$this->card->contact_id);
-        }
       }
       else
       {
@@ -117,6 +80,30 @@
       }
       
       $this->setLayout('nude');
+      $this->transaction = null;
+      
+      // payments in ticketting
+      if ( $this->card->MemberCardType->value > 0 )
+      {
+        $payment = new Payment;
+        if ( intval($pmid = $request->getParameter('payment_method_id')) > 0 )
+          $payment->payment_method_id = $pmid;
+        else
+        {
+          $pm = Doctrine::getTable('PaymentMethod')->createQuery('pm')
+            ->andWhere('pm.member_card_linked = true')
+            ->fetchOne();
+          $payment->payment_method_id = $pm->id;
+        }
+        $payment->MemberCard = $this->card;
+        $payment->value = -$this->card->MemberCardType->value;
+        
+        $this->transaction = new Transaction;
+        $this->transaction->Contact = $this->card->Contact;
+        $this->transaction->Payments[] = $payment;
+        $this->transaction->save();
+      }
+
       return 'Success';
     }
     else

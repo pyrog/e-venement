@@ -36,39 +36,6 @@ require_once dirname(__FILE__).'/../lib/manifestationGeneratorHelper.class.php';
  */
 class manifestationActions extends autoManifestationActions
 {
-  public function executeAddGaugePrice(sfWebRequest $request)
-  {
-    $this->json = array('success' => array(), 'error' => array());
-    
-    if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
-    {
-      $this->getResponse()->setContentType('text/html');
-      $this->setLayout('layout');
-    }
-    else
-      sfConfig::set('sf_web_debug', false);
-    $this->json = array();
-    $error = 'A problem occurred during the price creation / update (you should better reload your screen)';
-    
-    if (!( $pg = $request->getParameter('price_gauge') ))
-    {
-      $this->json['error']['message'] = $error;
-      return 'Success';
-    }
-    
-    $form = new PriceGaugeForm(intval($pg['id']) > 0 ? Doctrine::getTable('PriceGauge')->find($pg['id']) : NULL);
-    $form->bind($pg);
-    if ( !$form->isValid() )
-    {
-      error_log($form->getErrorSchema());
-      $this->json['error']['message'] = $error;
-      return 'Success';
-    }
-    
-    $form->save();
-    $this->json['success']['id'] = $form->getObject()->id;
-    $this->json['success']['message'] = 'Price created or updated for this gauge';
-  }
   public function executeSlideHappensAt(sfWebRequest $request)
   {
     require(dirname(__FILE__).'/slide-happens-at.php');
@@ -79,41 +46,6 @@ class manifestationActions extends autoManifestationActions
   {
     require(dirname(__FILE__).'/slide-duration.php');
     return sfView::NONE;
-  }
-  
-  // needs previously cleaned $request->getParameter('ids'), usually it's used from executeBatchBestFreeSeat(), or nothing
-  public function executeBestFreeSeat(sfWebRequest $request)
-  {
-    $q = Doctrine::getTable('Manifestation')->createQuery('m');
-    if ( $request->getParameter('ids') )
-      $q->andWhereIn('e.id', $request->getParameter('ids'));
-    else
-      $q->andWhere('m.happens_at > NOW()')
-        ->limit(20);
-    $manifs = $q->execute();
-    $this->manifestations = array();
-    foreach ( $manifs as $manif )
-    {
-      $seats = $manif->getBestFreeSeat(5);
-      
-      $best = NULL;
-      foreach ( $seats as $seat )
-      if (!( !is_null($best) && $best <= $seat->rank ))
-        $best = $seat->rank;
-      
-      $this->manifestations[($best ? $best : 'ZZZ').'-'.$manif->id] = $manif;
-    }
-    ksort($this->manifestations);
-  }
-  public function executeBatchBestFreeSeat(sfWebRequest $request)
-  { $this->forward('manifestation', 'bestFreeSeat'); }
-  
-  public function executeSell(sfWebRequest $request)
-  {
-    sfContext::getInstance()->getConfiguration()->loadHelpers('CrossAppLink');
-    
-    $this->forward404Unless($request->hasParameter('id'));
-    $this->redirect(cross_app_url_for('tck', 'transaction/new#manifestations-'.$request->getParameter('id')));
   }
   
   public function executeExport(sfWebRequest $request)
@@ -185,95 +117,47 @@ class manifestationActions extends autoManifestationActions
       $this->form->setDefault('booking_list', $list);
   }
   
+  public function executeIndex(sfWebRequest $request)
+  {
+    $this->redirect('@event');
+  }
+  
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
     $search  = iconv($charset['db'],$charset['ascii'],strtolower($request->getParameter('q')));
     
+    $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery());
+    
     $eids = array();
-    if ( $search )
+    foreach ( $e->execute() as $event )
+      $eids[] = $event['id'];
+    
+    if ( count($eids) > 0 )
     {
-      $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery());
-      foreach ( $e->execute() as $event )
-        $eids[] = $event['id'];
-    }
-    
-    if (!( $max = $request->getParameter('max',sfConfig::get('app_manifestations_max_ajax')) ))
-    {
-      $conf = sfConfig::get('app_transaction_manifs', array());
-      $max = isset($conf['max_display']) && $conf['max_display'] ? $conf['max_display'] : 10;
-    }
-    
-    $q = Doctrine::getTable('Manifestation')
-      ->createQuery('m')
-      ->leftJoin('m.Color c')
-      ->orderBy('m.happens_at')
-      ->limit($request->getParameter('limit',$max));
-    if ( $eids )
-      $q->andWhereIn('m.event_id',$eids);
-    elseif ( $search )
-      $q->andWhere('m.event_id IS NULL');
-    
-    if ( $e = $request->getParameter('except',false) )
-      $q->andWhereNotIn('m.id', is_array($e) ? $e : array($e));
-    
-    if ( $request->hasParameter('display_by_default') )
-      $q->andWhere('e.display_by_default = ?',true);
-    
-    $q = EventFormFilter::addCredentialsQueryPart($q);
-    
-    if ( !$search
-      || $request->hasParameter('later')
-      || $request->getParameter('except_transaction',false) && !$this->getUser()->hasCredential('tck-unblock') )
-      $q->andWhere('m.happens_at > NOW()');
-    
-    $manifestations = $q->select('m.*, e.*, c.*')->execute();
-    
-    $manifs = array();
-    foreach ( $manifestations as $manif )
-    {
-      $go = true;
-      if ( $request->getParameter('except_transaction',false) )
-      {
-        $go = $manif->reservation_confirmed;
-        $go = $go && Doctrine_Query::create()->from('ticket tck')
-          ->andWhere('tck.manifestation_id = ?', $manif->id)
-          ->andWhere('tck.transaction_id = ?', intval($request->getParameter('except_transaction')))
-          ->count() == 0;
-      }
+      $q = Doctrine::getTable('Manifestation')
+        ->createQuery()
+        ->andWhereIn('event_id',$eids)
+        ->orderBy('happens_at')
+        ->limit($request->getParameter('limit'));
+      $q = EventFormFilter::addCredentialsQueryPart($q);
       
-      if ( $go )
-      {
-        if ( $request->hasParameter('keep-order') )
-        {
-          $manifs[] = array(
-            'name'  => (string)$manif,
-            'color' => (string)$manif->Color,
-            'id'    => $manif->id,
-          );
-        }
-        else
-        {
-          $manifs[$manif->id] = $request->hasParameter('with_colors')
-            ? array('name' => (string)$manif, 'color' => (string)$manif->Color)
-            : (string)$manif;
-        }
-      }
-    }
+      if ( $request->hasParameter('later') )
+        $q->andWhere('happens_at > NOW()');
+      
+      $manifestations = $q->execute()->getData();
+      
+      $manifs = array();
+      foreach ( $manifestations as $manif )
+      if ( $request->getParameter('except',false) != $manif->id )
+       $manifs[$manif->id] = (string) $manif;
     
-    if ( $request->hasParameter('debug') && $this->getContext()->getConfiguration()->getEnvironment() == 'dev' )
-    {
-      $this->getResponse()->setContentType('text/html');
-      sfConfig::set('sf_debug',true);
-      $this->setLayout('layout');
+      return $this->renderText(json_encode($manifs));
     }
     else
     {
-      sfConfig::set('sf_debug',false);
-      sfConfig::set('sf_escaping_strategy', false);
+      return $this->renderText(json_encode(array()));
     }
-    
-    $this->json = $manifs;
   }
 
   public function executeList(sfWebRequest $request)
@@ -292,7 +176,7 @@ class manifestationActions extends autoManifestationActions
     $this->pager->setQuery(
       $q = EventFormFilter::addCredentialsQueryPart(
         Doctrine::getTable('Manifestation')->createQueryByEventId($this->event_id)
-        ->select('*, g.*, w.*, wuo.*, l.*, tck.*, m.happens_at > NOW() AS after, (CASE WHEN happens_at < NOW() THEN NOW()-happens_at ELSE happens_at-NOW() END) AS before')
+        ->select('*, g.*, l.*, tck.*, m.happens_at > NOW() AS after, (CASE WHEN happens_at < NOW() THEN NOW()-happens_at ELSE happens_at-NOW() END) AS before')
         ->andWhere('m.reservation_confirmed = TRUE OR m.contact_id = ? OR ?', array(
           $this->getUser()->getContactId(),
           $this->getUser()->hasCredential(array(
@@ -318,7 +202,7 @@ class manifestationActions extends autoManifestationActions
     $this->pager->setQuery(
       EventFormFilter::addCredentialsQueryPart(
         Doctrine::getTable('Manifestation')->createQueryByLocationId($this->location_id)
-        ->select('m.*, e.*, c.*, g.*, l.*, w.*, wuo.*')
+        ->select('m.*, e.*, c.*, g.*, l.*')
         ->leftJoin('m.Color c')
         ->andWhere('m.reservation_confirmed = TRUE OR m.contact_id = ?', $this->getUser()->getContactId())
         ->addSelect('m.happens_at > NOW() AS after, (CASE WHEN ( m.happens_at < NOW() ) THEN NOW()-m.happens_at ELSE m.happens_at-NOW() END) AS before')
@@ -365,14 +249,7 @@ class manifestationActions extends autoManifestationActions
   {
     try {
       $this->securityAccessFiltering($request);
-      
-      $request->checkCSRFProtection();
-      $this->dispatcher->notify(new sfEvent($this, 'admin.delete_object', array('object' => $this->getRoute()->getObject())));
-      $this->manifestation = $this->getRoute()->getObject();
-      $eid = $this->manifestation->event_id;
-      $this->manifestation->delete();
-      $this->getUser()->setFlash('notice', 'The item was deleted successfully.');
-      $this->redirect('event/show?id='.$eid);
+      parent::executeDelete($request);
     }
     catch ( Doctrine_Connection_Exception $e )
     {

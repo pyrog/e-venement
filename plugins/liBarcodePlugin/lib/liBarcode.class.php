@@ -1,5 +1,5 @@
 <?php
-require_once (__DIR__.'/qrcode/qrlib.php');
+require_once ('qrcode/qrlib.php');
 
 class liBarcode
 {
@@ -9,7 +9,7 @@ class liBarcode
   public function __construct($text)
   {
     $this->setText($text);
-    $this->type = sfConfig::get('app_tickets_barcode', 'qrcode') != 'qrcode' ? 'barcode' : 'qrcode';
+    $this->type = sfConfig::get('app_tickets_barcode') != 'qrcode' ? 'barcode' : 'qrcode';
   }
   public function setText($text)
   {
@@ -18,16 +18,7 @@ class liBarcode
   
   public function render($file = NULL)
   {
-    return QRcode::png($this->text,$file, QR_ECLEVEL_M, 96, 0);
-  }
-  
-  public function __toString()
-  {
-    $file = sfConfig::get('sf_app_cache_dir').'/ticket-'.rand(100000,999999).'.png';
-    $this->render($file);
-    $r = file_get_contents($file);
-    unlink($file);
-    return $r;
+    return QRcode::png($this->text,$file);
   }
   
   public static function decode_ean($ean)

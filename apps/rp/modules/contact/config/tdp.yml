@@ -8,7 +8,7 @@ all:
         batchDelete:
           credential: pr-contact-del
           attributes:
-            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
+            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
         actions:
           label: Actions
           attributes:
@@ -18,27 +18,25 @@ all:
           credential: pr-contact
           label: Remove through filters
           attributes:
-            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
+            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
         csv:
           credential: pr-contact-csv
           label: Extract
         labels:
           credential: pr-contact-labels
           label: Labels
-          attributes:
-            target: _blank
         duplicates:
           label: Duplicates
         batchMerge:
           credential: pr-contact-edit
           label: Merge
           attributes:
-            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
+            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); $(this).attr('href',$(this).attr('href')+'&'+form.serialize());"
         #map:
         #  label: Geolocalize
     edit:
       object:
-        title: [title, name, firstname, _show_dates, _duplicate]
+        title: [title, name, firstname]
         new_title: [title, name, firstname]
         lines:
           Complements:
@@ -48,7 +46,7 @@ all:
             fields: [address]
           City:
             extra_class: vertical
-            fields: [postalcode, _cities, city, country, _show_region, shortname]
+            fields: [postalcode, _cities, city, country, _show_region]
           Direct_Contact:
             fields: [_form_phonenumbers_list, _show_member_cards_list]
           More:
@@ -85,8 +83,8 @@ all:
           class: Professional
           parentAlias: Contact
           credentials: pr-organism
-          title: [Organism, _organism_close_contact, _organism_category]
-          new_title: [organism_id, _new_organism]
+          title: [Organism]
+          new_title: [organism_id]
           lines:
             line1:
               fields: [professional_type_id, name, department, _organism_category, _groups_picto]
@@ -114,12 +112,6 @@ all:
         Emails:
           credentials: pr-emailing
           partial: global/tdp/side_widget_object_emails
-        Answered surveys:
-          credentials: TODO
-          partial: global/tdp/side_widget_object_surveys_answered
-        Surveys to apply:
-          credentials: TODO
-          partial: global/tdp/side_widget_object_surveys_to_apply
         <?php if ( !sfConfig::get('app_options_no_event_archives',true) ): echo PHP_EOL; ?>
         Archives:
           credentials: tck-reports

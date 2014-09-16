@@ -21,6 +21,7 @@
 *
 ***********************************************************************************/
 ?>
+
 <?php
     $cpt = 0;
     $max = array(
@@ -28,11 +29,14 @@
       'duplicate' => 30,
     );
     
+    if ( !($this->getRoute() instanceof sfObjectRoute) )
+      return $this->redirect('ticket/sell');
+    
+    //$this->transaction = $this->getRoute()->getObject();
     $q = Doctrine::getTable('Transaction')
       ->createQuery('t')
       ->andWhere('t.id = ?',$request->getParameter('id'))
       ->andWhere('tck.id NOT IN (SELECT tck2.duplicating FROM Ticket tck2 WHERE tck2.duplicating IS NOT NULL)')
-      ->andWhere('tck.price_id IS NOT NULL')
       ->leftJoin('m.Location l')
       ->leftJoin('m.Organizers o')
       ->leftJoin('m.Event e')
@@ -55,9 +59,6 @@
     
     $this->transaction = $q->fetchOne();
     $this->manifestation_id = $request->getParameter('manifestation_id');
-    
-    // if any ticket needs a seat, do what's needed
-    $this->redirectToSeatsAllocationIfNeeded('print');
     
     $fingerprint = NULL;
     $this->print_again = false;
@@ -89,13 +90,12 @@
               $this->toprint[] = $ticket->id;
               $this->print_again = true;
             }
-            elseif ( strcasecmp($ticket->price_name,trim($request->getParameter('price_name'))) == 0
+            elseif ( strcasecmp($ticket->price_name,$request->getParameter('price_name')) == 0
               && $ticket->printed_at
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               $cpt++;
               $newticket = $ticket->copy();
-              $ticket->seat_id = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
@@ -103,8 +103,6 @@
               $newticket->grouping_fingerprint = $fingerprint;
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->seat_id )
-                $ticket->save();
               
               if ( isset($this->tickets[$id = $ticket->gauge_id.'-'.$ticket->price_id.'-'.$ticket->transaction_id]) )
               {
@@ -125,7 +123,7 @@
               break;
             }
             $cpt++;
-        
+            
             if ( $ticket->Manifestation->no_print )
               $update['integrated_at'][$ticket->id] = $ticket->id;
             else
@@ -150,7 +148,7 @@
       foreach ( $this->tickets as $ticket )
         $update['printed_at'][$ticket['ticket']->id] = $ticket['ticket']->id;
     }
-    
+      
     // normal / not grouped tickets
     else
     {
@@ -165,21 +163,18 @@
               $this->toprint[] = $ticket->id;
               $this->print_again = true;
             }
-            elseif ( strcasecmp($ticket->price_name,trim($request->getParameter('price_name'))) == 0
+            elseif ( strcasecmp($ticket->price_name,$request->getParameter('price_name')) == 0
               && $ticket->printed_at
               && $ticket->manifestation_id == $request->getParameter('manifestation_id') )
             {
               $cpt++;
               $newticket = $ticket->copy();
-              $ticket->seat_id = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
               $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->seat_id )
-                $ticket->save();
               
               $this->tickets[] = $newticket;
             }
@@ -264,9 +259,7 @@
     }
     
     if ( count($this->tickets) <= 0 )
-    {
       $this->setTemplate('close');
-    }
     else
     {
       if ( sfConfig::get('app_tickets_id') != 'othercode' )
@@ -286,18 +279,3 @@
         $this->setTemplate('rfid');
       }
     }
-
-    $this->dispatcher->notify(new sfEvent($this, 'tck.tickets_print', array(
-      'transaction' => $this->transaction,
-      'tickets'     => $this->tickets,
-      'duplicate'   => $this->duplicate,
-      'user'        => $this->getUser(),
-    )));
-    
-    if ( sfConfig::get('app_tickets_simplified_printing', false) )
-    {
-      $this->content = $this->transaction->renderSimplifiedTickets(array('only' => $this->tickets));
-      $this->getResponse()->setContentType('application/pdf');
-      return 'Simplified';
-    }
-    return 'Success';

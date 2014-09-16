@@ -35,8 +35,6 @@
  */
 abstract class PluginContact extends BaseContact
 {
-  protected $cache = array();
-  
   public function preSave($event)
   {
     foreach ( $this->Relationships as $key => $rel )
@@ -125,19 +123,6 @@ abstract class PluginContact extends BaseContact
     
     return $this;
   }
-  
-  public function copy($deep = false)
-  {
-    $copy = parent::copy($deep);
-    if ( $deep )
-      return $copy;
-    
-    foreach ( array('YOBs', 'Phonenumbers', 'Relationships') as $field )
-    foreach ( $this->$field as $obj )
-      $copy->{$field}[] = $obj->copy();
-    
-    return $copy;
-  }
 
   /**
    * function getVcard()
@@ -212,58 +197,9 @@ abstract class PluginContact extends BaseContact
     }
     
     // description
-    $arr = array();
-    if ( sfConfig::has('app_cards_enable') )
-    {
-      if ( $this->MemberCards->count() > 0 )
-      {
-        foreach ( $this->MemberCards as $mc )
-        if ( strtotime($mc->expire_at) > strtotime('now') && $mc->active )
-          $arr[] = (string)$mc;
-        if ( $this->description )
-        {
-          $arr[] = '';
-          $arr[] = '- -- ---';
-        }
-      }
-    }
-    if ( $this->description )
-      $arr[] = str_replace("\r\n", '\n', $this->description);
-    $vCard['note'] = implode('\n',$arr);
+    $vCard['note'] = $this->description;
     
     // END
     return $vCard;
-  }
-  
-  public function clearCache()
-  {
-    $this->cache = array();
-    return $this;
-  }
-  /**
-    * Get data from the cache
-    * @param  string    $name the name of the cached object
-    * @return mixed     cached value
-    *
-    **/
-  protected function getFromCache($name)
-  {
-    if ( !isset($this->cache[$name]) )
-      throw new liEvenementException('Nothing is cached with the name: '.$name.'.');
-    
-    return $this->cache[$name];
-  }
-  /**
-    * Set data in the cache
-    * @param  string    $name  the name of the cached object
-    * @param  mixed     $value the content to be cached
-    * @return Manifestation $this
-    *
-    **/
-  protected function setInCache($name, $value)
-  {
-    $this->cache[$name] = $value;
-    
-    return $this;
   }
 }

@@ -15,8 +15,8 @@
 #    along with e-venement; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # 
-#    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
-#    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
+#    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
+#    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
 # 
 #**********************************************************************************/
 
@@ -72,10 +72,6 @@ Group:
       class: sfGuardUser
       refClass: GroupUser
       foreignAlias: AuthForGroups
-    AutoUsers:
-      class: sfGuardUser
-      refClass: GroupAutoUser
-      foreignAlias: AutoGroups
     Picture:
       foreignAlias: Groups
       onDelete: SET NULL
@@ -172,36 +168,14 @@ GroupUser:
       foreignAlias: GroupUsers
       onDelete: CASCADE
       onUpdate: CASCADE
-GroupAutoUser:
+GroupDeleted:
   package: group
   inheritance:
     extends: GroupDetail
     type: concrete
   columns:
-    sf_guard_user_id:
-      type: integer
-      notnull: true
-      primary: true
-  relations:
-    User:
-      foreignAlias: UserAutoGroups
-      onDelete: CASCADE
-      onUpdate: CASCADE
-      local: sf_guard_user_id
-      class: sfGuardUser
-    Group:
-      foreignAlias: GroupAutoUsers
-      onDelete: CASCADE
-      onUpdate: CASCADE
-GroupDeleted:
-  package: group
-  actAs: [Timestampable]
-  columns:
-    group_id:
-      type: integer
-      notnull: true
   relations:
     Group:
-      foreignAlias: DeletedMembers
+      foreignAlias: UserGroups
       onDelete: CASCADE
       onUpdate: CASCADE

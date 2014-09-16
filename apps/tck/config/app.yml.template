@@ -3,9 +3,6 @@
 
 # default values
 all:
-  options:
-    design: tdp
-    #plugins: [liPassbookPlugin]
   manifestations:
     show_location: false
   ledger:
@@ -21,17 +18,8 @@ all:
     touchscreen:
       prices_max_display: 13
       manifs_max_display: 12
-    #persistent_manifestations: false
     #force_contact: true
     #member_cards: [payment, price]
-    #force_payment_before_printing: true
-    #seated_plan:
-    #  auto_next: false
-    #gui: touchy # force the GUI to the touchy one only
-    email:
-      always_send_confirmation: false
-      send_bcc_to: email@domain.tld
-      products: e-product     # always | e-products (recommanded) | never
   tickets:
     mentions:
       optional: licences: 350970 / 350971 / 350972
@@ -45,23 +33,25 @@ all:
       event_name: 30
       event_shortname: 40
       #event_name_right: 20
-    wip_price: WIP
-    timeout:
-      wip: 2 hours # for the garbage collector to remove useless WIPs
-      asked: 40 minutes # for the garbage collector to remove elder asked tickets
     #logo: /private/logo-xxx.png
     authorize_grouped_tickets: false
-    simplified_printing: true     # for dematerialized ticketting only, cf. web/css/print-simplified-tickets.css & web/private/print-simplified-tickets.css
   control:
     future: 6 hours
     past:   1 day
+  gauge:
+    hide_graphical_display_until: 10000
   seller:
-    logo: logo.svg
-    name: 3è étage / 3rd floor
-    address: 12 rue du 4 septembre
-    postalcode: 75002
-    city: PARIS
+    logo: logo-200.jpg
+    name: Ligue des Pyrénées
+    address: 2 rue des Régaires
+    postalcode: 31000
+    city: TOULOUSE
     country: France
     other: 
     invoice_prefix: FB
-    salt: sqnao@é 98Fdnquèç&
+    salt: xxxx
+    #case_normalise: true
+
+dev:
+  tickets:
+    specimen: true

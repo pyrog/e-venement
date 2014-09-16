@@ -40,19 +40,6 @@ abstract class PluginOrganism extends BaseOrganism
     return strtolower(get_class($this));
   }
   
-  public function copy($deep = false)
-  {
-    $copy = parent::copy($deep);
-    if ( $deep )
-      return $copy;
-    
-    foreach ( array('Phonenumbers') as $field )
-    foreach ( $this->$field as $obj )
-      $copy->{$field}[] = $obj->copy();
-    
-    return $copy;
-  }
-
 /**
  * function getVCard()
  * generates a vCard from Contact $this

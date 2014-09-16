@@ -20,13 +20,10 @@ all:
     #defaults:
     #  reservation_confirmed: false
     reservations:
-      enable: false
+      enable: true
       #shown_in_calendar: false
       #let_restricted_users_confirm: true
     #extra_informations_enable: false
-    #editable_in_calendar: false
-    price_manifestations: true  # true by default
-    price_gauges: true          # false by default
   synchronization:
     #period:
     #  from: now
@@ -39,7 +36,7 @@ all:
     #security_token:
     #  xxxxxxxmytokenxxxxxxx: my_username
     cron_period: 1 hour
-    email_from: no-reply@domain.tld
+    email_from: no-reply@mydomain.tld
     alarms:
       when: [-4 hours, -1 hour]
       what: [display, email]

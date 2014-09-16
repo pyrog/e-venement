@@ -10,7 +10,7 @@
  * @author     Baptiste SIMON <baptiste.simon AT e-glop.net>
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
-class Price extends PluginPrice implements liUserAccessInterface
+class Price extends PluginPrice
 {
   public function getFullName()
   {
@@ -24,10 +24,5 @@ class Price extends PluginPrice implements liUserAccessInterface
     foreach ( $this->Workspaces as $ws )
       $arr[] = $ws->id;
     return $arr;
-  }
-  
-  public function isAccessibleBy(sfSecurityUser $user, $option = NULL)
-  {
-    return in_array($user->getId(), $this->Users->getPrimaryKeys());
   }
 }

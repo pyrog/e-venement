@@ -22,23 +22,22 @@
 ***********************************************************************************/
 ?>
 <?php
-    if ( !isset($this->transaction) )
     $this->transaction = $this->getRoute()->getObject();
     $this->nocancel = $request->hasParameter('nocancel');
     
-    $this->totals = array('pet' => 0, 'tip' => 0, 'extra-taxes' => 0, 'vat' => array('total' => 0));
+    $this->totals = array('pet' => 0, 'tip' => 0, 'vat' => array('total' => 0));
     
     // retrieve tickets
-    $q = Doctrine_Query::create()->from('Ticket t')
+    $q = new Doctrine_Query();
+    $q->from('Ticket t')
       ->leftJoin('t.Manifestation m')
       ->leftJoin('m.Event e')
-      ->leftJoin("e.Translation et WITH lang = '".$this->getUser()->getCulture()."'")
       ->leftJoin('t.Price p')
       ->andWhere('t.transaction_id = ?',$this->transaction->id)
       ->andWhere('t.duplicating IS NULL')
-      ->orderBy('m.happens_at, et.name, p.description, t.value');
+      ->orderBy('m.happens_at, e.name, p.description, t.value');
     if ( $printed )
-      $q->andWhere('t.printed_at IS NOT NULL OR t.integrated_at IS NOT NULL OR t.cancelling IS NOT NULL');
+      $q->andWhere('t.printed_at IS NOT NULL OR t.integrated_at IS NOT NULL');
     if ( intval($manifestation_id) > 0 )
       $q->andWhere('t.manifestation_id = ?',intval($manifestation_id));
     $this->tickets = $q->execute();
@@ -47,13 +46,14 @@
     foreach ( $this->tickets as $ticket )
     if ( !$this->nocancel || $ticket->Cancelling->count() == 0 )
     {
-      $this->totals['tip'] += $tmp = $ticket->value + $ticket->taxes;
+      $this->totals['tip'] += $ticket->value;
       
       if ( !isset($this->totals['vat'][$ticket->vat]) )
         $this->totals['vat'][$ticket->vat] = array($ticket->manifestation_id => 0);
       if ( !isset($this->totals['vat'][$ticket->vat][$ticket->manifestation_id]) )
         $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] = 0;
-      $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] += $tmp = round($tmp - $tmp/(1+$ticket->vat), 2);
+      $tmp = $ticket->value - $ticket->value / (1+$ticket->vat);
+      $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] += $tmp;
       $this->totals['vat']['total'] += $tmp;
     }
     
@@ -65,14 +65,5 @@
         $this->totals['vat'][$vat] = 0;
       $this->totals['vat'][$vat] += round($manif,2);
     }
-    
-    // retrieve products
-    $q = Doctrine_Query::create()->from('BoughtProduct bp')
-      ->leftJoin('bp.Price p')
-      ->andWhere('bp.transaction_id = ?',$this->transaction->id)
-      ->orderBy('bp.name, bp.code, bp.declination, bp.price_name, bp.value');
-    if ( $printed )
-      $q->andWhere('bp.integrated_at IS NOT NULL');
-    $this->products = $q->execute();
     
     $this->setLayout('empty');

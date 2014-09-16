@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
     $values = $request->getParameter('ticket');
     
     $tid = intval(
@@ -78,7 +78,7 @@
       ->andWhere('t.id = ?',$this->transaction->id)
       ->andWhere('tck.id NOT IN (SELECT tck2.duplicating FROM Ticket tck2 WHERE tck2.duplicating IS NOT NULL)')
       ->andWhereIn('tg.workspace_id',array_keys($this->getUser()->getWorkspacesCredentials()))
-      ->orderBy('et.name, m.happens_at, m.id, g.workspace_id, tg.workspace_id, tck.price_name, tck.printed_at, tck.id');
+      ->orderBy('e.name, m.happens_at, m.id, g.workspace_id, tg.workspace_id, tck.price_name, tck.printed_at, tck.id');
     
     if ( intval($values['manifestation_id']) > 0 )
     {

@@ -22,56 +22,63 @@
 ***********************************************************************************/
 ?>
 <?php
-  if (!(
-     class_exists($class = ucfirst($plugin = sfConfig::get('app_payment_type','paybox')).'Payment')
-  && is_a($class, 'OnlinePaymentInterface', true)
-  ))
-    throw new liOnlineSaleException('You asked for a payment plugin ('.$plugin.') that does not exist.');
+  $bank = new BankPayment;
+  $bank->code = $request->getParameter('error');
+  $bank->payment_certificate = $request->getParameter('signature');
+  $bank->authorization_id = $request->getParameter('authorization');
+  $bank->merchant_id = $request->getParameter('paybox_id');
+  $bank->customer_ip_address = $request->getParameter('ip_country');
+  $bank->capture_mode = $request->getParameter('card_type');
+  $bank->transaction_id = $request->getParameter('transaction_id');
+  $bank->amount = $request->getParameter('amount');
+  $bank->raw = $_SERVER['QUERY_STRING'];
   
-  $transaction = Doctrine::getTable('Transaction')->findOneById($class::getTransactionIdByResponse($request));
-  $this->online_payment = $class::create($transaction);
-  
-  // records a BankPayment Record and valid (or not)
-  $r = $this->online_payment->response($request);
-  if ( !$r['success'] )
-    throw new liOnlineSaleException('An error occurred during the bank verifications');
-  
-  if ( $transaction->Order->count() > 0 )
-    return sfView::NONE;
+  try {
+    $r = PayboxPayment::response($_GET);
+    if ( !$r['success'] )
+      throw new liOnlineSaleException('An error occurred during the bank verifications');
+  }
+  catch ( sfException $e )
+  {
+    $bank->error = $bank->code;
+    $bank->save();
+    throw $e;
+  }
+  $bank->save();
   
   // direct payment
   $payment = new Payment;
   $payment->sf_guard_user_id = $this->getUser()->getId();
   $payment->payment_method_id = sfConfig::get('app_tickets_payment_method_id');
-  $payment->value = $r['amount'];
+  $payment->value = $bank->amount/100;
   
-  if ( $mc_pm = $this->getMemberCardPaymentMethod() )
+  $mc_pm = $this->getMemberCardPaymentMethod();
+  
+  // payments linked to member cards' credit
+  $this->getUser()->setAttribute('transaction_id',$bank->transaction_id);
+  $transaction = $this->getUser()->getTransaction();
+  $transaction->Contact->confirmed = true;
+  foreach ( $transaction->MemberCards as $mc )
   {
-    // payments linked to member cards' credit
-    foreach ( $transaction->MemberCards as $mc )
-    {
-      $mc->active = true;
-      $mc->contact_id = $transaction->contact_id;
-      $p = new Payment;
-      $p->transaction_id = $transaction->id;
-      $p->value = -$mc->MemberCardType->value;
-      $p->Method = $mc_pm;
-      $mc->Payments[] = $p;
-    }
-    
-    // payments done by member card
-    $this->createPaymentsDoneByMemberCards($mc_pm);
+    $mc->active = true;
+    $mc->contact_id = $transaction->contact_id;
+    $p = new Payment;
+    $p->transaction_id = $transaction->id;
+    $p->value = -$mc->MemberCardType->value;
+    $p->Method = $mc_pm;
+    $mc->Payments[] = $p;
   }
   
-  $transaction->Contact->confirmed = true;        // transaction's contact
-  foreach ( $transaction->Tickets as $ticket )    // for "named" tickets
-  if ( $ticket->contact_id )
-    $ticket->Contact->confirmed = true;
+  // payments done by member card
+  $this->createPaymentsDoneByMemberCards($mc_pm);
+  
+  // contact
+  $transaction->Contact->confirmed = true;
   $transaction->Payments[] = $payment;
   $transaction->Order[] = new Order;
   $transaction->save();
   
   // sending emails to contact and organizators
-  $this->sendConfirmationEmails($transaction, $this);
+  $this->sendConfirmationEmails($transaction);
   
   return sfView::NONE;

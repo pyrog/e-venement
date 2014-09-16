@@ -15,8 +15,8 @@
 #    along with e-venement; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # 
-#    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
-#    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
+#    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
+#    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
 # 
 #**********************************************************************************/
 
@@ -78,7 +78,7 @@ WorkspaceUserOrdering:
   indexes:
     sf_guard_user_id_workspace_id_idx:
       fields: [sf_guard_user_id, workspace_id]
-      type: unique
+      unique: true
   relations:
     Workspace:
       foreignAlias: Order
@@ -146,23 +146,20 @@ EventCategory:
 Event:
   package: event
   actAs:
-    I18n:
-      fields: [name, short_name, description, extradesc, extraspec]
-    Sluggable:
-      fields: [name]
+    Sluggable: ~
     Searchable:
-      fields: [name, writer, staging, short_name]
+      fields: [name, writer, staging, short_name, city]
   inheritance:
     extends: Traceable
     type: concrete
-#  indexes:
-#    event_name_idx:
-#      fields: [name]
+  indexes:
+    event_name_idx:
+      fields: [name]
   columns:
     name:
       type:         string(255)
       notblank:     true
-      notnull:      true
+      notnull:     true
     short_name:     string(127)
     meta_event_id:
       type: integer
@@ -242,7 +239,6 @@ Location:
     Searchable:
       fields: [name, address, city]
   columns:
-    rank:         integer
     description:  string
     contact_id:   integer
     organism_id:  integer
@@ -263,6 +259,19 @@ Location:
     Contact:
       foreignAlias: Locations
       onDelete: SET NULL
+      onUpdate: CASCADE
+SeatingPlan:
+  package: event
+  actAs: [Timestampable]
+  columns:
+    image_url:    string(255)
+    location_id:
+      type: integer
+      unique: true
+  relations:
+    Location:
+      foreignType: one
+      onDelete: CASCADE
       onUpdate: CASCADE
 
 Manifestation:
@@ -301,7 +310,6 @@ Manifestation:
       type: integer
       default: 10
       notnull: true
-    online_limit_per_transaction: integer
     no_print:
       type: boolean
       default: false
@@ -327,9 +335,6 @@ Manifestation:
       type: boolean
       notnull: true
       default: true
-    expected_income:
-      type: decimal(8)
-      scale: 3
   relations:
     Event:
       foreignAlias: Manifestations
@@ -372,20 +377,6 @@ Manifestation:
       class: Location
       refClass: LocationBooking
       foreignAlias: BookedBy
-    Participants:
-      class: Contact
-      refClass: ManifestationContact
-      foreignAlias: InvolvedIn
-ManifestationContact:
-  package: event
-  columns:
-    contact_id:
-      type: integer
-      notnull: true
-    manifestation_id:
-      type: integer
-      notnull: true
-
 LocationBooking:
   package: event
   columns:
@@ -450,7 +441,7 @@ Gauge:
   indexes:
     manifestation_workspace:
       fields: [manifestation_id, workspace_id]
-      type: unique
+      unique: true
 
 ManifestationExtraInformation:
   package: event
@@ -511,112 +502,3 @@ ManifestationOrganizer:
       foreignAlias: ManifestationOrganizers
       onDelete: CASCADE
       onUpdate: CASCADE
-
-SeatedPlan:
-  package: event
-  actAs:
-    Timestampable: ~
-    Versionable: ~
-  columns:
-    seat_diameter:
-      type: integer
-      notnull: true
-      default: 10 #px
-    description: string
-    picture_id: integer
-    online_picture_id: integer
-    location_id: integer
-    background:
-      type: string(255)
-      default: white
-    ideal_width: integer
-  relations:
-    OnlinePicture:
-      foreignAlias: SeatedPlanOnline
-      local: online_picture_id
-      class: Picture
-      onDelete: SET NULL
-      onUpdate: CASCADE
-    Picture:
-      foreignAlias: SeatedPlan
-      onDelete: SET NULL
-      onUpdate: CASCADE
-    Location:
-      foreignAlias: SeatedPlans
-      onDelete: SET NULL
-      onUpdate: CASCADE
-    Workspaces:
-      foreignAlias: SeatedPlans
-      refClass: SeatedPlanWorkspace
-      class: Workspace
-SeatedPlanWorkspace:
-  package: event
-  columns:
-    seated_plan_id:
-      type: integer
-      notnull: true
-    workspace_id:
-      type: integer
-      notnull: true
-  relations:
-    SeatedPlan:
-      foreignAlias: SeatedPlanWorkspaces
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Workspace:
-      foreignAlias: SeatedPlanWorkspaces
-      onDelete: CASCADE
-      onUpdate: CASCADE
-Seat:
-  package: event
-  actAs:
-    Timestampable: ~
-  indexes:
-    seat_name_idx:
-      fields: [name]
-    seat_name_seated_plan_id_idx:
-      fields: [seated_plan_id, name]
-      type: unique
-  columns:
-    seated_plan_id:
-      type: integer
-      notnull: true
-    name:
-      type: string(255)
-      notnull: true
-      notblank: true
-    rank:
-      type: integer
-      notnull: true
-      default: 1000
-    x:
-      type: integer
-      notnull: true
-    y:
-      type: integer
-      notnull: true
-    diameter:
-      type: integer
-      notnull: true
-      default: 10 #px
-    class: string(255)
-  relations:
-    SeatedPlan:
-      foreignAlias: Seats
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Neighbors:
-      class: Seat
-      refClass: SeatLink
-      local: seat1
-      foreign: seat2
-      equal: true
-SeatLink:
-  package: event
-  columns:
-    seat1:
-      type: integer
-      notnull: true
-    seat2:
-      type: integer
-      notnull: true

@@ -180,7 +180,7 @@ class professionalActions extends autoProfessionalActions
     }
     
     $a = $this->pager->getQuery()->getRootAlias();
-    $this->pager->getQuery()->andWhere("$a.contact_id IN (".$q['Contact'].") OR $a.organism_id IN (".$q['Organism'].")",array($s,$s));
+    $this->pager->getQuery()->andWhere("$a.contact_id IN (".$q['Contact'].") OR $a.organism_id IN (".$q['Organism'].")",array($s,$s,$s,$s));
     $this->pager->setPage($request->getParameter('page') ? $request->getParameter('page') : 1);
     $this->pager->init();
     
@@ -190,11 +190,6 @@ class professionalActions extends autoProfessionalActions
   {
     $nb = strlen($search);
     $charset = sfConfig::get('software_internals_charset');
-    $transliterate = sfConfig::get('software_internals_transliterate',array());
-    
-    $search = str_replace(array('-','+',',',"'"),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
-    $search = str_replace(array_keys($transliterate), array_values($transliterate), $search);
-    
-    return $search;
+    return str_replace(array('-','+',','),' ',strtolower(iconv($charset['db'],$charset['ascii'],substr($search,$nb-1,$nb) == '*' ? substr($search,0,$nb-1) : $search)));
   }
 }

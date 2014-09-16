@@ -8,7 +8,7 @@
   </div>
 <?php endforeach ?>
 <div id="options">
-  <?php if ( sfConfig::get('app_tickets_auto_close', true) ): ?>
+  <?php if ( sfConfig::get('app_tickets_auto_close') ): ?>
   <p id="close"></p>
   <?php endif ?>
   <?php if ( $print_again ): ?>

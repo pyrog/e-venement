@@ -5,7 +5,7 @@ body #sf_admin_container { position: static; }
 body #content .sf_admin_action_list { margin-left: 42px; }
 
 #content .sf_admin_form select, #content .sf_admin_form textarea,
-#content .sf_admin_form input[type=text]:not([size]) { width: 250px; }
+#content .sf_admin_form input[type=text] { width: 250px; }
 
 body .ui-tabs-vertical .ui-tabs-nav li { width: 97%; }
 
@@ -13,7 +13,7 @@ body .ui-tabs-vertical .ui-tabs-nav li { width: 97%; }
 #content .show_groups { margin-left: 30px; line-height: 1.5em; }
 
 .sf_admin_show .sf_admin_form_row { display: table-row; }
-.sf_admin_show .sf_admin_form_row label { display: table-cell; width: 110px; padding-bottom: 4px; }
+.sf_admin_show .sf_admin_form_row label { display: table-cell; width: 90px; padding-bottom: 4px; }
 
 .open_list > div, .double_list > div > div { width: 100%; text-align: center; }
 .open_list > div:first-child, .double_list > div > div:first-child { margin-bottom: -2em; }

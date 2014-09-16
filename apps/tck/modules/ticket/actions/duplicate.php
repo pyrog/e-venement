@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
     
     if ( !$request->hasParameter('ticket_id') )
       return sfView::NONE;
@@ -52,38 +52,32 @@
       }
       if ( $ticket->Transaction->closed )
       {
-        $this->getUser()->setFlash('error',__("Cannot duplicate the ticket #%%i%% because its transaction has been closed already. Trick: open its transaction in an other tab when you try to cancel it.",array('%%i%%' => $ticket->id)));
-        $this->redirect('transaction/edit?id='.$ticket->transaction_id);
+        $this->getUser()->setFlash('error',__("Can't duplicate the ticket #%%i%% because its transaction has been closed already.",array('%%i%%' => $ticket->id)));
+        $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
       if ( !$ticket->printed_at )
       {
         $this->getUser()->setFlash('error',__("Can't duplicate the ticket #%%i%% because it was not yet printed... Just try to print it",array('%%i%%' => $ticket->id)));
-        $this->redirect('transaction/edit?id='.$ticket->transaction_id);
+        $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
       if ( $ticket->Cancelling->count() > 0 )
       {
         $this->getUser()->setFlash('error',__("Can't duplicate the ticket #%%i%% because it has been cancelled already.",array('%%i%%' => $ticket->id)));
-        $this->redirect('transaction/edit?id='.$ticket->transaction_id);
+        $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
       if ( $ticket->Duplicatas->count() > 0 )
       {
         $this->getUser()->setFlash('error',__("Can't duplicate the ticket #%%i%% because it has been already duplicated... Simply try to duplicate the last duplicate of the serie",array('%%i%%' => $ticket->id)));
-        $this->redirect('transaction/edit?id='.$ticket->transaction_id);
+        $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
       if ( $ticket->Controls->count() > 0 )
       {
         $this->getUser()->setFlash('error',__("Sorry, we can't duplicate the ticket #%%i%% because it has been checked already.",array('%%i%%' => $ticket->id)));
-        $this->redirect('transaction/edit?id='.$ticket->transaction_id);
+        $this->redirect('ticket/sell?id='.$ticket->transaction_id);
       }
       
-      // copying the current ticket
+      // linking a new duplicating ticket to this ticket
       $this->ticket = $ticket->copy();
-      
-      // removing the numerotation before saving the duplicata
-      $ticket->seat_id = NULL;
-      $ticket->save();
-      
-      // creating a duplicata
       $this->ticket->printed_at = date('Y-m-d H:i:s');
       $this->ticket->created_at = NULL;
       $this->ticket->updated_at = NULL;

@@ -5,76 +5,8 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Ability to change arbitrarily the price of tickets, one by one</source>
-        <target>Possibilité de changer arbitrairement le prix des billets, un par un</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to have an overview of the store</source>
-        <target>Possibilité de superviser le magasin</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to create/edit/delete products of the store</source>
-        <target>Possibilité de créer/modifier/supprimer des produits du magazin</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to administrate the data of the store</source>
-        <target>Possibilité d'administrer les données du magazin</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to access the products of the store in the sales</source>
-        <target>Possibilité d'accéder aux produits du magazin dans les ventes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to look at the online sales statistics</source>
-        <target>Possibilité de voir les statistiques de vente en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to look at the taxes</source>
-        <target>Possibilité de voir les taxes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to create, modify and delete the taxes</source>
-        <target>Possibilité de créer, modifier et supprimer les taxes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to access backups</source>
-        <target>Possibilité d'accéder aux sauvegardes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to edit the surveys and their content</source>
-        <target>Capacité de modifier les questionnaires et leur contenu</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to see the surveys, their content and their answers</source>
-        <target>Capacité à voir les questionnaires, leur contenu et leurs réponses</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to export/extract data... It inclues CSV extraction, labels creation, group export...</source>
-        <target>Capacité à extraire et exporter des données... Ce qui inclut les extractions CSV, la création d'étiquettes, l'export de groupes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Permission to administrate reservations, editting confirmed manifestations</source>
-        <target>Permission d'administrer les réservations, d'éditer les manifestations confirmées</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Permission to manage reservations that are in conflict with others !</source>
-        <target>Permission de gérer les réservations en conflit avec d'autres !</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to manage manifestations, including manifestations that don't belong to you</source>
-        <target>Permission de gérer les manifestations, dont celles qui ne vous appartiennent pas</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Permission to access the geographical statistics</source>
-        <target>Permission d'accéder aux statistiques géographiques</target>
-      </trans-unit>
-      <trans-unit>
         <source>users admin</source>
         <target>Administration des utilisateurs</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to manage seated plans</source>
-        <target>Capacité à administrer les plans numérotés</target>
       </trans-unit>
       <trans-unit>
         <source>Ability to add, del &amp; modify one's own manifestations and events</source>
@@ -149,7 +81,7 @@
         <target>Capacité d'accéder aux données sociales des contacts</target>
       </trans-unit>
       <trans-unit>
-        <source>The right to view contacts, organisms, groups But only this</source>
+        <source>The right to view contacts, organisms, groups... But only this</source>
         <target>Capacité d'accéder en lecture aux contacts, organismes et aux groupes, mais seulement cela</target>
       </trans-unit>
       <trans-unit>
@@ -194,10 +126,6 @@
       </trans-unit>
       <trans-unit>
         <source>Permission to use seated ticketting</source>
-        <target>Capacité à utiliser le placement numéroté</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ability to deal with seated ticketting</source>
         <target>Capacité à utiliser le placement numéroté</target>
       </trans-unit>
       <trans-unit>

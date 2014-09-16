@@ -34,11 +34,9 @@ abstract class PluginEvent extends BaseEvent implements liMetaEventSecurityAcces
     if ( intval($this->duration).'' != ''.$this->duration )
       return $this->duration;
     
-    sfApplicationConfiguration::getActive()->loadHelpers(array('I18N'));
-    $days = floor($this->duration/(3600*24));
-    $hours = floor($this->duration%(3600*24)/3600);
-    $minutes = str_pad(floor($this->duration%3600/60), 2, '0', STR_PAD_LEFT);
-    return ($days > 0 ? __('%%d%% day(s)',array('%%d%%' => $days)) : '').' '.$hours.':'.$minutes;
+    $hours = floor($this->duration/3600);
+    $minutes = floor($this->duration%3600/60) > 9 ? floor($this->duration%3600/60) : '0'.floor($this->duration%3600/60);
+    return $hours.':'.$minutes;
   }
   
   public function getMEid()
@@ -49,24 +47,5 @@ abstract class PluginEvent extends BaseEvent implements liMetaEventSecurityAcces
   public function getIndexesPrefix()
   {
     return strtolower(get_class($this));
-  }
-  
-  public function actAs($tpl, array $options = array())
-  {
-    $options['table'] = $this->getTable();
-    return parent::actAs($tpl, $options);
-  }
-  public function setUp()
-  {
-    parent::setUp();
-    
-    // versions
-    // adding a "lang" column to EventVersion to be able to record the changes in the i18n data
-    $this->getTable()->getTemplate('Versionable')->getAuditLog()
-      ->hasColumn('lang', 'string', 2, array('fixed' => true, 'primary' => true));
-    
-    // searchable
-    $tpl = $this->getTable()->getTemplate('Searchable');
-    $tpl->getListener()->set('Searchable', new Doctrine_Search_Listener_I18n($tpl->getPlugin()));
   }
 }

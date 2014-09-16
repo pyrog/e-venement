@@ -70,7 +70,6 @@
         $this->content['events'][$event->id] = array(
           'id'        => $event->id,
           'name'      => $event->name.(!is_null($manif->depends_on) ? ' + '.$manif->DependsOn->Event->name : ''),
-          'short_name'=> $event->short_name,
           'extradesc' => $event->extradesc,
           'extraspec' => $event->extraspec,
           'ages'      => array($event->age_min, $event->age_max),
@@ -120,7 +119,6 @@
           'extraspec' => $event->extraspec,
           'ages' => array($event->age_min, $event->age_max),
           'manifid' => $g->id,
-          'limit_per_transaction' => $manif->online_limit_per_transaction,
           'date' => $manif->happens_at,
           'jauge' => $g->value,
           'space' => $g->Workspace->on_ticket ? (string)$g : '',

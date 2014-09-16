@@ -47,8 +47,6 @@ class ticketActions extends sfActions
       ->andWhere('tck.id = ?',$id)
       ->fetchOne();
     
-    $this->forward404Unless($this->ticket);
-    
     $this->versions = Doctrine::getTable('TicketVersion')->createQuery('v')
       ->select('v.*, (SELECT s.username FROM SfGuardUser s WHERE s.id = v.sf_guard_user_id) as user')
       ->andWhere('v.id = ?',$id)
@@ -59,10 +57,6 @@ class ticketActions extends sfActions
   public function executeSell(sfWebRequest $request)
   {
     require('sell.php');
-  }
-  public function executeAddDescription(sfWebRequest $request)
-  {
-    return require('add-description.php');
   }
   public function executeTouchscreen(sfWebRequest $request)
   {
@@ -138,7 +132,7 @@ class ticketActions extends sfActions
   
   public function executePrint(sfWebRequest $request)
   {
-    return require('print.php');
+    require('print.php');
   }
   public function executeIntegrate(sfWebRequest $request)
   {
@@ -158,43 +152,6 @@ class ticketActions extends sfActions
   {
   }
   
-  protected function redirectToSeatsAllocationIfNeeded($type)
-  {
-    // checks if any ticket needs a seat
-    foreach ( $this->transaction->Tickets as $ticket )
-    if ( !$ticket->seat_id
-      && $ticket->Cancelling->count() == 0
-      && $ticket->Gauge->Workspace->seated
-      && $seated_plan = $ticket->Manifestation->Location->getWorkspaceSeatedPlan($ticket->Gauge->workspace_id)
-    )
-    {
-      // if so ask the user which one to use for this ticket
-      $this->getContext()->getConfiguration()->loadHelpers(array('I18N','Url'));
-      $this->getUser()->setFlash('notice', __('You still have to give some tickets a seat...'));
-      $this->getUser()->setFlash('referer', $_SERVER['REQUEST_URI'].(!$_SERVER['QUERY_STRING'] ? '?'.file_get_contents("php://input") : ''));
-      
-      $url = url_for('ticket/seatsAllocation?type='.$type.'&id='.$this->transaction->id.'&gauge_id='.$ticket->gauge_id);
-      if ( isset($this->toprint) && $this->toprint )
-        $url .= '&toprint[]='.implode('&toprint[]=',$this->toprint);
-      $this->redirect($url);
-      return false;
-    }
-    
-    return true;
-  }
-  public function executeSeatsAllocation(sfWebRequest $request)
-  {
-    require('seats-allocation.php');
-  }
-  public function executeGiveASeat(sfWebRequest $request)
-  {
-    return require('give-a-seat.php');
-  }
-  public function executeResetASeat(sfWebRequest $request)
-  {
-    return require('reset-a-seat.php');
-  }
-  
   public function executeAccounting(sfWebRequest $request, $printed = true, $manifestation_id = false)
   {
     require('accounting.php');
@@ -202,39 +159,64 @@ class ticketActions extends sfActions
   // order
   public function executeOrder(sfWebRequest $request)
   {
-    return require('order.php');
+    $this->executeAccounting($request,false);
+    $this->order = $this->transaction->Order[0];
+    
+    if ( $request->hasParameter('cancel-order') )
+    {
+      $this->order->delete();
+      return true;
+    }
+    else
+    if ( is_null($this->order->id) )
+      $this->order->save();
   }
   public function executeRecordAccounting(sfWebRequest $request)
   {
-    if ( $request->getParameter('invoice_id',false) && $request->getParameter('order_id',false) )
-      throw new sfError404Exception();
-    
     $accounting = new RawAccounting();
-    
-    if ( $request->getParameter('invoice_id',false) )
-    {
-      $invoice = Doctrine::getTable('Invoice')->fetchOneById(intval($request->getParameter('invoice_id')));
-      if ( !$invoice ) throw new sfError404Exception();
-      $accounting->invoice_id = $invoice->id;
-    }
-    if ( $request->getParameter('order_id',false) )
-    {
-      $order = Doctrine::getTable('Order')->fetchOneById(intval($request->getParameter('order_id')));
-      if ( !$order ) throw new sfError404Exception();
-      $accounting->order_id = $order->id;
-    }
+    $invoice = Doctrine::getTable('Invoice')->fetchOneById(intval($request->getParameter('invoice_id')));
+    if ( !$invoice ) throw new sfError404Exception();
     
     $accounting->content = $request->getParameter('content');
+    $accounting->invoice_id = $invoice->id;
     
     $accounting->save();
-    error_log(print_r($accounting->toArray(),true));
-    throw new sfException('here');
     return sfView::NONE;
   }
   // invoice
   public function executeInvoice(sfWebRequest $request)
   {
-    return require(dirname(__FILE__).'/invoice.php');
+    $this->executeAccounting($request,true,$request->hasParameter('partial') ? $request->getParameter('manifestation_id') : false);
+    
+    $this->partial = false;
+    $this->invoice = false;
+    if ( $request->hasParameter('partial') && intval($request->getParameter('manifestation_id')) > 0 )
+    {
+      $this->partial = true;
+      foreach ( $this->transaction->Invoice as $key => $invoice )
+      if ( $invoice->manifestation_id == intval($request->getParameter('manifestation_id')) )
+        $this->invoice = $invoice;
+      
+      if ( !$this->invoice )
+      {
+        $this->invoice = new Invoice();
+        $this->transaction->Invoice[] = $this->invoice;
+      }
+      $this->invoice->manifestation_id = intval($request->getParameter('manifestation_id'));
+    }
+    else
+    {
+      foreach ( $this->transaction->Invoice as $invoice )
+      if ( is_null($invoice->manifestation_id) )
+        $this->invoice = $invoice;
+      
+      if ( !$this->invoice )
+        $this->invoice = new Invoice();
+      $this->transaction->Invoice[] = $this->invoice;
+    }
+    
+    $this->invoice->updated_at = date('Y-m-d H:i:s');
+    $this->invoice->save();
   }
   
   public function executeRespawn(sfWebRequest $request)

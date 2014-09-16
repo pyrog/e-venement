@@ -17,7 +17,6 @@ class LocationForm extends BaseLocationForm
   {
     parent::configure();
     
-    unset($this->widgetSchema['booked_by_list']);
     $tinymce = array(
       'width'   => 400,
       'height'  => 300,

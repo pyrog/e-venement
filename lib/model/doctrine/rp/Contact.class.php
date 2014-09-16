@@ -27,10 +27,6 @@ class Contact extends PluginContact
   {
     return ucfirst($this->firstname).' '.strtoupper($this->name);
   }
-  public function getNameWithTitle()
-  {
-    return $this->title.' '.$this->formatted_name;
-  }
   
   public function getDepartment()
   {
@@ -119,32 +115,5 @@ class Contact extends PluginContact
         $str .= $group->getHtmlTag().' ';
     }
     return $str;
-  }
-  
-  /**
-    * Calculates the standard deviation and the average of bought tickets (excluding free seating tickets)
-    *
-    * @param  integer   (optional) a MetaEvent->id
-    * @return array     an array componed by the average ('avg' index), the standard deviation ('std-dev' index) and the qty of seated tickets ('qty' index)
-    *
-    **/
-  public function getStatsSeatRank($meta_event_id = NULL)
-  {
-    try { return $this->getFromCache('avg-seat-rank-'.$meta_event_id); }
-    catch ( liEvenementException $e )
-    {
-      $data = Doctrine::getTable('Ticket')->createQueryPreparedForRanks('tck')
-        ->andWhere('tck_t.contact_id = ? OR tck.contact_id = ?', array($this->id, $this->id))
-        ->select('AVG(tck_s.rank) AS avg')
-        ->addSelect('stddev_pop(tck_s.rank) AS std_dev')
-        ->addSelect('count(tck.id) AS qty')
-        ->fetchArray();
-      
-      return $this->setInCache('avg-seat-rank-'.$meta_event_id, array(
-        'avg'     => floatval($data[0]['avg']),
-        'std-dev' => floatval($data[0]['std_dev']),
-        'qty'     => intval($data[0]['qty']),
-      ))->getStatsSeatRank($meta_event_id);
-    }
   }
 }

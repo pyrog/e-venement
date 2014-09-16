@@ -12,8 +12,6 @@
  */
 abstract class PluginPayment extends BasePayment
 {
-  public $ratio = 1;
-  
   public function preSave($event)
   {
     // to redirect stuff if we're not here for an insert

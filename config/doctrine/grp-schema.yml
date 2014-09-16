@@ -15,9 +15,9 @@
 #    along with e-venement; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # 
-#    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
+#    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
 #    Copyright (c) 2011 Ayoub HIDRI <ayoub.hidri AT gmail.com>
-#    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
+#    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
 # 
 #**********************************************************************************/
 
@@ -25,6 +25,9 @@ ContactEntry:
   package: grp
   actAs:
     Timestampable: ~
+  indexes:
+    contact_entry_confirmed_idx:
+      fields: [confirmed]
   columns:
     professional_id:
       type: integer
@@ -50,8 +53,9 @@ ContactEntry:
       onUpdate: CASCADE
       onDelete: SET NULL
   indexes:
-    contact_entry_confirmed_idx:
-      fields: [confirmed]
+    contact_entry_index_idx:
+      fields: [professional_id,entry_id]
+      unique: true
 
 ManifestationEntry:
   package: grp
@@ -76,7 +80,7 @@ ManifestationEntry:
   indexes:
     manif_entry_index_idx:
       fields: [manifestation_id,entry_id]
-      type: unique
+      unique: true
 
 Entry:
   package: grp
@@ -160,7 +164,7 @@ EntryTickets:
   indexes:
     entry_price_index_idx:
       fields: [entry_element_id,price_id]
-      type: unique
+      unique: true
 
 GroupWorkspace:
   package: grp

@@ -1,21 +1,3 @@
-tax:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                Tax
-    module:               tax
-    prefix_path:          /tax
-    column:               id
-    with_wildcard_routes: true
-
-transaction_transaction:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                Transaction
-    module:               transaction
-    prefix_path:          /transaction
-    column:               id
-    with_wildcard_routes: true
-
 option_accounting:
   class: sfDoctrineRouteCollection
   options:

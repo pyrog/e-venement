@@ -10,27 +10,10 @@
  */
 class loginActions extends sfActions
 {
-  protected $is_auth_action = true;
-  
-  public function preExecute()
-  {
-    $this->dispatcher->notify(new sfEvent($this, 'pub.pre_execute', array('configuration' => $this->configuration)));
-    parent::preExecute();
-  }
-  
-  public function isAuthenticatingModule()
-  {
-    return $this->is_auth_action;
-  }
-  
   public function executeIndex(sfWebRequest $request)
   {
     $this->register = $request->hasParameter('register');
-    $this->form = new LoginForm;
-    
-    $this->getContext()->getConfiguration()->loadHelpers(array('Url'));
-    if ( url_for('login/index') != $request->getPathInfoPrefix().$request->getPathInfo() )
-      $this->form->setDefault('url_back', $request->getPathInfoPrefix().$request->getPathInfo());
+    $this->form = new LoginForm();
   }
   
   public function executeForgot(sfWebRequest $request)
@@ -52,7 +35,7 @@ class loginActions extends sfActions
       
       // sending the email
       $this->email = new Email;
-      $this->email->isATest(false);
+      $this->email->not_a_test = true;
       $this->email->field_from = sfConfig::get('app_informations_email','web@libre-informatique.fr');
       $this->email->to = $this->getRecoveryEmail();
       $this->email->field_subject = __('Reset your password for %%name%%', array('%%name%%' => sfConfig::get('app_informations_title','')));
@@ -149,9 +132,7 @@ class loginActions extends sfActions
     if ( $this->form->isValid() )
     {
       $this->getUser()->setFlash('notice',__('You are authenticated.'));
-      return $this->redirect($request->hasParameter('register')
-        ? 'cart/register'
-        : $this->form->getValue('url_back') ? $this->form->getValue('url_back') : 'homepage');
+      return $this->redirect($request->hasParameter('register') ? 'cart/register' : 'contact/index');
     }
     
     $this->errors = $this->form->getErrorSchema()->getErrors();
@@ -171,44 +152,5 @@ class loginActions extends sfActions
   {
     $this->getUser()->getAttributeHolder()->remove('recovery.email', 'pub');
     $this->getUser()->getAttributeHolder()->remove('recovery.code', 'pub');
-  }
-  
-  public function executeCulture(sfWebRequest $request)
-  {
-    $cultures = array_keys(sfConfig::get('project_internals_cultures', array('fr' => 'Français')));
-    
-    // culture defined explicitly
-    if ( $request->hasParameter('lang') && in_array($request->getParameter('lang'), $cultures) )
-    {
-      $this->getUser()->setCulture($request->getParameter('lang'));
-      $this->getUser()->setAttribute('global_culture_forced', true);
-    }
-    
-    if ( !$this->getUser()->getAttribute('global_culture_forced', false) )
-    {
-      // all the browser's languages
-      $user_langs = array();
-      foreach ( $request->getLanguages() as $lang )
-      if ( !isset($user_lang[substr($lang, 0, 2)]) )
-        $user_langs[substr($lang, 0, 2)] = $lang;
-      
-      // comparing to the supported languages
-      $done = false;
-      foreach ( $user_langs as $culture => $lang )
-      if ( in_array($culture, $cultures) )
-      {
-        $done = $culture;
-        $this->getUser()->setCulture($culture);
-        break;
-      }
-      
-      // culture by default
-      if ( !$done )
-        $this->getUser()->setCulture($cultures[0]);
-    }
-    
-    $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    $this->getUser()->setFlash('success', __('Now you are making the experience of e-venement in your favorite language.'));
-    $this->redirect('event/index');
   }
 }

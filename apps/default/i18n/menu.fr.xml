@@ -5,42 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Store</source>
-        <target>Boutique</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Products</source>
-        <target>Produits</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Categories</source>
-        <target>Catégories</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Available prices</source>
-        <target>Tarifs disponibles</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Online sales</source>
-        <target>Ventes en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Extra taxes</source>
-        <target>Taxes additionnelles</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Change language</source>
-        <target>Changer de langue</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Geographical approach</source>
-        <target>Approche géographique</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Seated plans</source>
-        <target>Plans numérotés</target>
-      </trans-unit>
-      <trans-unit>
         <source>Frequently Asked Questions</source>
         <target>Foire Aux Questions</target>
       </trans-unit>
@@ -309,8 +273,8 @@
         <target>Archivage</target>
       </trans-unit>
       <trans-unit id="29">
-        <source>System authentication logs</source>
-        <target>Journaux de connexion</target>
+        <source>System Logs</source>
+        <target>Journaux</target>
       </trans-unit>
       <trans-unit id="30">
         <source>P.R.</source>
@@ -475,10 +439,6 @@
       <trans-unit>
         <source>Detailed Ledger</source>
         <target>Journal détaillé</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Surveys</source>
-        <target>Questionnaires</target>
       </trans-unit>
     </body>
   </file>

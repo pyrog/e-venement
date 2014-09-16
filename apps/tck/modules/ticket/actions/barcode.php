@@ -23,7 +23,14 @@
 ?>
 <?php
     sfConfig::set('sf_web_debug', false);
-    $this->getResponse()->setContentType('image/png');
+    $this->getResponse()->setContentType('image/jpeg');
     $this->setLayout('no');
     
-    $this->ticket = Doctrine::getTable('Ticket')->findOneById($request->getParameter('id'));
+    $ticket = Doctrine::getTable('Ticket')->findOneById($request->getParameter('id'));
+    $this->code = '';
+    if ( is_object($ticket) )
+    {
+      $this->code = $ticket->getBarcode(sfConfig::get('app_seller_salt'));
+      $ticket->barcode = $this->code;
+      $ticket->save();
+    }

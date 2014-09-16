@@ -19,13 +19,11 @@ class WorkspaceForm extends BaseWorkspaceForm
     ));
     */
     unset($this->widgetSchema['manifestations_list']); //->setOption('renderer_class','sfWidgetFormSelectDoubleList');
-    $this->widgetSchema['users_list']->setOption('expanded', 'true')
-      ->setOption('order_by', array('u.username', ''));
+    $this->widgetSchema['users_list']->setOption('expanded', 'true');
     
-    $this->widgetSchema['prices_list']->setOption('expanded',true)
-      ->setOption('order_by', array('p.name', ''));
+    $this->widgetSchema['prices_list']->setOption('expanded',true);
     
-    if ( !sfContext::getInstance()->getUser()->hasCredential('event-seated-plan') )
+    if ( !sfContext::getInstance()->getUser()->hasCredential('event-seated') )
       $this->widgetSchema['seated'] = new sfWidgetFormInputHidden;
   }
 }

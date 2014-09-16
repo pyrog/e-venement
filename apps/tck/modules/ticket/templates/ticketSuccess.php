@@ -15,7 +15,6 @@
         'active' => true,
         'manif' => $manif,
         'workspace' => false,
-        'transaction' => $transaction,
         'first' => $cpt++ == 0 ? true : false)) ?></li>
     <?php endforeach ?>
       <li class="total">

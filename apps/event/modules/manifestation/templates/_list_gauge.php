@@ -21,70 +21,40 @@
 *
 ***********************************************************************************/
 ?>
-<?php use_helper('Number') ?>
 <?php if ( $manifestation->reservation_confirmed ): ?>
 <?php
   $tickets = array('asked' => 0, 'ordered' => 0, 'printed' => 0, 'booked' => 0, 'total' => 0);
   
-  $full = true;
   if ( $manifestation->Gauges->count() > 0 && !isset($manifestation->Gauges[0]->printed) )
-  {
-    foreach ( $manifestation->Gauges as $gauge )
-    if ( isset($gauge->Workspace->Order[0])
-      && !is_null($gauge->Workspace->Order[0]->rank)
-      && $gauge->Workspace->Order[0]->rank > 999
-      && $manifestation->expected_income )
-    {
-      $full = 'with_value';
-      break;
-    }
-    
-    $manifestation->Gauges = Doctrine::getTable('Gauge')->createQuery('g', $full)
+    $manifestation->Gauges = Doctrine::getTable('Gauge')->createQuery('g')
       ->andWhere('g.manifestation_id = ?',$manifestation->id)
       ->execute();
-  }
   
   foreach ( $manifestation->Gauges as $gauge )
   {
-    if ( isset($gauge->Workspace->Order[0])
-      && !is_null($gauge->Workspace->Order[0]->rank)
-      && $gauge->Workspace->Order[0]->rank < 0 )
-    {
-      $tickets['total']   = $full === 'with_value' ? $manifestation->expected_income : $gauge->value;
-      $tickets['asked']   = $gauge->asked;
-      $tickets['ordered'] = $gauge->ordered;
-      $tickets['printed'] = $gauge->printed;
-      $tickets['booked']  = $gauge->ordered + $gauge->printed;
-      if ( sfConfig::get('project_tickets_count_demands',false) )
-        $tickets['booked'] += $gauge->asked;
-      break;
-    }
-    else
-    {
-      $tickets['total']   = $full === 'with_value' ? $manifestation->expected_income : $tickets['total'] + $gauge->value;
-      $tickets['asked']   += $gauge->asked;
-      $tickets['ordered'] += $gauge->ordered;
-      $tickets['printed'] += $gauge->printed;
-      $tickets['booked']  += $gauge->ordered + $gauge->printed;
-      if ( sfConfig::get('project_tickets_count_demands',false) )
-        $tickets['booked'] += $gauge->asked;
-    }
+    $tickets['total']   += $gauge->value;
+    $tickets['asked']   += $gauge->asked;
+    $tickets['ordered'] += $gauge->ordered;
+    $tickets['printed'] += $gauge->printed;
+    $tickets['booked']  += $gauge->ordered + $gauge->printed;
+    if ( sfConfig::get('project_tickets_count_demands',false) )
+      $tickets['booked'] += $gauge->asked;
   }
 ?>
 <?php if ( sfConfig::get('project_tickets_count_demands',false) ): ?>
 <?php echo __('<strong class="booked">%%b%%</strong>/<strong class="total">%%t%%</strong> (<span title="sold" class="sold">%%p%%</span>-<span title="ordered" class="ordered">%%o%%</span>-<span title="asked" class="asked">%%a%%</span>)', array(
-    '%%p%%' => $full === 'with_value' ? format_currency($tickets['printed'],'€') : $tickets['printed'],
-    '%%o%%' => $full === 'with_value' ? format_currency($tickets['ordered'],'€') : $tickets['ordered'],
-    '%%a%%' => $full === 'with_value' ? format_currency($tickets['asked'],'€') : $tickets['asked'],
-    '%%b%%' => $full === 'with_value' ? format_currency($tickets['booked'],'€') : $tickets['booked'],
-    '%%t%%' => $full === 'with_value' ? format_currency($tickets['total'],'€') : $tickets['total'],
+    '%%p%%' => $tickets['printed'],
+    '%%o%%' => $tickets['ordered'],
+    '%%a%%' => $tickets['asked'],
+    '%%b%%' => $tickets['booked'],
+    '%%t%%' => $tickets['total'],
   )) ?>
 <?php else: ?>
 <?php echo __('<strong class="booked">%%b%%</strong>/<strong class="total">%%t%%</strong> (<span title="sold" class="sold">%%p%%</span>-<span title="ordered" class="ordered">%%o%%</span>)', array(
-    '%%p%%' => $full === 'with_value' ? format_currency($tickets['printed'],'€') : $tickets['printed'],
-    '%%o%%' => $full === 'with_value' ? format_currency($tickets['ordered'],'€') : $tickets['ordered'],
-    '%%b%%' => $full === 'with_value' ? format_currency($tickets['booked'],'€') : $tickets['booked'],
-    '%%t%%' => $full === 'with_value' ? format_currency($tickets['total'],'€') : $tickets['total'],
+    '%%p%%' => $tickets['printed'],
+    '%%o%%' => $tickets['ordered'],
+    '%%b%%' => $tickets['booked'],
+    '%%t%%' => $tickets['total'],
   )) ?>
 <?php endif ?>
 <?php else: ?>

@@ -1,27 +1,4 @@
 <?php
-/**********************************************************************************
-*
-*	    This file is part of e-venement.
-*
-*    e-venement is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License.
-*
-*    e-venement is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with e-venement; if not, write to the Free Software
-*    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*
-*    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
-*
-***********************************************************************************/
-?>
-<?php
 
 /**
  * Contact filter form.
@@ -36,7 +13,6 @@ class ContactFormFilter extends BaseContactFormFilter
   protected $noTimestampableUnset = true;
   protected $showProfessionalData = true;
   protected $tickets_having_query = NULL; // Doctrine_Query
-  protected $grpintersection = false;
 
   /**
    * @see AddressableFormFilter
@@ -49,12 +25,6 @@ class ContactFormFilter extends BaseContactFormFilter
       ->groupBy('hqc.id')
       ->select('hqc.id');
     
-    $this->widgetSchema   ['groups_intersection'] = new sfWidgetFormInputCheckbox(array(
-      'value_attribute_value' => 1,
-    ));
-    $this->validatorSchema['groups_intersection'] = new sfValidatorBoolean(array(
-      'true_values' => array('1'),
-    ));
     $this->widgetSchema['groups_list']->setOption(
       'order_by',
       array('u.id IS NULL DESC, u.username, name','')
@@ -82,7 +52,7 @@ class ContactFormFilter extends BaseContactFormFilter
     $this->validatorSchema['email_newsletter'] = $this->validatorSchema['npai'];
     
     // organism
-    $this->widgetSchema   ['organism_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
+    $this->widgetSchema   ['organism_id'] = new sfWidgetFormDoctrineJQueryAutocompleter(array(
       'model' => 'Organism',
       'url'   => url_for('organism/ajax'),
     ));
@@ -111,24 +81,6 @@ class ContactFormFilter extends BaseContactFormFilter
       'required' => false,
       'multiple' => true,
     ));
-    $this->widgetSchema   ['has_professional_type_id'] = new sfWidgetFormChoice(array(
-      'choices' => $arr = array('' => 'yes or no', 0 => 'no', 1 => 'yes'),
-    ));
-    $this->validatorSchema['has_professional_type_id'] = new sfValidatorChoice(array(
-      'choices' => array_keys($arr),
-      'required' => false,
-    ));
-    // organism's prefered contact
-    $this->widgetSchema   ['organism_professional_id'] = new sfWidgetFormChoice(array(
-      'choices' => $arr = array(
-        '' => '',
-        1  => 'yes',
-      ),
-    ));
-    $this->validatorSchema['organism_professional_id'] = new sfValidatorChoice(array(
-      'choices' => array_keys($arr),
-      'required' => false,
-    ));
     
     $this->widgetSchema   ['not_groups_list'] = $this->widgetSchema   ['groups_list'];
     $this->validatorSchema['not_groups_list'] = $this->validatorSchema['groups_list'];
@@ -154,19 +106,17 @@ class ContactFormFilter extends BaseContactFormFilter
     
     // events
     $this->widgetSchema   ['events_list'] = new sfWidgetFormDoctrineChoice(array(
-      'model'    => 'Event',
-      'query'    => Doctrine::getTable('Event')->retrieveList()->select('e.*, translation.*'),
-      'order_by' => array('translation.name','asc'),
+      'model' => 'Event',
+      'order_by' => array('name','asc'),
       'multiple' => true,
     ));
     $this->validatorSchema['events_list'] = new sfValidatorDoctrineChoice(array(
       'required' => false,
-      'query'    => $this->widgetSchema['events_list']->getOption('query'),
       'model'    => 'Event',
       'multiple' => true,
     ));
     $this->widgetSchema   ['event_categories_list'] = new sfWidgetFormDoctrineChoice(array(
-      'model'    => 'EventCategory',
+      'model' => 'EventCategory',
       'order_by' => array('name','asc'),
       'multiple' => true,
     ));
@@ -238,27 +188,6 @@ class ContactFormFilter extends BaseContactFormFilter
       'required' => false,
     ));
     
-    // seats rank
-    $this->widgetSchema   ['tickets_best_rank'] = new sfWidgetFormInput;
-    $this->validatorSchema['tickets_best_rank'] = new sfValidatorInteger(array(
-      'required' => false,
-    ));
-    $this->widgetSchema   ['tickets_rank_operand'] = new sfWidgetFormChoice(array(
-      'choices' => $arr = array(
-        '<=' => 'Less or equal',
-        '=' => 'Equal',
-        '>=' => 'Equal or more',
-      ),
-    ));
-    $this->validatorSchema['tickets_rank_operand'] = new sfValidatorChoice(array(
-      'choices' => array_keys($arr),
-      'required' => false,
-    ));
-    $this->widgetSchema   ['tickets_avg_rank'] = new sfWidgetFormInput;
-    $this->validatorSchema['tickets_avg_rank'] = new sfValidatorInteger(array(
-      'required' => false,
-    ));
-    
     //cards
     $this->widgetSchema   ['member_cards'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'MemberCardType',
@@ -270,23 +199,17 @@ class ContactFormFilter extends BaseContactFormFilter
       'multiple' => true,
       'model' => 'MemberCardType',
     ));
-    $this->widgetSchema   ['member_cards_valid_at'] = new liWidgetFormJQueryDateText(array(
+    $this->widgetSchema   ['member_cards_valid_at'] = new liWidgetFormDateText(array(
       'culture' => sfContext::getInstance()->getUser()->getCulture(),
     ));
     $this->validatorSchema['member_cards_valid_at'] = new sfValidatorDate(array(
       'required' => false,
     ));
-    $this->widgetSchema   ['member_cards_not_valid_at'] = new liWidgetFormJQueryDateText(array(
+    $this->widgetSchema   ['member_cards_not_valid_at'] = new liWidgetFormDateText(array(
       'culture' => sfContext::getInstance()->getUser()->getCulture(),
     ));
     $this->validatorSchema['member_cards_not_valid_at'] = new sfValidatorDate(array(
       'required' => false,
-    ));
-    $this->widgetSchema   ['member_cards_only_last'] = new sfWidgetFormChoice(array(
-      'choices' => array('0' => 'no', '1' => 'yes'),
-    ));
-    $this->validatorSchema['member_cards_only_last'] = new sfValidatorBoolean(array(
-      'true_values' => array('1'),
     ));
     
     // flow control
@@ -339,25 +262,6 @@ class ContactFormFilter extends BaseContactFormFilter
       'required' => false,
     ));
     
-    $this->widgetSchema   ['survey_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
-      'model' => 'Survey',
-      'url'   => cross_app_url_for('srv', 'survey/ajax'),
-    ));
-    $this->validatorSchema['survey_id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Survey',
-      'required' => false,
-    ));
-    $this->widgetSchema   ['survey_query_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
-      'model' => 'SurveyQuery',
-      'url'   => cross_app_url_for('srv', 'query/ajax'),
-    ));
-    $this->validatorSchema['survey_query_id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'SurveyQuery',
-      'required' => false,
-    ));
-    $this->widgetSchema   ['survey_answer']   = new sfWidgetFormInput;
-    $this->validatorSchema['survey_answer'] = new sfValidatorPass(array('required' => false,));
-    
     parent::configure();
   }
   
@@ -370,9 +274,7 @@ class ContactFormFilter extends BaseContactFormFilter
     $fields['not_professionals_list'] = 'NotProfessionalsList';
     $fields['organism_id']          = 'OrganismId';
     $fields['organism_category_id'] = 'OrganismCategoryId';
-    $fields['organism_professional_id']   = 'OrganismProfessionalId';
-    $fields['professional_type_id']       = 'ProfessionalTypeId';
-    $fields['has_professional_type_id']   = 'HasProfessionalTypeId';
+    $fields['professional_type_id'] = 'ProfessionalTypeId';
     $fields['has_email']            = 'HasEmail';
     $fields['email_newsletter']     = 'EmailNewsletter';
     $fields['has_address']          = 'HasAddress';
@@ -386,19 +288,13 @@ class ContactFormFilter extends BaseContactFormFilter
     $fields['workspaces_list']      = 'WorkspacesList';
     $fields['event_archives']       = 'EventArchives';
     $fields['prices_list']          = 'PricesList';
-    $fields['tickets_best_rank']    = 'TicketsBestRank';
-    $fields['tickets_avg_rank']     = 'TicketsAvgRank';
     $fields['member_cards']         = 'MemberCards';
-    $fields['member_cards_valid_at']      = 'MemberCardsValidAt';
-    $fields['member_cards_not_valid_at']  = 'MemberCardsNotValidAt';
-    $fields['member_cards_only_last']     = 'MemberCardsOnlyLast';
-    $fields['control_manifestation_id']   = 'ControlManifestationId';
-    $fields['control_checkpoint_id']      = 'ControlCheckpointId';
+    $fields['member_cards_valid_at'] = 'MemberCardsValidAt';
+    $fields['member_cards_not_valid_at'] = 'MemberCardsNotValidAt';
+    $fields['control_manifestation_id'] = 'ControlManifestationId';
+    $fields['control_checkpoint_id'] = 'ControlCheckpointId';
     $fields['control_created_at']   = 'ControlCreatedAt';
-    $fields['region']               = 'RegionId';
-    $fields['survey_id']            = 'SurveyId';
-    $fields['survey_query_id']      = 'SurveyQueryId';
-    $fields['survey_answer']        = 'SurveyAnswer';
+    $fields['region']   = 'RegionId';
     
     // must be the last ones, because of a having() part which needs to be added lately
     $fields['tickets_amount_min']   = 'TicketsAmountMin';
@@ -464,23 +360,16 @@ class ContactFormFilter extends BaseContactFormFilter
     if ( is_array($value) )
     foreach ( array($q,$this->tickets_having_query) as $query )
     {
-      if ( !$query->contains("LEFT JOIN $a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
-      $query->leftJoin("$a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)");
+      if ( !$query->contains("LEFT JOIN $a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
+      $query->leftJoin("$a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      
       if ( !$query->contains("LEFT JOIN tck.Manifestation m") )
       $query->leftJoin('tck.Manifestation m');
       
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
-      if ( !$query->contains("LEFT JOIN ctck.Manifestation cm") )
-      $query->leftJoin('ctck.Manifestation cm');
-      
-      $query->andWhere('(TRUE')
-            ->andWhereIn('m.event_id',$value)
-            ->orWhereIn('cm.event_id', $value)
-            ->andWhere('TRUE)');
+      $query->andWhereIn('m.event_id',$value);
     }
     
     return $q;
@@ -492,27 +381,19 @@ class ContactFormFilter extends BaseContactFormFilter
     if ( is_array($value) )
     foreach ( array($q,$this->tickets_having_query) as $query )
     {
-      if ( !$query->contains("LEFT JOIN $a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
-      $query->leftJoin("$a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)");
+      if ( !$query->contains("LEFT JOIN $a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
+      $query->leftJoin("$a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      
       if ( !$query->contains("LEFT JOIN tck.Manifestation m") )
       $query->leftJoin('tck.Manifestation m');
+      
       if ( !$query->contains("LEFT JOIN m.Event event") )
       $query->leftJoin('m.Event event');
       
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
-      if ( !$query->contains("LEFT JOIN ctck.Manifestation m") )
-      $query->leftJoin('ctck.Manifestation cm');
-      if ( !$query->contains("LEFT JOIN cm.Event cevent") )
-      $query->leftJoin('m.Event event');
-     
-      $query->andWhere('(TRUE')
-            ->andWhereIn('event.event_category_id',$value)
-            ->orWhereIn('cevent.event_category_id',$value)
-            ->andWhere('TRUE)');
+      $query->andWhereIn('event.event_category_id',$value);
     }
     
     return $q;
@@ -524,31 +405,22 @@ class ContactFormFilter extends BaseContactFormFilter
     if ( is_array($value) )
     foreach ( array($q,$this->tickets_having_query) as $query )
     {
-      if ( !$query->contains("LEFT JOIN $a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
-      $query->leftJoin("$a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)");
+      if ( !$query->contains("LEFT JOIN $a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
+      $query->leftJoin("$a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      
       if ( !$query->contains("LEFT JOIN tck.Manifestation m") )
       $query->leftJoin('tck.Manifestation m');
+      
       if ( !$query->contains("LEFT JOIN m.Event event") )
       $query->leftJoin('m.Event event');
+      
       if ( !$query->contains("LEFT JOIN event.MetaEvent mev") )
       $query->leftJoin('event.MetaEvent mev');
       
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
-      if ( !$query->contains("LEFT JOIN ctck.Manifestation cm") )
-      $query->leftJoin('ctck.Manifestation cm');
-      if ( !$query->contains("LEFT JOIN cm.Event cevent") )
-      $query->leftJoin('cm.Event cevent');
-      if ( !$query->contains("LEFT JOIN cevent.MetaEvent cmev") )
-      $query->leftJoin('cevent.MetaEvent cmev');
-      
-      $query->andWhere('(TRUE')
-            ->andWhereIn('mev.id',$value)
-            ->orWhereIn('cmev.id',$value)
-            ->andWhere('TRUE)');
+      $query->andWhereIn('mev.id',$value);
     }
     
     return $q;
@@ -560,53 +432,16 @@ class ContactFormFilter extends BaseContactFormFilter
     if ( is_array($value) )
     foreach ( array($q,$this->tickets_having_query) as $query )
     {
-      if ( !$query->contains("LEFT JOIN $a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
-      $query->leftJoin("$a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)");
+      if ( !$query->contains("LEFT JOIN $a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
+      $query->leftJoin("$a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      
       if ( !$query->contains("LEFT JOIN tck.Gauge g") )
       $query->leftJoin('tck.Gauge g');
       
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
-      if ( !$query->contains("LEFT JOIN ctck.Gauge cg") )
-      $query->leftJoin('ctck.Gauge cg');
-      
-      $query->andWhere('(TRUE')
-            ->andWhereIn('g.workspace_id',$value)
-            ->orWhereIn('cg.workspace_id',$value)
-            ->andWhere('TRUE)');
-    }
-    
-    return $q;
-  }
-  
-  public function addTicketsAvgRankColumnQuery(Doctrine_Query $q, $field, $value)
-  { return $this->addTicketsCommonRankColumnQuery($q, 'AVG', $value, 'tar'); }
-  public function addTicketsBestRankColumnQuery(Doctrine_Query $q, $field, $value)
-  { return $this->addTicketsCommonRankColumnQuery($q, 'MIN', $value, 'tbr'); }
-  protected function addTicketsCommonRankColumnQuery(Doctrine_Query $q, $sql_fct, $value, $tbl_prefix)
-  {
-    $a = $q->getRootAlias();
-    
-    if ( $value )
-    {
-      $operand = $this->values['tickets_rank_operand'];
-      $operand = in_array($operand, array('<=', '=', '>=')) ? $operand : '<=';
-      
-      $q1 = Doctrine::getTable('Ticket')->createQueryPreparedForRanks($tbl_prefix)
-        ->having("{$sql_fct}({$tbl_prefix}_s.rank) $operand $value")
-        ->select("{$tbl_prefix}_t.contact_id")
-        ->groupBy("{$tbl_prefix}_t.contact_id")
-      ;
-      $tbl_prefix = $a.$tbl_prefix;
-      $q2 = Doctrine::getTable('Ticket')->createQueryPreparedForRanks($tbl_prefix)
-        ->having("{$sql_fct}({$tbl_prefix}_s.rank) $operand $value")
-        ->select("{$tbl_prefix}.contact_id")
-        ->groupBy("{$tbl_prefix}.contact_id")
-      ;
-      $q->andWhere("$a.id IN ($q1) OR $a.id IN ($q2)");
+      $query->andWhereIn('g.workspace_id',$value);
     }
     
     return $q;
@@ -619,28 +454,21 @@ class ContactFormFilter extends BaseContactFormFilter
     if ( is_array($value) )
     foreach ( array($q,$this->tickets_having_query) as $query )
     {
-      if ( !$query->contains("LEFT JOIN $a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
-      $query->leftJoin("$a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)");
+      if ( !$query->contains("LEFT JOIN $a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
+      $query->leftJoin("$a.Transactions transac ON $a.id = transac.contact_id AND (p.id = transac.professional_id OR transac.professional_id IS NULL)");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      
       if ( !$query->contains("LEFT JOIN tck.Price price") )
       $query->leftJoin('tck.Price price');
       
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
-      if ( !$query->contains("LEFT JOIN ctck.Price cprice") )
-      $query->leftJoin('ctck.Price cprice');
-      
-      $query->andWhere('(TRUE')
-            ->andWhereIn('price.id',$value)
-            ->orWhereIn('cprice.id',$value)
-            ->andWhere('TRUE)');
+      $query->andWhereIn('price.id',$value);
     }
     
     return $q;
   }
-  
+
   public function addEventArchivesColumnQuery(Doctrine_Query $q, $field, $value)
   {
     $a = $q->getRootAlias();
@@ -745,28 +573,16 @@ class ContactFormFilter extends BaseContactFormFilter
     
     if ( is_array($value) && count($value) )
     {
-      if ( !$this->values['groups_intersection'] )
-      {
-        if ( !$q->contains("LEFT JOIN $a.Groups gc") )
-          $q->leftJoin("$a.Groups gc");
-        
-        if ( !$q->contains("LEFT JOIN p.Groups gp") )
-          $q->leftJoin("p.Groups gp");
-        
-        $q->andWhere('(TRUE')
-          ->andWhereIn("gc.id",$value)
-          ->orWhereIn("gp.id",$value)
-          ->andWhere('TRUE)');
-      }
-      else
-      // if we are looking for the intersection, not the union
-      foreach ( $value as $gid )
-      {
-        $q->andWhere('(TRUE')
-          ->andWhere('c.id IN (SELECT s'.$gid.'gc.id FROM Group s'.$gid.'gtc LEFT JOIN s'.$gid.'gtc.Contacts s'.$gid.'gc WHERE s'.$gid.'gtc.id = ?)',$gid)
-          ->orWhere('p.id IN (SELECT s'.$gid.'gp.id FROM Group s'.$gid.'gtp LEFT JOIN s'.$gid.'gtp.Professionals s'.$gid.'gp WHERE s'.$gid.'gtp.id = ?)',$gid)
-          ->andWhere('TRUE)');
-      }
+      if ( !$q->contains("LEFT JOIN $a.Groups gc") )
+        $q->leftJoin("$a.Groups gc");
+      
+      if ( !$q->contains("LEFT JOIN p.Groups gp") )
+        $q->leftJoin("p.Groups gp");
+      
+      $q->andWhere('(TRUE')
+        ->andWhereIn("gc.id",$value)
+        ->orWhereIn("gp.id",$value)
+        ->andWhere('TRUE)');
     }
     
     return $q;
@@ -836,17 +652,6 @@ class ContactFormFilter extends BaseContactFormFilter
     else
       return $q->addWhere("$a.email_no_newsletter = TRUE AND p.contact_email_no_newsletter = TRUE");
   }
-  public function addNpaiColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    if ( $value === '' )
-      return $q;
-    
-    $a = $q->getRootAlias();
-    return $q->andWhere("$a.npai = ? AND (o.npai = ? OR o.id IS NULL)", array(
-      $value ? true : false,
-      $value ? true : false,
-    ));
-  }
   public function addEmailColumnQuery(Doctrine_Query $q, $field, $values)
   {
     $a = $q->getRootAlias();
@@ -862,33 +667,7 @@ class ContactFormFilter extends BaseContactFormFilter
     if ( $value )
     {
       $this->setProfessionalData(true);
-      $q->andWhereIn('pt.id',$value);
-    }
-    return $q;
-  }
-  public function addHasProfessionalTypeIdColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    if ( $value === '0' )
-    {
-      $this->setProfessionalData(true);
-      $q->andWhere('pt.id IS NULL')
-        ->andWhere('p.id IS NOT NULL');
-    }
-    if ( $value === '1' )
-    {
-      $this->setProfessionalData(true);
-      $q->andWhere('pt.id IS NOT NULL');
-    }
-    return $q;
-  }
-  public function addOrganismProfessionalIdColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    if ( $value )
-    {
-      $this->setProfessionalData(true);
-      $q->andWhere("o.professional_id = p.id");
+      $q->andWhereIn("pt.id",$value);
     }
     return $q;
   }
@@ -974,19 +753,6 @@ class ContactFormFilter extends BaseContactFormFilter
     
     return $q;
   }
-  public function addMemberCardsOnlyLastColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $c = $q->getRootAlias();
-    if ( $value )
-    {
-      if ( !$q->contains("LEFT JOIN $c.MemberCards mc") )
-        $q->leftJoin("$c.MemberCards mc");
-      $q->andWhere("mc.id = (SELECT max(mc2.id) FROM MemberCard mc2 WHERE mc2.contact_id = $c.id AND mc2.active = TRUE)")
-        ->andWhere('mc.active = ?',true);
-    }
-    
-    return $q;
-  }
 
   // checkpoints / flow management
   public function addControlManifestationIdColumnQuery(Doctrine_Query $q, $field, $values)
@@ -998,22 +764,14 @@ class ContactFormFilter extends BaseContactFormFilter
       if ( !$q->contains("LEFT JOIN $a.Transactions transac") )
       $q->leftJoin("$a.Transactions transac");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      
       if ( !$q->contains('LEFT JOIN tck.Controls ctrl') )
       $q->leftJoin('tck.Controls ctrl');
       
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
-      if ( !$q->contains('LEFT JOIN ctck.Controls cctrl') )
-      $q->leftJoin('ctck.Controls cctrl');
-      
-      $q->andWhere('(TRUE')
-        ->andWhere('ctrl.id IS NOT NULL')
-        ->andWhereIn('tck.manifestation_id',$values)
-        ->orWhereIn('cctrl.id IS NOT NULL')
-        ->andWhereIn('ctck.manifestation_id',$values)
-        ->andWhere('TRUE)');
+      $q->andWhere('ctrl.id IS NOT NULL')
+        ->andWhereIn('tck.manifestation_id',$values);
     }
     
     return $q;
@@ -1026,11 +784,8 @@ class ContactFormFilter extends BaseContactFormFilter
       if ( !$q->contains("LEFT JOIN $a.Transactions transac") )
       $q->leftJoin("$a.Transactions transac");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
-      
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
       
       if ( !$q->contains('LEFT JOIN tck.Controls ctrl') )
       $q->leftJoin('tck.Controls ctrl');
@@ -1057,11 +812,8 @@ class ContactFormFilter extends BaseContactFormFilter
       if ( !$q->contains("LEFT JOIN $a.Transactions transac") )
       $q->leftJoin("$a.Transactions transac");
       
-      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
-      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
-      
-      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
-      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)')") )
+      $query->leftJoin('transac.Tickets tck ON transac.id = tck.transaction_id AND (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
       
       if ( !$q->contains('LEFT JOIN tck.Controls ctrl') )
       $q->leftJoin('tck.Controls ctrl');
@@ -1083,35 +835,6 @@ class ContactFormFilter extends BaseContactFormFilter
 
     return $q;
   }
-  
-  // Surveys
-  public function addSurveyIdColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    
-    if ( $value )
-      $q->andWhere("$a.id IN (SELECT s_sag.contact_id FROM SurveyAnswersGroup s_sag WHERE s_sag.survey_id = ? AND s_sag.contact_id IS NOT NULL) OR p.id IN (SELECT s_sag2.professional_id FROM SurveyAnswersGroup s_sag2 WHERE s_sag2.survey_id = ? AND s_sag2.professional_id IS NOT NULL)", array($value, $value));
-    
-    return $q;
-  }
-  public function addSurveyQueryIdColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    
-    if ( $value )
-      $q->andWhere("$a.id IN (SELECT sq_sag.contact_id FROM SurveyAnswersGroup sq_sag LEFT JOIN sq_sag.Answers sq_a WHERE sq_a.survey_query_id = ? AND s_sag.contact_id IS NOT NULL) OR p.id IN (SELECT sq_sag2.professional_id FROM SurveyAnswersGroup sq_sag2 LEFT JOIN sq_sag2.Answers sq_a2 WHERE sq_a2.survey_query_id = ? AND s_sag2.professional_id IS NOT NULL)", array($value, $value));
-    
-    return $q;
-  }
-  public function addSurveyAnswerColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    
-    if ( $value )
-      $q->andWhere("$a.id IN (SELECT sa_sag.contact_id FROM SurveyAnswersGroup sa_sag LEFT JOIN sa_sag.Answers sa_a WHERE sa_a.value ILIKE ? AND s_sag.contact_id IS NOT NULL) OR p.id IN (SELECT sa_sag2.professional_id FROM SurveyAnswersGroup sa_sag2 LEFT JOIN sa_sag2.Answers sa_a2 WHERE sa_a2.value ILIKE ? AND s_sag2.professional_id IS NOT NULL)", array("%$value%", "%$value%"));
-    
-    return $q;
-  }
 
   protected function setProfessionalData($bool)
   {
@@ -1123,7 +846,6 @@ class ContactFormFilter extends BaseContactFormFilter
   }
   public function buildQuery(array $values)
   {
-    $this->values = $values;
     $this->setProfessionalData(false);
     
     // to limit execution time

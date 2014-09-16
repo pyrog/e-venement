@@ -1,29 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
 <xliff version="1.0">
-  <file original="global" source-language="en" target-language="fr" datatype="plaintext">
+  <file original="global" source-language="en" datatype="plaintext">
     <header />
     <body>
-      <trans-unit>
-        <source>Your language as been successfully updated.</source>
-        <target>Votre langue a été mise à jour avec succès.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Please, try again...</source>
-        <target>Essayez à nouveau SVP...</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Filter's name</source>
-        <target>Nom du filtre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Record</source>
-        <target>Enregistrer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>An object with the same "%column%" already exist.</source>
-        <target>Un objet avec la même "%column%" existe déjà.</target>
-      </trans-unit>
       <trans-unit>
         <source>Your email have been sent correctly.</source>
         <target>Votre email a été envoyé correctement.</target>
@@ -63,10 +43,6 @@
       <trans-unit>
         <source>Merge</source>
         <target>Fusionner</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Duplicate</source>
-        <target>Dupliquer</target>
       </trans-unit>
       <trans-unit>
         <source>Back</source>
@@ -140,10 +116,6 @@
       <trans-unit>
         <source>Update</source>
         <target>Mettre à jour</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Validate</source>
-        <target>Valider</target>
       </trans-unit>
       <trans-unit>
         <source>Save</source>
@@ -254,10 +226,6 @@
         <target>Vous devez au moins sélectionner un objet.</target>
       </trans-unit>
       <trans-unit>
-        <source>You must at least select two items.</source>
-        <target>Vous devez au moins sélectionner deux objets.</target>
-      </trans-unit>
-      <trans-unit>
         <source>You must select an action to execute on the selected items.</source>
         <target>Vous devez sélectionner une action à executer sur les objets sélectionnés.</target>
       </trans-unit>
@@ -270,24 +238,8 @@
         <target>Les objets sélectionnés ont été supprimés avec succès.</target>
       </trans-unit>
       <trans-unit>
-        <source>The selected items have been merged successfully.</source>
-        <target>Les objets sélectionnés ont été fusionnés avec succès.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>The selected items have been duplicated successfully.</source>
-        <target>Les objets sélectionnés ont été dupliqués avec succès.</target>
-      </trans-unit>
-      <trans-unit>
         <source>A problem occurs when deleting the selected items.</source>
         <target>Un problème est survenu lors de la suppression des objets sélectionnés.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>A problem occurs when merging the selected items.</source>
-        <target>Un problème est survenu lors de la fusion des objets sélectionnés.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>A problem occurs when duplicating the selected items.</source>
-        <target>Un problème est survenu lors de la duplication des objets sélectionnés.</target>
       </trans-unit>
       <trans-unit>
         <source>is empty</source>
@@ -304,10 +256,6 @@
       <trans-unit>
         <source>no</source>
         <target>non</target>
-      </trans-unit>
-      <trans-unit>
-        <source><![CDATA[<span class="dates"><span>from %from_date%</span> <span>to %to_date%</span>]]></source>
-        <target><![CDATA[<span class="dates"><span>du %from_date%</span> <span>au %to_date%</span>]]></target>
       </trans-unit>
       <trans-unit>
         <source><![CDATA[from %from_date% to %to_date%]]></source>

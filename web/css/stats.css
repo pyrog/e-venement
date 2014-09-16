@@ -1,6 +1,12 @@
-.chart { text-align: center; margin-top: 5px; }
-.charts-4 { margin: 5px;  width: 420px; float: left; }
-.geo { margin: 5px; }
+.chart {
+  text-align: center;
+  margin-top: 5px;
+}
+.charts-4 {
+  margin: 5px;
+  width: 420px;
+  float: left;
+}
 .actions {
   text-align: left;
   margin: 3px 0 0 0;
@@ -8,7 +14,9 @@
   border-top: 1px solid #948c7d;
   clear: both;
 }
-.actions .arrow.pos1 { margin-left: 23px; }
+.actions .arrow.pos1 {
+  margin-left: 23px;
+}
 .actions .arrow {
   display: block;
   width: 20px;

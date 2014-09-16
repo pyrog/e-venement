@@ -26,7 +26,6 @@ a, a:active, a:visited { color: #000; }
   border-radius: 7px;
   background-color: #bddcff;
 }
-.nude { padding: 0; background-color: white; }
 .nude #more, .nude #content {
   margin-top: 10px;
 }
@@ -67,7 +66,7 @@ a, a:active, a:visited { color: #000; }
 #logo {
   position: fixed;
   top: -5px;
-  left: 800px;
+  left: 700px;
   height: 57px;
   width: 223px;
   background-image: url(../images/logo-evenement-small.png);
@@ -113,8 +112,11 @@ a, a:active, a:visited { color: #000; }
 
 }
 
-#content .ui-icon-li { padding: 0 0 0 10px; display: inline; }
-#content .ui-icon-microplus { background-position: -48px -113px; border: 1px solid #C5DBEC; background-color: #DFEFFC; }
+#content .ui-icon-li {
+  padding: 0 0 0 10px;
+  display: inline;
+}
+#content .ui-icon-microplus { background-position: -2px -210px; }
 
 .testing {
   padding: 5px 10px;
@@ -137,22 +139,10 @@ html button.fg-button-icon-left .ui-icon { left: 0.4em; }
 .ui-dialog { z-index: 1200; }
 .ui-dialog .ui-button-icon-only .ui-button-text { display: none; }
 .ui-dialog .ui-button-icon-only .ui-icon { margin-top: -2px; margin-left: -3px; }
-#ui-datepicker-div { display: none; z-index: 1200 !important; }
+#ui-datepicker-div { display: none; }
 
 .sf_admin_text input[type=file] { border: 0; }
 
-.welcome { min-height: 915px; }
+.welcome { min-height: 600px; }
 
-.sf_admin_filter .sf_admin_date br { display: block; }
 .sf_admin_form_row .label input[type=checkbox][name=all] { margin-right: 0.5em; }
-
-.app-default.mod-default .sf_admin_flashes { margin-left: 310px; }
-.app-default.mod-default .sf_admin_flashes > div { margin-bottom: 20px; }
-
-.sf_admin_filter .sf_admin_date input[type="text"] { margin-right: 0; }
-
-.sf_admin_form .sf_admin_form_row .lang { display: none; }
-.sf_admin_form .sf_admin_text textarea, .sf_admin_form .sf_admin_text input { margin: 0.1em; }
-
-/* double-lists */
-.double_list > div { float: none !important; }

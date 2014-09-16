@@ -32,7 +32,35 @@ class TicketForm extends BaseTicketForm
       'query' => Doctrine::getTable('Gauge')->createQuery('g')->andWhereIn('g.workspace_id',array_keys(sfContext::getInstance()->getUser()->getWorkspacesCredentials())),
     ));
     $this->widgetSchema['transaction_id'] = new sfWidgetFormInputHidden();
-    $this->widgetSchema['seat_id'] = new sfWidgetFormInputHidden();
+    $this->widgetSchema['numerotation'] = new sfWidgetFormInputHidden();
+  }
+  
+  public function isValid()
+  {
+    if ( !parent::isValid() )
+      return false;
+    
+    $q = Doctrine::getTable('Workspace')->createQuery('w')
+      ->leftJoin('w.Gauges g')
+      ->andWhere('g.id = ?',$this->getValue('gauge_id'));
+    $workspace = $q->fetchOne();
+    if ( $workspace->seated )
+    {
+      if ( !$this->getValue('numerotation') )
+        throw new liSeatingException('No numerotation given.');
+      
+      $q = Doctrine::getTable('Ticket')->createQuery('tck')
+        ->andWhere('tck.numerotation = ?',$this->getValue('numerotation'))
+        ->andWhere('tck.gauge_id = ?',$this->getValue('gauge_id'))
+        ->andWhere('tck.cancelling IS NULL AND tck.id NOT IN (SELECT tt.cancelling FROM Ticket tt WHERE tt.cancelling IS NOT NULL AND tt.gauge_id = tck.gauge_id)');
+      $tickets = $q->execute();
+      if ( $this->getValue('nb') < 0 && $tickets->count() == 0 )
+        throw new liSeatingException('There is no ticket to remove on this seat for this gauge.');
+      if ( $this->getValue('nb') > 0 && $tickets->count() > 0 )
+        throw new liSeatingException('There are already some tickets on this seat for this gauge.');
+    }
+
+    return true;
   }
   
   public function save($con = NULL)
@@ -58,7 +86,7 @@ class TicketForm extends BaseTicketForm
         ->andWhere('p.name = ?', $this->object->price_name)
         ->andWhere('t.printed_at IS NULL')
         ->andWhere('t.gauge_id = ?',$this->object->gauge_id)
-        ->orderBy('t.integrated_at DESC, t.numerotation DESC, t.id DESC')
+        ->orderBy('t.integrated_at DESC, t.id DESC')
         ->limit(-$nb);
       $tickets = $q->execute();
       foreach ( $tickets as $ticket )

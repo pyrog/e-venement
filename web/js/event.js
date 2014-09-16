@@ -27,10 +27,6 @@ function manifestation_list_loaded(data)
     $.get($(this).prop('href'),manifestation_list_loaded);
     return false;
   });
-  
-  $('#more .manifestation_list .sf_admin_td_actions a').each(function(){ $(this).prop('title', $(this).text()); });
-  
-  gauge_small();
 }
 
 function manifestation_new_clicked()

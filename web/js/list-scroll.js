@@ -1,13 +1,9 @@
-// the global var that can be used everywhere as a "root"
-if ( LI == undefined )
-  var LI = {};
-
 $(document).ready(function(){
-  LI.list_add_actions_titles();
-  LI.list_scroll();
-  LI.list_edit();
+  list_add_actions_titles();
+  list_scroll();
+  list_edit();
 });
-LI.list_scroll = function()
+function list_scroll()
 {
   $('.sf_admin_pagination .ui-icon-seek-next').parent().unbind().click(function(){
     $('.sf_admin_pagination .ui-icon-seek-next').parent().unbind().click(function(){return false;});
@@ -27,9 +23,8 @@ LI.list_scroll = function()
         }));
       $('#sf_admin_pager')
         .replaceWith($($.parseHTML(data)).find('#sf_admin_pager'));
-      LI.list_add_actions_titles();
-      LI.list_scroll();
-      LI.list_edit();
+      list_add_actions_titles();
+      list_scroll();
       
       if ( window.list_scroll_end != undefined )
       for ( i = 0 ; i < window.list_scroll_end.length ; i++ )
@@ -38,7 +33,7 @@ LI.list_scroll = function()
     return false;
   });
 }
-LI.list_add_actions_titles = function()
+function list_add_actions_titles()
 {
   $('.sf_admin_td_actions a').each(function(){
     elt = $(this).clone(true);
@@ -47,7 +42,7 @@ LI.list_add_actions_titles = function()
   });
 }
 
-LI.list_edit = function()
+function list_edit()
 {
   // adding the possibility to edit in the list itself the records
   $('.sf_admin_row .sf_admin_text').unbind().dblclick(function(){

@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php use_helper('Date','Number') ?>
-<span class="manif" style="background-color: <?php echo $manif->Color ? $manif->Color : '' ?>;">
+<span class="manif" style="background-color: #<?php echo $manif->Color ? $manif->Color->color : '' ?>;">
   <input type="radio" name="ticket[manifestation_id]" value="<?php echo $manif->id ?>" <?php if ( isset($first) && $first ) echo 'checked="checked"' ?>  />
   <a class="name" title="<?php echo $manif->Event ?>" href="<?php echo cross_app_url_for('event','event/show?id='.$manif->event_id) ?>">
     <?php echo $manif->Event ?>
@@ -39,13 +39,13 @@
   <?php endif ?>
 </span>
 <span class="workspaces">
-  <?php include_partial('ticket_manifestation_wslist',array('manif' => $manif, 'transaction' => $transaction,)) ?>
+  <?php include_partial('ticket_manifestation_wslist',array('manif' => $manif)) ?>
 </span>
 <span class="prices">
 <?php include_partial('ticket_manifestation_prices',array('manif' => $manif,)) ?>
 <?php if ( $active ): ?>
   <?php $total = 0; $gid = $manif->Tickets[0]->gauge_id ?>
-  <?php include_partial('ticket_manifestation_ws',array('ticket' => $manif->Tickets[0], 'nb_gauges' => $manif->Gauges->count())) ?>
+  <?php include_partial('ticket_manifestation_ws',array('ticket' => $manif->Tickets[0],'nb_gauges' => $manif->Gauges->count())) ?>
   <?php foreach ( $manif->Tickets as $ticket ): ?>
     <?php if ( $gid != $ticket->gauge_id ): ?>
       <?php $gid = $ticket->gauge_id ?>
@@ -53,7 +53,7 @@
       <?php include_partial('ticket_manifestation_ws',array('ticket' => $ticket,'nb_gauges' => $manif->Gauges->count())) ?>
     <?php endif ?>
     <?php if ( $ticket->Duplicatas->count() == 0 ): ?>
-    <input alt="#<?php echo $ticket->id.($ticket->numerotation ? '&nbsp;('.__('seat').'&nbsp;'.$ticket->numerotation.')' : '') ?>" type="hidden" name="ticket[prices][<?php echo $ticket->gauge_id ?>][<?php echo $ticket->Price ?>][]" value="<?php echo $ticket->value ?>" title="PU: <?php echo format_currency($ticket->value,'€') ?>" class="<?php echo $ticket->printed_at ? 'printed' : ($ticket->integrated_at ? 'integrated' : 'notprinted') ?>" />
+    <input alt="#<?php echo $ticket->id ?>" type="hidden" name="ticket[prices][<?php echo $ticket->gauge_id ?>][<?php echo $ticket->Price ?>][]" value="<?php echo $ticket->value ?>" title="PU: <?php echo format_currency($ticket->value,'€') ?>" class="<?php echo $ticket->printed_at ? 'printed' : ($ticket->integrated_at ? 'integrated' : 'notprinted') ?>" />
     <?php $total += $ticket->value ?>
     <?php endif ?>
   <?php endforeach ?>

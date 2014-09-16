@@ -75,9 +75,7 @@ class pricesActions extends sfActions
     $this->charset   = sfConfig::get('software_internals_charset');
     
     sfConfig::set('sf_escaping_strategy', false);
-    $confcsv = sfConfig::get('software_internals_csv');
-    if ( isset($confcsv['set_charset']) && $confcsv['set_charset'] )
-      sfConfig::set('sf_charset', $this->options['ms'] ? $this->charset['ms'] : $this->charset['db']);
+    $confcsv = sfConfig::get('software_internals_csv'); if ( isset($confcsv['set_charset']) && $confcsv['set_charset'] ) sfConfig::set('sf_charset', $this->options['ms'] ? $this->charset['ms'] : $this->charset['db']);
     
     if ( $request->hasParameter('debug') )
     {
@@ -139,14 +137,8 @@ class pricesActions extends sfActions
     
     if ( isset($criterias['manifestations_list']) && count($criterias['manifestations_list']) > 0 )
       $q->andWhereIn('t.manifestation_id',$criterias['manifestations_list']);
-    if ( isset($criterias['events_list']) && count($criterias['events_list']) > 0 )
-      $q->andWhereIn('m.event_id',$criterias['events_list']);
     if ( isset($criterias['users']) && count($criterias['users']) > 0 )
       $q->andWhereIn('t.sf_guard_user_id',$criterias['users']);
-    if ( isset($criterias['workspaces_list']) && count($criterias['workspaces_list']) > 0 )
-      $q->andWhereIn('g.workspace_id',$criterias['workspaces_list']);
-    if ( isset($criterias['meta_events_list']) && count($criterias['meta_events_list']) > 0 )
-      $q->andWhereIn('e.meta_event_id',$criterias['meta_events_list']);
 
     if ( !$all )
     {

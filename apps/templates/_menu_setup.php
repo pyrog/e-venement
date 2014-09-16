@@ -21,9 +21,13 @@
 *
 ***********************************************************************************/
 ?>
-      <li class="menu-setup">
+      <?php $view = false ?>
+      <li>
         <ul class="second">
-          <?php include_partial('global/menu_setup_general') ?>
+          <?php if ( $sf_user->hasCredential('admin-power') || $sf_user->hasCredential('admin-users') ): ?>
+            <?php $view = true ?>
+            <?php include_partial('global/menu_setup_general') ?>
+          <?php endif ?>
           <?php if ( $sf_user->hasCredential('admin-csv')
                   || $sf_user->hasCredential('admin-labels')
                   || $sf_user->hasCredential('admin-titles')
@@ -31,10 +35,10 @@
                   || $sf_user->hasCredential('admin-pro')
                   || $sf_user->hasCredential('admin-org')
                 ): ?>
+            <?php $view = true ?>
             <?php include_partial('global/menu_setup_pr') ?>
           <?php endif ?>
           <?php include_partial('global/menu_setup_events') ?>
-          <?php include_partial('global/menu_setup_pos') ?>
           <?php if ( $sf_user->hasCredential('tck-admin-payment')
                   || $sf_user->hasCredential('event-admin-price')
                   || $sf_user->hasCredential('tck-transaction') ): ?>
@@ -43,7 +47,8 @@
           <?php include_partial('global/menu_setup_groups') ?>
           <?php include_partial('global/menu_setup_mc') ?>
           <?php include_partial('global/menu_setup_online') ?>
-          <?php include_partial('global/menu_extra', array('name' => 'setup')) ?>
         </ul>
+        <?php if ( $view ): ?>
         <span class="title"><?php echo __('Settings',array(),'menu') ?></span>
+        <?php endif ?>
       </li>

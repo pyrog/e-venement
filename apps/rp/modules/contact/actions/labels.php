@@ -23,25 +23,13 @@
 ***********************************************************************************/
 ?>
 <?php 
-    // lots of the lines above came directly from e-venement v1.10 with only few modifications
+    // lots of the lines above come directly from e-venement v1.10 with only few modifications
     
     // options
     $this->params = OptionLabelsForm::getDBOptions();
     $this->fields = OptionCsvForm::getDBOptions();
     $tunnel = true; //in_array('tunnel',$this->fields['option']);
     $this->fields = $this->fields['field'];
-    
-    if ( !$request->hasParameter('limit') || !$request->hasParameter('go') )
-    {
-      $this->offset = $request->getParameter('offset', 0);
-      $this->limit  = ceil($request->getParameter('limit',sfConfig::get('app_options_labels_offset', 500))/(intval($this->params['nb-x'])*intval($this->params['nb-y'])))*intval($this->params['nb-x'])*intval($this->params['nb-y']); // limit to avoid reaching the PHP memory_limit generating PDF files
-      $this->stop   = $this->offset+$this->limit > $this->buildQuery()->offset($this->offset)->limit($this->limit)->count();
-      
-      $request->setParameter('limit', $this->limit);
-      $this->setLayout('nude');
-      $this->setTemplate('labelsHub');
-      return;
-    }
     
     // get back data for labels
     $this->executeCsv($request,true);

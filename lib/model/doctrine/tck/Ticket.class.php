@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2013 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2013 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2012 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2012 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -38,17 +38,17 @@ class Ticket extends PluginTicket
   public function hasBeenCancelled($direction = 'both')
   {
     if ( $this->Cancelling->count() > 0 )
-      return $this->Cancelling;
+      return true;
     
     if ( in_array($direction,array('both','down')) )
     foreach ( $this->Duplicatas as $dup )
-    if ( $buf = $dup->hasBeenCancelled('down') )
-      return $buf;
+    if ( $dup->hasBeenCancelled('down') )
+      return true;
     
     if ( in_array($direction,array('both','up')) )
     if ( !is_null($this->duplicating) )
-    if ( $buf = $this->Duplicated->hasBeenCancelled('up') )
-      return $buf;
+    if ( $this->Duplicated->hasBeenCancelled('up') )
+      return true;
     
     return false;
   }
@@ -61,28 +61,9 @@ class Ticket extends PluginTicket
     return $this->Duplicated->getOriginal();
   }
   
-  public function getBarcode($salt = NULL)
+  public function getBarcode($salt = '')
   {
-    $salt = $salt
-      ? $salt
-      : sfConfig::get('project_eticketting_salt', '');
-    
-    if ( !$this->rawGet('barcode') )
-      $this->barcode = md5('#'.$this->id.'-'.$salt);
-    return $this->rawGet('barcode');
-  }
-  
-  public function renderBarcode($file = NULL) // PNG output directly to stdout
-  {
-    $bc = new liBarcode($this->barcode);
-    $bc->render($file);
-    return $this;
-  }
-  
-  public function getBarcodePng()
-  {
-    $bc = new liBarcode($this->barcode);
-    return (string)$bc;
+    return md5('#'.$this->id.'-'.$salt);
   }
   
   public function getIdBarcoded()
@@ -92,77 +73,6 @@ class Ticket extends PluginTicket
     for ( $i = 12-$n ; $i > 0 ; $i-- )
       $c = '0'.$c;
     return $c;
-  }
-  
-  public function getTotal()
-  {
-    return $this->value + $this->taxes;
-  }
-  
-  public function renderSimplified($type = 'html')
-  {
-    sfApplicationConfiguration::getActive()->loadHelpers(array('Url', 'Number'));
-    
-    // the barcode
-    if ( sfConfig::get('app_tickets_id', 'id') == 'id' )
-    {
-      $c = curl_init();
-      curl_setopt_array($c, array(
-        CURLOPT_URL => $url = public_path('/liBarcodePlugin/php-barcode/barcode.php?scale=3'.($type == 'html' ? '&mode=html' : '').'&code='.$this->getIdBarcoded(),true),
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        CURLOPT_RETURNTRANSFER => true,
-      ));
-      if (!( $barcode = curl_exec($c) ))
-        error_log('Error loading the barcode: '.curl_error($c));
-      curl_close($c);
-    }
-    else
-      $barcode = $this->getBarcodePng();
-    
-    if ( $type != 'html' || sfConfig::get('app_tickets_id', 'id') != 'id' )
-      $barcode = '<span><img src="data:image/jpg;base64,'.base64_encode($barcode).'" alt="#'.$this->id.'" /></span>';
-    
-    // the HTML code
-    return sprintf(<<<EOF
-  <div class="cmd-element ticket">
-  <table><tr>
-    <td class="desc">
-      <div class="event"><table><tbody><tr><td><span>%s:</span> <span>%s</span></td></tr></tbody></table></div>
-      <p class="event-2nd"><span>%s:</span> <span>%s</span></p>
-      <p class="description"><span>%s:</span> <span>%s</span></p>
-      <p class="location"><span>%s:</span> <span>%s</span></p>
-      <p class="address"><span>%s:</span> <span>%s</span></p>
-      <p class="gauge"><span>%s:</span> <span>%s</span></p>
-      <p class="date"><span>%s:</span> <span>%s</span></p>
-      <p class="price"><span>%s:</span> <span>%s</span> <span>%s</span></p>
-      <p class="seat"><span>%s</span><span>%s</span></p>
-      <div class="comment"><table><tbody><tr><td><div>%s</div></td></tr></tbody></table></div>
-      <p class="ids"><span class="transaction">#%s</span> <span class="id">#%s</span></p>
-      <p class="contact">%s</p>
-      <p class="duplicate">%s</p>
-    </td>
-    <td class="bc">%s</td>
-  <tr></table>
-  <img class="background" src="data:image/png;base64,%s" alt="" />
-  </div>
-EOF
-      , __('Event', null, 'li_tickets_email'), nl2br($this->Manifestation->Event)
-      , '', $this->Manifestation->Event->short_name
-      , '', $this->Manifestation->Event->description
-      , __('Venue', null, 'li_tickets_email'), (string)$this->Manifestation->Location
-      , __('Address', null, 'li_tickets_email'), (string)$this->Manifestation->Location->full_address
-      , __('Category', null, 'li_tickets_email'), (string)$this->Gauge
-      , __('Date', null, 'li_tickets_email'), $this->Manifestation->getFormattedDate()
-      , __('Price', null, 'li_tickets_email'), $this->price_name, format_currency($this->value,'€')
-      , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : '', $this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : '')
-      , $this->comment
-      , $this->transaction_id, $this->id
-      , $this->contact_id ? $this->Contact->name_with_title : ($this->Transaction->professional_id ? $this->Transaction->Professional->getFullName() : $this->Transaction->Contact->name_with_title)
-      , !$this->duplicating ? '' : __('This ticket is a duplicate of #%%tid%%, it replaces and cancels any previous version of this ticket you might have recieved', array('%%tid%%' => $this->transaction_id.'-'.$this->duplicating), 'li_tickets_email')
-      , $barcode
-      , base64_encode(file_get_contents(sfConfig::get('sf_web_dir').'/images/ticket-simplified-layout-100dpi.png'))
-    );
   }
   
   public function __toString()

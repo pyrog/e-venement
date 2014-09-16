@@ -22,16 +22,13 @@
 ***********************************************************************************/
 ?>
 <?php if ( $sf_user->hasCredential('ws-group') || $sf_user->hasCredential('ws-admin') ): ?>
-  <li class="menu-setup-online"><a><?php echo __('Online ticketting',array(),'menu') ?></a>
+  <li><a><?php echo __('Online ticketting',array(),'menu') ?></a>
     <ul class="third">
       <?php if ( $sf_user->hasCredential('ws-admin') ): ?>
         <li><a href="<?php echo cross_app_url_for('ws','remote_authentication') ?>"><?php echo __('Authentication',array(),'menu') ?></a></li>
       <?php endif ?>
       <?php if ( $sf_user->hasCredential('ws-group') ): ?>
         <li><a href="<?php echo cross_app_url_for('ws','auto_group') ?>"><?php echo __('Group association',array(),'menu') ?></a></li>
-      <?php endif ?>
-      <?php if ( $sf_user->hasCredential('srv-access') ): ?>
-        <li class="spaced"><?php echo cross_app_link_to(__('Surveys', null, 'menu'), 'srv', 'survey/index') ?></li>
       <?php endif ?>
     </ul>
   </li>

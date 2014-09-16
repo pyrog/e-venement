@@ -11,20 +11,9 @@ all:
   options:
     #remove_ticketting: true
     design: tdp
-    #no_event_archives: false
-    #labels_offset: 500
-    plugins: []
-  contact:
-    force_title: true
-    force_uppercase: [name, city]
-    force_ucfirst: [firstname]
-    #force_fields: [firstname, postalcode, city]
-    #force_one_phonenumber: true
     #social_informations: true
-  organism:
-    force_uppercase: [city]
-    force_ucfirst: [name]
-    #force_fields: [postalcode, city]
+    #no_event_archives: false
+    #contact_force_one_phonenumber: true
   #controls:
   #  enable: true
   cards:

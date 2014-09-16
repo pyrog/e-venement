@@ -22,13 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-    $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
-    
-    if ( $request->getParameter('id') && sfConfig::get('app_transaction_gui', false) == 'touchy' )
-    {
-      $this->getUser()->setFlash('notice', __('Please use this new GUI'));
-      $this->redirect('transaction/edit?id='.$request->getParameter('id'));
-    }
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
     
     if ( !($this->getRoute() instanceof sfObjectRoute) )
     {
@@ -43,10 +37,8 @@
           $this->getUser()->setFlash('notice',$this->getUser()->getFlash('error'));
         
         $this->transaction = new Transaction();
-        $this->dispatcher->notify(new sfEvent($this, 'tck.before_transaction_creation', array('transaction' => $this->transaction)));
         $this->transaction->save();
-        $this->dispatcher->notify(new sfEvent($this, 'tck.after_transaction_creation', array('transaction' => $this->transaction)));
-        $this->redirect('ticket/sell?id='.$this->transaction->id.($request->hasParameter('hash') ? '#manifestations-'.$request->getParameter('hash') : ''));
+        $this->redirect('ticket/sell?id='.$this->transaction->id);
       }
     }
     
@@ -55,7 +47,7 @@
     // if closed
     if ( $this->transaction->closed )
     {
-      $this->getUser()->setFlash('error',__('You have to re-open the transaction before accessing it'));
+      $this->getUser()->setFlash('error',__('You have to re-open the transaction before to access it'));
       return $this->redirect('ticket/respawn?id='.$this->transaction->id);
     }
     

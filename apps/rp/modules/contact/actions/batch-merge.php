@@ -27,7 +27,7 @@
   $this->getContext()->getConfiguration()->loadHelpers('I18N');
   
   $ids = $request->getParameter('ids');
-  $q = Doctrine::getTable('Contact')->createQuery('c')
+  $q = Doctrine::getTable('Contact')->createQuery()
     ->whereIn('id',$ids)
     ->orderBy('id');
   $contacts = $q->execute();
@@ -67,11 +67,11 @@
         
         // email
         if ( !$base_contact->email && $contact->email
-          || $contact->email && $recent )
+          || $recent )
           $base_contact->email = $contact->email;
         
         // password & description
-        if ( $contact->password && $recent )
+        if ( $recent )
           $base_contact->password = $contact->password;
         
         $arr = array();
@@ -85,19 +85,11 @@
         
         // phonenumbers
         foreach ( $contact->Phonenumbers as $phone )
-        {
           $base_contact->Phonenumbers[] = $phone;
-          $phone->contact_id = $base_contact->id;
-          $phone->save();
-        }
         
         // membercards
         foreach ( $contact->MemberCards as $mc )
-        {
           $base_contact->MemberCards[] = $mc;
-          $mc->contact_id = $base_contact->id;
-          $mc->save();
-        }
         
         // pro + groups
         foreach ( $contact->Professionals as $pro )
@@ -136,8 +128,6 @@
           
           // nothing to merge
           $base_contact->Professionals[] = $pro;
-          $pro->contact_id = $base_contact->id;
-          $pro->save();
         }
         
         // contact's groups
@@ -169,30 +159,11 @@
         
         // YOB
         foreach ( $contact->YOBs as $YOB )
-        {
-          $YOB->contact_id = $base_contact->id;
           $base_contact->YOBs[] = $YOB;
-          $YOB->save(); // special feature for a special behaviour (else didn't save)
-        }
         
         // Relationships
         foreach ( $contact->Relationships as $relationship )
           $base_contact->Relationships[] = $relationship;
-          
-        // DirectTickets
-        foreach ( $contact->DirectTickets as $ticket )
-          $base_contact->DirectTickets[] = $ticket;
-          
-        // Archives
-        foreach ( $contact->Archives as $old_archive )
-        {
-          $archive = new ContactArchive;
-          $archive->old_id = $old_archive->old_id;
-          $base_contact->Archives[] = $archive;
-        }
-        $archive = new ContactArchive;
-        $archive->old_id = $contact->id;
-        $base_contact->Archives[] = $archive;
         
         // for multiple merges
         if ( $recent )
@@ -205,7 +176,6 @@
       $base_contact->save();
     
     $this->getUser()->setFlash('notice',__('%%nb%% contacts properly merged into one',array('%%nb%%' => $cpt)));
-    $this->redirect('contact/edit?id='.$base_contact->id);
   }
   else
     $this->getUser()->setFlash('notice',__('You have to select more than one contact to be able to merge something'));

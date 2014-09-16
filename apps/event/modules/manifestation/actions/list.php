@@ -26,7 +26,6 @@
     $this->event_id       = $request->getParameter('event_id');
     $this->only_blocking  = $request->hasParameter('only_blocking');
     $this->only_pending   = $request->hasParameter('only_pending');
-    $this->display_by_default = $request->hasParameter('display_by_default');
     
     $this->from = date('Y-m-d H:i:00', $request->getParameter('start',$time = time()));
     $this->to = date('Y-m-d H:i:00', $request->getParameter('end',strtotime('+ 1 month', $time)));
@@ -38,15 +37,15 @@
     if ( !$value )
       unset($no_ids[$key]);
     
-    $end = "m.reservation_ends_at"; // + (m.duration||' seconds')::interval";
+    $end = "m.happens_at + (m.duration||' seconds')::interval";
     $q = Doctrine::getTable('Manifestation')->createQuery('m')
       ->select('m.*, l.*, mb.*, me.*, c.*, e.*, g.*')
       ->leftJoin('m.Color c')
       ->leftJoin('m.Booking mb')
       ->andWhere('(TRUE')
-      ->andWhere("m.reservation_begins_at >= ? AND m.reservation_begins_at < ?", array($this->from, $this->to))
+      ->andWhere("m.happens_at >= ? AND m.happens_at < ?", array($this->from, $this->to))
       ->orWhere("$end > ? AND $end <= ?", array($this->from, $this->to))
-      ->orWhere("m.reservation_begins_at < ? AND $end > ?", array($this->from, $this->to))
+      ->orWhere("m.happens_at < ? AND $end > ?", array($this->from, $this->to))
       ->andWhere('TRUE)')
       ->orderBy('m.happens_at DESC');
     if ( $this->location_id )
@@ -59,8 +58,6 @@
       $q->andWhere('m.blocking = TRUE');
     if ( $this->only_pending )
       $q->andWhere('m.reservation_confirmed = FALSE');
-    if ( $this->only_display_by_default )
-      $q->andWhere('e.display_by_default = TRUE');
     if ( $this->event_id )
       $q->andWhere('m.event_id = ?', $this->event_id);
     elseif ( $this->month_view )
@@ -70,16 +67,14 @@
         18*60*60, // starts and stops in differents days, and length > 18h
       ));
     }
-    
     if ( $no_ids )
       $q->andWhereNotIn('m.id',$no_ids);
-    
     // security filtering
     EventFormFilter::addCredentialsQueryPart($q);
     
     // event filters
     $data = $this->getUser()->getAttribute('event.filters', array(), 'admin_module');
-    if ( $data && !$request->hasParameter('conflicts') )
+    if ( $data )
     {
       $filters = new EventFormFilter;
       $data[$filters->getCSRFFieldName()] = $filters->getCSRFToken();
