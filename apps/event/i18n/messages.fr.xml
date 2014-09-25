@@ -5,116 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Categories are usefull to group gauges for online sales. Use only if needed.</source>
-        <target>Les catégories sont utiles pour grouper les jauges dans la vente en ligne. À n'utiliser que si nécessaire.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Unjoin?</source>
-        <target>Dissocier ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Price created or updated for this gauge</source>
-        <target>Tarif créé ou mis à jour pour cette jauge</target>
-      </trans-unit>
-      <trans-unit>
-        <source>A problem occurred during the price creation / update (you should better reload your screen)</source>
-        <target>Un problème est survenu lors de la création / mise à jour du tarif (vous feriez bien de recharger votre écran)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Explicit display</source>
-        <target>Affichage explicite</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ideal width</source>
-        <target>Largeur idéale</target>
-      </trans-unit>
-      <trans-unit>
-        <source>HTML colors</source>
-        <target>Couleurs HTML</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Shape</source>
-        <target>Forme</target>
-      </trans-unit>
-        <trans-unit>
-        <source>Surveys</source>
-        <target>Questionnaires</target>
-      </trans-unit>
-      <trans-unit>
-        <source>3 letters minimum</source>
-        <target>3 lettres minimum</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Deprecated</source>
-        <target>Obsolète</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Participants list</source>
-        <target>Liste des participants</target>
-      </trans-unit>
-      <trans-unit>
-        <source>No registered participant</source>
-        <target>Pas de participant enregistré</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Show occupation</source>
-        <target>Voir l'occupation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Show short names</source>
-        <target>Voir les noms courts</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Show ranks</source>
-        <target>Voir les rangs</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ranks</source>
-        <target>Rangs</target>
-      </trans-unit>
-      <trans-unit>
-        <source>rank</source>
-        <target>rang</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Show neighborhood</source>
-        <target>Voir le voisinage</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Neighbors</source>
-        <target>Voisins</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Best seats</source>
-        <target>Meilleures places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>If a seated plan exists, it will show up if you click on the gauge</source>
-        <target>Si un plan numéroté existe, il s'affichera si vous cliquez sur la jauge</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Link(s) removed</source>
-        <target>Lien(s) supprimé(s)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Link(s) created</source>
-        <target>Lien(s) créé(s)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Links between seats have been cleared</source>
-        <target>Les liens entre les sièges ont été remis à zéro</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Links between seats have been created</source>
-        <target>Les liens entre les sièges ont été créés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This form will allow you to define the rank of seats in bulk on your map. Using it will save you a lot of time, because you will only have to set the rank of particular seats. The venues are usually symetrical, you will probably make at least to passes. Take the left side, then the right side of instance.
-Careful: this tool has its limits. It works good only with batches of seats named for instance from A-1 to H-74. Test it carefully before to conclude on its utility level.</source>
-        <target>Ce formulaire va vous permettre de définir en lot des notes à des places numérotées sur votre plan. Grâce à cela vous gagnerez énormément de temps, car vous n'aurez plus qu'à préciser les notes des places particulières. Souvent les salles sont symétriques, vous aurez ainsi sans doute au moins deux passages à faire. Prenez la moitié gauche, puis la moitié droite.
-Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de places nommées par exemple de A-1 à H-74. Faîtes des essais consciencieux avant de conclure sur son utilité.</target>
-      </trans-unit>
-      <trans-unit>
         <source>Dates range</source>
         <target>Intervalle de dates</target>
       </trans-unit>
@@ -143,8 +33,8 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Si la priorité d'un seul espace de travail est inférieure à 0 (attention à essayer de n'en avoir qu'un), alors les jauges de cet espace de travail seront afficher seules en priorité dans les mini-jauges, remplaçant celle représentant la fusion de l'ensemble des jauges disponibles.</target>
       </trans-unit>
       <trans-unit>
-        <source>If only one workspace's order is more than 999, then the displaid mini-gauges will be based on profitability, in relation with the expected income and what is really being realized on every manifestation (only in the case where the expected income is given). About this point, the extra taxes are not included in the income calculation.</source>
-        <target>Si la priorité d'un seul des espaces de travail est supérieure à 999, alors les mini-jauges affichées seront économiques, en rapport avec le chiffre d'affaire visé et réalisé sur chaque manifestation (à condition qu'il soit défini). À ce propos, les taxes additionnelles ne sont pas prises en compte dans le chiffre d'affaire.</target>
+        <source>If only one workspace's order is more than 999, then the displaid mini-gauges will be based on profitability, in relation with the expected income and what is really being realized on every manifestation (only in the case where the expected income is given).</source>
+        <target>Si la priorité d'un seul des espaces de travail est supérieure à 999, alors les mini-jauges affichées seront économiques, en rapport avec le chiffre d'affaire visé et réalisé sur chaque manifestation (à condition qu'il soit défini).</target>
       </trans-unit>
       <trans-unit>
         <source>Expected income</source>
@@ -1557,10 +1447,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit>
         <source>Remember</source>
         <target>Rester connecté(e)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New Price</source>
-        <target>Nouveau tarif</target>
       </trans-unit>
     </body>
   </file>

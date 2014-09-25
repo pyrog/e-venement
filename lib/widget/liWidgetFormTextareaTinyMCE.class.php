@@ -65,12 +65,4 @@ class liWidgetFormTextareaTinyMCE extends sfWidgetFormTextareaTinyMCE
     
     parent::__construct($options, $parameters);
   }
-  
-  public function getJavascripts()
-  {
-    $js   = parent::getJavascripts();
-    $js[] = '/liTinymcePlugin/tinymce.min.js';
-    $js[] = '/liTinymcePlugin/jquery.tinymce.min.js';
-    return $js;
-  }
 }

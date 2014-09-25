@@ -18,15 +18,6 @@ class manifestationActions extends autoManifestationActions
     $this->dispatcher->notify(new sfEvent($this, 'pub.pre_execute', array('configuration' => $this->configuration)));
     parent::preExecute();
   }
-  
-  public function executeIndex(sfWebRequest $request)
-  {
-    if ( $this->getPager()->getQuery()->count() == 1 )
-    {
-      $manifestation = $this->getPager()->getQuery()->select('m.id')->fetchOne();
-      $this->redirect('manifestation/edit?id='.$manifestation->id);
-    }
-  }
   public function executeBatchDelete(sfWebRequest $request)
   {
     $this->redirect('manifestation/index');
@@ -51,45 +42,27 @@ class manifestationActions extends autoManifestationActions
   }
   public function executeShow(sfWebRequest $request)
   {
-    $q = Doctrine::getTable('Gauge')->createQuery('g')
-      ->addSelect('gtck.*, m.*, mpm.*, mp.*, tck.*, e.*, l.*, ws.*, sp.*, op.*')
-      ->andWhere('g.online = ?', true)
-      
-      ->leftJoin('g.Tickets gtck WITH gtck.price_id IS NULL AND gtck.seat_id IS NOT NULL AND gtck.transaction_id = ?', $this->getUser()->getTransaction()->id)
+    $this->gauges = Doctrine::getTable('Gauge')->createQuery('g')
+      ->addSelect('m.*, pm.*, p.*, tck.*, e.*, l.*, ws.*, sp.*, op.*')
       ->leftJoin('g.Manifestation m')
-      ->andWhere('(m.happens_at > NOW() OR ?)',sfContext::getInstance()->getConfiguration()->getEnvironment() == 'dev')
-      ->andWhere('m.id = ?',$request->getParameter('id'))
-      ->andWhere('m.reservation_confirmed = ?',true)
-      
-//      ->leftJoin('g.Workspace ws')
       ->leftJoin('m.Location l')
-      ->leftJoin('l.SeatedPlans sp')
-      ->leftJoin('sp.Workspaces spws')
       ->leftJoin('ws.Users wu')
       ->leftJoin('m.Event e')
-      ->leftJoin('e.MetaEvent me')
-      ->leftJoin('g.PriceGauges gpg')
-      ->leftJoin('gpg.Price gp')
-      ->leftJoin('m.PriceManifestations mpm')
-      ->leftJoin('mpm.Price mp')
-      ->leftJoin('mp.Tickets tck WITH tck.gauge_id = g.id AND tck.transaction_id = ?', $this->getUser()->getTransaction()->id)
-      
-      ->leftJoin('gp.Users gpu')
-      ->leftJoin('gp.Workspaces gpw')
-      ->leftJoin('mp.Users mpu')
-      ->leftJoin('mp.Workspaces mpw')
-      
-      ->andWhere('gpu.id = ? OR mpu.id = ?', array($this->getUser()->getId(), $this->getUser()->getId()))
-      ->andWhere('wu.id = mpu.id OR wu.id = gpu.id')
-      ->andWhere('mpw.id = ws.id OR gpw.id = ws.id')
-      ->andWhere('gpw.id = g.workspace_id')
-      
-      ->andWhereIn('ws.id',array_keys($this->getUser()->getWorkspacesCredentials()))
-      ->andWhereIn('me.id',array_keys($this->getUser()->getMetaEventsCredentials()))
-      
-      ->orderBy('ws.name, mp.name, gp.name')
-    ;
-    $this->gauges = $q->execute();
+      ->leftJoin('m.PriceManifestations pm')
+      ->leftJoin('pm.Price p')
+      ->leftJoin('p.Users pu')
+      ->leftJoin('p.Workspaces pw')
+      ->leftJoin('p.Tickets tck ON tck.gauge_id = g.id AND tck.price_id = p.id AND tck.transaction_id = ?',$this->getUser()->getTransaction()->id)
+      ->andWhere('pu.id = ?',$this->getUser()->getId())
+      ->andWhere('wu.id = pu.id')
+      ->andWhere('pw.id = ws.id')
+      ->andWhere('pw.id = g.workspace_id')
+      ->andWhere('m.id = ?',$request->getParameter('id'))
+      ->andWhere('(m.happens_at > NOW() OR ?)',sfContext::getInstance()->getConfiguration()->getEnvironment() == 'dev')
+      //->andWhere('p.online = ?', true) // now the only user's credentials are important
+      ->andWhere('m.reservation_confirmed = ?',true)
+      ->orderBy('ws.name, p.name')
+      ->execute();
     
     if ( !$this->gauges || $this->gauges && $this->gauges->count() <= 0 )
     {

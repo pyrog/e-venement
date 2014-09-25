@@ -1,5 +1,5 @@
   $(document).ready(function(){
-    var form = $('#li_transaction_field_price_new form.prices');
+    var form = $('#li_transaction_field_price_new form');
     $('#li_transaction_field_price_new').click(function(){
       $(this).find('input[type=text]').focus();
     });
@@ -9,7 +9,7 @@
       var url = $(this).prop('href');
       $(this).prop('href', form.prop('action'));
       form.prop('action', url);
-      $('#li_transaction_field_price_new').toggleClass('cancelling').find('form.prices').toggleClass('noajax');
+      $('#li_transaction_field_price_new').toggleClass('cancelling').find('form').toggleClass('noajax');
       $('#li_transaction_field_price_new').find('a, input, button').unbind('focusout').focusout(function(){ return false; });
       $('#li_transaction_field_price_new [name="transaction[price_new][qty]"]').focus();
       return false;
@@ -19,50 +19,25 @@
         $('#li_transaction_field_price_new .cancel').click();
     });
     
-    // dealing w/ the "seats-first" feature
-    $('#li_transaction_field_price_new .seats-first').unbind();
-    
     $('#li_transaction_field_content .highlight:not(.new-family)').focusin(function(){
       form.find('button').remove();
       var item = this;
       var available_prices = JSON.parse($.trim($(this).find('.data .available_prices').text()));
       $.each(available_prices, function(i, price){
-        var price = price;
         $('<button name="price_new[id]"></button>')
           .val(price.id)
           .html(price.name)
-          .prop('title', (price.value !== null ? price.value : $('#li_transaction_field_close .prices .free-price').text())+' - '+price.description)
-          .attr('data-'+$(item).attr('data-type')+'-id', $(item).attr('data-'+$(item).attr('data-type')+'-id'))
-          .attr('data-type', $(item).attr('data-type'))
+          .prop('title', price.value+' - '+price.description)
+          .attr('data-gauge-id', $(item).attr('data-gauge-id'))
           .appendTo(form.find('p'))
           .click(function(){
-            var qty = $(this).closest('form').find('[name="transaction[price_new][qty]"]').val();
-            if ( price.value === null && (parseInt(qty,10) > 0 || qty === '') )
-            {
-              var amount = prompt($('#li_transaction_field_close .prices .free-price').text(), parseFloat($('#li_transaction_field_close .prices .free-price-default').text()))
-              if ( isNaN(parseFloat(amount)) )
-                return false;
-              $(this).closest('form').find('[name="transaction[price_new][free-price]"]').val(parseFloat(amount));
-            }
             $(this).closest('form').find('[name="transaction[price_new][price_id]"]')
               .val($(this).val());
-            $(this).closest('form').find('[name="transaction[price_new][declination_id]"]')
-              .val($(this).attr('data-'+$(this).attr('data-type')+'-id'));
-            $(this).closest('form').find('[name="transaction[price_new][type]"]')
-              .val($(this).attr('data-type'));
+            $(this).closest('form').find('[name="transaction[price_new][gauge_id]"]')
+              .val($(this).attr('data-gauge-id'));
           })
         ;
       });
-      
-      // direct seating
-      if ( $(this).is('[data-gauge-id]') )
-      {
-        if ( $(this).find('.data .gauge.seated').length > 0 )
-          $('#li_transaction_field_price_new .seats-first').addClass('usefull');
-        else
-          $('#li_transaction_field_price_new .seats-first').removeClass('usefull');
-        $('#li_transaction_field_price_new .seats-first [name=gauge_id]').val($(this).attr('data-gauge-id'));
-      }
       
       $('#li_transaction_field_price_new').fadeIn();
     }).focusout(function(){

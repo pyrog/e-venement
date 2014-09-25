@@ -70,17 +70,4 @@ $(document).ready(function(){
     $('.ui-tabs-nav [href="#sf_fieldset_extra_informations"]')
       .prepend('<span class="ui-icon ui-icon-alert floatright"></span>');
   }
-  
-  // PriceGauge sensitivity
-  $('.sf_admin_form .sf_admin_form_field_gauges_prices').click(function(){
-    $(this).addClass('ui-state-highlight');
-  });
-});
-
-if ( LI == undefined )
-  var LI = {};
-if ( LI.seatedPlanInitializationFunctions == undefined )
-  LI.seatedPlanInitializationFunctions = [];  
-LI.seatedPlanInitializationFunctions.push(function(){
-  $('.seated-plan .seat.txt').unbind('contextmenu');
 });

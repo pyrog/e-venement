@@ -43,8 +43,7 @@
   // content
   foreach ( $lines as $line )
   {
-    if ( isset($line['id']) )
-      unset($line['id']);
+    unset($line['id']);
     include_partial('global/csv_line',array_merge(array('line' => $line),$vars));
   }
   

@@ -43,7 +43,6 @@ class ManifestationTable extends PluginManifestationTable
   public function createQuery($alias = 'm', $light = false)
   {
     $e  = $alias != 'e'  ? 'e'  : 'e1';
-    $et = $alias != 'et' ? 'et' : 'et1';
     $me = $alias != 'me' ? 'me' : 'me1';
     $l  = $alias != 'l'  ? 'l'  : 'l1';
     $pm = $alias != 'pm' ? 'pm' : 'pm1';
@@ -62,11 +61,8 @@ class ManifestationTable extends PluginManifestationTable
     $pu = $alias != 'pu'  ? 'pu' : 'pu1';
     $meu = $alias != 'meu' ? 'meu' : 'meu1';
     
-    $culture = sfContext::hasInstance() ? sfContext::getInstance()->getUser()->getCulture() : 'fr';
-    
     $q = parent::createQuery($alias)
       ->leftJoin("$alias.Event $e")
-      ->leftJoin("$e.Translation $et WITH lang = '$culture'")
       ->leftJoin("$e.MetaEvent $me")
       ->leftJoin("$alias.Location $l");
     
@@ -91,10 +87,10 @@ class ManifestationTable extends PluginManifestationTable
         ->leftJoin("$alias.Gauges $g")
         ->leftJoin("$g.Workspace $w")
         ->leftJoin("$alias.Organizers $o")
-        ->orderBy("$et.name, $me.name, $alias.happens_at, $alias.duration, $w.name");
+        ->orderBy("$e.name, $me.name, $alias.happens_at, $alias.duration, $w.name");
       if ( sfContext::hasInstance() )
       $q->leftJoin("$w.Order $wuo ON $wuo.workspace_id = $w.id AND $wuo.sf_guard_user_id = ".($uid = sfContext::getInstance()->getUser()->getId() ))
-        ->orderBy("$et.name, $me.name, $alias.happens_at, $alias.duration, $wuo.rank")
+        ->orderBy("$e.name, $me.name, $alias.happens_at, $alias.duration, $wuo.rank")
         ->leftJoin("$w.Users $wu")
         ->leftJoin("$me.Users $meu")
         ->andWhere("$meu.id = ?",$uid)
@@ -121,7 +117,7 @@ class ManifestationTable extends PluginManifestationTable
       ->leftJoin("g.Workspace w")
       ->leftJoin("w.Order wuo ON wuo.workspace_id = w.id AND wuo.sf_guard_user_id = ".($uid = sfContext::getInstance()->getUser()->getId() ))
       ->andWhere('e.id = ?',$id)
-      ->orderby("et.name, $a.happens_at DESC, l.name");
+      ->orderby("e.name, $a.happens_at DESC, l.name");
     return $q;
   }
   public function createQueryByLocationId($id)
@@ -130,7 +126,7 @@ class ManifestationTable extends PluginManifestationTable
     $a = $q->getRootAlias();
     $q
       ->andWhere('l.id = ?',$id)
-      ->orderby("et.name, $a.happens_at DESC, l.name");
+      ->orderby("e.name, $a.happens_at DESC, l.name");
     return $q;
   }
   
@@ -236,12 +232,5 @@ class ManifestationTable extends PluginManifestationTable
   {
     return $this->createQuery('m')
       ->andWhere('g.online = TRUE');
-  }
-  
-  public function slightlyFindOneById($value)
-  {
-    return $this->createQuery('m', true)
-      ->andWhere('m.id = ?', $value)
-      ->fetchOne();
   }
 }

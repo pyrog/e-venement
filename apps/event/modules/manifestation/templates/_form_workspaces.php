@@ -1,22 +1,16 @@
 <?php use_javascript('form-list') ?>
-<?php use_javascript('manifestation-gauge-grouping') ?>
 <?php use_stylesheet('form-list') ?>
 <div class="sf_admin_form_row sf_admin_text sf_admin_form_field_workspaces_list">
   <div class="label ui-helper-clearfix">
     <label for="manifestation_workspaces"><?php echo __('Workspaces list') ?></label>
-  </div>
-  <div class="help">
-    <span class="ui-icon ui-icon-help floatleft"></span>
-    <?php echo __('Categories are usefull to group gauges for online sales. Use only if needed.') ?>
   </div>
   <div id="form_workspaces" class="sf_admin_form_list ajax">
     <script type="text/javascript">
       document.getElementById('form_workspaces').url   = '<?php echo url_for('gauge/batchEdit?id='.$form->getObject()->id) ?>';
       document.getElementById('form_workspaces').field = '.sf_admin_form_field_value';
       
-      if ( LI.manifestationFormWorkspaces == undefined )
-        LI.manifestationFormWorkspaces = [];
-      LI.manifestationFormWorkspaces.push(function(){
+      document.getElementById('form_workspaces').functions = [];
+      document.getElementById('form_workspaces').functions.push(function(){
         $('#form_workspaces .gauge-transferts .ui-icon').unbind().click(function(){
           if ( $('#form_workspaces .gauge-transferts.active').length > 1 )
             $('#form_workspaces .gauge-transferts.active').toggleClass('active');
@@ -43,12 +37,6 @@
             // cf. web/js/form-list.js for the rest
           }
         });
-      });
-      
-      if ( document.getElementById('form_workspaces').functions == undefined )
-        document.getElementById('form_workspaces').functions = [];
-      $.each(LI.manifestationFormWorkspaces, function(id, fct){
-        document.getElementById('form_workspaces').functions.push(fct);
       });
     </script>
   </div>

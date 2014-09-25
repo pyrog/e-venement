@@ -36,39 +36,6 @@ require_once dirname(__FILE__).'/../lib/manifestationGeneratorHelper.class.php';
  */
 class manifestationActions extends autoManifestationActions
 {
-  public function executeAddGaugePrice(sfWebRequest $request)
-  {
-    $this->json = array('success' => array(), 'error' => array());
-    
-    if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
-    {
-      $this->getResponse()->setContentType('text/html');
-      $this->setLayout('layout');
-    }
-    else
-      sfConfig::set('sf_web_debug', false);
-    $this->json = array();
-    $error = 'A problem occurred during the price creation / update (you should better reload your screen)';
-    
-    if (!( $pg = $request->getParameter('price_gauge') ))
-    {
-      $this->json['error']['message'] = $error;
-      return 'Success';
-    }
-    
-    $form = new PriceGaugeForm(intval($pg['id']) > 0 ? Doctrine::getTable('PriceGauge')->find($pg['id']) : NULL);
-    $form->bind($pg);
-    if ( !$form->isValid() )
-    {
-      error_log($form->getErrorSchema());
-      $this->json['error']['message'] = $error;
-      return 'Success';
-    }
-    
-    $form->save();
-    $this->json['success']['id'] = $form->getObject()->id;
-    $this->json['success']['message'] = 'Price created or updated for this gauge';
-  }
   public function executeSlideHappensAt(sfWebRequest $request)
   {
     require(dirname(__FILE__).'/slide-happens-at.php');
@@ -80,33 +47,6 @@ class manifestationActions extends autoManifestationActions
     require(dirname(__FILE__).'/slide-duration.php');
     return sfView::NONE;
   }
-  
-  // needs previously cleaned $request->getParameter('ids'), usually it's used from executeBatchBestFreeSeat(), or nothing
-  public function executeBestFreeSeat(sfWebRequest $request)
-  {
-    $q = Doctrine::getTable('Manifestation')->createQuery('m');
-    if ( $request->getParameter('ids') )
-      $q->andWhereIn('e.id', $request->getParameter('ids'));
-    else
-      $q->andWhere('m.happens_at > NOW()')
-        ->limit(20);
-    $manifs = $q->execute();
-    $this->manifestations = array();
-    foreach ( $manifs as $manif )
-    {
-      $seats = $manif->getBestFreeSeat(5);
-      
-      $best = NULL;
-      foreach ( $seats as $seat )
-      if (!( !is_null($best) && $best <= $seat->rank ))
-        $best = $seat->rank;
-      
-      $this->manifestations[($best ? $best : 'ZZZ').'-'.$manif->id] = $manif;
-    }
-    ksort($this->manifestations);
-  }
-  public function executeBatchBestFreeSeat(sfWebRequest $request)
-  { $this->forward('manifestation', 'bestFreeSeat'); }
   
   public function executeSell(sfWebRequest $request)
   {

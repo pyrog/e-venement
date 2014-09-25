@@ -14,36 +14,8 @@ class cartActions extends sfActions
   
   public function preExecute()
   {
-    $this->getUser()->addAuthException($this->getModuleName(), 'response');
     $this->dispatcher->notify(new sfEvent($this, 'pub.pre_execute', array('configuration' => $this->configuration)));
     parent::preExecute();
-  }
-  public function executeCommitSurvey(sfWebRequest $request)
-  {
-    $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    
-    $params = $request->getParameter('survey', array());
-    
-    $s = new Survey;
-    foreach ( $surveys = $this->getUser()->getTransaction()->getSurveysToFillIn() as $survey )
-    if ( $survey->id == $params['id'] )
-    {
-      $s = $survey;
-      break;
-    }
-    $this->form = new SurveyPublicForm($s);
-    
-    $this->form->bind($params);
-    if ( !$this->form->isValid() )
-      return 'Error';
-    
-    $this->form->save();
-  }
-  public function executeSurveys(sfWebRequest $request)
-  {
-    $this->forms = array();
-    foreach ( $surveys = $this->getUser()->getTransaction()->getSurveysToFillIn() as $survey )
-      $this->forms[] = new SurveyPublicForm($survey);
   }
   public function executeWidget(sfWebRequest $request)
   {
@@ -53,36 +25,6 @@ class cartActions extends sfActions
     
     if ( $this->transac === false )
       $this->transac = new Transaction;
-    
-    // global timeout
-    $time = strtotime(
-      '+'.sfConfig::get('app_timeout_global', '1 hour'),
-      strtotime($this->transac->created_at)
-    ) - time();
-    $this->global_timeout = $time <= 0 ? 'expired!' :
-      floor($time/3600).':'.
-      str_pad(floor($time%3600/60), 2, '0', STR_PAD_LEFT).':'.
-      str_pad(floor($time%3600%60), 2, '0', STR_PAD_LEFT)
-    ;
-    
-    // older item timeout
-    $ticket = Doctrine::getTable('Ticket')->createQuery('tck')
-      ->andWhere('tck.transaction_id = ?', $this->transac->id)
-      ->orderBy('tck.updated_at')
-      ->fetchOne();
-    $this->older_item_timeout = false;
-    if ( $ticket )
-    {
-      $time = strtotime(
-        '+'.sfConfig::get('app_timeout_item', '40 minutes'),
-        strtotime($ticket->updated_at)
-      ) - time();
-      $this->older_item_timeout = $time <= 0 ? 'expired!' :
-        floor($time/3600).':'.
-        str_pad(floor($time%3600/60), 2, '0', STR_PAD_LEFT).':'.
-        str_pad(floor($time%3600%60), 2, '0', STR_PAD_LEFT)
-      ;
-    }
   }
   public function executeEmpty(sfWebRequest $request)
   {
@@ -111,9 +53,6 @@ class cartActions extends sfActions
   }
   public function executeRegister(sfWebRequest $request)
   {
-    // harden data
-    $this->getContext()->getConfiguration()->hardenIntegrity();
-    
     $form_values = $this->getUser()->getAttribute('contact_form_values',array());
     unset($form_values['_csrf_token']);
     unset($form_values['id']);
@@ -139,17 +78,32 @@ class cartActions extends sfActions
   
   public function executeShow(sfWebRequest $request)
   {
-    // harden data
-    $this->getContext()->getConfiguration()->hardenIntegrity();
+    $this->getUser()->setFlash('notice',$this->getUser()->getFlash('notice'));
+    $this->getUser()->setFlash('error',$this->getUser()->getFlash('error'));
     
-    // normal behavior
     $this->transaction_id = $this->getUser()->getTransaction()->id;
     
-    $this->transaction = $this->getUser()->getTransaction();
+    $q = Doctrine_Query::create()->from('Event e')
+      ->select('e.id')
+      ->leftJoin('e.Manifestations m')
+      ->leftJoin('m.Gauges g')
+      ->leftJoin('g.Workspace w')
+      ->leftJoin('g.Tickets tck')
+      ->leftJoin('tck.Price p')
+      ->leftJoin('tck.Transaction t')
+      ->andWhere('t.id = ?',$this->transaction_id)
+      ->andWhere('tck.id IS NOT NULL')
+      ->andWhere('tck.sf_guard_user_id = ?',$this->getUser()->getId())
+      ->andWhere('t.sf_guard_user_id = ?',$this->getUser()->getId());
+    $this->events = $q->execute();
     
-    if ( $this->transaction->Tickets->count() == 0
-      && $this->transaction->MemberCards->count() == 0
-      && $this->transaction->BoughtProducts->count() == 0 )
+    $this->member_cards = Doctrine::getTable('MemberCard')->createQuery('mc')
+      ->select('mc.id')
+      ->leftJoin('mc.MemberCardType mct')
+      ->andWhere('mc.transaction_id = ?', $this->transaction_id)
+      ->execute();
+    
+    if ( $this->events->count() == 0 && $this->member_cards->count() == 0 )
     {
       $this->getContext()->getConfiguration()->loadHelpers('I18N');
       $this->getUser()->setFlash('notice',__('Your cart is still empty, select tickets first...'));
@@ -179,7 +133,7 @@ class cartActions extends sfActions
       ->fetchOne();
   }
   
-  public static function sendConfirmationEmails(Transaction $transaction, sfAction $action)
+  public static function sendConfirmationEmails(Transaction $transaction)
   {
     return require(dirname(__FILE__).'/send-confirmation-emails.php');
   }

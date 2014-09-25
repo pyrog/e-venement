@@ -49,7 +49,6 @@ class liWidgetFormDoctrineJQueryAutocompleter extends sfWidgetFormDoctrineJQuery
   {
     return parent::render($name, $value, $attributes, $errors).
            sprintf(<<<EOF
-<a href="%s" style="display: none;" id="%s"></a>
 <script type="text/javascript"><!--
   jQuery(document).ready(function() {
     jQuery('#%s').change(function(){
@@ -62,8 +61,6 @@ class liWidgetFormDoctrineJQueryAutocompleter extends sfWidgetFormDoctrineJQuery
 --></script>
 EOF
       ,
-      $this->getOption('url'),
-      $this->generateId('url_'.$name),
       $this->generateId('autocomplete_'.$name),
       $this->generateId($name)
     );
@@ -72,23 +69,5 @@ EOF
   public function getVisibleValue($value)
   {
     return $this->toString($value);
-  }
-  
-  public function getJavaScripts()
-  {
-    return parent::getJavaScripts() + array(
-      '/sfAdminThemejRollerPlugin/js/jquery.min.js',
-      '/sfFormExtraPlugin/js/jquery.autocompleter.js',
-    );
-  }
-  public function getStylesheets()
-  {
-    return parent::getStylesheets() + array(
-      '/sfFormExtraPlugin/css/jquery.autocompleter.css' => 'all',
-      '/sfAdminThemejRollerPlugin/css/jquery/redmond/jquery-ui.custom.css' => 'all',
-      '/sfAdminThemejRollerPlugin/css/jroller.css'      => 'all',
-      '/sfAdminThemejRollerPlugin/css/fg.buttons.css'   => 'all',
-    );
-    // CAREFUL: the order is important sometimes
   }
 }

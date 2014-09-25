@@ -1,4 +1,3 @@
-<?php use_javascript('tck-touchscreen-prices?'.date('Ymd')) ?>
 <a href="<?php echo url_for('ticket/cancelPartial') ?>"
    class="ui-icon-left cancel"
    target="_blank"
@@ -10,15 +9,12 @@
   'method' => 'get',
   'target' => '_blank',
   'autocomplete' => 'off',
-  'class' => 'prices'
 )) ?><p>
   <?php echo $form->renderHiddenFields() ?>
   <?php echo $form['qty']->render(array('pattern' => '-{0,1}\d+', 'title' => __('Positive or negative numbers only'), 'maxlength' => 4)) ?>
 </p>
+<?php use_javascript('tck-touchscreen-prices') ?>
 <?php if ( sfConfig::get('project_tickets_count_demands',false) ): ?>
 <span class="count-demands"></span>
 <?php endif ?>
-</form>
-<form action="<?php echo url_for('transaction/seatsFirst?id='.$transaction->id) ?>" target="_blank" class="seats-first">
-  <button type="submit" name="gauge_id" value=""><?php echo __('Seats first') ?></button>
 </form>

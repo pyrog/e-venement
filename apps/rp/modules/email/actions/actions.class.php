@@ -93,7 +93,7 @@ class emailActions extends autoEmailActions
     {
       $this->form->getValidator('test_address')->setOption('required',false);
       if ( !isset($email['attach']) )
-        $this->email->isATest(false);
+        $this->email->not_a_test = true;
       else
       {
         unset($email['attach']);
@@ -140,7 +140,7 @@ class emailActions extends autoEmailActions
     $this->executeNew($request);
     //$this->form = $this->configuration->getForm();
     $this->email = $this->form->getObject();
-    $this->email->isATest(true);
+    $this->email->not_a_test = false;
     
     if ( $this->getUser() instanceof sfGuardSecurityUser )
       $this->email->sf_guard_user_id = $this->getUser()->getId();

@@ -13,20 +13,14 @@ generator:
 
     config:
       actions: ~
-      fields:
-        value: { help: Global price }
-        product_declination_id: { label: Product, help: This product will become the inner price of those member cards }
-        price_id: { help: 'This price will be applied, as it is defined inside the product...' }
+      fields:  ~
       list:
-        display: [name,description, _value, _real_value]
+        display: [name,description,_value]
         sort: [name, asc]
         object_actions:
           _edit: ~
           _delete: ~
       filter:  ~
-      form:
-        display:
-          NONE: [name, description, users_list]
-          Money: [value, product_declination_id, price_id]
+      form:    ~
       edit:    ~
       new:     ~

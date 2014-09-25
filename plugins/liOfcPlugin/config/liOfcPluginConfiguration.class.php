@@ -17,7 +17,7 @@ class liOfcPluginConfiguration extends sfPluginConfiguration
   /**
    * Initialize
    */
-  public function setup()
+  public function initialize()
   {
   	// Plugin dir
     sfConfig::set('li_ofc_root_dir', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');

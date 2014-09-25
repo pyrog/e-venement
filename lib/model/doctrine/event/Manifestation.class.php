@@ -10,7 +10,7 @@
  * @author     Baptiste SIMON <baptiste.simon AT e-glop.net>
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
-class Manifestation extends PluginManifestation implements liUserAccessInterface
+class Manifestation extends PluginManifestation
 {
   public $current_version = NULL;
   
@@ -80,59 +80,17 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
   }
   
   /**
-    * method getBestFreeSeat()
-    * concerning the seated sales
-    * find out what is the best seat still free
-    *
-    * @param  integer       $limit the number of seats to return
-    * @return Doctrine_Collection|Seat|false    the best seat(s) still free of any booking, or false if no seat is available
-    *
-    **/
-  public function getBestFreeSeat($limit = 1)
-  {
-    try {
-      if ( $this->getFromCache('best-free-seat-limit') !== $limit )
-        $this->clearCache();
-      return $this->getFromCache('best-free-seat');
-    }
-    catch ( liEvenementException $e )
-    {
-      $this->setInCache('best-free-seat-limit', $limit);
-      
-      $q = Doctrine::getTable('Seat')->createQuery('s')
-        ->leftJoin('s.SeatedPlan sp')
-        ->leftJoin('sp.Workspaces ws')
-        ->leftJoin('ws.Gauges g')
-        ->leftJoin('g.Manifestation m')
-        ->andWhere('m.location_id = sp.location_id')
-        ->andWhere('m.id = ?', $this->id)
-        ->leftJoin('s.Tickets tck')
-        ->andWhere('tck.id IS NULL')
-        ->orderBy('s.rank, s.name')
-        ->select('s.*')
-        ->limit($limit)
-      ;
-      $this->setInCache('best-free-seat', $limit > 1 ? $q->execute() : $q->fetchOne());
-      return $this->getBestFreeSeat($limit);
-    }
-  }
-  
-  /**
     * method hasAnyConflict()
+    * returns if the object is or would be in conflict with an other one
     * concerning the resources management
-    * Precondition: the values that are used are those which are recorded in DB
     *
-    * @return if the object is or would be in conflict with an other one
+    * Precondition: the values that are used are those which are recorded in DB
     *
     **/
   public function hasAnyConflict()
   {
     if ( !$this->blocking )
       return false;
-    
-    try { $this->getFromCache('has-any-conflict'); }
-    catch ( liEvenementException $e )
-    {
     
     $rids = array();
     foreach ( $this->Booking as $r )
@@ -157,28 +115,15 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
     if ( !$this->isNew() )
       $q->andWhere('m.id != ?', $this->id);
     
-    $this->setInCache('has-any-conflict', $q->count() > 0);
-    return $this->hasAnyConflict();
-    
-    }
+    return $q->count() > 0;
   }
   
   /**
     * Get all needed informations about the manifestation's gauges usage
-    * @param array    $options: modeled on sales ledger's criterias
-    * @return array   representing the informations for this manifestation
+    * $options: modeled on sales ledger's criterias
     *
     **/
   public function getInfosTickets($options = array())
-  {
-    try { $this->getFromCache('get-infos-tickets'); }
-    catch ( liEvenementException $e )
-    {
-      $this->setInCache($this->_getInfosTickets($options));
-      return $this->getInfosTickets($options);
-    }
-  }
-  private function _getInfosTickets($options = array())
   {
     if ( (isset($options['dates'][0]) || isset($options['dates'][1])) && (!isset($options['dates'][0]) || !isset($options['dates'][1])) )
       unset($options['dates']);
@@ -239,11 +184,10 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
 
     $tickets = $q->fetchArray();
     
-    $r = array('taxes' => 0, 'value' => 0, 'qty' => 0, 'vat' => array());
+    $r = array('value' => 0, 'qty' => 0, 'vat' => array());
     foreach ( $tickets as $ticket )
     {
       $r['value'] += $ticket['value'];
-      $r['taxes'] += $ticket['taxes'];
       $r['qty']   += is_null($ticket['cancelling']) ? 1 : -1;
       
       if ( !isset($r['vat'][$ticket['vat']]) )
@@ -251,8 +195,8 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
       
       // extremely weird behaviour, only for specific cases... it's about an early error in the VAT calculation in e-venement
       $r['vat'][$ticket['vat']] += sfConfig::get('app_ledger_sum_rounding_before',false) && strtotime($ticket['printed_at']) < sfConfig::get('app_ledger_sum_rounding_before')
-        ? $ticket['value']+$ticket['taxes'] - ($ticket['value']+$ticket['taxes']) / (1+$ticket['vat'])
-        : round($ticket['value'] + $ticket['taxes'] - ($ticket['value']+$ticket['taxes']) / (1+$ticket['vat']),2);
+        ? $ticket['value'] - $ticket['value'] / (1+$ticket['vat'])
+        : round($ticket['value'] - $ticket['value'] / (1+$ticket['vat']),2);
     }
     
     // rounding VAT
@@ -261,33 +205,4 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
     
     return $r;
   }
-  
-  public function isAccessibleBy(sfSecurityUser $user, $confirm_needed = true)
-  {
-    // confirmation
-    if (!( $confirm_needed && $this->reservation_confirmed ))
-      return false;
-    
-    // meta event
-    if ( !in_array($this->Event->meta_event_id, array_keys($user->getMetaEventsCredentials())) )
-      return false;
-    
-    // workspaces
-    $cpt = 0;
-    foreach ( $this->Gauges as $gauge )
-    if ( !in_array($gauge->workspace_id, array_keys($user->getWorkspacesCredentials())) )
-      $cpt++;
-    if ( $cpt == 0 )
-      return false;
-    
-    // prices
-    if ( $this->Prices->count() == 0 )
-      return false;
-    foreach ( $this->Prices as $price )
-    if ( !in_array($user->getId(), $price->Users->getPrimaryKeys()) )
-      return false;
-    
-    return true;
-  }
 }
-

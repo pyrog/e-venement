@@ -30,18 +30,10 @@ class EventForm extends BaseEventForm
         'forced_root_block' => '',
       ),
     );
-    
-    $cultures = sfConfig::get('project_internals_cultures', array('fr' => 'Français'));
-    foreach ( $cultures as $culture => $lang )
-    {
-      foreach ( array('description', 'extradesc', 'extraspec') as $field )
-      {
-        $this->widgetSchema   [$culture][$field]  = new liWidgetFormTextareaTinyMCE($tinymce);
-        $this->validatorSchema[$culture][$field]->setOption('required', false);
-      }
-      $this->widgetSchema   [$culture]['name'] = new sfWidgetFormTextarea(array(), array('rows' => '1', 'cols' => 58));
-      $this->validatorSchema[$culture]['name']->setOption('required', false);
-    }
+    $this->widgetSchema['description'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    $this->widgetSchema['extradesc'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    $this->widgetSchema['extraspec'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    $this->widgetSchema['name'] = new sfWidgetFormTextarea(array(), array('rows' => '1', 'cols' => 58));
     
     $this->widgetSchema['meta_event_id']
       ->setOption('add_empty', true)

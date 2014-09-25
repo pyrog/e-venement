@@ -16,15 +16,11 @@ $(document).ready(function(){
   // PLAYING W/ CART'S CONTENT
   // sliding content
   $('#li_transaction_field_content h2').click(function(){
-    var bunch = $(this).closest('.bunch');
-    
-    // it's a bit tricky to allow the CSS transition
-    if ( !bunch.hasClass('small') )
-      bunch.css('height', bunch.height()+'px');
-    bunch.toggleClass('small');
-    setTimeout(function(){ bunch.css('height', ''); }, 200);
-    
-    $(this).find('.ui-state-highlight').focusout();
+    $(this).closest('.bunch').find('.families').slideToggle(function(){
+      if ( !$(this).is(':hidden') )
+        return;
+      $(this).find('.ui-state-highlight').focusout();
+    });
   });
   $('#li_transaction_field_content h3').click(function(){
     $(this).closest('.family').find('.items').each(function(){
@@ -41,10 +37,7 @@ $(document).ready(function(){
     .focusin (function(){ $(this).closest('.highlight').focusin(); return false; });
   
   // changing quantities
-  $('#li_transaction_field_content .qty a').click(function(){
-    var input = $(this).closest('.qty').find('input');
-    input.val(parseInt(input.val(),10)+($(this).is(':first-child') ? -1 : 1)).change();
-  });
+  $('#li_transaction_field_content .qty a').click(function(){ var input = $(this).closest('.qty').find('input'); input.val(parseInt(input.val(),10)+($(this).is(':first-child') ? -1 : 1)).change(); });
   $('#li_transaction_field_content .qty input').focusout(function(){ return false; }).select(function(){
     $(this).prop('defaultValue',$(this).val());
   }).change(function(){
@@ -56,7 +49,7 @@ $(document).ready(function(){
     if ( $(this).prop('defaultValue') !== $(this).val() )
     {
       var diff = $(this).val() - $(this).prop('defaultValue');
-      var form = $('#li_transaction_field_price_new form.prices');
+      var form = $('#li_transaction_field_price_new form');
       var orig = form.find('[name="transaction[price_new][qty]"]').val();
       
       // if the tickets to treat are integrated
@@ -74,13 +67,10 @@ $(document).ready(function(){
       
       $(this).select();
       
-      // set values & submit
+      // set values & subit
       form.find('[name="transaction[price_new][qty]"]').val(diff);
       form.find('[name="transaction[price_new][price_id]"]').val($(this).closest('.declination').attr('data-price-id'));
-      form.find('[name="transaction[price_new][declination_id]"]').val(
-        $(this).closest('.item').attr('data-'+$(this).closest('.item').attr('data-type')+'-id')
-      );
-      form.find('[name="transaction[price_new][type]"]').val($(this).closest('.item').attr('data-type'));
+      form.find('[name="transaction[price_new][gauge_id]"]').val($(this).closest('.item').attr('data-gauge-id'));
       form.submit();
       
       // reinit
@@ -172,13 +162,8 @@ $(document).ready(function(){
         $(this).val($(this).closest('#li_transaction_field_board').hasClass('num') ? $(this).find('.num').html() : $(this).find('.alpha').html());
     });
     
-    if ( !$(this).is('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more') )
-    {
+    if ( !$(this).is('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_deposit') )
       $('#li_transaction_field_informations .vcard').slideUp();
-      $('#content .inner-edition').remove();
-      $('#sf_admin_container').css('width','100%');
-      setTimeout(function(){ $(window).resize(); }, 1500); // because of the transition-duration
-    }
     
     return false; // to avoid the event to go up in the JS tree
   }).click(function(){
@@ -207,8 +192,8 @@ $(document).ready(function(){
   });
   
   // vCard & co
-  $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more').click(function(){
-    $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more').addClass('ui-state-highlight');
+  $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_deposit').click(function(){
+    $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_deposit').addClass('ui-state-highlight');
     if ( $('#li_transaction_field_contact_id .data a').length > 0
       && $('#li_transaction_field_informations .vcard').length == 0 )
     {
@@ -223,32 +208,6 @@ $(document).ready(function(){
     }
     else
       $('#li_transaction_field_informations .vcard').slideDown('slow');
-    
-    // show the contact's file if the screen width is wide enough
-    if ( $('#sf_admin_container').width() > 1400 && $('#li_transaction_field_contact_id .data a').length > 0 )
-    {
-      $('#sf_admin_container').width($('#sf_admin_container').width()-800);
-      setTimeout(function(){ $(window).resize(); }, 1500); // because of the transition-duration
-      
-      var iframe = $('<iframe></iframe>')
-        .attr('src',$('#li_transaction_field_contact_id .data a').prop('href'))
-        .hide()
-        .load(function(){
-          $('#transition .close').click();
-          $(this).contents().find('html').addClass('tdp-iframe');
-          $(this).contents().find('a[href]').prop('target', '_parent');
-          $(this).parent().slideDown('slow', function(){ $('#tdp-content .inner-actions').fadeIn(); });
-          $(this).contents().find('#tdp-side-bar').hide();
-          $(this).contents().find('#tdp-content').css('margin-left', 0);
-          $(this).fadeIn();
-        })
-      ;
-      $('<div></div>')
-        .addClass('inner-edition').addClass('ui-widget').addClass('ui-corner-all')
-        .append(iframe)
-        .appendTo($('#content'))
-      ;
-    }
   });
   
   // THE BOARD
@@ -369,6 +328,22 @@ LI.checkGauges = function(form){
   });
   
   return false;
+}
+
+// display a flash for a limited time
+LI.alert = function(msg, type = 'notice', time = 4000)
+{
+  var icons = {
+    success: 'ui-icon-circle-check',
+    notice:  'ui-icon-info',
+    error:   'ui-icon-alert',
+  }
+  var flash = '<div class="%%type%% ui-state-highlight ui-corner-all"><span class="ui-icon %%icon%% floatleft"></span>&nbsp;%%msg%%</div>';
+  
+  $('.sf_admin_flashes').append($(flash.replace('%%msg%%',msg).replace('%%type%%',type).replace('%%icon%%', icons[type])).hide().fadeIn('slow'));
+  setTimeout(function(){
+    $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); })
+  },time);
 }
 
 LI.renderGauge = function(item, only_inline_gauge)
@@ -509,6 +484,24 @@ LI.initTouchscreen = function(elt)
   }
 }
 
+// THE CURRENCY
+LI.format_currency = function(value, nbsp, nodot)
+{
+  if ( nbsp  == undefined ) nbsp  = true;
+  if ( nodot == undefined ) nodot = true;
+  if ( !value ) value = 0;
+  
+  var r = $('.currency:first').length > 0
+    ? $('.currency:first').html()
+    : '%d €';
+  value = r.replace('%d',value.toFixed(2));
+  
+  if ( nbsp  ) value = value.replace(' ','&nbsp;');
+  if ( nodot ) value = value.replace('.',',');
+  
+  return value;
+}
+
 // parsing a string representating a i18n float to a real float
 LI.parseFloat = function(string)
 {
@@ -552,7 +545,7 @@ LI.calculateTotals = function()
   $.each(totals, function(index, value){
     var total = $(elt).find('.'+index.replace(/\s+/g,'.'));
     if ( $(total).hasClass('money') )
-      value = value ? LI.format_currency(value) : '-';
+      value = LI.format_currency(value);
     if ( total.is('.qty') )
       total.find('.qty').html(value);
     else
@@ -573,7 +566,7 @@ LI.calculateTotals = function()
   $.each(totals, function(index, value){
     var total = $(megaelt).find('.'+index.replace(/\s+/g,'.'));
     if ( $(total).hasClass('money') )
-      value = value ? LI.format_currency(value) : '';
+      value = LI.format_currency(value);
     if ( total.is('.qty') )
       total.find('.qty').html(value);
     else
@@ -585,16 +578,9 @@ LI.calculateTotals = function()
   $('.family.total .item.total tr.total').each(function(){
     var family = this;
     $.each(total, function(index, value){
-      switch ( index ){
-      case 'pit':
-        var tmp = LI.parseFloat($(family).find('.extra-taxes').html());
-        if ( !isNaN(tmp) )
-          total[index] += tmp;
-      default:
-        var tmp = LI.parseFloat($(family).find('.'+index).html());
-        if ( !isNaN(tmp) )
-          total[index] += tmp;
-      }
+      var tmp = LI.parseFloat($(family).find('.'+index).html());
+      if ( !isNaN(tmp) )
+        total[index] += tmp;
     });
   });
   

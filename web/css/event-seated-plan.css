@@ -9,19 +9,9 @@
 .picture.seated-plan .pre-seat, .picture.seated-plan .seat.txt { background-color: transparent; z-index: 3; margin: -2px 0 0 -2px; }
 .picture.seated-plan .pre-seat { z-index: 2; }
 .picture.seated-plan .seat.txt.in-progress { border: 2px solid red; }
-.show-all .picture.seated-plan .seat.txt { background-color: #413839; border: 2px solid black; }
 .picture.seated-plan .pre-seat, .picture.seated-plan .seat.txt:hover { border: 2px solid black; }
 .picture.seated-plan .anti-handling { width: 100%; height: 100%; background-color: transparent; position: absolute; z-index: 2; }
-.picture.seated-plan * { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-.picture.seated-plan.done .seat { cursor: crosshair; }
-.picture.seated-plan .more-data > * { position: absolute; z-index: 4; text-align: center; font-size: 55%; }
-.picture.seated-plan .more-data .link { position: absolute; border: 1px solid red; border-width: 2px 0; transform-origin: top left; z-index: 3; }
-.picture.seated-plan .more-data .link:hover { border-width: 3px 0; border-color: blue; }
-.picture.seated-plan { transform-origin: top left; }
-
-/* PARENT */
-.seated-plan-parent .seated-plan-actions { position: absolute; z-index: 6; margin-top: -100px; }
-.seated-plan-parent .seated-plan-actions > * { border: 1px solid gray; background-color: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 2px; display: block; margin-bottom: 2px; text-decoration: none; }
+.picture.seated-plan * { cursor: crosshair; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 /* LIST */
 .sf_admin_list table tbody .sf_admin_row .sf_admin_number { text-align: right; }
@@ -33,33 +23,23 @@
 #sf_fieldset_plan .sf_admin_form_field_show_picture .picture { margin: 0 auto; }
 #sf_fieldset_plan .sf_admin_form_field_show_picture *:not(input) { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 #sf_fieldset_plan .sf_admin_form_field_show_picture .label { margin-left: 24.5em; }
-#sf_fieldset_plan .sf_admin_form_field_show_picture .tools { position: absolute; right: 4em; margin-top: -11em; z-index: 2; background-color: rgba(255,255,255,0.6); padding: 0 0.3em; text-align: left; z-index: 3; }
-#sf_fieldset_plan .sf_admin_form_field_show_picture .tools label { display: inline-block; width: 8em; margin-right: 1em; }
+#sf_fieldset_plan .sf_admin_form_field_show_picture .tools { position: absolute; right: 4em; margin-top: 2em; z-index: 2; background-color: rgba(255,255,255,0.6); padding: 0 0.3em; text-align: left; z-index: 3; }
+#sf_fieldset_plan .sf_admin_form_field_show_picture .tools label { display: inline-block; width: 6em; margin-right: 1em; }
 #sf_fieldset_plan .sf_admin_form_field_show_picture .tools input { width: 8em; }
 #sf_fieldset_plan .sf_admin_form_field_show_picture .tools a { text-decoration: none; border: 1px solid gray; background-color: silver; padding: 2px 7px; border-radius: 2px; }
-#sf_fieldset_plan .sf_admin_form_field_show_picture .tools .show_links a { display: none; }
 #sf_fieldset_plan .sf_admin_form_field_Picture table label, #sf_fieldset_online_sales .sf_admin_form_field_OnlinePicture table label { display: none; }
 .js_seated_plan_useful { display: none; }
-#sf_fieldset_ranks label { min-width: 15em; display: inline-block; }
-#sf_fieldset_ranks input[type=text]:not(.align-left) { text-align: right; }
-#sf_fieldset_ranks input[type=text][size="2"] { margin-left: 1em; }
-#sf_fieldset_ranks .ranks_explanation { margin-top: 10px; }
-#sf_fieldset_neighbors .links_links { display: none; }
-#sf_fieldset_neighbors .seated_plan_batch_field label { display: inline-block; min-width: 11em; }
-#sf_fieldset_neighbors .seated_plan_batch_field .label { display: inline-block; }
 
 /* MANIFESTATIONS */
-#sf_fieldset_workspaces .picture.seated-plan { transform: scale(0.5); margin-bottom: -50%; }
+#sf_fieldset_workspaces .picture.seated-plan { transform: scale(0.5); margin: -25% 0 -15% -25%; }
 
 /* TRANSACTIONS */
-.seats-allocation .ui-widget-content { margin: 5px; padding: 5px; min-height: 800px; }
+.seats-allocation .ui-widget-content { margin: 5px; padding: 5px; }
 .seats-allocation .seated-plan { margin-bottom: 15px; }
+.seats-allocation #next { margin: 10px; text-align: right; height: 20px; }
 .seats-allocation #reload { float: right; }
 .seats-allocation #reload { display: none; }
-.seats-allocation .next { margin: 10px; text-align: right; height: 20px; }
-.seats-allocation .next.first { position: absolute; right: 35px; }
-.seats-allocation .next a { float: right; text-decoration: none; padding: 3px 15px; }
-.seats-allocation .next.first a { float: none; }
+.seats-allocation #next a { float: right; text-decoration: none; padding: 3px 15px; }
 .seats-allocation .ticket { padding: 2px 7px; cursor: default; border: 1px dashed gray; border-radius: 3px; margin-right: 5px; display: inline-block; white-space: nowrap; }
 .seats-allocation .gauge { display: block; }
 .seats-allocation .manifestation { font-weight: bold; }

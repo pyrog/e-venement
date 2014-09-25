@@ -3,17 +3,12 @@
   
   foreach ( $seated_plan->Seats as $seat )
     $seats[] = array(
-      'type'      => 'seat',
       'position' => array(
         'x'         => $seat->x,
         'y'         => $seat->y,
       ),
       'diameter'  => $seat->diameter,
       'name'      => $seat->name,
-      'id'        => $seat->id,
-      'class'     => $seat->class,
-      'rank'      => $seat->rank,
-      'seated-plan-id' => $seated_plan->id,
       'occupied'  => $sf_user->hasCredential('event-seats-allocation')
         ? (isset($occupied) && isset($occupied[$seat->name]) ? $occupied[$seat->name] : false)
         : array('type' => 'not-allowed'),
