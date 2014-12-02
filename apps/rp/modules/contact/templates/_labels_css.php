@@ -38,7 +38,6 @@
 ?>
 
 html body.labels {
-  font-family: sans-serif;
   <?php if ( $opt = $params['font-family'] ): ?>
   font-family: <?php echo $opt ?>;
   <?php endif; ?>

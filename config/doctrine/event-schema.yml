@@ -146,24 +146,20 @@ EventCategory:
 Event:
   package: event
   actAs:
-    I18n:
-      fields: [name, short_name, subtitle, description, extradesc, extraspec]
-    Sluggable:
-      fields: [name]
+    Sluggable: ~
     Searchable:
-      fields: [name, writer, staging, short_name]
+      fields: [name,writer,staging,short_name]
   inheritance:
     extends: Traceable
     type: concrete
-#  indexes:
-#    event_name_idx:
-#      fields: [name]
+  indexes:
+    event_name_idx:
+      fields: [name]
   columns:
     name:
       type:         string(255)
       notblank:     true
-      notnull:      true
-    subtitle:       string(255)
+      notnull:     true
     short_name:     string(127)
     meta_event_id:
       type: integer
@@ -191,9 +187,6 @@ Event:
       type:         decimal(8)
       scale:        2
     image_url:      string(255)
-    picture_id:
-      type: integer
-      unique: true 
     display_by_default:
       type: boolean
       default: true
@@ -213,10 +206,6 @@ Event:
       class: Organism
       refClass: EventCompany
       foreignAlias: Events
-    Picture:
-      foreignType: one
-      onDelete: SET NULL
-      onUpdate: CASCADE
 EventCompany:
   package: event
   columns:
@@ -336,7 +325,7 @@ Manifestation:
       notnull: true
       default: true
     expected_income:
-      type: decimal(15)
+      type: decimal(8)
       scale: 3
   relations:
     Event:
@@ -380,20 +369,6 @@ Manifestation:
       class: Location
       refClass: LocationBooking
       foreignAlias: BookedBy
-    Participants:
-      class: Contact
-      refClass: ManifestationContact
-      foreignAlias: InvolvedIn
-ManifestationContact:
-  package: event
-  columns:
-    contact_id:
-      type: integer
-      notnull: true
-    manifestation_id:
-      type: integer
-      notnull: true
-
 LocationBooking:
   package: event
   columns:
@@ -432,8 +407,6 @@ Gauge:
   indexes:
     gauge_online:
       fields: [online]
-    gauge_group_name_idx:
-      fields: [group_name]
   columns:
     workspace_id:
       type: integer
@@ -448,7 +421,6 @@ Gauge:
       type: boolean
       default: false
       notnull: true
-    group_name: string(255)
   relations:
     Manifestation:
       foreignAlias: Gauges
@@ -540,7 +512,6 @@ SeatedPlan:
     background:
       type: string(255)
       default: white
-    ideal_width: integer
   relations:
     OnlinePicture:
       foreignAlias: SeatedPlanOnline
@@ -596,10 +567,6 @@ Seat:
       type: string(255)
       notnull: true
       notblank: true
-    rank:
-      type: integer
-      notnull: true
-      default: 1000
     x:
       type: integer
       notnull: true
@@ -610,24 +577,8 @@ Seat:
       type: integer
       notnull: true
       default: 10 #px
-    class: string(255)
   relations:
     SeatedPlan:
       foreignAlias: Seats
       onDelete: CASCADE
       onUpdate: CASCADE
-    Neighbors:
-      class: Seat
-      refClass: SeatLink
-      local: seat1
-      foreign: seat2
-      equal: true
-SeatLink:
-  package: event
-  columns:
-    seat1:
-      type: integer
-      notnull: true
-    seat2:
-      type: integer
-      notnull: true

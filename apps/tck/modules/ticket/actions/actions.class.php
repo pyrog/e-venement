@@ -22,34 +22,10 @@ class ticketActions extends sfActions
   
   public function executeShow(sfWebRequest $request)
   {
-    if ( !$request->hasParameter('id') && !($request->hasParameter('seat_name') && $request->hasParameter('manifestation_id')) )
-    {
-      $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink'));
-      $this->manifestation = new liWidgetFormDoctrineJQueryAutocompleter(array(
-        'model'   => 'Manifestation',
-        'url'     => cross_app_url_for('event','manifestation/ajax'),
-        'config'  => '{ max: 50 }',
-      ));
+    if ( !$request->hasParameter('id') )
       return 'Select';
-    }
-    
-    if ( !$request->getParameter('id', false) )
-    {
-      $ticket = Doctrine::getTable('Ticket')->createQuery('tck')
-        ->leftJoin('tck.Seat s')
-        ->andWhere('s.name ILIKE ?', $request->getParameter('seat_name'))
-        ->andWhere('tck.manifestation_id = ?', $request->getParameter('manifestation_id'))
-        ->fetchOne();
-      if ( !$ticket )
-      {
-        $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
-        $this->getUser()->setFlash('error', __('No ticket found with the given parameters'));
-        $this->redirect('ticket/show');
-      }
-      $id = $ticket->id;
-    }
-    else
-      $id = $request->getParameter('id');
+
+    $id = $request->getParameter('id');
     
     $this->ticket = Doctrine::getTable('Ticket')->createQuery('tck')
       ->leftJoin('tck.Transaction t')
@@ -121,7 +97,7 @@ class ticketActions extends sfActions
   }
   public function executeDuplicate(sfWebRequest $request)
   {
-    return require('duplicate.php');
+    require('duplicate.php');
   }
   public function executeContact(sfWebRequest $request)
   {
@@ -162,7 +138,7 @@ class ticketActions extends sfActions
   
   public function executePrint(sfWebRequest $request)
   {
-    return require('print.php');
+    require('print.php');
   }
   public function executeIntegrate(sfWebRequest $request)
   {
@@ -186,7 +162,7 @@ class ticketActions extends sfActions
   {
     // checks if any ticket needs a seat
     foreach ( $this->transaction->Tickets as $ticket )
-    if ( !$ticket->seat_id
+    if ( !$ticket->numerotation
       && $ticket->Cancelling->count() == 0
       && $ticket->Gauge->Workspace->seated
       && $seated_plan = $ticket->Manifestation->Location->getWorkspaceSeatedPlan($ticket->Gauge->workspace_id)
@@ -251,8 +227,6 @@ class ticketActions extends sfActions
     $accounting->content = $request->getParameter('content');
     
     $accounting->save();
-    error_log(print_r($accounting->toArray(),true));
-    throw new sfException('here');
     return sfView::NONE;
   }
   // invoice
@@ -351,7 +325,6 @@ class ticketActions extends sfActions
     
     // WARNIIIING CAUTION
     $ticket->printed_at = NULL;
-    $ticket->integrated_at = NULL;
     $ticket->save();
     
     $this->redirect('ticket/show?id='.$ticket->id);

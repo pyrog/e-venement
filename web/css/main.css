@@ -15,7 +15,7 @@ h1, h2, h3, h4, h5, h6, strong {
 }
 a, a:active, a:visited { color: #000; }
 .ui-state-success {
-  background: url('../sfAdminThemejRollerPlugin/css/jquery/redmond/images/ui-bg_flat_55_fbec88_40x100.png') repeat-x scroll 50% 50% #ecfeed;
+  background-color: #ecfeed;
   border: 1px solid #0acd12;
 }
 
@@ -67,7 +67,7 @@ a, a:active, a:visited { color: #000; }
 #logo {
   position: fixed;
   top: -5px;
-  left: 800px;
+  left: 700px;
   height: 57px;
   width: 223px;
   background-image: url(../images/logo-evenement-small.png);
@@ -150,9 +150,3 @@ html button.fg-button-icon-left .ui-icon { left: 0.4em; }
 .app-default.mod-default .sf_admin_flashes > div { margin-bottom: 20px; }
 
 .sf_admin_filter .sf_admin_date input[type="text"] { margin-right: 0; }
-
-.sf_admin_form .sf_admin_form_row .lang { display: none; }
-.sf_admin_form .sf_admin_text textarea, .sf_admin_form .sf_admin_text input { margin: 0.1em; }
-
-/* double-lists */
-.double_list > div { float: none !important; }

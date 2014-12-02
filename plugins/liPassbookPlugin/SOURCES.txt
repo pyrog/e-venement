@@ -1,2 +1,0 @@
-The original repository of PHP-Passbook software is :
-https://github.com/eymengunay/php-passbook

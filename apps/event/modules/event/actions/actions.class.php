@@ -23,17 +23,8 @@ class eventActions extends autoEventActions
       $this->pager->getQuery()
         //->addSelect("(SELECT min(m2.happens_at) FROM manifestation m2 WHERE m2.event_id = $a.id) AS min_happens_at")
         ->addSelect("(SELECT (CASE WHEN max(m3.happens_at) IS NULL THEN false ELSE max(m3.happens_at) > now() END) FROM manifestation m3 WHERE m3.event_id = $a.id) AS now")
-        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date','DESC') != 'ASC' ? 'DESC' : 'ASC').", translation.name");
+        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date','DESC') != 'ASC' ? 'DESC' : 'ASC').", $a.name");
     }
-  }
-  
-  public function executeDelPicture(sfWebRequest $request)
-  {
-    $q = Doctrine_Query::create()->from('Picture p')
-      ->where('p.id IN (SELECT e.picture_id FROM Event e WHERE e.id = ?)',$request->getParameter('id'))
-      ->delete()
-      ->execute();
-    return sfView::NONE;
   }
   
   public function executeOnlyFilters(sfWebRequest $request)
@@ -42,9 +33,6 @@ class eventActions extends autoEventActions
     $a = $this->pager->getQuery()->getRootAlias();
     $this->pager->getQuery()->select("$a.id");
   }
-  
-  public function executeBatchBestFreeSeat(sfWebRequest $request)
-  { $this->forward('manifestation', 'bestFreeSeat'); }
   
   public function executeSearch(sfWebRequest $request)
   {
@@ -234,7 +222,7 @@ class eventActions extends autoEventActions
     
     $q = Doctrine::getTable('Event')
       ->createQuery('e')
-      ->orderBy('translation.name')
+      ->orderBy('name')
       ->limit($request->getParameter('limit'))
       ->andWhereIn('e.meta_event_id',array_keys($this->getUser()->getMetaEventsCredentials()));
     $q = Doctrine_Core::getTable('Event')

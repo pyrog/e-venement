@@ -1,4 +1,4 @@
-<?php use_javascript('tck-touchscreen-print?'.date('Ymd')) ?>
+<?php use_javascript('tck-touchscreen-print') ?>
 <div class="ui-corner-all ui-widget-content">
 
 <form action="<?php echo url_for('ticket/print?id='.$transaction->id) ?>"

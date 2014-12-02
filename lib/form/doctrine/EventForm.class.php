@@ -30,18 +30,10 @@ class EventForm extends BaseEventForm
         'forced_root_block' => '',
       ),
     );
-    
-    $cultures = sfConfig::get('project_internals_cultures', array('fr' => 'Français'));
-    foreach ( $cultures as $culture => $lang )
-    {
-      foreach ( array('description', 'extradesc', 'extraspec') as $field )
-      {
-        $this->widgetSchema   [$culture][$field]  = new liWidgetFormTextareaTinyMCE($tinymce);
-        $this->validatorSchema[$culture][$field]->setOption('required', false);
-      }
-      $this->widgetSchema   [$culture]['name'] = new sfWidgetFormTextarea(array(), array('rows' => '1', 'cols' => 58));
-      $this->validatorSchema[$culture]['name']->setOption('required', false);
-    }
+    $this->widgetSchema['description'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    $this->widgetSchema['extradesc'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    $this->widgetSchema['extraspec'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    $this->widgetSchema['name'] = new sfWidgetFormTextarea(array(), array('rows' => '1', 'cols' => 58));
     
     $this->widgetSchema['meta_event_id']
       ->setOption('add_empty', true)
@@ -94,16 +86,6 @@ class EventForm extends BaseEventForm
       }
     }
     
-    // pictures & co
-    foreach ( array('picture_id' => 'Picture') as $field => $rel )
-    {
-      $this->embedRelation($rel);
-      foreach ( array('name', 'type', 'version', 'height', 'width', 'content_encoding') as $fieldName )
-        unset($this->widgetSchema[$rel][$fieldName], $this->validatorSchema[$rel][$fieldName]);
-      $this->validatorSchema[$rel]['content_file']->setOption('required',false);
-      unset($this->widgetSchema[$field], $this->validatorSchema[$field]);
-    }
-    
     parent::configure();
   }
   
@@ -145,31 +127,6 @@ class EventForm extends BaseEventForm
         throw new liBookingException('You cannot save an event object that has manifestations which does not belong to you.');
     }
     
-    // picture
-    foreach ( array('Picture' => array('width' => 200, 'height' => 300)) as $picform_name => $dimensions )
-    {
-      $file = $this->values[$picform_name]['content_file'];
-      unset($this->values[$picform_name]['content_file']);
-      
-      if (!( $file instanceof sfValidatedFile ))
-        unset($this->embeddedForms[$picform_name]);
-      else
-      {
-        // data translation
-        $this->values[$picform_name]['content']  = base64_encode(file_get_contents($file->getTempName()));
-        $this->values[$picform_name]['name']     = $file->getOriginalName();
-        $this->values[$picform_name]['width']    = $dimensions['width'];
-        $this->values[$picform_name]['height']   = $dimensions['height'];
-        
-        $type = PictureForm::getRealType($file);
-        $this->values[$picform_name]['type']     = $type['mime'];
-        if ( isset($type['content-encoding']) )
-          $this->values[$picform_name]['content_encoding'] = $type['content-encoding'];
-        
-        $this->values['updated_at'] = date('Y-m-d H:i:s'); // this is a hack to force root object update
-      }
-    }
-    
-    return parent::doSave($con);
+    parent::doSave($con);
   }
 }

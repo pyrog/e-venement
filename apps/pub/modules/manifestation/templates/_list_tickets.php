@@ -16,8 +16,7 @@
     $max = $gauge->value - $gauge->printed - $gauge->ordered - (!(isset($vel['no_online_limit_from_manifestations']) && $vel['no_online_limit_from_manifestations']) ? $manifestation->online_limit : 0) - (sfConfig::get('project_tickets_count_demands',false) ? $gauge->asked : 0);
     $max = $max > $vel['max_per_manifestation'] ? $vel['max_per_manifestation'] : $max;
   ?>
-  <li data-gauge-id="<?php echo $gauge->id ?>">
-    <span class="gauge-name"><?php echo $manifestation->Gauges->count() > 1 ? $gauge : '' ?></span>
+  <li data-gauge-id="<?php echo $gauge->id ?>"><?php echo $manifestation->Gauges->count() > 1 ? $gauge : '' ?>
     <?php
       $prices = array();
       foreach ( $manifestation->PriceManifestations as $pm )
@@ -48,15 +47,14 @@
       }
     ?>
     <ul><?php foreach ( $prices as $id => $price ): ?>
-      <?php if ( ! $price instanceof Doctrine_Record ) $price = $price->getRawValue(); ?>
-      <?php if ( in_array($gauge->workspace_id, $price->Price->Workspaces->getPrimaryKeys()) ): ?>
+      <?php if ( in_array($gauge->workspace_id, $price->getRawValue()->Price->Workspaces->getPrimaryKeys()) ): ?>
       <?php
         $form = new PricesPublicForm;
         $form->setGaugeId($gauge->id);
         $form->setPriceId($id);
       ?>
       <li data-price-id="<?php echo $id ?>"><form action="<?php echo url_for('ticket/commit') ?>" method="get">
-        <span class="name" title="<?php echo $txt = $price->Price->description ? $price->Price->description : $price->Price ?>"><?php echo $txt ?></span>
+        <span class="name"><?php echo ($price->Price->description ? $price->Price->description : $price->Price) ?></span>
         <span class="value"><?php echo format_currency($price->value, '€') ?></span>
         <span class="qty"><?php if ( $max > 0 ): ?><input
           type="number"

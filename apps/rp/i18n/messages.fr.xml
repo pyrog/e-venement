@@ -5,90 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Facebook ID</source>
-        <target>Identifiant Facebook</target>
-      </trans-unit>
-      <trans-unit>
-        <source>You are about to import a bulk of contacts. Be careful to respect this type of file:</source>
-        <target>Vous êtes sur le point d'importer un lot de contacts. Attention à respecter ce type de fichier :</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Do not forget that this file must be UTF-8 encoded, its fields must be separated by a comma, and the first line dedicated to field titles... Actually a standard CSV format.</source>
-        <target>Ne pas oublier que ce fichier doit être encodé en UTF-8, que ses champs doivent être séparés par une virgule, que la première ligne est dédiée aux titres des champs... Ce qui en fait un format CSV standard.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Try to import a maximum of %%nb%% lines at once. Then repeat the import the number of times needed.</source>
-        <target>Essayer d'importer un maximum de %%nb%% lignes à chaque fois. Ensuite, répéter l'import autant que nécessaire.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Import</source>
-        <target>Importer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Real value</source>
-        <target>Valeur réelle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This price will be applied, as it is defined inside the product...</source>
-        <target>Ce tarif sera appliqué, tel que défini au sein du produit...</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This product will become the inner price of those member cards</source>
-        <target>Ce produit deviendra le prix intrinsèque de ces cartes d'abo</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Global price</source>
-        <target>Prix global</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Product</source>
-        <target>Produit</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Money</source>
-        <target>Argent</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Price</source>
-        <target>Prix</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Best seat rank</source>
-        <target>Meilleur rang de place</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Average seat rank</source>
-        <target>Rang de place moyen</target>
-      </trans-unit>
-      <trans-unit>
-        <source>What kind of operand will we apply on seat ranks?</source>
-        <target>Quel type d'opérateur allons nous utiliser sur les rangs de place ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Less or equal</source>
-        <target>Inférieur ou égal</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Equal</source>
-        <target>Égal</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Equal or more</source>
-        <target>Supérieur ou égal</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Qty: %%qty%%</source>
-        <target>Qté: %%qty%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Avg: %%avg%%</source>
-        <target>Moy.: %%avg%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Std deviation: %%sd%%</source>
-        <target>Écart-type: %%sd%%</target>
-      </trans-unit>
-      <trans-unit>
         <source>Groups intersection</source>
         <target>Intersection des groupes</target>
       </trans-unit>
@@ -1116,10 +1032,6 @@
         <source>Firstname</source>
         <target>Prénom</target>
       </trans-unit>
-      <trans-unit>
-        <source>Shortname</source>
-        <target>Nom court</target>
-      </trans-unit>
       <trans-unit id="80">
         <source>Technic</source>
         <target>Technique</target>
@@ -1735,10 +1647,6 @@
       <trans-unit id="27">
         <source>4. Send (test first!)</source>
         <target>4. Envoyer (tester d'abord!)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Send</source>
-        <target>Envoyer</target>
       </trans-unit>
       <trans-unit>
         <source>Test email address:</source>

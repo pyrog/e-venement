@@ -45,7 +45,7 @@ EOF;
     $databaseManager = new sfDatabaseManager($this->configuration);
     
     if(!class_exists('Manifestation'))
-      throw new sfCommandException(sprintf('Model "%s" doesn\'t exist.', 'Manifestation'));
+      throw new sfCommandException(sprintf('Model "%s" doesn\'t exist.', $arguments['model']));
     
     $this->configuration->loadHelpers(array('CrossAppLink', 'Url', 'I18N', 'Date', 'Tag'));
     
@@ -94,7 +94,7 @@ EOF;
       {
         $email = new Email;
         $email->setMailer($this->getMailer());
-        $email->isATest(false);
+        $email->not_a_test = true;
         $email->setNoSpool(true);
         
         $email->field_from = $from;

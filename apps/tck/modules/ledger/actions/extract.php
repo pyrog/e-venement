@@ -34,8 +34,6 @@
       'noheader' => false,
     );
     
-    $numberFormat = new sfNumberFormat($this->getUser()->getCulture());
-    
     $this->outstream = 'php://output';
     $this->delimiter = $this->options['ms'] ? ';' : ',';
     $this->enclosure = '"';
@@ -59,7 +57,7 @@
       $this->options['fields'] = array(
         'event', 'manifestation', 'location',
         'price', 'user', 'qty',
-        'pit', 'extra-taxes', 'vat', 'tep',
+        'pit', 'vat', 'tep',
       );
       
       foreach ( $this->events as $event )
@@ -76,17 +74,16 @@
             'user'          => (string)$ticket->User,
             'qty'           => 0,
             'pit'           => 0,
-            'extra-taxes'   => 0,
             'vat'           => 0,
             'tep'           => 0,
           );
         $this->lines[$key]['qty'] += $ticket->cancelling ? -1 : 1;
         $this->lines[$key]['pit'] += $ticket->value;
-        $this->lines[$key]['extra-taxes'] += $ticket->taxes;
-        $this->lines[$key]['tep'] += $tmp = round(($ticket->value+$ticket->taxes) / (1+$ticket->vat),2);
-        $this->lines[$key]['vat'] += $ticket->value + $ticket->taxes - $tmp;
+        $this->lines[$key]['vat'] += $tmp = round($ticket->value - $ticket->value / (1+$ticket->vat),2);
+        $this->lines[$key]['tep'] += $ticket->value - $tmp;
       }
-      else {
+      else
+      {
         $infos = $manif->getInfosTickets($sf_data->getRaw('options'));
         if ( !isset($this->lines[$key = 'e'.$event->id.'m'.$manif->id]) )
           $this->lines[$key] = array(
@@ -106,12 +103,6 @@
           $this->lines[$key]['tep'] -= $tmp;
         }
       }
-      
-      $this->getContext()->getConfiguration()->loadHelpers('Number');
-      foreach ( $this->lines as $key => $line )
-      foreach ( array('pit', 'vat', 'extra-taxes', 'tep') as $field )
-        //$this->lines[$key][$field] = number_format(floatval($line[$field]),2,$decimal);
-        $this->lines[$key][$field] = $numberFormat->format($line[$field], '#.00');
       return 'Sales';
       break;
     case 'lineal':

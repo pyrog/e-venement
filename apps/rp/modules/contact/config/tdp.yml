@@ -19,7 +19,7 @@ all:
           credential: pr-contact
           label: Remove through filters
           attributes:
-            onclick: "javascript: var form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
+            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
         csv:
           credential: pr-contact-csv
           label: Extract
@@ -40,14 +40,11 @@ all:
           label: Send passwords
           attributes:
             onclick: "javascript: return confirm('<?php echo __('Are you sure?',null,'sf_admin') ?>');"
-        prepareImport:
-          label: Import
-          credential: [pr-contact-new, pr-organism-new]
         #map:
         #  label: Geolocalize
     edit:
       object:
-        title: [title, name, firstname, _show_dates, _sell, _duplicate]
+        title: [title, name, firstname, _show_dates, _duplicate]
         new_title: [title, name, firstname]
         lines:
           Complements:
@@ -57,13 +54,13 @@ all:
             fields: [address]
           City:
             extra_class: vertical
-            fields: [postalcode, _cities, city, country, _show_region, shortname]
+            fields: [postalcode, _cities, city, country, _show_region]
           Direct_Contact:
             fields: [_form_phonenumbers_list, _show_member_cards_list]
           More:
             show_labels: true
             extra_class: tdp-vertical
-            fields: [family_contact, npai, password, culture]
+            fields: [family_contact, npai, password]
           Relations:
             fields: [YOBs, Relationships]
           Social:
@@ -94,7 +91,7 @@ all:
           class: Professional
           parentAlias: Contact
           credentials: pr-organism
-          title: [Organism, _organism_close_contact, _sell, _organism_category]
+          title: [Organism, _organism_close_contact, _organism_category]
           new_title: [organism_id, _new_organism]
           lines:
             line1:
@@ -114,8 +111,6 @@ all:
               fields: [groups_list]
           extra_hidden_fields: [contact_id, organism_id]
       side_properties:
-        Picture:
-          partial: global/tdp/side_widget_object_picture
         Ticketting:
           credentials: tck-reports
           partial: global/tdp/side_widget_object_events
@@ -125,12 +120,6 @@ all:
         Emails:
           credentials: pr-emailing
           partial: global/tdp/side_widget_object_emails
-        Answered surveys:
-          credentials: TODO
-          partial: global/tdp/side_widget_object_surveys_answered
-        Surveys to apply:
-          credentials: TODO
-          partial: global/tdp/side_widget_object_surveys_to_apply
         <?php if ( !sfConfig::get('app_options_no_event_archives',true) ): echo PHP_EOL; ?>
         Archives:
           credentials: tck-reports

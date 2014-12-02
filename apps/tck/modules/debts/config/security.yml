@@ -1,5 +1,2 @@
 all:
-  credentials: [admin-power]
-index:
   credentials: [tck-reports]
-

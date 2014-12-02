@@ -54,14 +54,9 @@ $(document).ready(function(){
   $('#list-integrated-search input[type=text]:first').focus();
   
   $('#list-integrated-search').unbind().submit(function(){
-    if ( location.hash != '#debug' )
-    {
-      $.get($(this).prop('action'),{ s: $(this).find('input[name=s]').val() },function(data){
-        list_integrated_search(data);
-      });
-      return false;
-    }
-    else
-      $(this).prop('target', '_blank');
+    $.get($(this).prop('action'),{ s: $(this).find('input[name=s]').val() },function(data){
+      list_integrated_search(data);
+    });
+    return false;
   });
 });

@@ -25,8 +25,6 @@ class loginActions extends sfActions
   
   public function executeIndex(sfWebRequest $request)
   {
-    $this->getUser()->setDefaultCulture($request->getLanguages());
-    
     $this->register = $request->hasParameter('register');
     $this->form = new LoginForm;
     
@@ -54,7 +52,7 @@ class loginActions extends sfActions
       
       // sending the email
       $this->email = new Email;
-      $this->email->isATest(false);
+      $this->email->not_a_test = true;
       $this->email->field_from = sfConfig::get('app_informations_email','web@libre-informatique.fr');
       $this->email->to = $this->getRecoveryEmail();
       $this->email->field_subject = __('Reset your password for %%name%%', array('%%name%%' => sfConfig::get('app_informations_title','')));
@@ -78,17 +76,17 @@ class loginActions extends sfActions
   }
   public function executeRecover(sfWebRequest $request)
   {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
     $this->form = new LoginForm();
     if ( !($code  = $this->getRecoveryCode())
       || !($email = $this->getRecoveryEmail())
     )
     {
-      $this->getContext()->getConfiguration()->loadHelpers('I18N');
       $this->getUser()->setFlash('error', __('Please try again.'));
       $this->redirect('login/forgot');
     }
     
-    $this->getUser()->setFlash('success', 'Now, fill your new password twice.');
+    $this->getUser()->setFlash('success', __('Now, fill your new password twice.'));
     if ( $request->hasParameter('code') )
       $this->form->setDefault('recovery_code', $request->getParameter('code', ''));
     $this->form->isRecovering($email, $code);
@@ -151,8 +149,6 @@ class loginActions extends sfActions
     if ( $this->form->isValid() )
     {
       $this->getUser()->setFlash('notice',__('You are authenticated.'));
-      $this->getUser()->getContact()->culture = $this->getUser()->getCulture();
-      $this->getUser()->getContact()->save();
       return $this->redirect($request->hasParameter('register')
         ? 'cart/register'
         : sfConfig::get('app_contact_modify_coordinates_first', false) ? 'contact/edit' : ($this->form->getValue('url_back') ? $this->form->getValue('url_back') : 'homepage')
@@ -176,53 +172,5 @@ class loginActions extends sfActions
   {
     $this->getUser()->getAttributeHolder()->remove('recovery.email', 'pub');
     $this->getUser()->getAttributeHolder()->remove('recovery.code', 'pub');
-  }
-  
-  public function executeCulture(sfWebRequest $request)
-  {
-    $cultures = array_keys(sfConfig::get('project_internals_cultures', array('fr' => 'Français')));
-    
-    // culture defined explicitly
-    if ( $request->hasParameter('lang') && in_array($request->getParameter('lang'), $cultures) )
-    {
-      $this->getUser()->setCulture($request->getParameter('lang'));
-      $this->getUser()->setAttribute('global_culture_forced', true);
-      
-      if ( $this->getUser()->hasContact() )
-      {
-        $this->getUser()->getContact()->culture = $request->getParameter('lang');
-        $this->getUser()->getContact()->save();
-      }
-    }
-    
-    if ( !$this->getUser()->getAttribute('global_culture_forced', false) )
-    {
-      // all the browser's languages
-      $user_langs = array();
-      foreach ( $request->getLanguages() as $lang )
-      if ( !isset($user_lang[substr($lang, 0, 2)]) )
-        $user_langs[substr($lang, 0, 2)] = $lang;
-      
-      // comparing to the supported languages
-      $done = false;
-      foreach ( $user_langs as $culture => $lang )
-      if ( in_array($culture, $cultures) )
-      {
-        $done = $culture;
-        $this->getUser()->setCulture($culture);
-        break;
-      }
-      
-      // culture by default
-      if ( !$done )
-        $this->getUser()->setCulture($cultures[0]);
-    }
-    
-    $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    $this->getUser()->setFlash('success', __('Now you are making the experience of e-venement in your favorite language.'));
-    if ( strpos($request->getReferer(), 'cart/order') !== false )
-      $this->redirect('cart/register');
-    else
-      $this->redirect($request->getReferer() ? $request->getReferer() : 'event/index');
   }
 }

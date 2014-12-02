@@ -145,7 +145,7 @@ class sfDomPDFPlugin
    * @param string $paper
    * @param string $orientation
    */
-  public function setPaper($paper = 'A4', $orientation = 'portrait')
+  public function setPaper($paper = 'letter', $orientation = 'portrait')
   {
     $this->getPDF()->set_paper($paper, $orientation);
   }
@@ -157,8 +157,7 @@ class sfDomPDFPlugin
    */
   public function render()
   {
-    $this->getPDF()->render();
-    return $this->getPDF()->output();
+    return $this->getPDF()->render();
   }
   
   /**

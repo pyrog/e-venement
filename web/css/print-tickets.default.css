@@ -17,8 +17,9 @@ body {
   top: 9mm;
   margin: 0 2mm;
 }
-.comment { display: none; }
-.spectator span + span { display: none; }
+.spectator span + span {
+  display: none;
+}
 .ticket {
   width: 150mm;
   height: 58mm;

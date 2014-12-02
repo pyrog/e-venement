@@ -10,15 +10,36 @@ html body #content { margin-right: 0; }
 
 #sf_fieldset_unbalanced .contact { max-width: 130px; overflow: hidden; white-space: nowrap; }
 
-#sf_admin_pager td { width: 10%; }
-#sf_admin_pager td.left { display: none; }
-#sf_admin_pager td.left { display: none; }
+#sf_admin_pager td {
+  width: 10%;
+}
 
-#form_workspaces .gauge-transferts { vertical-align: middle; }
-#form_workspaces .gauge-transferts p { text-align: center; }
-#form_workspaces .gauge-transferts .ui-icon { cursor: pointer; background-image: url(../sfAdminThemejRollerPlugin/css/jquery/base/images/ui-icons_454545_256x240.png); transform: rotate(180deg); font-size: 0; }
-#form_workspaces .gauge-transferts.active .ui-icon { background-position: -80px -80px; }
-#form_workspaces #sf_admin_list_th_chained { font-size: 0; }
+#sf_admin_pager td.left {
+  display: none;
+}
+
+#sf_admin_pager td.left {
+  display: none;
+}
+
+#form_workspaces .gauge-transferts {
+  vertical-align: middle;
+}
+#form_workspaces .gauge-transferts p {
+  text-align: center;
+}
+#form_workspaces .gauge-transferts .ui-icon {
+  cursor: pointer;
+  background-image: url(../sfAdminThemejRollerPlugin/css/jquery/base/images/ui-icons_454545_256x240.png);
+  transform: rotate(180deg);
+  font-size: 0;
+}
+#form_workspaces .gauge-transferts.active .ui-icon {
+  background-position: -80px -80px;
+}
+#form_workspaces #sf_admin_list_th_chained {
+  font-size: 0;
+}
 
 .sf_admin_field_prices_list table { padding: 3px 10px; }
 .sf_admin_field_prices_list .name { padding-right: 10px; text-align: center; }
@@ -28,16 +49,3 @@ html body #content { margin-right: 0; }
 
 .error.conflict a { text-decoration: none; font-size: 80%; }
 .error.conflict a:hover { text-decoration: underline; }
-
-.sf_admin_field_workspaces_list .seated-plan-parent { position: absolute; left: 35px; border: 1px solid silver; border-radius: 5px; display: none; margin: -250px 0 0 5px; cursor: default; background-color: white; z-index: 1; overflow-x: auto; width: 95%; height: auto; }
-.sf_admin_field_workspaces_list .gauge .gauge { cursor: pointer; }
-.sf_admin_field_workspaces_list .active .seated-plan-parent { display: block; }
-.sf_admin_field_workspaces_list .magnify { top: 500px; right: 50px; }
-
-#sf_fieldset_statistics label { font-weight: normal; }
-#sf_fieldset_statistics table { margin-left: 20px; width: 98%; table-layout: fixed; }
-#sf_fieldset_statistics .gauges table { width: 30em; }
-#sf_fieldset_statistics th { text-align: right; width: 22em; padding-right: 1em; }
-#sf_fieldset_statistics td { margin-left: 1em; width: auto; }
-#sf_fieldset_statistics tbody td { text-align: right; }
-#sf_fieldset_statistics thead td { text-align: center; padding: 0 5px; }

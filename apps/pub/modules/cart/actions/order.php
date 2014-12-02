@@ -25,76 +25,57 @@
     if ( !($this->getUser()->getTransaction() instanceof Transaction) )
       return $this->redirect('event/index');
     
-    // if it is a pay-only process
-    $tid = intval($request->getParameter('transaction_id')).'' === ''.$request->getParameter('transaction_id','')
-      ? $request->getParameter('transaction_id')
-      : false;
-    $this->transaction = $tid ? Doctrine::getTable('Transaction')->find($tid) : $this->getUser()->getTransaction();
-    if ( $this->transaction->contact_id != $this->getUser()->getTransaction()->contact_id )
-      $this->transaction = $this->getUser()->getTransaction();
-    
-    // harden data
-    if ( $this->transaction->id == $this->getUser()->getTransactionId() )
-      $this->getContext()->getConfiguration()->hardenIntegrity();
-    
     try { $this->form = new ContactPublicForm($this->getUser()->getContact()); }
     catch ( liEvenementException $e )
     { $this->form = new ContactPublicForm; }
     
-    if (!( $this->getUser()->getTransaction()->contact_id && !$request->hasParameter('contact') ))
+    // add the contact to the DB
+    if ( !$this->form->getObject()->isNew() )
+      $this->form->removePassword();
+    
+    try { if (!( $request->getParameter('contact', false) && $this->getUser()->getContact()->id ))
     {
-      // add the contact to the DB
-      if ( !$this->form->getObject()->isNew() )
-        $this->form->removePassword();
+      // it's a hack to avoid infinite loops with the option "app_contact_modify_coordinates_first"
+      $data = array();
+      foreach ( $this->form->getValidatorSchema()->getFields() as $fieldname => $validator )
+      if ( $this->getUser()->getContact()->getTable()->hasColumn($fieldname) )
+        $data[$fieldname] = $this->getUser()->getContact()->$fieldname;
       
-      if ( !$request->getParameter('contact', false) && $this->getUser()->getTransaction()->contact_id )
+      $ws = $this->form->getWidgetSchema();
+      $vs = $this->form->getValidatorSchema();
+      unset($ws['special_groups_list'], $vs['special_groups_list']);
+      
+      if ( sfConfig::get('app_contact_professional', false) )
+      foreach ( array('pro_email' => 'contact_email', 'pro_phone_number' => 'contact_number') as $vname => $field )
+        $data[$vname] = $this->form->getObject()->Professionals[0]->$field;
+      
+      $this->form->bind($data);
+    }
+    else
+      $this->form->bind($request->getParameter('contact'));
+    } catch ( liEvenementException $e )
+    { $this->form->bind($request->getParameter('contact')); }
+    
+    try
+    {
+      if ( !$this->form->isValid() )
       {
-        // it's a hack to avoid infinite loops with the option "app_contact_modify_coordinates_first"
-        $data = array();
-        foreach ( $this->form->getValidatorSchema()->getFields() as $fieldname => $validator )
-        if ( Doctrine::getTable('Contact')->hasColumn($fieldname) )
-          $data[$fieldname] = $this->getUser()->getTransaction()->Contact->$fieldname;
-      
-        $ws = $this->form->getWidgetSchema();
-        $vs = $this->form->getValidatorSchema();
-        unset($ws['special_groups_list'], $vs['special_groups_list']);
-        
-        if ( sfConfig::get('app_contact_professional', false) )
-        foreach ( array('pro_email' => 'contact_email', 'pro_phone_number' => 'contact_number') as $vname => $field )
-          $data[$vname] = $this->form->getObject()->Professionals[0]->$field;
-        
-        $this->form->bind($data);
+        error_log('An error occurred registering a contact ('.$this->form->getErrorSchema().')');
+        $this->forward('cart', 'register');
       }
-      else
-         $this->form->bind($request->getParameter('contact'));
-      
-      try
-      {
-        if ( !$this->form->isValid() || sfConfig::get('app_texts_terms_conditions') && !$request->hasParameter('terms_conditions') )
-        {
-          error_log('An error occurred registering a contact ('.$this->form->getErrorSchema().')');
-          $this->setTemplate('register');
-          return;
-        }
-      }
-      catch ( liOnlineSaleException $e )
-      {
-        $this->getContext()->getConfiguration()->loadHelpers('I18N');
-        $this->getUser()->setFlash('error',__($e->getMessage()));
-        return $this->redirect('login/index');
-      }
-      
-      // save the contact, with a non-confirmed attribute
-      if ( !$this->getUser()->getTransaction()->contact_id )
-        $this->form->getObject()->Transactions[] = $this->getUser()->getTransaction();
-      $this->contact = $this->form->save();
+    }
+    catch ( liOnlineSaleException $e )
+    {
+      $this->getContext()->getConfiguration()->loadHelpers('I18N');
+      $this->getUser()->setFlash('error',__($e->getMessage()));
+      return $this->redirect('login/index');
     }
     
     // remember the contact's informations
     $this->getUser()->setAttribute('contact_form_values', $this->form->getValues());
     
     // checks if there is no out-of-gauge
-    if ( $this->transaction->id == $this->getUser()->getTransactionId() && $this->getUser()->getTransaction()->Tickets->count() > 0 )
+    if ( $this->getUser()->getTransaction()->Tickets->count() > 0 )
     {
       $ids = array();
       foreach ( $this->getUser()->getTransaction()->Tickets as $ticket )
@@ -154,42 +135,32 @@
       }
     }
     
-    // surveys to apply
-    $surveys = $this->getUser()->getTransaction()->getSurveysToFillIn();
-    if ( $surveys->count() > 0 )
-    {
-      $this->getContext()->getConfiguration()->loadHelpers('I18N');
-      $this->getUser()->setFlash('success', __('You are about to complete your order, please fill in those surveys before...'));
-      $this->redirect('cart/surveys');
-    }
+    // save the contact, with a non-confirmed attribute
+    if ( !$this->getUser()->getTransaction()->contact_id )
+      $this->form->getObject()->Transactions[] = $this->getUser()->getTransaction();
+    $this->contact = $this->form->save();
     
     // setting up the vars to commit to the bank
     $redirect = false;
-    if ( ($topay = $this->transaction->getPrice(true,true)) > 0 && sfConfig::get('app_payment_type','paybox') != 'onthespot' )
+    if ( ($topay = $this->getUser()->getTransaction()->getPrice(true,true)) > 0 && sfConfig::get('app_payment_type','paybox') != 'onthespot' )
     {
       if (!(
          class_exists($class = ucfirst($plugin = sfConfig::get('app_payment_type','paybox')).'Payment')
       && is_a($class, 'OnlinePaymentInterface', true)
       ))
         throw new liOnlineSaleException('You asked for a payment plugin ('.$plugin.') that does not exist or is not compatible.');
-      $this->online_payment = $class::create($this->transaction);
+      $this->online_payment = $class::create($this->getUser()->getTransaction());
     }
     else // no payment to be done
     {
       $this->getContext()->getConfiguration()->loadHelpers('I18N');
       
-      $transaction = $this->transaction;
-      if ( $transaction->BoughtProducts->count() == 0 && $transaction->Tickets->count() == 0 && $transaction->MemberCards->count() == 0 )
-      {
-        $this->getUser()->setFlash('notice', __('Please control your order...'));
-        $this->redirect('@homepage');
-      }
-      
+      $transaction = $this->getUser()->getTransaction();
       $transaction->Order[] = new Order;
       $this->createPaymentsDoneByMemberCards();
       $transaction->save();
       
-      $this->sendConfirmationEmails($transaction, $this);
+      $this->sendConfirmationEmails($transaction);
       $this->getUser()->resetTransaction();
       if ( $transaction->Payments->count() > 0 )
         $this->getUser()->setFlash('notice',__("Your command has been passed on your member cards, you don't have to pay anything."));
@@ -203,8 +174,8 @@
     $vel = sfConfig::get('app_tickets_vel', array());
     if ( isset($vel['one_shot']) && $vel['one_shot'] )
     {
-      $this->getUser()->getTransaction()->Contact->password = NULL;
-      $this->getUser()->getTransaction()->Contact->save();
+      $this->getUser()->getContact()->password = NULL;
+      $this->getUser()->getContact()->save();
       error_log('Logout forced following the "one_shot" option.');
       $this->getUser()->logout();
     }

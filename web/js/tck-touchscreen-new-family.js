@@ -1,15 +1,12 @@
   $(document).ready(function(){
+    var families = $('#li_transaction_field_content .new-family select');
+    
     $('#li_transaction_field_content .new-family select').focusout(function(){
       if ( $(this).val() )
       {
         $(this).closest('form').submit();
         $('#li_transaction_field_new_transaction a.persistant').prop('href', $('#li_transaction_field_new_transaction a.persistant').prop('href')+'#'+$(this).closest('.bunch').prop('id').replace('li_transaction_','')+'-'+$(this).val()); // keep the same manifestations for the next transaction
         $(this).find('option:selected').remove();
-        
-        var bunch = $(this).closest('.bunch');
-        setTimeout(function(){
-          bunch.find('.families:not(.sample) .family:not(.total):last .item:first').click();
-        }, 2000);
       }
     });
     LI.autoAddFamilies();
@@ -21,10 +18,8 @@
       setTimeout(function(){
         if ( val == $(elt).val() ) // then launch the request
         {
-          var select = $(elt).closest('.new-family').find('select');
-          
           // emptying the previous select's content
-          select.html('');
+          families.html('');
           
           // disabling the selection of any manif that is already selected (including those w/o any ticket yet) 
           var except = [];
@@ -32,18 +27,17 @@
             if ( $(this).attr('data-family-id') )
               except.push($(this).attr('data-family-id'));
           });
-          
+        
           $.ajax({
-            url: select.attr('data-content-url'),
-            data: { with_colors: true, q: $(elt).val(), except: except, max: select.attr('data-content-qty'), 'keep-order': true },
+            url: families.attr('data-content-url'),
+            data: { with_colors: true, q: $(elt).val(), except: except, max: families.attr('data-content-qty'), 'keep-order': true },
             method: 'get',
             success: function(data){
-              select.html('');
+              families.html('');
               $.each(data, function(id, manif){
-                $('<option></option>').val(manif.id)
-                  .css('background-color', manif.color)
-                  .text(manif.name).prop('title', manif.name)
-                  .appendTo(select);
+                $('<option></option>').css('background-color', manif.color).val(manif.id)
+                  .html(manif.name).prop('title', manif.name)
+                  .appendTo(families);
               });
             }
           });

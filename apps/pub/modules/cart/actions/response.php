@@ -36,9 +36,6 @@
   if ( !$r['success'] )
     throw new liOnlineSaleException('An error occurred during the bank verifications');
   
-  if ( $transaction->getPaid().'' >= ''.$transaction->getPrice(true, true) ) // this .'' is a hack for precise float values
-    return sfView::NONE;
-  
   // direct payment
   $payment = new Payment;
   $payment->sf_guard_user_id = $this->getUser()->getId();
@@ -63,17 +60,13 @@
     $this->createPaymentsDoneByMemberCards($mc_pm);
   }
   
-  $transaction->Contact->confirmed = true;        // transaction's contact
-  foreach ( $transaction->Tickets as $ticket )    // for "named" tickets
-  if ( $ticket->contact_id )
-    $ticket->DirectContact->confirmed = true;
+  // contact
+  $transaction->Contact->confirmed = true;
   $transaction->Payments[] = $payment;
-  if ( $transaction->Order->count() == 0 )
-    $transaction->Order[] = new Order;
+  $transaction->Order[] = new Order;
   $transaction->save();
   
   // sending emails to contact and organizators
-  $this->sendConfirmationEmails($transaction, $this);
+  $this->sendConfirmationEmails($transaction);
   
   return sfView::NONE;
-

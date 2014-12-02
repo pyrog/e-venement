@@ -40,10 +40,7 @@ class GroupForm extends BaseGroupForm
     unset($this->values[$picform_name]['content_file']);
     
     if (!( $file instanceof sfValidatedFile ))
-    {
       unset($this->embeddedForms[$picform_name]);
-      unset($this->values[$picform_name]);
-    }
     else
     {
       // data translation

@@ -23,7 +23,7 @@
 ?>
 <?php
 
-class myUser extends pubUser
+class myUser extends liGuardSecurityUser
 {
   const CREDENTIAL_METAEVENT_PREFIX = 'event-metaevent-';
   const CREDENTIAL_WORKSPACE_PREFIX = 'event-workspace-';
@@ -31,7 +31,6 @@ class myUser extends pubUser
   protected $metaevents = array();
   protected $workspaces = array();
   protected $transaction = NULL;
-  protected $auth_exceptions = array();
   
   public function initialize(sfEventDispatcher $dispatcher, sfStorage $storage, $options = array())
   {
@@ -39,50 +38,6 @@ class myUser extends pubUser
     $dispatcher->connect('pub.pre_execute', array($this, 'mustAuthenticate'));
     $dispatcher->connect('pub.before_showing_prices', array($this, 'checkAvailability'));
     $dispatcher->connect('pub.before_adding_tickets', array($this, 'checkAvailability'));
-    $dispatcher->connect('pub.after_adding_tickets', array($this, 'addDefaultDirectContact'));
-    
-    if ( $this->getAttribute('online_store', NULL) === NULL
-      || time() > strtotime($this->getAttribute('online_store_timeout', NULL)) )
-    {
-      $q = Doctrine::getTable('ProductCategory')->createQuery('pc')
-        ->andWhere('pc.online = ?', true)
-        ->leftJoin('pc.Products p')
-        ->andWhereIn('p.meta_event_id IS NULL OR p.meta_event_id', array_keys($this->getMetaEventsCredentials()))
-        ->andWhere('p.id IS NOT NULL')
-        ->leftJoin('p.Declinations d')
-        ->andWhere('d.id IS NOT NULL')
-      ;
-      $online_store = $q->count() > 0;
-      $this->setAttribute('online_store', $online_store);
-      $this->setAttribute('online_store_timeout', date('Y-m-d H:i:s', strtotime('+10 minutes')));
-    }
-  }
-  
-  public function addDefaultDirectContact(sfEvent $event)
-  {
-    if ( isset($event['direct_contact']) && $event['direct_contact'] === false )
-      return;
-    
-    // detecting if a ticket has to be affected to the current contact
-    $ticket = NULL;
-    foreach ( $this->getTransaction()->Tickets as $tck )
-    {
-      if ( $tck->contact_id == $this->getTransaction()->contact_id )
-      {
-        $ticket = NULL;
-        break;
-      }
-      if ( is_null($tck->contact_id) )
-        $ticket = $tck;
-    }
-    
-    // adding the transaction's contact on the first coming ticket if needed
-    if ( $ticket instanceof Ticket )
-    {
-      try { $ticket->DirectContact = $this->getContact(); }
-      catch ( liOnlineSaleException $e ) {}
-      $ticket->save();
-    }
   }
   
   public function checkAvailability(sfEvent $event)
@@ -147,13 +102,17 @@ class myUser extends pubUser
     {
       $manifs = array();
       foreach ( $this->getContact()->Transactions as $transaction )
-      foreach ( $transaction->Tickets as $ticket )
-      if (( $ticket->transaction_id == $this->getTransaction()->id || $ticket->printed_at || $ticket->integrated_at || $transaction->Order->count() > 0 )
-        && !$ticket->hasBeenCancelled()
-        && ($manifestation->id != $ticket->manifestation_id || $ticket->transaction_id != $this->getTransaction()->id)
-        && !isset($manifs[$ticket->manifestation_id])
-      )
-        $manifs[$ticket->manifestation_id] = $ticket;
+      {
+        if ( $transaction->id == $this->getTransaction()->id )
+          $transaction = $this->getTransaction(); // to take account of current modifications
+        foreach ( $transaction->Tickets as $ticket )
+        if (( $ticket->transaction_id == $this->getTransaction()->id || $ticket->printed_at || $ticket->integrated_at || $transaction->Order->count() > 0 )
+          && !$ticket->hasBeenCancelled()
+          && ($manifestation->id != $ticket->manifestation_id || $ticket->transaction_id != $this->getTransaction()->id)
+          && !isset($manifs[$ticket->manifestation_id])
+        )
+          $manifs[$ticket->manifestation_id] = $ticket;
+      }
       
       foreach ( $manifs as $ticket )
       {
@@ -180,36 +139,18 @@ class myUser extends pubUser
     }
   }
   
-  public function isStoreActive()
-  {
-    return $this->getAttribute('online_store', false);
-  }
-  
   public function mustAuthenticate(sfEvent $event)
   {
-    $sf_action = $event->getSubject();
-    
-    // the action it self
-    if ( in_array(array($sf_action->getModuleName(), $sf_action->getActionName()), $this->auth_exceptions) )
+    if ( !sfConfig::get('app_user_must_authenticate', false) )
       return;
     
-    // the user...
-    if (!( method_exists($sf_action, 'isAuthenticatingModule') && $sf_action->isAuthenticatingModule() ))
-    {
-      if ( !sfConfig::get('app_user_must_authenticate', false) )
-        return;
-      
-      if ( $this->getTransaction()->contact_id )
-        return;
+    if ( $this->getTransaction()->contact_id )
+      return;
     
-      // for plateforms that require authenticated visitors
+    // for plateforms that require authenticated visitors
+    $sf_action = $event->getSubject();
+    if (!( method_exists($sf_action, 'isAuthenticatingModule') && $sf_action->isAuthenticatingModule() ))
       $sf_action->forward('login','index');
-    }
-  }
-  public function addAuthException($module, $action)
-  {
-    $this->auth_exceptions[] = array($module, $action);
-    return $this;
   }
   
   public function getGuardUser()
@@ -283,7 +224,7 @@ class myUser extends pubUser
     return $this;
   }
   
-  public function getTransactionId()
+  public function getTransaction()
   {
     if ( !$this->hasAttribute('transaction_id') )
     {
@@ -294,7 +235,7 @@ class myUser extends pubUser
       )));
       
       $this->transaction->save();
-      $this->setTransaction($this->transaction);
+      $this->setAttribute('transaction_id',$this->transaction->id);
       
       $this->dispatcher->notify(new sfEvent($this, 'pub.transaction_after_creation', array(
         'transaction' => $this->transaction,
@@ -302,11 +243,6 @@ class myUser extends pubUser
       )));
     }
     
-    return $this->getAttribute('transaction_id');
-  }
-  public function getTransaction()
-  {
-    $tid = $this->getTransactionId();
     if ( $this->transaction instanceof Transaction )
       return $this->transaction;
       
@@ -319,72 +255,25 @@ class myUser extends pubUser
       ->leftJoin('c.Transactions tr')
       ->leftJoin('c.MemberCards cmc ON c.id = cmc.contact_id AND (cmc.active = TRUE OR cmc.transaction_id = t.id)')
       ->leftJoin('cmc.MemberCardPrices cmcp')
-      ->andWhere('t.id = ?',$tid);
+      ->andWhere('t.id = ?',$this->getAttribute('transaction_id'));
     
-    if ( $this->transaction = $q->fetchOne() )
-      return $this->transaction;
-    
-    $this->logout();
-    return $this->getTransaction();
-  }
-  public function setTransaction(Transaction $transaction)
-  {
-    $this->transaction = $transaction;
-    $this->setAttribute('transaction_id',$this->transaction->id);
+    return $this->transaction = $q->fetchOne();
   }
   
   public function resetTransaction()
   {
     $contact = false;
     try { $contact = $this->getContact(); }
-    catch ( liOnlineSaleException $e ) { error_log('Trying to reset the transaction #'.$this->transaction->id.', but: '.$e->getMessage()); }
+    catch ( liOnlineSaleException $e ) { error_log($e->getMessage()); }
     
-    $this->getAttributeHolder()->remove('transaction_id');
-    $this->transaction = NULL;
-    $this->getTransaction();
+    $this->logout();
     if ( $contact )
       $this->setContact($contact);
-    
-    return $this;
   }
   public function logout()
   {
-    if ( $this->getTransaction()->Order->count() == 0 )
-      $this->transaction->Tickets->delete();
     $this->getAttributeHolder()->remove('transaction_id');
     $this->transaction = NULL;
     $this->getTransaction();
-    
-    return $this;
-  }
-  
-  public function setDefaultCulture(array $languages)
-  {
-    $cultures = array_keys(sfConfig::get('project_internals_cultures', array('fr' => 'Français')));
-    
-    if ( !$this->getAttribute('global_culture_forced', false) )
-    {
-      // all the browser's languages
-      $user_langs = array();
-      foreach ( $languages as $lang )
-      if ( !isset($user_lang[substr($lang, 0, 2)]) )
-        $user_langs[substr($lang, 0, 2)] = $lang;
-      
-      // comparing to the supported languages
-      $done = false;
-      foreach ( $user_langs as $culture => $lang )
-      if ( in_array($culture, $cultures) )
-      {
-        $done = $culture;
-        $this->setCulture($culture);
-        break;
-      }
-      
-      // culture by default
-      if ( !$done )
-        $this->setCulture($cultures[0]);
-    }
-    
-    return $this;
   }
 }

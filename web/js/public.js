@@ -2,15 +2,9 @@
 if ( LI == undefined )
   var LI = {};
 
-if ( LI.pubCartReady == undefined )
-  LI.pubCartReady = [];
-
 $(document).ready(function(){
   $.get($('#cart-widget-url').prop('href'),function(data){
     $('body').prepend($($.parseHTML(data)).find('#cart-widget'));
-    
-    for ( i = 0 ; LI.pubCartReady[i] != undefined ; i++ )
-      LI.pubCartReady[i]();
   });
   
   // temporary flashes
@@ -84,11 +78,6 @@ $(document).ready(function(){
     });
   }
   
-  // flashes
-  setTimeout(function(){
-    $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  },4000);
-  
   // if treating day as a structural data (in the manifestations list)
   if ( $('.sf_admin_list .sf_admin_list_th_happens_at_time_h_r').length > 0
     && $('.sf_admin_list .sf_admin_list_th_happens_at_time_h_r').css('display') != 'none' )
@@ -152,14 +141,6 @@ $(document).ready(function(){
       }
     });
     return false;
-  });
-  
-  // terms & conditions
-  $('#contact-form .terms_conditions input').change(function(){
-    if ( $(this).is(':checked') )
-      $(this).closest('p').removeClass('error');
-    else
-      $(this).closest('p').addClass('error');
   });
 });
 

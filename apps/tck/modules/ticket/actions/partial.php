@@ -41,8 +41,7 @@
     ->andWhere('t.id = ?',$this->transaction_id)
     ->andWhere('tck.id NOT IN (SELECT tck2.duplicating FROM Ticket tck2 WHERE tck2.duplicating IS NOT NULL)')
     ->andWhere('tck.cancelling IS NULL')
-    ->andWhere('tck.price_id IS NOT NULL')
-    ->orderBy('m.happens_at, et.name, tck.price_name, tck.id');
+    ->orderBy('m.happens_at, e.name, tck.price_name, tck.id');
 
   if ( $manifestations )
     $q->andWhereIn('m.id',$manifestations);
@@ -58,9 +57,7 @@
   $to_be_seated = array();
   foreach ( $this->manifestations as $manif )
   foreach ( $manif->Tickets as $ticket )
-  if ( !$ticket->seat_id )
-    $gauges[$ticket->gauge_id] = $ticket->gauge_id;
-  if ( count($gauges) > 0 )
+  if ( !$ticket->numerotation )
   {
     if ( !isset($gauges[$ticket->gauge_id]) )
       $gauges[$ticket->gauge_id] = $ticket->Gauge;

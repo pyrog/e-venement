@@ -1,63 +1,36 @@
-<?php sfApplicationConfiguration::getActive()->loadHelpers(array('I18N')) ?>
 # You can find more information about this file on the symfony website:
 # http://www.symfony-project.org/reference/1_4/en/11-App
 
 # default values
 all:
   open: true
-  options:
-    #template: public # sets the default template file to use, without the ".php" extension
-    plugins: []
-    #synthetic_plans: false
   user:
     templating: vel
     must_authenticate: false
   informations:
-    title: Libre Informatique
-    email: contact@to-be-changed.tld
-    #index: <?php echo __('') ?>
-    #store: <?php echo __('') ?>
-  timeout:
-    item: 40 minutes # WARNING: it's directly related to the configuration of apps/tck/config/app.yml for the tck garbage collector
-    global: 1 hour
+    title: CDN Le Fracas
+    email: contact@cdn-lefracas.com
   tickets:
     vel:
+      cart_timeout: 50
       max_per_manifestation: 9
-      #max_per_manifestation_per_contact: 1
-      full_seating_by_customer: true
+      #max_per_event_per_contact: 1
       #display_tickets_in_manifestations_list: true
+      #no_online_limit_from_manifestations: true
       #one_shot: true # the password is empty'ed after the first order
     payment_method_id: 1
     close_before: 24 hours
-    wip_price: ...
-    #id: qrcode # can be id (default), qrcode, othercode
     #no_conflict: 30 minutes # the needed minimum delay to go from one location to another
-  store:
-    max_per_product: 9
-    email_products: always    # never | e-products | always (recommanded)  
   contact:
     capitalize: [name, firstname, city, country, address]
     #professional: true
     #modify_coordinates_first: true
   #show:
   #  company_id: 5 # do not set something if you do not care
-  seller:
-    logo: logo.jpg
-    name: XXXX
-    address: 27 rue des Faucheroux
-    postalcode: 69000
-    city: Lyon
-    country: France
-    other:
-    invoice_prefix: FB
-    software_url: http://www.e-venement.org/
   payment:
-    ## to be able to use properly a payment method,                    
-    ## install (if it is not included) the plugin in the sf_plugin_dir
-    ## then read the README file
     ################################
     type: paybox
-    autosubmit: true
+    autosubmit: false
     id: "1"
     rank: "32"
     site: "1999888"
@@ -73,6 +46,10 @@ all:
       remote: http://www1.paybox.com/wp-content/uploads/2014/03/pubkey.pem
       local: paybox.pem
     ################################
+    ## to be able to use properly this payment method, you'll need to do :
+    ## cd sf_plugins_dir/ && git clone https://bitbucket.org/payplug/payplug_php payPlugPlugin
+    ## or if you don't have git and don't want to use it :
+    ## cd sf_plugins_dir/ && wget https://bitbucket.org/payplug/payplug_php/get/master.tar.gz &&$
     #type: payplug
     #id: macompagnie@theatreuniversel.com
     #password: superpassword
@@ -102,9 +79,6 @@ all:
     other:
     invoice_prefix: FB
   texts:
-    synthetic:
-      plans: Cliquez sur le plan pour sélectionner vos places
-      categories: En choisissant votre catégorie et un nombre de billets à ajouter, vous obtiendrez les meilleures places côte-à-côte
     cart_bottom: <p style="text-align: center; margin-top: 10px;"><a href="http://www.facebook.com/pages/Le-Fracas-CDN-de-Montlu%C3%A7onAuvergne/240968945966456" target="_blank">Rejoignez-nous sur Facebook</a></p>
     when_closed: La vente en ligne est actuelle fermée... Veuillez réessayer ultérieurement.
     event_bottom: |
@@ -126,8 +100,6 @@ all:
     contact_new: |
       Merci de saisir et vérifier vos coordonnées.
       Vos billets réglés en ligne sont à retirer au Fracas les jours d'ouverture de la billetterie ou le soir de la représentation (au plus tard 15 minutes avant le début du spectacle).
-    #seated_plan_loading:
-    #email_footer: ""
     email_confirmation: |
       
       Voici le récapitulatif de votre commande en date du %%DATE%% : 
@@ -135,8 +107,6 @@ all:
       %%COMMAND%%
       
       Au plaisir de vous accueillir,
-      
-      %%NOTICES%%
       
       -- 
       Le Fracas
@@ -146,10 +116,24 @@ all:
       
       <a href="mailto:contact@cdnlefracas.com">contact@cdnlefracas.com</a>
       <a href="http://www.cdnlefracas.com">http://www.cdnlefracas.com</a>
-      
-#      %%TICKETS%%
-#      %%PRODUCTS%%
-    
+
+  payment:
+    autosubmit: true
+    #id: "1"
+    #rank: "32"
+    #site: "1999888"
+    #key: "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+    currency: 978
+    url:
+      payment: [https://tpeweb.paybox.com/, https://tpeweb1.paybox.com/]
+      uri: cgi/MYchoix_pagepaiement.cgi
+      normal: cart/done
+      cancel: cart/cancel
+      automatic: cart/response
+    pem:
+      remote: http://www1.paybox.com/telechargements/pubkey.pem
+      local: paybox.pem
+
 #dev:
 #  payment:
 #    autosubmit: false

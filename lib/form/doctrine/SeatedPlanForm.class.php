@@ -47,13 +47,9 @@ class SeatedPlanForm extends BaseSeatedPlanForm
         // data translation
         $this->values[$picform_name]['content']  = base64_encode(file_get_contents($file->getTempName()));
         $this->values[$picform_name]['name']     = $file->getOriginalName();
+        $this->values[$picform_name]['type']     = $file->getType();
         $this->values[$picform_name]['width']    = $dimensions['width'];
         $this->values[$picform_name]['height']   = $dimensions['height'];
-        
-        $type = PictureForm::getRealType($file);
-        $this->values[$picform_name]['type']     = $type['mime'];
-        if ( isset($type['content-encoding']) )
-          $this->values[$picform_name]['content_encoding'] = $type['content-encoding'];
         
         $this->values['updated_at'] = date('Y-m-d H:i:s'); // this is a hack to force root object update
       }
@@ -68,7 +64,7 @@ class SeatedPlanForm extends BaseSeatedPlanForm
     foreach ( array('picture_id' => 'Picture', 'online_picture_id' => 'OnlinePicture') as $field => $rel )
     {
       $this->embedRelation($rel);
-      foreach ( array('name', 'type', 'version', 'height', 'width', 'content_encoding') as $fieldName )
+      foreach ( array('name', 'type', 'version', 'height', 'width',) as $fieldName )
         unset($this->widgetSchema[$rel][$fieldName], $this->validatorSchema[$rel][$fieldName]);
       $this->validatorSchema[$rel]['content_file']->setOption('required',false);
       unset($this->widgetSchema[$field], $this->validatorSchema[$field]);
@@ -79,9 +75,7 @@ class SeatedPlanForm extends BaseSeatedPlanForm
       ->setOption('order_by', array('rank, name',''));
     
     $this->widgetSchema   ['workspaces_list']
-      ->setOption('query', $q = Doctrine::getTable('Workspace')->createQuery('ws')->andWhere('ws.seated = ?',true)->orderBy('ws.name'))
-      ->setOption('expanded', true)
-    ;
+      ->setOption('query', $q = Doctrine::getTable('Workspace')->createQuery('ws')->andWhere('ws.seated = ?',true)->orderBy('ws.name'));
     if ( $this->object->id && $this->object->location_id ) // VERRRRY IMPORTANT TO AVOID MIS-ROUTING GAUGES IN TICKETTING
       $q->andWhere('ws.id NOT IN (SELECT spws.workspace_id FROM SeatedPlanWorkspace spws LEFT JOIN spws.SeatedPlan spwssp WHERE spwssp.location_id = ? AND spws.seated_plan_id != ?)', array($this->object->location_id, $this->object->id));
     $this->validatorSchema['workspaces_list']->setOption('query', $q);

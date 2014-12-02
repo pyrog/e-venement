@@ -18,12 +18,8 @@ class eventActions extends autoEventActions
     $this->dispatcher->notify(new sfEvent($this, 'pub.pre_execute', array('configuration' => $this->configuration)));
     parent::preExecute();
   }
-  
   public function executeIndex(sfWebRequest $request)
   {
-    $this->getUser()->setDefaultCulture($request->getLanguages());
-    
-    // inline tickets in manifestation
     $vel = sfConfig::get('app_tickets_vel', array());
     if ( isset($vel['display_tickets_in_manifestations_list']) && $vel['display_tickets_in_manifestations_list'] )
     {
@@ -32,25 +28,12 @@ class eventActions extends autoEventActions
     }
     
     parent::executeIndex($request);
-    
-    // only one event...
-    if ( $this->pager->getNbResults() == 1 )
-    {
-      foreach ( array('success', 'notice', 'error') as $type )
-      if ( $this->getUser()->getFlash($type) )
-        $this->getUser()->setFlash($type, $this->getUser()->getFlash($type));
-      $this->redirect('event/edit?id='.$this->pager->getCurrent()->id);
-    }
   }
   public function executeEdit(sfWebRequest $request)
   {
     $this->event = $this->getRoute()->getObject();
     $this->getUser()->getAttributeHolder()->remove('manifestation.filters');
     $this->getUser()->setAttribute('manifestation.filters', array('event_id' => $this->event->id), 'admin_module');
-    
-    foreach ( array('success', 'notice', 'error') as $type )
-    if ( $this->getUser()->getFlash($type) )
-      $this->getUser()->setFlash($type, $this->getUser()->getFlash($type));
     $this->redirect('manifestation/index');
   }
   public function executeBatchDelete(sfWebRequest $request)
@@ -68,14 +51,5 @@ class eventActions extends autoEventActions
   public function executeUpdate(sfWebRequest $request)
   {
     $this->executeEdit($request);
-  }
-  protected function getFilters()
-  {
-    return $this->getUser()->getAttribute('event.filters', $this->configuration->getFilterDefaults(), 'pub_module');
-  }
-
-  protected function setFilters(array $filters)
-  {
-    return $this->getUser()->setAttribute('event.filters', $filters, 'pub_module');
   }
 }

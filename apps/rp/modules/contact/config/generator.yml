@@ -62,12 +62,6 @@ generator:
         list_professional_groups_picto: { credentials: [pr-group], label: Remarkable }
         workspaces_list: { label: Workspaces }
         has_professional_type_id: { label: Any function? }
-        survey_id:        { credentials: [TODO] }
-        survey_query_id:  { credentials: [TODO], label: Query }
-        survey_answer:    { credentials: [TODO], label: Answer }
-        tickets_best_rank: { label: Best seat rank }
-        tickets_avg_rank: { label: Average seat rank }
-        tickets_rank_operand: { label: What kind of operand will we apply on seat ranks? }
       list:
         display: [name, firstname, postalcode, city, _groups_picto, _list_emails, _list_phones, <?php if ( sfConfig::get('app_options_design',false) ): ?>_list_nb, <?php endif ?>_organisms_list <?php if ( sfConfig::get('app_options_design',false) ): ?>, description, _list_see_orgs, _list_contact, _list_professional_id, _list_organism, _list_professional, _list_organism_postalcode, _list_organism_city, _list_professional_emails, _list_organism_phones_list, _list_professional_groups_picto, _list_professional_description<?php endif ?>]
         max_per_page: <?php if ( sfConfig::get('app_options_design',false) ): ?>50<?php else: ?>20<?php endif; echo PHP_EOL; ?>
@@ -82,10 +76,9 @@ generator:
           <?php endif; echo PHP_EOL; ?>
           _edit: ~
           _delete: ~
-        sort: ['c.name, c.firstname', '']
       filter:
         display:
-          Personal: [title, name, firstname, shortname, postalcode, city, region_id, country, email]
+          Personal: [title, name, firstname, postalcode, city, region_id, country, email]
           <?php if ( sfConfig::get('app_contact_social_informations', false) ): echo PHP_EOL; ?>
           Social informations: [familial_quotient_id, familial_situation_id, type_of_resources_id]
           <?php endif ?><?php echo PHP_EOL ?>
@@ -93,17 +86,16 @@ generator:
           <?php if ( sfConfig::get('app_cards_enable',false) ): ?><?php echo PHP_EOL ?>
           Member cards: [member_cards, member_cards_valid_at, member_cards_not_valid_at, member_cards_only_last]
           <?php endif ?><?php echo PHP_EOL ?>
-          Events: [event_categories_list, meta_events_list, events_list, workspaces_list, prices_list, <?php if ( sfConfig::get('app_no_event_archives',true) ): ?>event_archives,<?php endif ?> tickets_amount_min, tickets_amount_max, tickets_best_rank, tickets_avg_rank, tickets_rank_operand]
+          Events: [event_categories_list, meta_events_list, events_list, workspaces_list, prices_list, <?php if ( sfConfig::get('app_no_event_archives',true) ): ?>event_archives,<?php endif ?> tickets_amount_min, tickets_amount_max]
           <?php if ( sfConfig::get('app_controls_enabled',false) ): ?><?php echo PHP_EOL ?>
           Flow management: [control_created_at, control_manifestation_id, control_checkpoint_id]
           <?php endif ?><?php echo PHP_EOL ?>
-          Surveys: [survey_id, survey_query_id, survey_answer]
-          Additional: [culture, description, YOB, <?php if ( sfConfig::get('app_options_design',false) && sfConfig::get(sfConfig::get('app_options_design').'_active') ): ?>email_newsletter,<?php endif ?> family_contact, npai, has_address, has_email, has_category, email_no_newsletter, emails_list, updated_at]
+          Additional: [description, YOB, <?php if ( sfConfig::get('app_options_design',false) && sfConfig::get(sfConfig::get('app_options_design').'_active') ): ?>email_newsletter,<?php endif ?> family_contact, npai, has_address, has_email, has_category, email_no_newsletter, emails_list, updated_at]
       form: ~
       edit:
         title: Contact %%name%% %%firstname%%
         display:
-          NONE:  [title, name, firstname, shortname, address, postalcode, _cities, city, country, email, <?php if ( sfConfig::get('app_options_design',false) && sfConfig::get(sfConfig::get('app_options_design').'_active') ): ?>email_no_newsletter,<?php endif ?> _show_member_cards_list, groups_list]
+          NONE:  [title, name, firstname, address, postalcode, _cities, city, country, email, <?php if ( sfConfig::get('app_options_design',false) && sfConfig::get(sfConfig::get('app_options_design').'_active') ): ?>email_no_newsletter,<?php endif ?> _show_member_cards_list, groups_list]
           Phonenumbers: [_form_phonenumbers_list]
           Precisions: [family_contact, npai, description, YOBs, password]
           Ticketting: [_show_events_list]

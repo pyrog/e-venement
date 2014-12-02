@@ -15,8 +15,8 @@
 #    along with e-venement; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # 
-#    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
-#    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
+#    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
+#    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
 # 
 #**********************************************************************************/
 
@@ -60,10 +60,6 @@ Price:
     Manifestations:
       class: Manifestation
       refClass: PriceManifestation
-      foreignAlias: Prices
-    Gauges:
-      class: Gauge
-      refClass: PriceGauge
       foreignAlias: Prices
     Workspaces:
       class: Workspace
@@ -161,76 +157,5 @@ PriceManifestation:
       onUpdate: CASCADE
     Price:
       foreignAlias: PriceManifestations
-      onDelete: CASCADE
-      onUpdate: CASCADE
-PriceGauge:
-  package: price
-  actAs: [Timestampable]
-  indexes:
-    price_gauge_price_idx:
-      fields: [gauge_id, price_id]
-      type: unique
-    price_gauge_value_idx:
-      fields: [value]
-  columns:
-    gauge_id:
-      type: integer
-      notnull: true
-    price_id:
-      type: integer
-      notnull: true
-    value:
-      type:  decimal(8)
-      scale: 3
-      notnull: true
-  relations:
-    Gauge:
-      foreignAlias: PriceGauges
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Price:
-      foreignAlias: PriceGauges
-      onDelete: CASCADE
-      onUpdate: CASCADE
-
-PriceProduct:
-  package: price
-  actAs: [Timestampable]
-  indexes:
-    price_product_price_idx:
-      fields: [product_id, price_id]
-      type: unique
-    price_product_value_idx:
-      fields: [value]
-  columns:
-    product_id:
-      type: integer
-      notnull: true
-    price_id:
-      type: integer
-      notnull: true
-    value:
-      type:  decimal(8)
-      scale: 3
-  relations:
-    Product:
-      foreignAlias: PriceProducts
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Price:
-      foreignAlias: PriceProducts
-      onDelete: CASCADE
-      onUpdate: CASCADE
-PricePOS:
-  package: price
-  actAs: [Timestampable]
-  columns:
-    price_id:
-      type: integer
-      notnull: true
-      unique: true
-  relations:
-    Price:
-      foreignType: one
       onDelete: CASCADE
       onUpdate: CASCADE

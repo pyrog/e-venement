@@ -64,15 +64,8 @@ class contactActions extends sfActions
   {
     try {
       $this->form = new ContactPublicForm($this->getUser()->getContact());
-      
-      $pns = array();
-      foreach ( $this->getUser()->getContact()->Phonenumbers as $pn )
-        $pns[$pn->updated_at.' '.$pn->id] = $pn;
-      ksort($pns);
-      
-      $pn = array_pop($pns);
-      $this->form->setDefault('phone_type',$pn->name);
-      $this->form->setDefault('phone_number',$pn->number);
+      $this->form->setDefault('phone_type',$this->getUser()->getContact()->Phonenumbers[0]->name);
+      $this->form->setDefault('phone_number',$this->getUser()->getContact()->Phonenumbers[0]->number);
     }
     catch ( liEvenementException $e )
     { $this->form = new ContactPublicForm; }
