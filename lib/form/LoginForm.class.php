@@ -59,7 +59,7 @@ class LoginForm extends BaseForm
       ->leftJoin('c.Professionals p')
       ->andWhere($email_field.' = ?',$this->getValue('email'))
       ->andWhere('c.password = ? AND c.password != ?',array($this->getValue('password'),''))
-      ->orderBy('c.updated_at DESC, p.updated_at DESC')
+      ->orderBy('c.id')
       ->fetchOne();
     
     if ( $contact )

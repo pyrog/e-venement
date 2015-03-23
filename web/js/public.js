@@ -2,49 +2,15 @@
 if ( LI == undefined )
   var LI = {};
 
-if ( LI.pubCartReady == undefined )
-  LI.pubCartReady = [];
-
 $(document).ready(function(){
-  // the cart widget
   $.get($('#cart-widget-url').prop('href'),function(data){
     $('body').prepend($($.parseHTML(data)).find('#cart-widget'));
-    
-    for ( i = 0 ; LI.pubCartReady[i] != undefined ; i++ )
-      LI.pubCartReady[i]();
   });
-  
-  // if no event is available but the store is present, go to the store
-  if ( location.hash != '#debug'
-    && $('.mod-event.action-index .sf_admin_list table').length == 0
-    && $('.mod-event.action-index #ariane .event.with-store').length > 0 )
-    window.location = $('.mod-event.action-index #ariane .event.with-store a + a').prop('href');
-  
-  // redirect into the only meta-event of the @homepage if no alternative
-  if ( location.hash != '#debug' && $('.mod-meta_event.action-index .sf_admin_list .sf_admin_row').length == 1 )
-    window.location = $('.mod-meta_event.action-index .sf_admin_list .sf_admin_row a').prop('href');
-  
-  // removing empty gauges
-  $('.mod-manifestation.action-show .adding-tickets .gauge').each(function(){
-    if ( $('.mod-manifestation.action-show .adding-tickets').length > 0 && $(this).find('[data-price-id]').length == 0 )
-      $(this).remove();
-  });
-  
-  // removing the useless "my cart" buttons
-  if ( $('.mod-manifestation.action-show .adding-tickets .gauge').length > 1 )
-    $('.mod-manifestation.action-show .adding-tickets .gauge:not(:last) tfoot tr:last').hide();
   
   // temporary flashes
   setTimeout(function(){
     $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  }, 5500);
-  
-  // focus on registering forms
-  $('.mod-cart.action-register #login, #contact-form').focusin(function(){
-    $('.mod-cart.action-register #login, #contact-form').removeClass('active');
-    $(this).addClass('active');
-  });
-  $('#contact-form input[type=text]:first').focus();
+  }, 3500);
   
   // if treating month as a structural data
   if ( $('.sf_admin_list .sf_admin_list_th_month').length > 0
@@ -112,11 +78,6 @@ $(document).ready(function(){
     });
   }
   
-  // flashes
-  setTimeout(function(){
-    $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  },4000);
-  
   // if treating day as a structural data (in the manifestations list)
   if ( $('.sf_admin_list .sf_admin_list_th_happens_at_time_h_r').length > 0
     && $('.sf_admin_list .sf_admin_list_th_happens_at_time_h_r').css('display') != 'none' )
@@ -180,14 +141,6 @@ $(document).ready(function(){
       }
     });
     return false;
-  });
-  
-  // terms & conditions
-  $('#contact-form .terms_conditions input').change(function(){
-    if ( $(this).is(':checked') )
-      $(this).closest('p').removeClass('error');
-    else
-      $(this).closest('p').addClass('error');
   });
 });
 

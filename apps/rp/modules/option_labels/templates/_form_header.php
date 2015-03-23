@@ -1,14 +1,14 @@
 <?php $formats = array(
-      'L6173' => array(
+      'L7163' => array(
         'page-format'   => 'a4',
-        'nb-x'          => 3,
-        'nb-y'          => 8,
-        'left-right'    => 0,
-        'top-bottom'    => ,
+        'nb-x'          => 2,
+        'nb-y'          => 7,
+        'left-right'    => 3,
+        'top-bottom'    => 15,
         'margin-x'      => 0,
         'margin-y'      => 0,
         'padding-x'     => 2.5,
-        'padding-y'     => 2,
+        'padding-y'     => 5,
       ),
       'L7159' => array(
         'page-format'   => 'a4',
@@ -21,17 +21,6 @@
         'padding-x'     => 2.5,
         'padding-y'     => 4,
       ),
-      'L7160' => array(
-        'page-format'   => 'a4',
-        'nb-x'          => 3,
-        'nb-y'          => 7,
-        'left-right'    => 7,
-        'top-bottom'    => 15,
-        'margin-x'      => 2.5,
-        'margin-y'      => 0,
-        'padding-x'     => 2.5,
-        'padding-y'     => 5,
-      ),
       'L7562' => array(
         'page-format'   => 'a4',
         'nb-x'          => 2,
@@ -42,17 +31,6 @@
         'margin-y'      => 0,
         'padding-x'     => 2.5,
         'padding-y'     => 4,
-      ),
-      'L7163' => array(
-        'page-format'   => 'a4',
-        'nb-x'          => 2,
-        'nb-y'          => 7,
-        'left-right'    => 3,
-        'top-bottom'    => 15,
-        'margin-x'      => 0,
-        'margin-y'      => 0,
-        'padding-x'     => 2.5,
-        'padding-y'     => 5,
       ),
       '3474' => array (
         'page-format'   => 'a4',

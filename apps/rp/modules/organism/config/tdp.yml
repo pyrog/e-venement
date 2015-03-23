@@ -36,7 +36,7 @@ all:
         lines:
           Complements:
             show_labels: true
-            fields: [organism_category_id, email, email_npai, email_no_newsletter, url]
+            fields: [organism_category_id, email, email_no_newsletter, url]
           Address:
             fields: [address]
           City:
@@ -64,7 +64,6 @@ all:
             with_id: true
           update:
             credential: pr-organism-edit
-            label: Record
             attributes:
               onclick: "javascript: $('.tdp-object #sf_admin_content > form').submit(); return false;"
             with_id: true
@@ -83,7 +82,7 @@ all:
               fields: [contact_number, _contact_phones_list]
             Internet:
               show_labels: true
-              fields: [contact_email, contact_email_npai, contact_email_no_newsletter, _contact_email]
+              fields: [contact_email, contact_email_no_newsletter, _contact_email]
             Correspondence:
               show_messages: false
               show_title: true
@@ -103,9 +102,7 @@ all:
         Emails:
           credentials: pr-emailing
           partial: global/tdp/side_widget_object_emails
-        Surveys to apply:
-          credentials: TODO
-          partial: global/tdp/side_widget_object_surveys_to_apply
+
     new:
       object:
         lines:

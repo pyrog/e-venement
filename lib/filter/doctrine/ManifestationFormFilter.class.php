@@ -65,12 +65,6 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       'choices' => array_keys($choices),
       'required' => false,
     ));
-    
-    $this->widgetSchema   ['participants_list']->setOption('query', Doctrine::getTable('Contact')->createQuery('c')
-      ->leftJoin('c.InvolvedIn ii')
-      ->andWhere('ii.id IS NOT NULL')
-    );
-    $this->validatorSchema['participants_list']->setOption('query', $this->widgetSchema['participants_list']->getOption('query'));
   }
 
   public function getFields()

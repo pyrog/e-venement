@@ -10,15 +10,14 @@
  * @author     Baptiste SIMON <baptiste.simon AT e-glop.net>
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
-class Manifestation extends PluginManifestation implements liUserAccessInterface
+class Manifestation extends PluginManifestation
 {
   public $current_version = NULL;
   
-  public function getName($short = false)
+  public function getName()
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('I18N','Date'));
-    $name = $short && $this->Event->short_name ? $this->Event->short_name : $this->Event;
-    return $name.' '.__('at').' '.$this->getShortenedDate();
+    return $this->Event->name.' '.__('at').' '.$this->getShortenedDate();
   }
   public function getHappensAtTimeHR()
   {
@@ -86,61 +85,17 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
   }
   
   /**
-    * method getBestFreeSeat()
-    * concerning the seated sales
-    * find out what is the best seat still free
-    *
-    * @param  integer       $limit the number of seats to return
-    * @return Doctrine_Collection|Seat|false    the best seat(s) still free of any booking, or false if no seat is available
-    *
-    **/
-  public function getBestFreeSeat($limit = 1)
-  {
-    error_log('best-free');
-    try {
-      if ( $this->getFromCache('best-free-seat-limit') !== $limit )
-        $this->clearCache();
-      return $this->getFromCache('best-free-seat');
-    }
-    catch ( liEvenementException $e )
-    {
-      $this->setInCache('best-free-seat-limit', $limit);
-      
-      $q = Doctrine::getTable('Seat')->createQuery('s')
-        ->leftJoin('s.SeatedPlan sp')
-        ->leftJoin('sp.Workspaces ws')
-        ->leftJoin('ws.Gauges g')
-        ->leftJoin('g.Manifestation m')
-        ->andWhere('m.location_id = sp.location_id')
-        ->andWhere('m.id = ?', $this->id)
-        ->leftJoin('s.Tickets tck WITH tck.manifestation_id = m.id')
-        ->andWhere('tck.id IS NULL')
-        ->orderBy('s.rank, s.name')
-        ->select('s.*')
-        ->limit($limit)
-      ;
-      error_log($q->getRawSql());
-      $this->setInCache('best-free-seat', $limit > 1 ? $q->execute() : $q->fetchOne());
-      return $this->getBestFreeSeat($limit);
-    }
-  }
-  
-  /**
     * method hasAnyConflict()
+    * returns if the object is or would be in conflict with an other one
     * concerning the resources management
-    * Precondition: the values that are used are those which are recorded in DB
     *
-    * @return if the object is or would be in conflict with an other one
+    * Precondition: the values that are used are those which are recorded in DB
     *
     **/
   public function hasAnyConflict()
   {
     if ( !$this->blocking )
       return false;
-    
-    try { $this->getFromCache('has-any-conflict'); }
-    catch ( liEvenementException $e )
-    {
     
     $rids = array();
     foreach ( $this->Booking as $r )
@@ -165,28 +120,15 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
     if ( !$this->isNew() )
       $q->andWhere('m.id != ?', $this->id);
     
-    $this->setInCache('has-any-conflict', $q->count() > 0);
-    return $this->hasAnyConflict();
-    
-    }
+    return $q->count() > 0;
   }
   
   /**
     * Get all needed informations about the manifestation's gauges usage
-    * @param array    $options: modeled on sales ledger's criterias
-    * @return array   representing the informations for this manifestation
+    * $options: modeled on sales ledger's criterias
     *
     **/
   public function getInfosTickets($options = array())
-  {
-    try { $this->getFromCache('get-infos-tickets'); }
-    catch ( liEvenementException $e )
-    {
-      $this->setInCache($this->_getInfosTickets($options));
-      return $this->getInfosTickets($options);
-    }
-  }
-  private function _getInfosTickets($options = array())
   {
     if ( (isset($options['dates'][0]) || isset($options['dates'][1])) && (!isset($options['dates'][0]) || !isset($options['dates'][1])) )
       unset($options['dates']);
@@ -247,11 +189,10 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
 
     $tickets = $q->fetchArray();
     
-    $r = array('taxes' => 0, 'value' => 0, 'qty' => 0, 'vat' => array());
+    $r = array('value' => 0, 'qty' => 0, 'vat' => array());
     foreach ( $tickets as $ticket )
     {
       $r['value'] += $ticket['value'];
-      $r['taxes'] += $ticket['taxes'];
       $r['qty']   += is_null($ticket['cancelling']) ? 1 : -1;
       
       if ( !isset($r['vat'][$ticket['vat']]) )
@@ -259,8 +200,8 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
       
       // extremely weird behaviour, only for specific cases... it's about an early error in the VAT calculation in e-venement
       $r['vat'][$ticket['vat']] += sfConfig::get('app_ledger_sum_rounding_before',false) && strtotime($ticket['printed_at']) < sfConfig::get('app_ledger_sum_rounding_before')
-        ? $ticket['value']+$ticket['taxes'] - ($ticket['value']+$ticket['taxes']) / (1+$ticket['vat'])
-        : round($ticket['value'] + $ticket['taxes'] - ($ticket['value']+$ticket['taxes']) / (1+$ticket['vat']),2);
+        ? $ticket['value'] - $ticket['value'] / (1+$ticket['vat'])
+        : round($ticket['value'] - $ticket['value'] / (1+$ticket['vat']),2);
     }
     
     // rounding VAT
@@ -269,183 +210,4 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
     
     return $r;
   }
-  
-  public function isAccessibleBy(sfSecurityUser $user, $confirm_needed = true)
-  {
-    // confirmation
-    if (!( $confirm_needed && $this->reservation_confirmed ))
-      return false;
-    
-    // meta event
-    if ( !in_array($this->Event->meta_event_id, array_keys($user->getMetaEventsCredentials())) )
-      return false;
-    
-    // workspaces
-    $cpt = 0;
-    foreach ( $this->Gauges as $gauge )
-    if ( !in_array($gauge->workspace_id, array_keys($user->getWorkspacesCredentials())) )
-      $cpt++;
-    if ( $cpt == 0 )
-      return false;
-    
-    // prices
-    if ( $this->Prices->count() == 0 )
-      return false;
-    foreach ( $this->Prices as $price )
-    if ( !in_array($user->getId(), $price->Users->getPrimaryKeys()) )
-      return false;
-    
-    return true;
-  }
-  
-  public function getIcalPartial(vevent $e, $full = true, $only_pending = false)
-  {
-    // settings
-    $alarms = sfConfig::get('app_synchronization'.($only_pending ? 'pending_alarms' : 'alarms'), array('when' => array('-1 hour'), 'what' => array('display')));
-    if ( !isset($alarms['when']) )
-      $alarms['when'] = array('-1 hour');
-    if ( !is_array($alarms['when']) )
-      $alarms['when'] = array($alarms['when']);
-    if ( !isset($alarms['what']) )
-      $alarms['what'] = array();
-    if ( !is_array($alarms['what']) )
-      $alarms['what'] = array($alarms['what']);
-    foreach ( $alarms['what'] as $key => $type )
-    {
-      switch ( $type ) {
-        case 'display':
-          $alarms['what'][$key] = 'DISPLAY';
-          break;
-        case 'email':
-          $alarms['what'][$key] = 'EMAIL';
-          break;
-        case 'audio':
-          $alarms['what'][$key] = 'AUDIO';
-          break;
-      }
-    }
-    
-    $e->setProperty('categories', $this->Event->EventCategory );
-    $e->setProperty('last-modified', date('YmdTHis',strtotime($this->updated_at)) );
-    
-    $time = strtotime($this->happens_at);
-    $start = array('year'=>date('Y',$time),'month'=>date('m',$time),'day'=>date('d',$time),'hour'=>date('H',$time),'min'=>date('i',$time),'sec'=>date('s',$time),'tz'=>date('T'));
-    $e->setProperty('dtstart', $start);
-    
-    $time = strtotime($this->ends_at);
-    $stop = array('year'=>date('Y',$time),'month'=>date('m',$time),'day'=>date('d',$time),'hour'=>date('H',$time),'min'=>date('i',$time),'sec'=>date('s',$time),'tz'=>date('T'));
-    $e->setProperty('dtend', $stop );
-    
-    $e->setProperty('summary', $this->Event);
-    if ( $full )
-      $e->setProperty('url', url_for('manifestation/show?id='.$this->id,true));
-    
-    $location = array((string)$this->Location);
-    if ( $this->Location->city )
-    foreach ( array('address', 'postalcode', 'city', 'country') as $prop )
-      $location[] = $this->Location->$prop;
-    $e->setProperty('location', implode(', ', $location));
-    
-    // extra properties
-    $e->setProperty('status', 'CONFIRMED');
-    if ( $full )
-    {
-      $client = sfConfig::get('project_about_client',array());
-      $e->setProperty('description', $client['name'].(!$nourl ? "\nURL: ".url_for('manifestation/show?id='.$this->id, true) : ''));
-      $e->setProperty('transp', $request->hasParameter('transp') ? 'TRANSPARENT' : 'OPAQUE');
-      
-      $orgs = array();
-      if ( $this->Organizers->count() > 0 )
-      {
-        $email = '';
-        foreach ( $this->Organizers as $org )
-        {
-          $orgs[] = (string)$org;
-          if ( $org->email )
-            $email = $org->email;
-          elseif ( !$email )
-            $email = $org->url;
-        }
-        $e->setProperty('organizer', $email, array('CN' => implode(', ', $orgs)));
-      }
-      
-      // preparing email alerts
-      $to = array();
-      if ( in_array('EMAIL', $alarms['what']) )
-      {
-        foreach ( $this->Organizers as $org )
-        if ( $org->email )
-          $to[] = $org->email;
-        if ( $this->contact_id && ($this->Applicant->sf_guard_user_id || $this->Applicant->email) )
-          $to[] = $this->Applicant->sf_guard_user_id ? $this->Applicant->User->email_address : $this->Applicant->email;
-      }
-      
-      // alarms
-      foreach ( $alarms['when'] as $when )
-      foreach ( $alarms['what'] as $what )
-      {
-        if ( $what == 'EMAIL' && count($to) == 0 )
-          continue;
-        
-        $a = &$e->newComponent( 'valarm' );
-        
-        if ( $what == 'EMAIL' )
-        foreach ( $to as $email )
-          $a->setProperty('attendee', $email);
-        
-        $a->setProperty('action', $what);
-        
-        $time = strtotime($when, strtotime($this->happens_at)) - date('Z');
-        $datetime = array('year'=>date('Y',$time),'month'=>date('m',$time),'day'=>date('d',$time),'hour'=>date('H',$time),'min'=>date('i',$time),'sec'=>date('s',$time));
-        $a->setProperty('trigger', $datetime);
-      }
-    }
-    
-    return $e;
-  }
-  public function getIcal($full = true, $use_cache = true)
-  {
-    // filename
-    $caldir   = sfConfig::get('sf_module_cache_dir').'/calendars/';
-    $calfile = $this->event_id;
-    $calfile .= '-';
-    if ( sfContext::hasInstance() )
-      $calfile .= sfContext::getInstance()->getUser()->isAuthenticated() ? sfContext::getInstance()->getUser()->getGuardUSer()->username : 'none';
-    $calfile .= '.ics';
-    
-    $v = new vcalendar;
-    $v->setConfig(array(
-      'directory' => $caldir,
-      'filename'  => $calfile,
-    ));
-    
-    if ( file_exists($caldir.$calfile)
-      && strtotime($this->happens_at) <= filemtime($caldir.$calfile)
-      && $use_cache
-    )
-      $v->parse();
-    else
-    {
-      $v->addComponent($this->getIcalPartial($v->newComponent( 'vevent' ), $full));
-      
-      if ( ! file_exists(dirname($caldir)) )
-      {
-        mkdir(dirname($caldir));
-        chmod(dirname($caldir),0777);
-      }
-      if ( ! file_exists($caldir) )
-      {
-        mkdir($caldir);
-        chmod($caldir,0777);
-      }
-      if ( file_exists($caldir.'/'.$calfile) )
-        unlink($caldir.'/'.$calfile);
-      
-      $v->saveCalendar();
-      chmod($caldir.'/'.$calfile,0777);
-    }
-
-    return $v->createCalendar();
-  }
 }
-

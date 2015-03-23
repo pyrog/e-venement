@@ -16,7 +16,6 @@ abstract class PluginEmail extends BaseEmail
   public $test_address    = NULL;
   public $to              = array();
   public $mailer          = NULL;
-  public $from_txt        = NULL;
   
   protected function send()
   {
@@ -68,13 +67,6 @@ abstract class PluginEmail extends BaseEmail
     
     $message = $this->compose(Swift_Message::newInstance()->setTo($to));
     
-    // sfEventDispatcher
-    if ( sfContext::hasInstance() )
-    {
-      sfContext::getInstance()->getEventDispatcher()
-        ->notify(new sfEvent($this, 'email.before_attach', $this->getDispatcherParameters()));
-    }
-    
     if ( $this->field_bcc )
       $message->setBcc($this->field_bcc);
     
@@ -82,18 +74,11 @@ abstract class PluginEmail extends BaseEmail
       $message->setCc($this->field_cc);
     
     foreach ( $this->Attachments as $attachment )
-    {
-      $id = $attachment->getId() ? $attachment->getId() : date('YmdHis').rand(10000,99999);
-      $att = Swift_Attachment::fromPath($path = substr($attachment->filename, 0, 1) == '/'
-          ? $attachment->filename
-          : sfConfig::get('sf_upload_dir').DIRECTORY_SEPARATOR.$attachment->filename, $attachment->mime_type)
+      $message->attach(Swift_Attachment::fromPath(sfConfig::get('sf_upload_dir').DIRECTORY_SEPARATOR.$attachment->filename)
         ->setFilename($attachment->original_name)
-        ->setId('part.'.$id.'@e-venement');
-      $message->attach($att);
-    }
+        ->setId('part.'.$attachment->id.'@e-venement'));
     
     $this->setMailer();
-    
     return $immediatly === true
       ? $this->mailer->sendNextImmediately()->send($message)
       : $this->mailer->batchSend($message);
@@ -106,7 +91,7 @@ abstract class PluginEmail extends BaseEmail
     
     if ( $mailer instanceof sfMailer )
       $this->mailer = $mailer;
-    elseif ( sfContext::hasInstance() )
+    else if ( sfContext::hasInstance() )
       $this->mailer = sfContext::getInstance()->getMailer();
     
     return $this;
@@ -118,8 +103,8 @@ abstract class PluginEmail extends BaseEmail
       '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.
       '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">'.
       '<head>'.
-      //'<title></title>'.
-      '<title>'.$this->field_subject.'</title>'.
+      '<title></title>'.
+      //'<title>'.$this->field_subject.'</title>'.
       '<meta name="title" content="'.$this->field_subject.'" />'.
       '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.
       '</head><body>'.
@@ -128,7 +113,7 @@ abstract class PluginEmail extends BaseEmail
     
     $h2t = new HtmlToText($content);
     $message
-      ->setFrom(array($this->field_from => $this->from_txt ? $this->from_txt : $this->field_from))
+      ->setFrom($this->field_from)
       ->setSubject($this->field_subject)
       ->setBody($h2t->get_html(),'text/html')
       ->addPart($h2t->get_text(),'text/plain');

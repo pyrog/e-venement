@@ -14,8 +14,6 @@ class Professional extends PluginProfessional
 {
   public function __toString()
   {
-    if ( $this->isNew() )
-      return '';
     sfApplicationConfiguration::getActive()->loadHelpers(array('I18N'));
     return sprintf('%s %s %s',
       $this->Contact,
@@ -30,7 +28,7 @@ class Professional extends PluginProfessional
   }
   public function getNameType()
   {
-    return $this->name ? $this->name.($this->ProfessionalType ? ' ('.$this->ProfessionalType.')' : '') : (string)$this->ProfessionalType;
+    return $this->name ? $this->name.($this->ProfessionalType ? ' ('.$this->ProfessionalType.')' : '') : $this->ProfessionalType;
   }
   public function getFullDesc()
   {

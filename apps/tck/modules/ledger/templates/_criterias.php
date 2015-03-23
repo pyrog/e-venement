@@ -38,18 +38,8 @@
       <label for="manifestations"><?php echo __('Manifestations:') ?></label>
       <?php echo $form['manifestations'] ?>
     </li>
-    <?php if ( $ledger != 'both' ): ?>
-    <li class="contact_id">
-      <label for="contact_id"><?php echo __('Contact') ?>:</label>
-      <?php echo $form['contact_id'] ?>
-    </li>
-    <li class="organism_id">
-      <label for="organism_id"><?php echo __('Organism') ?>:</label>
-      <?php echo $form['organism_id'] ?>
-    </li>
-    <?php endif ?>
     <li class="submit">
-      <input type="submit" name="s" value="ok" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" />
+      <input type="submit" name="s" value="ok" />
       <?php include_partial('criterias_actions',array('ledger' => $ledger)) ?>
     </li>
   </ul>

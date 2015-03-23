@@ -7,6 +7,7 @@ $(document).ready(function(){
 function form_picture_del(anchor)
 {
   $.get($(anchor).prop('href'),function(data){
+    $(anchor).closest('form').find('[name="group[Picture][id]"]').val('');
     $('#transition').hide();
     $('.sf_admin_form_field_Picture').fadeIn('slow').find('[name="seated_plan[Picture][id]"]').val('');
     $('.sf_admin_form_field_picture_del').fadeOut('slow');

@@ -57,8 +57,6 @@
       $this->transaction = null;
       if ( !$request->hasParameter('duplicate') )
       {
-        $this->transaction = new Transaction;
-        $this->transaction->MemberCards[] = $this->card->getObject();
         $this->card->save();
         $this->card = $this->card->getObject();
         
@@ -77,17 +75,13 @@
               throw new liMemberCardPaymentException('You need to define a payment method for member cards.');
             $payment->payment_method_id = $pm->id;
           }
+          $payment->MemberCard = $this->card;
+          $payment->value = -$this->card->MemberCardType->value;
           
-          $pdtval = 0;
-          foreach ( $this->card->BoughtProducts as $bp )
-            $pdtval += $bp->value !== NULL ? $bp->value : $bp->getValueFromSchema();
-          
-          $this->card->Payments[] = $payment;
-          $payment->value = -$this->card->MemberCardType->value + $pdtval;
+          $this->transaction = new Transaction;
           $this->transaction->Contact = $this->card->Contact;
           $this->transaction->Payments[] = $payment;
           $this->transaction->save();
-          $this->card->save(); // for linked products...
         }
       	catch ( liMemberCardPaymentException $e )
       	{

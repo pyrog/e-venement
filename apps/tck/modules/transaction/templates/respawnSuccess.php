@@ -12,8 +12,8 @@
         action="<?php echo url_for('transaction/access') ?>"
         method="get">
     <p>
+      <input type="text" name="id" value="<?php echo $sf_request->getParameter('id') ?>" />
       <?php if ( $sf_user->hasCredential('tck-unblock') ): ?>
-     #<input type="text" name="id" value="<?php echo $sf_request->getParameter('id') ?>" size="8" />
       <input type="checkbox" name="reopen"
              value="true" title="<?php echo __('Unlock this transaction (only granted users).') ?>" />
       <?php endif ?>

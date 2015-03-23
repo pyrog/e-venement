@@ -7,8 +7,8 @@ indexSuccess:
   stylesheets: [print-list: {media: print}, <?php if ( sfConfig::get('app_ticketting_gauge_small',true) ): ?>event-gauge-small<?php endif ?>]
 
 showSuccess:
-  stylesheets: [manifestation-view: { media: all }, view, event-seated-plan: { media: all }, event-hold?<?php echo date('Ymd') ?>]
-  javascripts: [event-seated-plan, event-gauge?<?php echo date('Ymd') ?>, helper?<?php echo date('Ymd') ?>]
+  stylesheets: [manifestation-view, view, event-seated-plan]
+  javascripts: [event-seated-plan]
 editSuccess:
   stylesheets: [manifestation-view,view, event-seated-plan]
   javascripts: [event-seated-plan]
@@ -45,29 +45,9 @@ csvSuccess:
   http_metas:
     content-type: text/comma-separated-values
     content-disposition: attachment; filename=spectators.csv
-bestFreeSeatSuccess:
-  has_layout: false
-  http_metas:
-    content-type: application/json
 
 ajaxSuccess:
   has_layout: false
   http_metas:
     content-type: application/json
-addGaugePriceSuccess:
-  has_layout: false
-  http_metas:
-    content-type: application/json
         
-possibleIncomesJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-statsMetaDataJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-statsFillingDataJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json

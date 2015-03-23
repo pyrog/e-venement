@@ -1,5 +1,0 @@
-all:
-  stylesheets: [tck-control]
-
-indexSuccess:
-  javascripts: [tck-control-center]

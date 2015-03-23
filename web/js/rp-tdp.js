@@ -21,8 +21,7 @@ $(document).ready(function(){
   },200); });
   
   // METAEVENTS
-  $('#tdp-side-ticketting .metaevent .name').click(function(){ $(this).closest('.metaevent').find('.events, .seat-rank').slideToggle(); });
-  $('#tdp-side-ticketting .metaevent .seat-rank').click(function(){ $(this).fadeOut(); });
+  $('#tdp-side-ticketting .metaevent .name').click(function(){ $(this).closest('.metaevent').find('.events').slideToggle(); });
   
   // LINK TO RELATIONSHIPS
   $('.sf_admin_form_field_Relationships table table').each(function(){
@@ -108,7 +107,7 @@ $(document).ready(function(){
         $(this).prop('checked', orig.prop('checked'));
       })
       .appendTo(
-        $('#tdp-content .tdp-subobject [name="professional[id]"][value="'+$(this).val()+'"]')
+        $('#tdp-content .tdp-subobject [name="professional[id]"][value='+$(this).val()+']')
           .closest('.tdp-subobject').find('h1')
       );
   });
@@ -236,9 +235,9 @@ $(document).ready(function(){
   $('#tdp-side-bar input[type=checkbox]').click(function(){
     $('#tdp-update-filters').get(0).blink();
     if ( $(this).closest('.tdp-side-widget').is('#tdp-side-categories') )
-      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked'));
+      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value='+$(this).val()+']').prop('selected',$(this).prop('checked'));
     if ( $(this).closest('.tdp-side-widget').is('#tdp-side-groups') )
-      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked'));
+      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value='+$(this).val()+']').prop('selected',$(this).prop('checked'));
   });
   
   // integrated search
@@ -276,12 +275,6 @@ $(document).ready(function(){
     $(this).remove();
     return false;
   });
-  $('.tdp-line.internet .tdp-contact_email_npai input[type=checkbox], .tdp-line.complements .tdp-email_npai input[type=checkbox]').change(function(){
-    if ( $(this).prop('checked') )
-      $(this).closest('.tdp-line.complements, .tdp-line.internet').find('.tdp-email, .tdp-contact_email').addClass('bad');
-    else
-      $(this).closest('.tdp-line.complements, .tdp-line.internet').find('.tdp-email, .tdp-contact_email').removeClass('bad');
-  }).change();
   
   // TOPBAR
   $('#tdp-top-bar .tdp-top-widget > a.group').mouseenter(function(){
@@ -433,7 +426,7 @@ LI.tdp_submit_forms = function(i = 0)
       data = $.parseHTML(data);
       
       // retrieving corresponding subobject
-      subobject = $('[name="professional[id]"][value="'+$(data).find('[name="professional[id]"]').val()+'"]')
+      subobject = $('[name="professional[id]"][value='+$(data).find('[name="professional[id]"]').val()+']')
         .closest('.sf_admin_edit');
       if ( subobject.length == 0 )
         subobject = $('.sf_admin_edit.tdp-object-new');
@@ -442,9 +435,9 @@ LI.tdp_submit_forms = function(i = 0)
       subobject.find('.sf_admin_flashes')
         .replaceWith($(data).find('.sf_admin_flashes'));
       setTimeout(function(){
-        $('[name="professional[id]"][value="'+$(data).find('[name="professional[id]"]').val()+'"]')
+        $('[name="professional[id]"][value='+$(data).find('[name="professional[id]"]').val()+']')
           .closest('.sf_admin_edit')
-          .find('.sf_admin_flashes > .notice').fadeOut('medium',function(){ $(this).remove(); });
+          .find('.sf_admin_flashes > *').fadeOut('medium',function(){ $(this).remove(); });
       },6000);
       
       // errornous fields

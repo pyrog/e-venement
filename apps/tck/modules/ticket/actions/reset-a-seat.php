@@ -16,15 +16,12 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2013 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2013 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
 <?php
-  if ( sfConfig::get('sf_web_debug', false) && !$request->hasParameter('debug') )
-    sfConfig::set('sf_web_debug', false);
-  
   $ticket = $request->getParameter('ticket');
   $form = new sfForm;
   $validators = $form->getValidatorSchema();
@@ -35,48 +32,30 @@
       ->leftJoin('g.Tickets tck')
       ->andWhere('tck.transaction_id = ?', $request->getParameter('id')),
   ));
-  $validators['transaction_id'] = new sfValidatorDoctrineChoice(array(
-    'model' => 'Transaction',
-  ));
   $validators['numerotation'] = new sfValidatorDoctrineChoice(array(
     'model' => 'Seat',
     'column' => 'name',
     'query' => Doctrine::getTable('Seat')->createQuery('s')
       ->select('s.*')
-      ->leftJoin('s.Tickets tck')
-      ->andWhere('tck.gauge_id = ?', $ticket['gauge_id'])
-      ->andWhere('tck.transaction_id = ?', $ticket['transaction_id'])
-      ->andWhere('tck.printed_at IS NULL AND tck.integrated_at IS NULL')
+      ->leftJoin('s.SeatedPlan sp')
+      ->leftJoin('sp.Workspaces ws')
+      ->leftJoin('ws.Gauges g')
+      ->leftJoin('g.Tickets tck')
       ->leftJoin('tck.Transaction t')
       ->andWhere('t.closed = ?',false)
-    ,
+      ->andWhere('tck.gauge_id = ?',$ticket['gauge_id'])
+      ->andWhere('tck.printed_at IS NULL AND tck.integrated_at IS NULL'),
   ));
   
-  try {
-    $form->bind($ticket);
-    if ( !$form->isValid() ) // security checks
-      throw new liSeatedException("The submitted data is not correct to reset the ticket's seat. ".$form->getErrorSchema());
-  }
-  catch ( liSeatedException $e )
-  {
-    error_log($e->getMessage());
-    $this->json = array('reset-seat-id' => NULL);
-    return 'Success';
-  }
+  $form->bind($ticket);
+  if ( !$form->isValid() ) // security checks
+    throw new liSeatedException("The submitted data are not correct to reset the ticket's seat. ".$form->getErrorSchema());
   
   $this->ticket = Doctrine_Query::create()->from('Ticket tck')
     ->andWhere('tck.gauge_id = ?',$ticket['gauge_id'])
-    ->andWhere('tck.transaction_id = ?', $ticket['transaction_id'])
-    ->leftJoin('tck.Seat s')
-    ->andWhere('s.name = ?',$ticket['numerotation'])
+    ->andWhere('tck.numerotation = ?',$ticket['numerotation'])
     ->fetchOne();
-  $this->json = array('reset-seat-id' => $this->ticket->seat_id);
+  $this->ticket->numerotation = NULL;
+  $this->ticket->save();
   
-  // WIPs ?
-  $this->ticket->seat_id = NULL;
-  if ( $this->ticket->price_id )
-    $this->ticket->save();
-  else
-    $this->ticket->delete();
-  
-  return 'Success';
+  return sfView::NONE;

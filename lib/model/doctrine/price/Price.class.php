@@ -10,7 +10,7 @@
  * @author     Baptiste SIMON <baptiste.simon AT e-glop.net>
  * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
-class Price extends PluginPrice implements liUserAccessInterface
+class Price extends PluginPrice
 {
   public function getFullName()
   {

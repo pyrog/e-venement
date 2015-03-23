@@ -33,7 +33,7 @@
     $price_id = $params['price_new']['price_id'];
     $qty = $params['price_new']['qty'];
     $qty = intval($qty) > 0 ? $qty : 1;
-    $gauge_id = $params['price_new']['declination_id'];
+    $gauge_id = $params['price_new']['gauge_id'];
   }
   else
   {
@@ -45,10 +45,8 @@
   
   if ( intval($tid).'' !== ''.$tid || intval($qty).'' !== ''.$qty
     || intval($manifestation_id).'' !== ''.$manifestation_id && intval($gauge_id).'' !== ''.$gauge_id
-    || !$price_name && !$price_id
-    || $params['price_new']['type'] != 'gauge' )
+    || !$price_name && !$price_id )
   {
-    die();
     $this->getUser()->setFlash('error',__('Error reading the given values'));
     $this->redirect('ticket/cancel');
   }
@@ -106,15 +104,12 @@
   foreach ( $tickets as $ticket )
   if ( !$ticket->hasBeenCancelled() )
   {
-    $ticket->seat_id = NULL;
-    $ticket->save();
     $cancel = $ticket->copy();
     $cancel->value = -$cancel->value;
-    $cancel->cancelling = $ticket->getOriginal()->id;
+    $cancel->cancelling = $ticket->id;
     $cancel->id = $cancel->duplicating = $cancel->transaction_id = $cancel->sf_guard_user_id = NULL;
-    $cancel->seat_id =
-    $cancel->printed_at =
-    $cancel->integrated_at = NULL;
+    $cancel->created_at = $cancel->updated_at = NULL;
+    $cancel->printed_at = $cancel->integrated_at = NULL;
     $cancel->transaction_id = $transaction->Translinked[0]->id;
     $cancel->save();
   }

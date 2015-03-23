@@ -15,31 +15,5 @@ batchDelete:
   credentials: [event-seated-plan-del]
 show:
   credentials: [[event-seated-plan, tck-seat-allocation]]
-
-batchSeatSetRank:
-  credentials: [event-seated-plan-edit]
-seatSetRank:
-  credentials: [event-seated-plan-edit]
-seatAdd:
-  credentials: [event-seated-plan-edit]
-seatDel:
-  credentials: [event-seated-plan-edit]
-delPicture:
-  credentials: [event-seated-plan-edit]
-
 getSeats:
-  credentials: [event-seats-allocation]
-getShortnames:
-  credentials: [event-seats-allocation]
-getTransactions:
-  credentials: [event-seats-allocation]
-getGroups:
-  credentials: [event-seats-allocation]
-getRanks:
-  credentials: [event-seats-allocation]
-getDebts:
-  credentials: [event-seats-allocation, tck-overview]
-getHoldSeats:
-  credentials: [event-hold]
-getControls:
-  credentials: [event-seats-allocation]
+  credentials: [tck-seat-allocation]

@@ -38,7 +38,6 @@
 ?>
 
 html body.labels {
-  font-family: sans-serif;
   <?php if ( $opt = $params['font-family'] ): ?>
   font-family: <?php echo $opt ?>;
   <?php endif; ?>
@@ -98,4 +97,5 @@ body.labels .labels > div .content .tels,
 body.labels .labels > div .content .email,
 body.labels .labels > div .content .pro { font-size: 9px; }
 
+<?php $params = $params->getRawValue() ?>
 <?php echo $params['free-css'] ?>

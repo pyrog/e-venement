@@ -3,6 +3,7 @@
 .ticket .left { margin-right: -16mm; }
 .ticket .right { width: 33mm; }
 .page { height: 137mm; overflow: hidden; }
+.ticket .logo { height: 50mm; }
 
 .metaevt { margin-top: 4mm; }
 .org, .cie { margin-top: 0; }

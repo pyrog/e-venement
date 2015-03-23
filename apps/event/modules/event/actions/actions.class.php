@@ -23,17 +23,8 @@ class eventActions extends autoEventActions
       $this->pager->getQuery()
         //->addSelect("(SELECT min(m2.happens_at) FROM manifestation m2 WHERE m2.event_id = $a.id) AS min_happens_at")
         ->addSelect("(SELECT (CASE WHEN max(m3.happens_at) IS NULL THEN false ELSE max(m3.happens_at) > now() END) FROM manifestation m3 WHERE m3.event_id = $a.id) AS now")
-        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date','DESC') != 'ASC' ? 'DESC' : 'ASC').", translation.name");
+        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date','DESC') != 'ASC' ? 'DESC' : 'ASC').", $a.name");
     }
-  }
-  
-  public function executeDelPicture(sfWebRequest $request)
-  {
-    $q = Doctrine_Query::create()->from('Picture p')
-      ->where('p.id IN (SELECT e.picture_id FROM Event e WHERE e.id = ?)',$request->getParameter('id'))
-      ->delete()
-      ->execute();
-    return sfView::NONE;
   }
   
   public function executeOnlyFilters(sfWebRequest $request)
@@ -42,9 +33,6 @@ class eventActions extends autoEventActions
     $a = $this->pager->getQuery()->getRootAlias();
     $this->pager->getQuery()->select("$a.id");
   }
-  
-  public function executeBatchBestFreeSeat(sfWebRequest $request)
-  { $this->forward('manifestation', 'bestFreeSeat'); }
   
   public function executeSearch(sfWebRequest $request)
   {
@@ -203,9 +191,9 @@ class eventActions extends autoEventActions
     {
       $new = $event->copy();
       
-      foreach ( array('Translation', 'Manifestations', 'Companies', 'Checkpoints', 'MemberCardPrices', 'MemberCardPriceModels') as $relation )
+      foreach ( array('Companies', 'Checkpoints', 'MemberCardPrices', 'MemberCardPriceModels') as $relation )
       foreach ( $event->$relation as $relobj )
-        $new->{$relation}[] = $relobj->copy();
+        $new->{$relation}[] = $relobj;
       foreach ( array('MetaEvent', 'EventCategory') as $relation )
         $new->$relation = $event->$relation;
       foreach ( array('slug') as $prop )
@@ -230,25 +218,19 @@ class eventActions extends autoEventActions
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
-    $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q',''));
+    $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q'));
     
     $q = Doctrine::getTable('Event')
       ->createQuery('e')
-      ->orderBy('translation.name')
+      ->orderBy('name')
       ->limit($request->getParameter('limit'))
       ->andWhereIn('e.meta_event_id',array_keys($this->getUser()->getMetaEventsCredentials()));
-    if ( $request->getParameter('meta_event_id').'' === ''.intval($request->getParameter('meta_event_id')) )
-      $q->andWhere('e.meta_event_id = ?', intval($request->getParameter('meta_event_id')));
-    if ( $search )
-      $q = Doctrine_Core::getTable('Event')
-        ->search($search.'*',$q);
-    
+    $q = Doctrine_Core::getTable('Event')
+      ->search($search.'*',$q);
+
     $this->events = array();
     foreach ( $q->execute() as $event )
       $this->events[$event->id] = $request->hasParameter('with_meta_event') ? $event.' ('.$event->MetaEvent.')' : (string)$event;
-    
-    if (!( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') ))
-      return 'Json';
   }
   
   public function executeError404(sfWebRequest $request)

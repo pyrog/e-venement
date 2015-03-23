@@ -1,5 +1,4 @@
 <?php include_partial('global/ariane',array('active' => 0)) ?>
-<h1><?php echo __('New account') ?></h1>
 <?php include_partial('edit_header') ?>
 <?php if ( $form->getErrorSchema()->count() > 0 ): ?>
 <ul class="errors">
@@ -24,8 +23,7 @@
     <?php elseif ( $name == 'special_groups_list' ): ?>
   <?php endif ?>
   <?php endforeach ?>
-  <p class="submit"><input type="submit" name="submit" value="<?php echo __('Validate', null, 'sf_admin') ?>" /></p>
-  <div class="text"><?php echo pubConfiguration::getText('app_texts_contact_bottom','') ?></div>
+  <p class="submit"><input type="submit" name="submit" value="<?php echo __('Update') ?>" /></p>
 </form>
 <script type="text/javascript"><!--
   $(document).ready(function(){

@@ -19,9 +19,8 @@ class ContactPublicForm extends ContactForm
     foreach ( array(
         'sf_guard_user_id', 'back_relations_list', 'Relationships', 'YOBs',
         'YOBs_list', 'groups_list', 'emails_list', 'family_contact', 'relations_list',
-        'organism_category_id', 'description', 'password', 'email_no_newsletter', 'email_npai', 'npai', 'flash_on_control',
-        'latitude', 'longitude', 'slug', 'confirmed', 'version', 'culture', 'picture_id',
-        'shortname', 'involved_in_list',
+        'organism_category_id', 'description', 'password', 'email_no_newsletter', 'npai',
+        'latitude', 'longitude', 'slug', 'confirmed', 'version',
         'familial_quotient_id', 'type_of_resources_id', 'familial_situation_id') as $field )
       unset($this->widgetSchema[$field], $this->validatorSchema[$field]);
     
@@ -134,12 +133,6 @@ class ContactPublicForm extends ContactForm
         : $this->object->Groups->getPrimaryKeys()
       );
     }
-    
-    // feature that allows adding fields as required or not through the app.yml
-    if ( ($force = sfConfig::get('app_contact_force_fields', array())) && is_array($force) )
-    foreach ( $force as $field => $required )
-    if ( isset($this->validatorSchema[$field]) && !in_array($field, array('name', 'email')) )
-      $this->validatorSchema[$field]->setOption('required', $required === true);
   }
   
   public function bind(array $taintedValues = NULL, array $taintedFiles = NULL)
@@ -240,10 +233,7 @@ class ContactPublicForm extends ContactForm
     $groups = $q->execute();
     
     $possible = $groups->getPrimaryKeys();
-    $values = $this
-      ->correctGroupsListWithCredentials('special_groups_list', $object)
-      ->getValue('special_groups_list')
-    ;
+    $values = $this->getValue('special_groups_list');
     
     if (!is_array($values))
       $values = array();

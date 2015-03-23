@@ -16,26 +16,17 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
 <?php
-    // debug
-    if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
-    {
-      $this->getResponse()->setContentType('text/html');
-      $this->setLayout('nude');
-    }
-    else
-      sfConfig::set('sf_web_debug', false);
-    
     $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
     $this->form = new ControlForm();
     $this->form->getWidget('checkpoint_id')->setOption('default', $this->getUser()->getAttribute('control.checkpoint_id'));
-    $q = Doctrine::getTable('Checkpoint')->createQuery('c')->select('c.*');
-    $this->errors = $this->tickets = array();
+    $q = Doctrine::getTable('Checkpoint')->createQuery('c');
+    $this->errors = array();
     
     $past = sfConfig::get('app_control_past') ? sfConfig::get('app_control_past') : '6 hours';
     $future = sfConfig::get('app_control_future') ? sfConfig::get('app_control_future') : '1 day';
@@ -46,10 +37,18 @@
       ->andWhere('m.happens_at >= ?',date('Y-m-d H:i',strtotime('now - '.$past)));
     $this->form->getWidget('checkpoint_id')->setOption('query',$q);
     
-    // retrieving the configurate field <- need some improvement for a composite nature : qrcode / id if failing (for instance)
-    $field = sfConfig::get('app_tickets_id','id');
-    //if ( !is_array($field) )
-    //  $field = array($field);
+    // retrieving the configurate field
+    switch ( sfConfig::get('app_tickets_id') ) {
+    case 'qrcode':
+      $field = 'barcode';
+      break;
+    case 'othercode':
+      $field = 'othercode';
+      break;
+    default:
+      $field = 'id';
+      break;
+    }
     
     if ( count($request->getParameter($this->form->getName())) > 0 )
     {
@@ -89,9 +88,6 @@
       else
         $params['ticket_id'] = array($params['ticket_id']);
       
-      if ( $field != 'id' && intval($params['ticket_id'][0]).'' === ''.$params['ticket_id'][0] )
-        $field = 'id';
-      
       // filtering the checkpoints
       if ( isset($params['ticket_id'][0]) && $params['ticket_id'][0] )
       {
@@ -99,82 +95,58 @@
           ->whereIn('t.'.$field,$params['ticket_id']);
       }
       
-      if ( intval($params['checkpoint_id']).'' == ''.$params['checkpoint_id']
-        && count($params['ticket_id']) > 0 )
+      if ( intval($params['checkpoint_id'])."" == $params['checkpoint_id'] && count($params['ticket_id']) > 0 )
       {
         $q = Doctrine::getTable('Checkpoint')->createQuery('c')
-          ->select('c.*')
           ->leftJoin('c.Event e')
           ->leftJoin('e.Manifestations m')
           ->leftJoin('m.Tickets t')
-          ->andWhereIn('t.'.$field, $params['ticket_id'])
-          ->andWhere('c.id = ?', $params['checkpoint_id']);
+          ->andWhereIn('t.'.$field,$params['ticket_id'])
+          ->andWhere('c.id = ?',$params['checkpoint_id']);
         $checkpoint = $q->fetchOne();
         
         $cancontrol = $checkpoint instanceof Checkpoint;
         if ( !$cancontrol )
-        {
-          $this->errors[] = __('The ticket #%%id%% is unfoundable in the list of available tickets', array('%%id%%' => implode(', #', $params['ticket_id'])));
-          foreach ( $params['ticket_id'] as $tid )
-            $this->tickets[] = $tid;
-        }
-        elseif ( $checkpoint->legal )
+          $this->errors[] = __('The ticket #%%id%% is unfoundable in the list of available tickets', array('%%id%%', $params['ticket_id']));
+        if ( $cancontrol && $checkpoint->legal )
         {
           $q = Doctrine::getTable('Control')->createQuery('c')
-            ->select('c.*')
             ->leftJoin('c.Checkpoint c2')
             ->leftJoin('c2.Event e')
             ->leftJoin('e.Manifestations m')
             ->leftJoin('m.Tickets t')
             ->leftJoin('c.Ticket tc')
             ->leftJoin('c.User u')
-            ->andWhereIn('tc.'.$field, $params['ticket_id'])
+            ->andWhereIn('tc.'.$field,$params['ticket_id'])
             ->andWhere("tc.$field = t.$field")
-            ->andWhere('c.checkpoint_id = ?', $params['checkpoint_id'])
+            ->andWhere('c.checkpoint_id = ?',$params['checkpoint_id'])
             ->orderBy('c.id DESC');
-          $this->controls = $q->execute();
-          $cancontrol = $this->controls->count() == 0;
+          $controls = $q->execute();
+          $cancontrol = $controls->count() == 0;
           if ( !$cancontrol )
-          {
-            $this->errors[] = __('The ticket #%%id%% has been already controlled on this checkpoint before (%%datetime%% by %%user%%)', array(
-              '%%id%%' => $this->controls[0]->Ticket->id,
-              '%%datetime%%' => $this->controls[0]->created_at,
-              '%%user%%' => (string)$this->controls[0]->User,
+            $this->errors[] = __('The ticket #%%id%% has been already control on this checkpoint before (%%datetime%% by %%user%%)', array(
+              '%%id%%' => $controls[0]->Ticket->id,
+              '%%datetime%%' => $controls[0]->created_at,
+              '%%user%%' => (string)$controls[0]->User,
             ));
-            $this->tickets = Doctrine::getTable('Ticket')->createQuery('tck')
-              ->select('tck.*')
-              ->andWhereIn("tck.$field", $params['ticket_id'])
-              ->execute();
-          }
         }
         
         $this->getUser()->setAttribute('control.checkpoint_id',$params['checkpoint_id']);
         
-        $comments = array();
-        foreach ( $this->tickets as $ticket )
-        if ( $ticket instanceof Ticket )
-        foreach ( array($ticket->DirectContact, $ticket->Transaction->Contact) as $contact )
-        if ( trim($contact->flash_on_control) )
-          $comments[] = trim($contact->flash_on_control);
-        $params['comment'] = $comments ? implode("\n", $comments) : NULL;
-        
         if ( $cancontrol )
         {
+          $this->comment = $params['comment'];
+          
           if ( $checkpoint->id )
           {
-            if ( $field != 'id' )
+            if ( sfConfig::get('app_tickets_id') != 'id' )
             {
               $params['ticket_id'] = $params['ticket_id'][0];
-              $this->form->bind($params, $request->getFiles($this->form->getName()));
+              $this->form->bind($params);
               if ( $this->form->isValid() )
               {
-                $this->tickets[] = Doctrine::getTable('Ticket')->createQuery('tck')
-                  ->andWhereIn("tck.$field", $params['ticket_id'])
-                  ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL')
-                  ->fetchOne();
                 $this->form->save();
-                $this->success = true;
-                return 'Result';
+                $this->setTemplate('passed');
               }
               else
               {
@@ -184,29 +156,21 @@
             }
             else
             {
-              $err = $tck = array();
+              $err = array();
               $ids = $params['ticket_id'];
               foreach ( $ids as $id )
               {
                 $params['ticket_id'] = $id;
                 $this->form = new ControlForm;
-                $this->form->bind($params, $request->getFiles($this->form->getName()));
+                $this->form->bind($params,$request->getFiles($this->form->getName()));
                 if ( $this->form->isValid() )
-                {
                   $this->form->save();
-                  $this->tickets[] = $this->form->getObject()->Ticket;
-                }
                 else
-                {
                   $err[] = $id;
-                  $this->tickets[] = $tck[$id] = Doctrine::getTable('Ticket')->find($id);
-                }
               }
               foreach ( $err as $e )
-                $this->errors[] = __('An error occurred controlling your ticket #%%id%%.', array('%%id%%' => $e))
-                  .($tck[$e] instanceof Ticket && !$tck[$e]->printed_at && !$tck[$e]->integrated_at ? ' '.__('This ticket is not sold yet.') : '');
-              $this->success = count($err) < count($ids);
-              return 'Result';
+                $this->errors[] = __('It has been impossible to save the control of ticket #%%id%%', array('%%id%%' => $e));
+              $this->setTemplate('passed');
             }
           }
           else
@@ -219,25 +183,12 @@
               $this->form->bind($params);
             }
             else
-            {
-              $this->success = false;
-              $failure = new FailedControl;
-              $failure->complete($params);
-              return 'Result';
-            }
+              $this->setTemplate('failed');
           }
         }
         else
         {
-          $this->success = false;
-          foreach ( $this->tickets as $ticket )
-          {
-            $failure = new FailedControl;
-            if ( $ticket instanceof Ticket )
-              $params['ticket_id'] = $ticket->id;
-            $failure->complete($params);
-          }
-          return 'Result';
+          $this->setTemplate('failed');
         }
       }
       else
@@ -245,5 +196,3 @@
         $this->getUser()->setFlash('error',__("Don't forget to specify a checkpoint and a ticket id"));
       }
     }
-    
-    return 'Success';

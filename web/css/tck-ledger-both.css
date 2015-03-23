@@ -11,7 +11,7 @@
 .ledger-both #byUser, .ledger-both #gauges {
   float: none;
   clear: both;
-  width: calc(424px * 2 + 7px);
+  width: auto;
 }
 
 .ledger-both .nb, .ledger-both .average,

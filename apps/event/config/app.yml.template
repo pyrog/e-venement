@@ -26,10 +26,7 @@ all:
       #focus_on_potentialities: false
     #extra_informations_enable: false
     #editable_in_calendar: false
-    price_manifestations: true  # true by default
-    price_gauges: true          # false by default
-    #prefer_short_name: false
-    online_users: [vel] # for stats
+    #max_ajax: 20
     #show_location_ajax: false
     #stop_listing_after: 30 minutes
   synchronization:
@@ -51,5 +48,3 @@ all:
     pending_alarms:
       when: [-1 week, -2 days]
       what: [display, email]
-  #cacher:
-  #  timeout: 1 day ago

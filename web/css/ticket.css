@@ -125,7 +125,7 @@
 }
 
 #description { width: 350px; padding: 2px 5px; float: right; margin-top: 5px; }
-#description textarea { width: 335px; height: 3em; font-size: 80%; }
+#description textarea { width: 335px; height: 2em; font-size: 100%; }
 
 #contact { display: inline-block; min-height: 38px; }
 #contact .title { display: inline-block; margin-top: 15px; }
@@ -213,6 +213,26 @@
 #cancel-tickets.passed .link,
 #checkpoint.passed .link {
   background-color: LightGreen;
+}
+#checkpoint ul {
+  list-style-type: none;
+  margin: 5px 10px;
+  padding: 5px;
+}
+#checkpoint label {
+  width: 100px;
+  display: inline-block;
+}
+#checkpoint .comment textarea { height: 40px; }
+#checkpoint .comment {
+}
+#checkpoint .checkpoint_id {
+  position: absolute;
+  margin-left: 280px;
+  margin-top: -1em;
+}
+#checkpoint .comment label, #checkpoint .checkpoint_id label {
+  display: block;
 }
 
 #prices .tickets_id {
@@ -322,14 +342,13 @@
   border-radius: 3px 3px 3px 3px;
   white-space: nowrap;
 }
-#store .total, #tickets .total { float: right; font-weight: bold; padding-top: 3px; text-align: right; }
-#store .total:before, #tickets .total:before { content: '= '; }
-#store .label { font-weight: bold; }
+#tickets .total { float: right; font-weight: bold; padding-top: 3px; }
+#tickets .total:before { content: '= '; }
 
 #prices .prices_list .cancel {
   font-size: 0;
-  background-position: -32px -80px;
-  display: inline-block;
+   background-position: -32px -80px;
+   display: inline-block;
 }
 #prices .prices_list.cancel {
   background-color: orange;

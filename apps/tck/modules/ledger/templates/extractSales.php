@@ -44,9 +44,8 @@
     'user'            => __('User'),
     'qty'             => __('Quantity'),
     'pit'             => __('PIT'),
-    'extra-taxes'     => __('Extra taxes'),
-    'tep'             => __('TEP'),
     'vat'             => __('VAT'),
+    'tep'             => __('TEP'),
     'account'         => __('Account'),
   );
   

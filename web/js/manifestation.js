@@ -1,47 +1,4 @@
 $(document).ready(function(){
-  // find the best seats available for manifesations in batch
-  $('.sf_admin_actions').closest('form').submit(function(){
-    if ( $(this).find('select[name=batch_action]').val() != 'batchBestFreeSeat' )
-      return;
-    $.ajax({
-      url: $(this).prop('action'),
-      data: $(this).serialize(),
-      method: window.location.hash == '#debug' ? 'get' : $(this).prop('method'),
-      success: function(data){
-        if ( window.location.hash == '#debug' )
-          console.error(data);
-        
-        var container;
-        $('<div></div>').addClass('ui-widget').addClass('ui-widget-content').addClass('ui-corner-all').prop('id', 'seats').addClass('sf_admin_list')
-          .prepend($('<div class="ui-widget-header ui-corner-top fg-toolbar"></div>').prepend($('<h2></h2>').text($('.sf_admin_actions select[name=batch_action] option:selected').text())))
-          .append(container = $('<table></table>').addClass('ui-widget-content'))
-          .appendTo('body')
-        ;
-        $('<a></a>').addClass('close')
-          .prop('href', '#close')
-          .text('x')
-          .click(function(){
-            $('#seats').fadeOut(function(){ $(this).remove(); });
-            $('#transition .close').click();
-            return false;
-          })
-          .appendTo($('#seats h2'))
-        ;
-        
-        $.each(data, function(id, seat){
-          $('<tr></tr>').attr('data-id', seat.id).appendTo(container).addClass('sf_admin_row').addClass('ui-widget-content')
-            .append($('<td></td>').addClass('rank').text(seat.rank))
-            .append($('<td></td>').addClass('event').text(seat.event))
-            .append($('<td></td>').append($('<a></a>').prop('href', seat.manifestation_url).text(seat.happens_at_txt)))
-            .append($('<td></td>').addClass('gauge').html(seat.workspaces.replace("\n",'<br/>')))
-            .append($('<td></td>').append($('<a></a>').addClass('name').prop('href', seat.sell_url).text(seat.name)))
-          ;
-        });
-      }
-    });
-    return false;
-  });
-  
   // change the event of manifesations in batch
   $('.sf_admin_actions select').change(function(){
     if ( $(this).val() != 'batchChangeEvent' )
@@ -121,25 +78,23 @@ $(document).ready(function(){
   });
   
   // two fields for applicant : minimize that !
-  $.each({ contact_id: 'applicant', organism_id: 'applicant_organism' }, function(id, field){
-  if ( $('#sf_fieldset_resources .sf_admin_form_field_'+id).length > 0
-    && $('#sf_fieldset_resources .sf_admin_form_field_'+field+' a').length > 0 )
+  if ( $('#sf_fieldset_resources .sf_admin_form_field_contact_id').length > 0
+    && $('#sf_fieldset_resources .sf_admin_form_field_applicant a').length > 0 )
   {
-    $('#sf_fieldset_resources .sf_admin_form_field_'+id+'.sf_admin_foreignkey input[type=text]')
-      .after($('#sf_fieldset_resources .sf_admin_form_field_'+field+' a')
+    $('#sf_fieldset_resources .sf_admin_form_field_contact_id.sf_admin_foreignkey input[type=text]')
+      .after($('#sf_fieldset_resources .sf_admin_form_field_applicant a')
         .each(function(){ $(this).prop('title',$(this).html()); })
         .prepend('<span class="ui-icon ui-icon-person"></span>')
       );
-    $('#sf_fieldset_resources .sf_admin_form_field_'+field).hide();
+    $('#sf_fieldset_resources .sf_admin_form_field_applicant').hide();
   }
   else
-  if ( $('#sf_fieldset_resources .sf_admin_form_field_'+id).length == 0
-    && $('#sf_fieldset_resources .sf_admin_form_field_'+field+' a').length == 0 )
+  if ( $('#sf_fieldset_resources .sf_admin_form_field_contact_id').length == 0
+    && $('#sf_fieldset_resources .sf_admin_form_field_applicant a').length == 0 )
   {
     // if no applicant, then remove the field from the form
-    $('#sf_fieldset_resources .sf_admin_form_field_'+field).hide();
+    $('#sf_fieldset_resources .sf_admin_form_field_applicant').hide();
   }
-  });
   
   // add titles on extra-informations fields
   $('#sf_fieldset_extra_informations table table tr').each(function(){
@@ -155,31 +110,4 @@ $(document).ready(function(){
     $('.ui-tabs-nav [href="#sf_fieldset_extra_informations"]')
       .prepend('<span class="ui-icon ui-icon-alert floatright"></span>');
   }
-  
-  // PriceGauge sensitivity
-  $('.sf_admin_form .sf_admin_form_field_gauges_prices').click(function(){
-    $(this).addClass('ui-state-highlight');
-  });
-  
-  // click on the first gauge on loading
-  if ( location.hash == '#sf_fieldset_workspaces' )
-  {
-    var click_gauge = function(){
-      setTimeout(function(){
-        if ( $('#sf_fieldset_workspaces .gauges-all .gauge').length == 0 )
-          click_gauge();
-        else
-          $('#sf_fieldset_workspaces .gauges-all .gauge').click();
-      },500);
-    }
-    click_gauge();
-  }
-});
-
-if ( LI == undefined )
-  var LI = {};
-if ( LI.seatedPlanInitializationFunctions == undefined )
-  LI.seatedPlanInitializationFunctions = [];  
-LI.seatedPlanInitializationFunctions.push(function(){
-  $('.seated-plan .seat.txt').unbind('contextmenu');
 });

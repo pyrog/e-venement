@@ -3,6 +3,7 @@
   <head>
     <?php use_javascript('menu') ?>
     <?php use_stylesheet('menu') ?>
+    <?php use_stylesheet('print','last',array('media' => 'print')) ?>
     <?php use_stylesheet('/private/main.css') ?>
     <?php use_stylesheet('about') ?>
     <?php if ( sfConfig::get('project_messaging_enable',false) ) use_stylesheet('jappix') ?>
@@ -18,7 +19,7 @@
     <?php include_stylesheets() ?>
     <?php include_javascripts() ?>
   </head>
-  <body class="<?php echo 'app-'.$sf_context->getConfiguration()->getApplication().' mod-'.$module_name ?> culture-<?php echo $sf_user->getCulture() ?>">
+  <body class="<?php echo 'app-'.$sf_context->getConfiguration()->getApplication().' mod-'.$module_name ?>">
     <div id="content">
       <?php echo $sf_content ?>
     </div>

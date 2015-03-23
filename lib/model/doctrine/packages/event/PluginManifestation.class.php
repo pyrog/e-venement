@@ -18,7 +18,6 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
     'authorize_conflicts'   => 'event-reservation-conflicts',
     'access_all'            => 'event-access-all',
   );
-  protected $cache = array();
   
   public function duplicate($save = true)
   {
@@ -30,16 +29,7 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
     {
       $collection = $manif->$subobjects;
       foreach ( $this->$subobjects as $subobject )
-      {
-        $copy = $subobject->copy();
-        
-        // specific case of PriceGauges on Gauges...
-        if ( $subobject instanceof Gauge )
-        foreach ( $subobject->PriceGauges as $pg )
-          $copy->PriceGauges[] = $pg->copy();
-        
-        $collection[] = $copy;
-      }
+        $collection[] = $subobject->copy();
     }
     
     if ( $save )
@@ -196,37 +186,5 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
     if ( $credential )
       return self::$credentials[$credential];
     return self::$credentials;
-  }
-  
-  public function clearCache()
-  {
-    $this->cache = array();
-    return $this;
-  }
-  /**
-    * Get data from the cache
-    * @param  string    $name the name of the cached object
-    * @return mixed     cached value
-    *
-    **/
-  protected function getFromCache($name)
-  {
-    if ( !isset($this->cache[$name]) )
-      throw new liEvenementException('Nothing is cached with the name: '.$name.'.');
-    
-    return $this->cache[$name];
-  }
-  /**
-    * Set data in the cache
-    * @param  string    $name  the name of the cached object
-    * @param  mixed     $value the content to be cached
-    * @return Manifestation $this
-    *
-    **/
-  protected function setInCache($name, $value)
-  {
-    $this->cache[$name] = $value;
-    
-    return $this;
   }
 }

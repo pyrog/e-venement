@@ -24,12 +24,4 @@ abstract class PluginTransaction extends BaseTransaction
     if ( !$this->contact_id || in_array('contact_id', $this->_modified) && !in_array('professional_id', $this->_modified) )
       $this->professional_id = NULL;
   }
-  
-  public function preInsert($event)
-  {
-    parent::preInsert($event);
-    
-    if ( sfConfig::has('app_transaction_with_shipment') )
-      $this->with_shipment = (bool)sfConfig::get('app_transaction_with_shipment');
-  }
 }

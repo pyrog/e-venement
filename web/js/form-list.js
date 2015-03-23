@@ -1,27 +1,24 @@
-if ( LI == undefined )
-  LI = {};
-
 $(document).ready(function(){
-  LI.form_list();
+  form_list();
 });
 
-LI.form_list = function()
+function form_list()
 {
   $('.sf_admin_form .sf_admin_form_list.ajax').each(function(){
     var widget = $(this).get(0);
     
     $(this).load(widget.url+' .sf_admin_list',function(){
-      LI.form_list_change(widget);
-      LI.form_list_new();
-      LI.form_list_actions(widget);
-      LI.form_list_more(widget);
-      LI.form_on_quit();
+      form_list_change(widget);
+      form_list_new();
+      form_list_actions(widget);
+      form_list_more(widget);
+      form_on_quit();
     });
     
   });
 }
 
-LI.form_list_more = function(widget)
+function form_list_more(widget)
 {
   if ( widget.functions != undefined )
   for ( i = 0 ; i < widget.functions.length ; i++ )
@@ -29,7 +26,7 @@ LI.form_list_more = function(widget)
     widget.functions[i]();
 }
 
-LI.form_list_actions = function(widget)
+function form_list_actions(widget)
 {
   // delete
   $('.sf_admin_form_list .sf_admin_action_delete a').unbind().removeAttr('onclick').click(function(){
@@ -39,7 +36,7 @@ LI.form_list_actions = function(widget)
       _csrf_token:  $('.sf_admin_form .sf_admin_form_list.ajax').find('._delete_csrf_token').html(),
       sf_method:    'delete',
     },function(data){
-      LI.form_list();
+      form_list();
     });
     return false;
   });
@@ -61,11 +58,12 @@ LI.form_list_actions = function(widget)
     $.post($(this).prop('action'),$(this).serialize(),function(data){
       data = $.parseHTML(data);
       
-      var object_id = $(data).find('form').prop('action').match(/\/(\d+)(\.\w+){0,1}$/)[1];
+      var object_id = $(data).find('form').prop('action').match(/\/(\d+)$/)[1];
       var input = $('.sf_admin_form .sf_admin_form_list.ajax .object-'+object_id+' input[type=text]');
       var form = input.closest('form');
       var widget = form.closest('.ajax').get(0);
       
+      input.replaceWith($(data).find(widget.field));
       form.find('.label, .sf_admin_flashes').remove();
       if ( form.find('.sf_admin_form_field_value > *').length <= 1 )
       {
@@ -78,32 +76,32 @@ LI.form_list_actions = function(widget)
           });
         },3000);
       }
-      LI.form_list_change(widget);
+      form_list_change(widget);
     });
     return false;
   });
   
   // pager
-  LI.form_list_pager(widget);
+  form_list_pager(widget);
 }
 
-LI.form_list_pager = function(widget)
+function form_list_pager(widget)
 {
   $('#sf_admin_pager .button a').unbind().click(function(){
     elt = $(this).closest('.sf_admin_form_list');
     $.get($(this).prop('href'),function(data){
       elt.html($($.parseHTML(data)).find('.sf_admin_list'));
-      LI.form_list_new(widget);
-      LI.form_list_actions(widget);
-      LI.form_list_more(widget);
+      form_list_new(widget);
+      form_list_actions(widget);
+      form_list_more(widget);
     });
     return false;
   });
 }
 
-LI.form_list_change = function(widget)
+function form_list_change(widget)
 {
-  LI.form_list_more(widget);
+  form_list_more(widget);
   $('.sf_admin_form .sf_admin_form_list.ajax form input[type=text], .sf_admin_form .sf_admin_form_list.ajax form input[type=checkbox]').change(function(){
     $(this).closest('form').submit();
     var input = this;
@@ -113,10 +111,11 @@ LI.form_list_change = function(widget)
   });
 }
 
-LI.form_on_quit = function()
+function form_on_quit()
 {
   window.onbeforeunload = function(){
     var count = 0;
+    var msg;
     
     $('form form input[type=text]').each(function(){
       if ( $(this).get(0).defaultValue !== $(this).val() )
@@ -129,7 +128,7 @@ LI.form_on_quit = function()
   };
 }
 
-LI.form_list_new = function()
+function form_list_new()
 {
   // new records
   $('.sf_admin_form .sf_admin_form_list.ajax .sf_admin_new select').unbind().change(function(){
@@ -138,7 +137,7 @@ LI.form_list_new = function()
   
   $('.sf_admin_form .sf_admin_form_list.ajax .sf_admin_new form').unbind().submit(function(){
     $.post($(this).prop('action'),$(this).serialize(),function(data){
-      LI.form_list();
+      form_list();
     });
     return false;
   });

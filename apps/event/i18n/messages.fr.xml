@@ -5,366 +5,12 @@
     <header/>
     <body>
       <trans-unit>
-        <source>A checkpoint is a logical point of entrance. If you have one venue and five doors, you only have one checkpoint. If you have five venues, and one can be only in one venue at the same time, then you have five checkpoints.</source>
-        <target>Un point de contrôle est un point d'entrée logique. Si vous avez une salle avec cinq portes, vous n'avez qu'un seul point de contrôle. Si vous avez cinq salles et qu'une personne ne peut être que dans une salle à la fois, alors vous avez cinq points de contrôle.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>If you unckeck the "legal" property of a checkpoint, one can pass through the checkpoint more than once.</source>
-        <target>Si vous décochez la propriété "légal" d'un point de contrôle, un billet pourra passer plusieurs fois un même point de contrôle.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Occupied</source>
-        <target>Occupation</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Held for "%%hold%%"</source>
-        <target>Retenue par "%%hold%%"</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Held seats</source>
-        <target>Retenues</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Closed &amp; free</source>
-        <target>Fermé et libre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Capacity</source>
-        <target>Capacité</target>
-      </trans-unit>
-      <trans-unit>
         <source>Day/Location</source>
         <target>Jour/Lieu</target>
       </trans-unit>
       <trans-unit>
-        <source>Waiting list&lt;span class="ui-icon ui-icon-arrow-1-e"&gt;&lt;/span&gt;</source>
-        <target>Liste d'attente&lt;span class="ui-icon ui-icon-arrow-1-e"&gt;&lt;/span&gt;</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Waiting list for hold:</source>
-        <target>Liste d'attente pour la retenue :</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Clicking a on a free seat adds it into this hold. Clicking on a held seat removes it from this hold. Click+CTRL+Drag allows to select/deselect multiple seats in batch.</source>
-        <target>Cliquer sur une place libre l'ajoute à la retenue. Cliquer sur une place déjà retenue la libère. Clic+CTRL+Glissé permet de sélectionner/désélectionner plusieurs places d'un coup.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Some errors occurred but some seats have been transferred correctly from transaction #%%tid%%.</source>
-        <target>Avec quelques erreurs, des places ont été correctement transférées de l'opération #%%tid%%.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>A global error occurred transferring the seats from transaction #%%tid%%.</source>
-        <target>Une erreur globale est survenue en transférant les places de l'opération #%%tid%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>No seat can be transferred from the transaction #%%tid%%.</source>
-        <target>Aucune place n'a pu être transférée de l'opération #%%tid%%.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Transfert successful from transaction #%%tid%% to this hold.</source>
-        <target>Transfert opéré avec succès depuis l'opération #%%tid%% vers cette retenue.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>The given transaction needs to be opened (or you must have the credential to reopen it), the only concerned tickets are the unsold tickets related to this hold's manifestation.</source>
-        <target>L'opération spécifiée doit être ouverte (ou vous devez avoir les permissions pour la réouvrir), les seuls billets concernés sont ceux qui ne sont pas vendus en relation avec la manifestation de la présente retenue.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New transaction</source>
-        <target>Nouvelle opération</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Get back seats from this transaction</source>
-        <target>Reprendre les places depuis cette opération</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Book released seats immediatly</source>
-        <target>Réserve immédiatement les places relâchées</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Transfert free seats into an other hold.</source>
-        <target>Transférer les places libres dans une autre retenue.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Hold "%%name%%"</source>
-        <target>Retenue "%%name%%"</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Holds list</source>
-        <target>Liste des retenues</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New Hold</source>
-        <target>Nouvelle retenue</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Discharge</source>
-        <target>En amont de</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Feeder</source>
-        <target>En aval de</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Feeders</source>
-        <target>En aval de</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Updated at</source>
-        <target>Mis à jour le</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Using vouchers</source>
-        <target>Utilisation de contremarques</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Products</source>
-        <target>Produits</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Linked products</source>
-        <target>Produits liés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Member cards</source>
-        <target>Cartes d'abo</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Best free seat</source>
-        <target>Meilleure place libre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Close</source>
-        <target>Fermer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>If you find two numbers in a cell, consider the upper number as the pessimistic estimation and the lower number as the optimistic one.</source>
-        <target>Si vous trouvez deux nombres dans une cellule, considérez le nombre du haut comme l'estimation la plus pessimiste et le nombre du bas comme l'estimation la plus optimiste.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Filling</source>
-        <target>Remplissage</target>
-      </trans-unit>
-      <trans-unit>
-        <source>State of sales</source>
-        <target>État des ventes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>seats</source>
-        <target>places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>open gauges for online sales</source>
-        <target>jauges ouvertes pour la vente en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>open gauges for onsite sales</source>
-        <target>jauges ouvertes pour la vente sur lieu</target>
-      </trans-unit>
-      <trans-unit>
-        <source>all gauges</source>
-        <target>toutes les jauges</target>
-      </trans-unit>
-      <trans-unit>
-        <source>everything</source>
-        <target>tout billet</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Not seated</source>
-        <target>Non placé</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Not free</source>
-        <target>Non libre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Sold</source>
-        <target>Vendu</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ordered</source>
-        <target>Réservé</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Free</source>
-        <target>Libre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Display directly the first gauge with its plan if it has one</source>
-        <target>Affiche directement la première jauge avec son plan le cas échéant</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Clear transactions</source>
-        <target>Vider les opérations</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Clear groups</source>
-        <target>Vider les groupes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This only concerns seated gauges and seats. It is not about global free tickets.</source>
-        <target>Cela concerne seulement les jauges placées et leurs places. Il ne s'agit donc pas de billets disponibles hors placement.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Tickets prepared &amp; paid by the same user</source>
-        <target>Billets préparés &amp; payés par le même utilisateur</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Tickets paid by this user but prepared by another</source>
-        <target>Billets payés par cet utilisateur mais préparés par un autre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Tickets prepared by this user, and still unpaid</source>
-        <target>Billets préparés par cet utilisateur, et sans règlement</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Tickets prepared by this user, seated, and still unpaid</source>
-        <target>Billets préparés par cet utilisateur, placés, et sans règlement</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Available for online sales</source>
-        <target>Disponibles pour la vente en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Free but not available for online sales</source>
-        <target>Libres mais non disponibles à la vente en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Total</source>
-        <target>Total</target>
-      </trans-unit>
-      <trans-unit>
-        <source>None</source>
-        <target>Aucun</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Seats</source>
-        <target>Places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Users used by online sales</source>
-        <target>Utilisateurs concernés par la vente en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Statistics</source>
-        <target>Statistiques</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Sales</source>
-        <target>Ventes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Min.</source>
-        <target>Min.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Max.</source>
-        <target>Max.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Categories are usefull to group gauges for online sales. Use only if needed.</source>
-        <target>Les catégories sont utiles pour grouper les jauges dans la vente en ligne. À n'utiliser que si nécessaire.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Unjoin?</source>
-        <target>Dissocier ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Price created or updated for this gauge</source>
-        <target>Tarif créé ou mis à jour pour cette jauge</target>
-      </trans-unit>
-      <trans-unit>
-        <source>A problem occurred during the price creation / update (you should better reload your screen)</source>
-        <target>Un problème est survenu lors de la création / mise à jour du tarif (vous feriez bien de recharger votre écran)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Explicit display</source>
-        <target>Affichage explicite</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ideal width</source>
-        <target>Largeur idéale</target>
-      </trans-unit>
-      <trans-unit>
-        <source>HTML colors</source>
-        <target>Couleurs HTML</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Shape</source>
-        <target>Forme</target>
-      </trans-unit>
-        <trans-unit>
-        <source>Surveys</source>
-        <target>Questionnaires</target>
-      </trans-unit>
-      <trans-unit>
-        <source>3 letters minimum</source>
-        <target>3 lettres minimum</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Deprecated</source>
-        <target>Obsolète</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Participants list</source>
-        <target>Liste des participants</target>
-      </trans-unit>
-      <trans-unit>
-        <source>No registered participant</source>
-        <target>Pas de participant enregistré</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Reload</source>
-        <target>Recharger</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Ranks</source>
-        <target>Rangs</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Debts</source>
-        <target>Dettes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>rank</source>
-        <target>rang</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Show neighborhood</source>
-        <target>Voir le voisinage</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Neighbors</source>
-        <target>Voisins</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Best seats</source>
-        <target>Meilleures places</target>
-      </trans-unit>
-      <trans-unit>
-        <source>If a seated plan exists, it will show up if you click on the gauge</source>
-        <target>Si un plan numéroté existe, il s'affichera si vous cliquez sur la jauge</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Link(s) removed</source>
-        <target>Lien(s) supprimé(s)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Link(s) created</source>
-        <target>Lien(s) créé(s)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Links between seats have been cleared</source>
-        <target>Les liens entre les sièges ont été remis à zéro</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Links between seats have been created</source>
-        <target>Les liens entre les sièges ont été créés</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This form will allow you to define the rank of seats in bulk on your map. Using it will save you a lot of time, because you will only have to set the rank of particular seats. The venues are usually symetrical, you will probably make at least to passes. Take the left side, then the right side of instance.
-Careful: this tool has its limits. It works good only with batches of seats named for instance from A-1 to H-74. Test it carefully before to conclude on its utility level.</source>
-        <target>Ce formulaire va vous permettre de définir en lot des notes à des places numérotées sur votre plan. Grâce à cela vous gagnerez énormément de temps, car vous n'aurez plus qu'à préciser les notes des places particulières. Souvent les salles sont symétriques, vous aurez ainsi sans doute au moins deux passages à faire. Prenez la moitié gauche, puis la moitié droite.
-Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de places nommées par exemple de A-1 à H-74. Faîtes des essais consciencieux avant de conclure sur son utilité.</target>
+        <source>Do not forget to print in landscape, which is the only acceptable print format.</source>
+        <target>Ne pas oublier d'imprimer en paysage, qui est le seul format d'impression acceptable.</target>
       </trans-unit>
       <trans-unit>
         <source>Dates range</source>
@@ -395,8 +41,8 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Si la priorité d'un seul espace de travail est inférieure à 0 (attention à essayer de n'en avoir qu'un), alors les jauges de cet espace de travail seront afficher seules en priorité dans les mini-jauges, remplaçant celle représentant la fusion de l'ensemble des jauges disponibles.</target>
       </trans-unit>
       <trans-unit>
-        <source>If only one workspace's order is more than 999, then the displaid mini-gauges will be based on profitability, in relation with the expected income and what is really being realized on every manifestation (only in the case where the expected income is given). About this point, the extra taxes are not included in the income calculation.</source>
-        <target>Si la priorité d'un seul des espaces de travail est supérieure à 999, alors les mini-jauges affichées seront économiques, en rapport avec le chiffre d'affaire visé et réalisé sur chaque manifestation (à condition qu'il soit défini). À ce propos, les taxes additionnelles ne sont pas prises en compte dans le chiffre d'affaire.</target>
+        <source>If only one workspace's order is more than 999, then the displaid mini-gauges will be based on profitability, in relation with the expected income and what is really being realized on every manifestation (only in the case where the expected income is given).</source>
+        <target>Si la priorité d'un seul des espaces de travail est supérieure à 999, alors les mini-jauges affichées seront économiques, en rapport avec le chiffre d'affaire visé et réalisé sur chaque manifestation (à condition qu'il soit défini).</target>
       </trans-unit>
       <trans-unit>
         <source>Expected income</source>
@@ -461,10 +107,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit>
         <source>Total: %%total%% Free: %%free%%</source>
         <target>Total: %%total%% Libres: %%free%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Total: %%total%% Seats: %%seats%% Free: %%free%%</source>
-        <target>Total: %%total%% Places: %%seats%% Libres: %%free%%</target>
       </trans-unit>
       <trans-unit>
         <source>Sells: %%printed%% Orders: %%ordered%% Demands: %%asked%%</source>
@@ -557,10 +199,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit>
         <source>Hop</source>
         <target>Saut</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Poster</source>
-        <target>Affiche</target>
       </trans-unit>
       <trans-unit>
         <source>Picture</source>
@@ -772,7 +410,7 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       </trans-unit>
       <trans-unit>
         <source>yes or no</source>
-        <target>indifférent</target>
+        <target>oui ou non</target>
       </trans-unit>
       <trans-unit>
         <source>yes</source>
@@ -911,10 +549,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Demandeur</target>
       </trans-unit>
       <trans-unit>
-        <source>Applied by organism</source>
-        <target>Organisme demandeur</target>
-      </trans-unit>
-      <trans-unit>
         <source>Begins at</source>
         <target>Commence le</target>
       </trans-unit>
@@ -985,10 +619,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit>
         <source>Taxes list</source>
         <target>Liste des taxes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Taxes</source>
-        <target>Taxes</target>
       </trans-unit>
       <trans-unit>
         <source>This field is updated automagically</source>
@@ -1187,8 +817,8 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>%m% mois</target>
       </trans-unit>
       <trans-unit>
-        <source>Global gauge</source>
-        <target>Jauge globale</target>
+        <source>Merging workspaces</source>
+        <target>Fusion des espaces de travail</target>
       </trans-unit>
       <trans-unit>
         <source>New Location</source>
@@ -1435,10 +1065,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Petit nom</target>
       </trans-unit>
       <trans-unit>
-        <source>Subtitle</source>
-        <target>Sous-titre</target>
-      </trans-unit>
-      <trans-unit>
         <source>Staging label</source>
         <target>Étiquette "mise en scène"</target>
       </trans-unit>
@@ -1640,7 +1266,7 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       </trans-unit>
       <trans-unit id="104">
         <source>Edit Event %%name%%</source>
-        <target>Modifier l'événement %%name%%</target>
+        <target>Modifier l'événément %%name%%</target>
       </trans-unit>
       <trans-unit id="105">
         <source>Detailed category</source>
@@ -1726,14 +1352,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <source>Online</source>
         <target>En ligne</target>
       </trans-unit>
-      <trans-unit>
-        <source>Onsite</source>
-        <target>Sur lieu</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Closed on site</source>
-        <target>Fermé sur lieu</target>
-      </trans-unit>
       <trans-unit id="127">
         <source>Prices list</source>
         <target>Liste des tarifs</target>
@@ -1808,11 +1426,11 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       </trans-unit>
       <trans-unit>
         <source>Edit Meta event "%%name%%"</source>
-        <target>Modification du meta-événement "%%name%%"</target>
+        <target>Modification du meta-événément "%%name%%"</target>
       </trans-unit>
       <trans-unit>
         <source>View Meta event</source>
-        <target>Fiche meta-événement</target>
+        <target>Fiche meta-événément</target>
       </trans-unit>
       <trans-unit>
         <source>Meta event List</source>
@@ -1849,10 +1467,6 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit>
         <source>Remember</source>
         <target>Rester connecté(e)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>New Price</source>
-        <target>Nouveau tarif</target>
       </trans-unit>
     </body>
   </file>

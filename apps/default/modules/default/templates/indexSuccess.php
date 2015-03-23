@@ -25,7 +25,6 @@
 <?php include_partial('default/assets') ?>
 <div class="about-home">
   <?php include_partial('global/customer') ?>
-  <?php include_partial('direct_action') ?>
   <?php include_partial('global/global_search') ?>
   <?php include_partial('global/last_version') ?>
 </div>

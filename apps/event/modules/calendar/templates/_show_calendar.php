@@ -24,7 +24,7 @@
 <?php use_javascript('/liFullcalendarPlugin/momentjs/moment.min.js') ?>
 <?php use_javascript('/liFullcalendarPlugin/fullcalendar/fullcalendar.min.js') ?>
 <?php use_javascript('/liFullcalendarPlugin/fullcalendar/lang-all.js') ?>
-<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar/fullcalendar.css') ?>
+<?php use_stylesheet('/liFullcalendarPlugin/fullcalendar/fullcalendar.css','',array('media' => 'all')) ?>
 <?php use_stylesheet('/liFullcalendarPlugin/fullcalendar/fullcalendar.print.css','',array('media' => 'print')) ?>
 <div class="sf_admin_edit ui-widget ui-widget-content ui-corner-all">
   <div class="calendar">
@@ -139,6 +139,14 @@ $(document).ready(function(){
   
   if ( typeof LI === "undefined" )
     LI = {};
+  
+  // HACKS
+  $('#fullcalendar .fc-header .fc-button').click(function(){
+    $('.fc-agenda-days thead .fc-agenda-axis').remove('> *');
+    $('<div></div>')
+      .css('width', '50px') // arbitrary, no better way found
+      .appendTo($('.fc-agenda-days thead .fc-agenda-axis'));
+  }).click();
 });
 --></script>
 </div>

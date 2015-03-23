@@ -91,12 +91,7 @@ WorkspaceUserOrdering:
       onUpdate: CASCADE
 MetaEvent:
   package: event
-  actAs:
-    Timestampable: ~
-    Sluggable:
-      unique: true
-      fields: [name]
-      canUpdate: false
+  actAs: [Timestampable]
   indexes:
     meta_event_hide_in_month_calendars_idx:
       fields: [hide_in_month_calendars]
@@ -151,24 +146,20 @@ EventCategory:
 Event:
   package: event
   actAs:
-    I18n:
-      fields: [name, short_name, subtitle, description, extradesc, extraspec]
-    Sluggable:
-      fields: [name]
+    Sluggable: ~
     Searchable:
-      fields: [name, writer, staging, short_name]
+      fields: [name,writer,staging,short_name]
   inheritance:
     extends: Traceable
     type: concrete
-#  indexes:
-#    event_name_idx:
-#      fields: [name]
+  indexes:
+    event_name_idx:
+      fields: [name]
   columns:
     name:
       type:         string(255)
       notblank:     true
-      notnull:      true
-    subtitle:       string(255)
+      notnull:     true
     short_name:     string(127)
     meta_event_id:
       type: integer
@@ -196,9 +187,6 @@ Event:
       type:         decimal(8)
       scale:        2
     image_url:      string(255)
-    picture_id:
-      type: integer
-      unique: true 
     display_by_default:
       type: boolean
       default: true
@@ -218,10 +206,6 @@ Event:
       class: Organism
       refClass: EventCompany
       foreignAlias: Events
-    Picture:
-      foreignType: one
-      onDelete: SET NULL
-      onUpdate: CASCADE
 EventCompany:
   package: event
   columns:
@@ -321,7 +305,6 @@ Manifestation:
       notnull: true
     depends_on: integer
     contact_id: integer
-    organism_id: integer
     blocking:
       type: boolean
       notnull: true
@@ -342,12 +325,8 @@ Manifestation:
       notnull: true
       default: true
     expected_income:
-      type: decimal(15)
+      type: decimal(8)
       scale: 3
-    voucherized:
-      type: boolean
-      notnull: true
-      default: false
   relations:
     Event:
       foreignAlias: Manifestations
@@ -371,12 +350,6 @@ Manifestation:
       foreignAlias: Manifestations
       onDelete: SET NULL
       onUpdate: CASCADE
-    ApplicantOrganism:
-      local: organism_id
-      class: Organism
-      foreignAlias: AppliedManifestations
-      onDelete: SET NULL
-      onUpdate: CASCADE
     Workspaces:
       class: Workspace
       refClass: Gauge
@@ -396,20 +369,6 @@ Manifestation:
       class: Location
       refClass: LocationBooking
       foreignAlias: BookedBy
-    Participants:
-      class: Contact
-      refClass: ManifestationContact
-      foreignAlias: InvolvedIn
-ManifestationContact:
-  package: event
-  columns:
-    contact_id:
-      type: integer
-      notnull: true
-    manifestation_id:
-      type: integer
-      notnull: true
-
 LocationBooking:
   package: event
   columns:
@@ -430,9 +389,7 @@ LocationBooking:
       onUpdate: CASCADE
 Vat:
   package: event
-  actAs:
-    Timestampable: ~
-    Versionable: ~
+  actAs: [Timestampable, Versionable]
   columns:
     name:
       type: string(64)
@@ -450,13 +407,6 @@ Gauge:
   indexes:
     gauge_online:
       fields: [online]
-    gauge_onsite:
-      fields: [onsite]
-    gauge_group_name_idx:
-      fields: [group_name]
-    manifestation_workspace:
-      fields: [manifestation_id, workspace_id]
-      type: unique
   columns:
     workspace_id:
       type: integer
@@ -471,11 +421,6 @@ Gauge:
       type: boolean
       default: false
       notnull: true
-    onsite:
-      type: boolean
-      default: true
-      notnull: true
-    group_name: string(255)
   relations:
     Manifestation:
       foreignAlias: Gauges
@@ -485,67 +430,10 @@ Gauge:
       foreignAlias: Gauges
       onDelete: CASCADE
       onUpdate: CASCADE
-
-Hold:
-  package: event
-  inheritance:
-    extends: Traceable
-    type: concrete
-  actAs:
-    I18n:
-      fields: [name, description]
-  columns:
-    name:
-      type: string(255)
-      notnull: true
-      notblank: true
-    description: string
-    public_name: string(255)
-    manifestation_id:
-      type: integer
-      notnull: true
-    next: integer
-    color:
-      type: string(255)
-      default: #ffffff
-    price_id: integer
-  relations:
-    Next:
-      local: next
-      class: Hold
-      foreignAlias: Feeders
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Manifestation:
-      foreignAlias: Holds
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Seats:
-      class: Seat
-      refClass: HoldContent
-      foreignAlias: Holds
-    Price:
-      foreignAlias: Holds
-      onDelete: SET NULL
-      onUpdate: CASCADE
-HoldContent:
-  package: event
-  columns:
-    seat_id:
-      type: integer
-      primary: true
-    hold_id:
-      type: integer
-      primary: true
-  relations:
-    Seat:
-      foreignAlias: HoldContents
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Hold:
-      foreignAlias: HoldContents
-      onDelete: CASCADE
-      onUpdate: CASCADE
+  indexes:
+    manifestation_workspace:
+      fields: [manifestation_id, workspace_id]
+      type: unique
 
 ManifestationExtraInformation:
   package: event
@@ -624,7 +512,6 @@ SeatedPlan:
     background:
       type: string(255)
       default: white
-    ideal_width: integer
   relations:
     OnlinePicture:
       foreignAlias: SeatedPlanOnline
@@ -680,10 +567,6 @@ Seat:
       type: string(255)
       notnull: true
       notblank: true
-    rank:
-      type: integer
-      notnull: true
-      default: 1000
     x:
       type: integer
       notnull: true
@@ -694,24 +577,8 @@ Seat:
       type: integer
       notnull: true
       default: 10 #px
-    class: string(255)
   relations:
     SeatedPlan:
       foreignAlias: Seats
       onDelete: CASCADE
       onUpdate: CASCADE
-    Neighbors:
-      class: Seat
-      refClass: SeatLink
-      local: seat1
-      foreign: seat2
-      equal: true
-SeatLink:
-  package: event
-  columns:
-    seat1:
-      type: integer
-      notnull: true
-    seat2:
-      type: integer
-      notnull: true

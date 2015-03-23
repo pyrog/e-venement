@@ -16,7 +16,7 @@ class TransactionFormFilter extends BaseTransactionFormFilter
   public function configure()
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('CrossAppLink'));
-    $this->widgetSchema['organism_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
+    $this->widgetSchema['organism_id'] = new sfWidgetFormDoctrineJQueryAutocompleter(array(
       'model' => 'Organism',
       'url'   => cross_app_url_for('rp','organism/ajax'),
     ));
@@ -35,43 +35,6 @@ class TransactionFormFilter extends BaseTransactionFormFilter
       'required' => false,
     ));
     
-    $this->widgetSchema['transaction_id'] = new sfWidgetFormInputText();
-    
-    $this->widgetSchema   ['created_by'] = new sfWidgetFormDoctrineChoice(array(
-      'model' => 'sfGuardUser',
-      'add_empty' => true,
-    ));
-    $this->validatorSchema['created_by'] = new sfValidatorDoctrineChoice(array(
-      'model'    => 'sfGuardUser',
-      'required' => false,
-    ));
-    
-    $this->widgetSchema   ['empty'] = new sfWidgetFormChoice(array(
-      'choices' => $arr = array(0 => 'yes or no', 1 => 'yes', -1 => 'no'),
-    ));
-    $this->validatorSchema['empty'] = new sfValidatorChoice(array(
-      'choices' => array_keys($arr),
-      'required' => false,
-    ));
-    
-    $this->widgetSchema   ['manifestation_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
-      'model' => 'Manifestation',
-      'url'   => cross_app_url_for('event','manifestation/ajax'),
-    ));
-    $this->validatorSchema['manifestation_id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Manifestation',
-      'required' => false,
-    ));
-    
-    $this->widgetSchema   ['hold_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
-      'model' => 'Hold',
-      'url'   => cross_app_url_for('event','hold/ajax'),
-    ));
-    $this->validatorSchema['hold_id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Hold',
-      'required' => false,
-    ));
-    
     parent::configure();
   }
   public function setup()
@@ -80,69 +43,6 @@ class TransactionFormFilter extends BaseTransactionFormFilter
     parent::setup();
   }
   
-  public function addHoldIdColumnQuery(Doctrine_Query $q, $field, $values)
-  {
-    if ( !$values )
-      return $q;
-    
-    $t = $q->getRootAlias();
-    $q->leftJoin("$t.HoldTransaction ht")
-      ->andWhere('ht.hold_id = ?', $values);
-    
-    return $q;
-  }
-  public function addManifestationIdColumnQuery(Doctrine_Query $q, $field, $values)
-  {
-    if ( !$values )
-      return $q;
-    
-    $t = $q->getRootAlias();
-    $q->andWhere('tck.manifestation_id = ?', $values);
-    
-    return $q;
-  }
-  public function addEmptyColumnQuery(Doctrine_Query $q, $field, $values)
-  {
-    if ( !$values )
-      return $q;
-    
-    $t = $q->getRootAlias();
-    $q->leftJoin("$t.Order order")
-      ->leftJoin("$t.Invoice i")
-      ->leftJoin("$t.Payments pay")
-    ;
-    
-    if ( $values == -1 ) // no
-      $q->andWhere('(TRUE')
-        ->andWhere('tck.id IS NOT NULL')
-        ->orWhere('order.id IS NOT NULL')
-        ->orWhere('i.id IS NOT NULL')
-        ->orWhere('pay.id IS NOT NULL')
-        ->andWhere('TRUE)')
-      ;
-    elseif ( $values == 1 )
-      $q->andWhere('tck.id IS NULL')
-        ->andWhere('order.id IS NULL')
-        ->andWhere('i.id IS NULL')
-        ->andWhere('pay.id IS NULL')
-      ;
-
-    
-    return $q;
-  }
-  public function addCreatedByColumnQuery(Doctrine_Query $q, $field, $values)
-  {
-    if ( !$values )
-      return $q;
-    if ( !is_array($values) )
-      $values = array($values);
-    
-    $a = $q->getRootAlias();
-    $q->leftJoin("$a.Version v WITH version = 1")
-      ->andWhereIn('v.sf_guard_user_id', $values);
-    
-    return $q;
-  }
   public function addOrganismIdColumnQuery(Doctrine_Query $query, $field, $values)
   {
     $a = $query->getRootAlias();

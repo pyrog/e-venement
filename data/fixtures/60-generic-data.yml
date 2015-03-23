@@ -28,7 +28,7 @@ ProfessionalType:
 
 OrganismCategory:
   clsh:
-    name: Centre de Loisirs
+    name: Centre de Loisir
   press:
     name: Presse
   ce:
@@ -42,7 +42,7 @@ OrganismCategory:
   concert:
     name: Salle de concert
   institution:
-    name: Institution
+    name: Institition
   mjc:
     name: Maison de Quartier
   asso:

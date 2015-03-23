@@ -22,16 +22,6 @@ class Location extends PluginLocation
       ->setOption('analyzer',new MySearchAnalyzer());
   }
   
-  public function getFullAddress()
-  {
-    $arr = array();
-    if ( trim($this->address) )
-      $arr[] = $this->address;
-    $arr[] = $this->postalcode.' '.$this->city;
-    $arr[] = $this->country;
-    return implode("\n",$arr);
-  }
-  
   /**
    * function getWorkspaceSeatedPlan
    * @param $workspace_id integer

@@ -1,2 +1,0 @@
-indexSuccess:
-  stylesheets: [/sfDoctrinePlugin/css/global.css, /sfDoctrinePlugin/css/default.css, /sfAdminThemejRollerPlugin/css/jroller.css, /sfAdminThemejRollerPlugin/css/jquery/redmond/jquery-ui.custom.css]

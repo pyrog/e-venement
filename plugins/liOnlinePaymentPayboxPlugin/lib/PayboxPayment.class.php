@@ -46,8 +46,10 @@
       if ( !isset($pem['local'] ) ) $pem['local']  = 'paybox.pem';
       if ( !isset($pem['remote']) ) $pem['remote'] = 'http://www1.paybox.com/telechargements/pubkey.pem';
       if ( !file_exists($path = sfConfig::get('sf_module_cache_dir').'/paybox/') )
+      {
         mkdir($path);
-      chmod($path, 0777);
+        chmod($path, 0777);
+      }
       $fp = fopen($path.$pem['local'],'a+');
       $stat = fstat($fp);
       if ( $stat['size'] == 0 || $stat['mtime'] < strtotime('yesterday') )
@@ -212,7 +214,7 @@
       
       $bank->code = $request->getParameter('error');
       $bank->payment_certificate = $request->getParameter('signature');
-      $bank->authorization_id = $request->getParameter('paybox_id');
+      $bank->authorization_id = $request->getParameter('authorization');
       $bank->merchant_id = $request->getParameter('paybox_id');
       $bank->customer_ip_address = $request->getParameter('ip_country');
       $bank->capture_mode = $request->getParameter('card_type');
@@ -220,11 +222,6 @@
       $bank->amount = $request->getParameter('amount');
       $bank->raw = $_SERVER['QUERY_STRING'];
       
-      return $this->BankPayment = $bank;
-    }
-    
-    public function getProviderTransactionId()
-    {
-      return $this->BankPayment instanceof BankPayment ? $this->BankPayment->authorization_id : false;
+      return $bank;
     }
   }

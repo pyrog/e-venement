@@ -7,7 +7,7 @@ all:
           class: board-alpha highlight
         professional_id:
           class: board-alpha highlight
-        more:
+        deposit:
           class: highlight
         description:
           class: board-alpha highlight
@@ -32,14 +32,11 @@ all:
         model: Manifestation
         title: <?php echo __('Manifestations').PHP_EOL ?>
         data_url: transaction/getManifestations
-        choices_url: [event, manifestation/ajax]
       #museum:
       #  model: MuseumEntry
       #  title: <?php echo __('Museum').PHP_EOL ?>
       #  fake: true
-      store:
-        model: Product
-        title: <?php echo __('Store', null, 'menu').PHP_EOL ?>
-        data_url: transaction/getStore
-        choices_url: [pos, product/ajax]
-        credentials: [tck-pos]
+      #pointofsales:
+      #  model: Product
+      #  title: <?php echo __('Point of Sales').PHP_EOL ?>
+      #  fake: true

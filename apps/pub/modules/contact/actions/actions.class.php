@@ -64,15 +64,8 @@ class contactActions extends sfActions
   {
     try {
       $this->form = new ContactPublicForm($this->getUser()->getContact());
-      
-      $pns = array();
-      foreach ( $this->getUser()->getContact()->Phonenumbers as $pn )
-        $pns[$pn->updated_at.' '.$pn->id] = $pn;
-      ksort($pns);
-      
-      $pn = array_pop($pns);
-      $this->form->setDefault('phone_type',$pn->name);
-      $this->form->setDefault('phone_number',$pn->number);
+      $this->form->setDefault('phone_type',$this->getUser()->getContact()->Phonenumbers[0]->name);
+      $this->form->setDefault('phone_number',$this->getUser()->getContact()->Phonenumbers[0]->number);
     }
     catch ( liEvenementException $e )
     { $this->form = new ContactPublicForm; }
@@ -90,27 +83,6 @@ class contactActions extends sfActions
       ->leftJoin('t.Order order')
       ->andWhere('order.id IS NOT NULL OR tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL')
       ->andWhere('t.contact_id = ?',$this->getUser()->getContact()->id)
-      ->orderBy('m.happens_at DESC')
-      ->execute();
-    
-    $this->products = Doctrine::getTable('BoughtProduct')->createQuery('bp')
-      ->leftJoin('bp.Transaction t')
-      ->leftJoin('t.Order order')
-      ->andWhere('order.id IS NOT NULL OR bp.integrated_at IS NOT NULL')
-      ->andWhere('t.contact_id = ?',$this->getUser()->getContact()->id)
-      ->orderBy("bp.description_for_buyers IS NOT NULL AND bp.description_for_buyers != '' DESC, bp.integrated_at DESC")
-      ->execute();
-    
-    $this->member_cards = Doctrine::getTable('MemberCard')->createQuery('mc')
-      ->leftJoin('mc.Transaction t')
-      ->andWhere('t.id = ? OR mc.active = ?', array($this->getUser()->getTransactionId(), true))
-      ->andWhere('mc.contact_id = ?',$this->getUser()->getContact()->id)
-      
-      ->leftJoin('mc.MemberCardType mct')
-      ->leftJoin('mc.MemberCardPrices mcps')
-      ->leftJoin('mcps.Event e')
-      ->leftJoin('mcps.Price p')
-      ->orderBy("mc.expire_at DESC, mc.created_at, mct.name")
       ->execute();
     
     $this->contact = $this->getUser()->getContact();

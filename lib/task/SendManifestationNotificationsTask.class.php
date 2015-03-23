@@ -45,7 +45,7 @@ EOF;
     $databaseManager = new sfDatabaseManager($this->configuration);
     
     if(!class_exists('Manifestation'))
-      throw new sfCommandException(sprintf('Model "%s" doesn\'t exist.', 'Manifestation'));
+      throw new sfCommandException(sprintf('Model "%s" doesn\'t exist.', $arguments['model']));
     
     $this->configuration->loadHelpers(array('CrossAppLink', 'Url', 'I18N', 'Date', 'Tag'));
     
@@ -85,31 +85,16 @@ EOF;
     else foreach ( $manifs as $manif )
     {
       $emails = array();
-      // related to the manifestation itself
       foreach ( $manif->Organizers as $org )
-      if ( $org->email )
-        $emails[$org->email] = $org->email;
-      // related to the applicants
+        $emails[] = $org->email;
       if ( $manif->contact_id && ($manif->Applicant->sf_guard_user_id || $manif->Applicant->email) )
-      {
-        $email = $manif->Applicant->sf_guard_user_id ? $manif->Applicant->User->email_address : $manif->Applicant->email;
-        $emails[$email] = $email;
-      }
-      if ( $manif->organism_id && ($manif->ApplicantOrganism->email) )
-        $emails[$manif->ApplicantOrganism->email] = $manif->ApplicantOrganism->email;
-      // related to the Location
-      foreach ( array('contact', 'organism') as $entity )
-      if ( $manif->Location->{$entity.'_id'} && $manif->Location->${ucfirst($entity)}->email )
-      {
-        $email = $manif->Location->${ucfirst($entity)}->email;
-        $emails[$email] = $email;
-      }
+        $emails[] = $manif->Applicant->sf_guard_user_id ? $manif->Applicant->User->email_address : $manif->Applicant->email;
       
       foreach ( $emails as $emailaddr )
       {
         $email = new Email;
         $email->setMailer($this->getMailer());
-        $email->isATest(false);
+        $email->not_a_test = true;
         $email->setNoSpool(true);
         
         $email->field_from = $from;
@@ -151,14 +136,12 @@ EOF;
           %s: %s<br/><br/>
           %s: %s<br/><br/>
           %s: %s<br/><br/>
-          %s: %s<br/><br/>
 EOF
           , (string)$manif
           , __('State'), implode(', ',$state)
           , __('When'), $manif->mini_date, $manif->mini_end_date
           , __('Where'), (string)$manif->Location
           , __('Applicant'), (string)$manif->Applicant
-          , __('Applied by organism'), (string)$manif->ApplicantOrganism
           , __('Organizers'), implode(', ',$orgs)
           , __('Memo'), $manif->description
         );

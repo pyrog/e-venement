@@ -29,12 +29,6 @@
     throw new liOnlineSaleException('You asked for a payment plugin ('.$plugin.') that does not exist.');
   
   $transaction = Doctrine::getTable('Transaction')->findOneById($class::getTransactionIdByResponse($request));
-  $this->getUser()->setTransaction($transaction); // linking the transaction to the current session/user
-  $cultures = sfConfig::get('project_internals_cultures', array('fr' => 'Français'));
-  $this->getUser()->setCulture($culture = $transaction->Contact->culture
-    ? $transaction->Contact->culture
-    : array_shift(array_keys($cultures))
-  );
   $this->online_payment = $class::create($transaction);
   
   // records a BankPayment Record and valid (or not)
@@ -42,26 +36,21 @@
   if ( !$r['success'] )
     throw new liOnlineSaleException('An error occurred during the bank verifications');
   
-  if ( $transaction->getPaid().'' >= ''.$transaction->getPrice(true, true) ) // this .'' is a hack for precise float values
-    return sfView::NONE;
-  
   // direct payment
   $payment = new Payment;
   $payment->sf_guard_user_id = $this->getUser()->getId();
   $payment->payment_method_id = sfConfig::get('app_tickets_payment_method_id');
   $payment->value = $r['amount'];
-  if ( method_exists($this->online_payment, 'getProviderTransactionId')
-    && $this->online_payment->getProviderTransactionId() )
-    $payment->detail = $this->online_payment->getProviderTransactionId();
   
   if ( $mc_pm = $this->getMemberCardPaymentMethod() )
   {
     // payments linked to member cards' credit
     foreach ( $transaction->MemberCards as $mc )
     {
+      $mc->active = true;
       $mc->contact_id = $transaction->contact_id;
       $p = new Payment;
-      $p->Transaction = $transaction;
+      $p->transaction_id = $transaction->id;
       $p->value = -$mc->MemberCardType->value;
       $p->Method = $mc_pm;
       $mc->Payments[] = $p;
@@ -71,29 +60,13 @@
     $this->createPaymentsDoneByMemberCards($mc_pm);
   }
   
-  // activate member cards linked to this transaction
-  foreach ( $transaction->MemberCards as $mc )
-    $mc->active = true;
-  
-  $transaction->Contact->confirmed = true;        // transaction's contact
-  foreach ( $transaction->Tickets as $ticket )    // for "named" tickets
-  if ( $ticket->contact_id )
-    $ticket->DirectContact->confirmed = true;
+  // contact
+  $transaction->Contact->confirmed = true;
   $transaction->Payments[] = $payment;
-  if ( $transaction->Order->count() == 0 )
-    $transaction->Order[] = new Order;
+  $transaction->Order[] = new Order;
   $transaction->save();
-
-  if ( $this->online_payment->BankPayment instanceof BankPayment )
-  {
-    $this->online_payment->BankPayment->payment_id = $payment;
-    $this->online_payment->BankPayment->save();
-  }
   
-  error_log('before email');
   // sending emails to contact and organizators
-  $this->sendConfirmationEmails($transaction, $this);
-  error_log('after email');
+  $this->sendConfirmationEmails($transaction);
   
   return sfView::NONE;
-

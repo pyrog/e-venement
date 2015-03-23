@@ -13,7 +13,13 @@ class PriceForm extends BasePriceForm
   public function configure()
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');
-    
+    $translit = sfConfig::get('software_internals_transliterate');
+    $this->validatorSchema['name'] = new sfValidatorRegex(array(
+      'pattern' => '/^[\w\d-\s_%€$£~&@§'.$translit['from'].']+$/',
+    ),array(
+      'invalid' => __('Some chars are not allowed here',null,'sf_admin'),
+    ));
+
     $q = new Doctrine_Query();
     $q->from('Manifestation m')
       ->leftJoin("m.Event e")
@@ -41,9 +47,5 @@ class PriceForm extends BasePriceForm
       $this->validatorSchema['member_cards_list'],
       $this->widgetSchema['manifestations_list']
     );
-    
-    // select the current user by default if it is a price creation
-    if ( $this->object->isNew() && sfContext::hasInstance() )
-      $this->object->Users[] = sfContext::getInstance()->getUser()->getGuardUser();
   }
 }
