@@ -1,8 +1,8 @@
 $(document).ready(function(){
   if ( typeof(manifestation_list_url) != 'undefined' )
   {
-    $.get(manifestation_list_url,LI.manifestation_list_loaded);
-    $('#manifestation-new, #manifestations-import-ics').click(LI.manifestation_new_clicked);
+    $.get(manifestation_list_url,manifestation_list_loaded);
+    $('#manifestation-new').click(manifestation_new_clicked);
   }
   
   // error management for embedded forms
@@ -18,16 +18,13 @@ $(document).ready(function(){
   
 });
 
-if ( LI == undefined )
-  var LI = {};
-
-LI.manifestation_list_loaded = function(data)
+function manifestation_list_loaded(data)
 {
   data = $.parseHTML(data);
   
   $('#more .manifestation_list').html($(data).find(' .sf_admin_list'));
   $('#more .manifestation_list tfoot a[href]').click(function(){
-    $.get($(this).prop('href'),LI.manifestation_list_loaded);
+    $.get($(this).prop('href'),manifestation_list_loaded);
     return false;
   });
   
@@ -36,12 +33,12 @@ LI.manifestation_list_loaded = function(data)
   gauge_small();
 }
 
-LI.manifestation_new_clicked = function()
+function manifestation_new_clicked()
 {
-  var form = $('.sf_admin_form form:first');
-  if ( form.length > 0 )
+  form = $('.sf_admin_form form:first');
+  if ( form.lenfth > 0 )
   {
-    var anchor = $(this);
+    anchor = $(this);
     $.post(form.prop('action'),form.serialize(),function(data){
       data = $.parseHTML(data);
       
@@ -65,7 +62,7 @@ LI.manifestation_new_clicked = function()
   return true;
 }
 
-LI.checkpoint_autocompleter = function()
+function checkpoint_autocompleter()
 {
   jQuery(id+' input[name="autocomplete_checkpoint[organism_id]"]')
   .autocomplete(url, jQuery.extend({}, {

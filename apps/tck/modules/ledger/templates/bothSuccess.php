@@ -1,6 +1,5 @@
 <?php include_partial('assets') ?>
 <?php include_partial('global/flashes') ?>
-<?php use_javascript('helper-csv') ?>
 <?php use_stylesheet('tck-ledger-both','',array('media' => 'all')) ?>
 
 <div><div class="ui-widget-content ui-corner-all">
@@ -16,12 +15,6 @@
       )) ?>)
       <?php endif ?>
     </h1>
-    <a
-      href="#"
-      title="<?php echo __('Save','','sf_admin') ?>"
-      class="record ui-corner-all csv-js"
-      onclick="javascript: $(this).closest('#content').find('table').downloadCSV($(this).closest('.ui-widget-header').find('h2').text());"
-    ><span><?php echo __('Save','','sf_admin') ?></span></a>
   </div>
 </div></div>
 

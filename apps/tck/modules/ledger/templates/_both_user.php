@@ -1,6 +1,5 @@
 <div class="ui-widget-content ui-corner-all" id="byUser">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
-    <?php include_partial('both_extract') ?>
     <h2><?php echo __("Users' summary") ?></h2>
   </div>
 
