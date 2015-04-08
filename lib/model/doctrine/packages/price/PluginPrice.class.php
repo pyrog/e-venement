@@ -12,13 +12,4 @@
  */
 abstract class PluginPrice extends BasePrice
 {
-  public function actAs($tpl, array $options = array())
-  {
-    $options['table'] = $this->getTable();
-    return parent::actAs($tpl, $options);
-  }
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

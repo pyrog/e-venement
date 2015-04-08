@@ -23,23 +23,14 @@
 ?>
 <?php
   $ticket = $request->getParameter('ticket');
-  $ticket['transaction_id'] = $request->getParameter('id');
-  
-  $this->form = new sfForm;
-  $validators = $this->form->getValidatorSchema();
+  $form = new sfForm;
+  $validators = $form->getValidatorSchema();
   $validators['id'] = new sfValidatorDoctrineChoice(array(
     'model' => 'Ticket',
     'query' => Doctrine::getTable('Ticket')->createQuery('tck')
       ->leftJoin('tck.Transaction t')
-      ->andWhere('t.id = ?', $ticket['transaction_id'])
+      ->andWhere('t.id = ?', $request->getParameter('id'))
       ->andWhere('t.closed = ?', false),
-    'required' => false,
-  ));
-  $validators['transaction_id'] = new sfValidatorDoctrineChoice(array(
-    'model' => 'Transaction',
-  ));
-  $validators['gauge_id'] = new sfValidatorDoctrineChoice(array(
-    'model' => 'Gauge',
   ));
   $validators['numerotation'] = new sfValidatorDoctrineChoice(array(
     'model' => 'Seat',
@@ -49,33 +40,16 @@
       ->leftJoin('s.SeatedPlan sp')
       ->leftJoin('sp.Workspaces ws')
       ->leftJoin('ws.Gauges g')
-      ->andWhere('g.id = ?', $ticket['gauge_id'])
-      ->leftJoin('g.Manifestation m')
-      ->leftJoin('s.Tickets tck WITH tck.manifestation_id = m.id')
-      ->andWhere('(tck.id IS NULL OR tck.id = ?)', $ticket['id'] ? $ticket['id'] : 0)
-      
-      // Holds
-      ->leftJoin('s.HoldContents hc')
-      ->leftJoin('hc.Hold h WITH h.manifestation_id = m.id')
-      ->leftJoin('h.HoldTransactions ht WITH ht.transaction_id = ?', $ticket['transaction_id'])
-      ->andWhere('h.id IS NULL OR ht.id IS NOT NULL')
+      ->leftJoin('g.Tickets tck')
+      ->leftJoin('tck.Transaction t')
+      ->andWhere('(tck.id IS NULL OR tck.id = ? OR tck.numerotation IS NOT NULL AND tck.numerotation = ? AND tck.numerotation != ?)',array($ticket['id'], '', $ticket['numerotation']))
   ));
   
-  $this->form->bind($ticket);
-  if ( !$this->form->isValid() ) // security checks
-    throw new liSeatedException('The submitted data is not correct to give a seat to this ticket... '.$this->form->getErrorSchema());
+  $form->bind($ticket);
+  if ( !$form->isValid() ) // security checks
+    throw new liSeatedException('The submitted data is not correct to give a seat to this ticket... '.$form->getErrorSchema());
   
-  if ( isset($ticket['id']) && $ticket['id'] )
-    $this->ticket = Doctrine::getTable('Ticket')->findOneById($ticket['id']);
-  else // new ticket (give a seat before the price)
-  {
-    $this->ticket = new Ticket;
-    $this->ticket->price_name = sfConfig::get('app_tickets_wip_price', 'WIP');
-    $this->ticket->gauge_id = $ticket['gauge_id'];
-    $this->ticket->vat = 0;
-    $this->ticket->value = 0;
-    $this->ticket->transaction_id = $ticket['transaction_id'];
-  }
+  $this->ticket = Doctrine::getTable('Ticket')->findOneById($ticket['id']);
   $this->ticket->numerotation = $ticket['numerotation'];
   $this->ticket->save();
   

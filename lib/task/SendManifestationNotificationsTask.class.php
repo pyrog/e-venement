@@ -45,7 +45,7 @@ EOF;
     $databaseManager = new sfDatabaseManager($this->configuration);
     
     if(!class_exists('Manifestation'))
-      throw new sfCommandException(sprintf('Model "%s" doesn\'t exist.', 'Manifestation'));
+      throw new sfCommandException(sprintf('Model "%s" doesn\'t exist.', $arguments['model']));
     
     $this->configuration->loadHelpers(array('CrossAppLink', 'Url', 'I18N', 'Date', 'Tag'));
     
@@ -84,49 +84,17 @@ EOF;
       $this->logSection('notification', sprintf('Nothing to notify.'));
     else foreach ( $manifs as $manif )
     {
-      $who = isset($alarms['who']) ? $alarms['who'] : array('organizers', 'applicant');
       $emails = array();
-      // related to the manifestation itself
-      if ( in_array('organizers', $who) )
       foreach ( $manif->Organizers as $org )
-      if ( $org->email )
-        $emails[$org->email] = $org->email;
-      // related to the applicants
-      if ( in_array('applicant', $who) && $manif->contact_id && ($manif->Applicant->sf_guard_user_id || $manif->Applicant->email) )
-      {
-        $email = $manif->Applicant->sf_guard_user_id ? $manif->Applicant->User->email_address : $manif->Applicant->email;
-        $emails[$email] = $email;
-      }
-      if ( in_array('applicant', $who) && $manif->organism_id && ($manif->ApplicantOrganism->email) )
-        $emails[$manif->ApplicantOrganism->email] = $manif->ApplicantOrganism->email;
-      // related to the Location
-      if ( in_array('location', $who) )
-      foreach ( array('contact', 'organism') as $entity )
-      if ( $manif->Location->{$entity.'_id'} && $manif->Location->${ucfirst($entity)}->email )
-      {
-        $email = $manif->Location->${ucfirst($entity)}->email;
-        $emails[$email] = $email;
-      }
-      // the global admins
-      if ( in_array('admins', $who) )
-      {
-        $q = Doctrine::getTable('sfGuardUser')->createQuery('u')
-          ->leftJoin('u.Groups g')
-          ->andWhereIn('g.name', array('event-reservation-admin', 'event-reservation-super-admin'))
-          ->leftJoin('u.Contact c')
-        ;
-        foreach ( $q->execute() as $user )
-        {
-          $emails[$user->Contact->email] = $user->Contact->email;
-          $emails[$user->email_address] = $user->email_address;
-        }
-      }
+        $emails[] = $org->email;
+      if ( $manif->contact_id && ($manif->Applicant->sf_guard_user_id || $manif->Applicant->email) )
+        $emails[] = $manif->Applicant->sf_guard_user_id ? $manif->Applicant->User->email_address : $manif->Applicant->email;
       
       foreach ( $emails as $emailaddr )
       {
         $email = new Email;
         $email->setMailer($this->getMailer());
-        $email->isATest(false);
+        $email->not_a_test = true;
         $email->setNoSpool(true);
         
         $email->field_from = $from;
@@ -168,14 +136,12 @@ EOF;
           %s: %s<br/><br/>
           %s: %s<br/><br/>
           %s: %s<br/><br/>
-          %s: %s<br/><br/>
 EOF
           , (string)$manif
           , __('State'), implode(', ',$state)
           , __('When'), $manif->mini_date, $manif->mini_end_date
           , __('Where'), (string)$manif->Location
           , __('Applicant'), (string)$manif->Applicant
-          , __('Applied by organism'), (string)$manif->ApplicantOrganism
           , __('Organizers'), implode(', ',$orgs)
           , __('Memo'), $manif->description
         );

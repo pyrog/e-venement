@@ -32,7 +32,6 @@
       ->createQuery('t')
       ->andWhere('t.id = ?',$request->getParameter('id'))
       ->andWhere('tck.id NOT IN (SELECT tck2.duplicating FROM Ticket tck2 WHERE tck2.duplicating IS NOT NULL)')
-      ->andWhere('tck.price_id IS NOT NULL')
       ->leftJoin('m.Location l')
       ->leftJoin('m.Organizers o')
       ->leftJoin('m.Event e')
@@ -95,7 +94,7 @@
             {
               $cpt++;
               $newticket = $ticket->copy();
-              $ticket->seat_id = NULL;
+              $ticket->numerotation = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
@@ -103,7 +102,7 @@
               $newticket->grouping_fingerprint = $fingerprint;
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->seat_id )
+              if ( $newticket->numerotation )
                 $ticket->save();
               
               if ( isset($this->tickets[$id = $ticket->gauge_id.'-'.$ticket->price_id.'-'.$ticket->transaction_id]) )
@@ -167,21 +166,19 @@
               $this->print_again = true;
             }
             elseif ( strcasecmp(trim($ticket->price_name),trim($request->getParameter('price_name'))) == 0
-              && ($ticket->printed_at || $ticket->integrated_at)
+              && $ticket->printed_at
               && !($request->getParameter('manifestation_id') && $ticket->manifestation_id != $request->getParameter('manifestation_id')) )
             {
               $cpt++;
               $newticket = $ticket->copy();
-              $ticket->Transaction->Tickets[] = $newticket;
-              $ticket->seat_id = NULL;
+              $ticket->numerotation = NULL;
               $newticket->sf_guard_user_id = NULL;
               $newticket->created_at = NULL;
               $newticket->updated_at = NULL;
               $newticket->printed_at = date('Y-m-d H:i:s');
-              $newticket->integrated_at = NULL;
               $newticket->Duplicated = $ticket;
               $newticket->save();
-              if ( $newticket->seat_id )
+              if ( $newticket->numerotation )
                 $ticket->save();
               
               $this->tickets[] = $newticket;
@@ -291,24 +288,9 @@
       }
     }
 
-    $this->dispatcher->notify(new sfEvent($this, 'tck.tickets_print', array(
+    $this->getContext()->getEventDispatcher()->notify(new sfEvent($this, 'tck.tickets_print', array(
       'transaction' => $this->transaction,
       'tickets'     => $this->tickets,
       'duplicate'   => $this->duplicate,
       'user'        => $this->getUser(),
     )));
-    
-    if (!( sfConfig::get('app_tickets_simplified_printing', false) && count($this->tickets) > 0 ))
-      return 'Success';
-    
-    $this->content = $this->transaction->renderSimplifiedTickets(array('only' => $this->tickets));
-    if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
-    {
-      $this->setLayout(false);
-    }
-    else
-    {
-      sfConfig::set('sf_web_debug', false);
-      $this->getResponse()->setContentType('application/pdf');
-    }
-    return 'Simplified';

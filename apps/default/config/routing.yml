@@ -1,12 +1,3 @@
-slave_ping:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                SlavePing
-    module:               slave_ping
-    prefix_path:          /slave_ping
-    column:               id
-    with_wildcard_routes: true
-
 filter:
   class: sfDoctrineRouteCollection
   options:

@@ -1,1 +1,1 @@
-<pre><?php print_r($events->getRawValue()) ?></pre>
+<?php echo json_encode($events->getRawValue()) ?>

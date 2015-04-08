@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -37,100 +37,41 @@ abstract class PluginTicket extends BaseTicket
 {
   public function preSave($event)
   {
-    if ( !$this->isModified() && !$this->isNew() )
-      return parent::preSave($event);
-    
-    $is_auth = sfContext::hasInstance() && sfContext::getInstance()->getUser()->getGuardUser();
-    
-    // the gauge, through the manifestation + the seat
-    if ( !$this->gauge_id && $this->manifestation_id && $this->seat_id )
-    {
-      $q = Doctrine::getTable('Gauge')->createQuery('g', false)
-        ->andWhereIn('g.workspace_id', $this->Seat->SeatedPlan->Workspaces->getPrimaryKeys())
-        ->andWhere('g.manifestation_id = ?', $this->manifestation_id)
-        ->leftJoin('g.Workspace ws');
-      if ( sfContext::hasInstance() && method_exists(sfContext::getInstance()->getUser(), 'getId') )
-        $q->leftJoin('ws.Order wso WITH wso.sf_guard_user_id = ?', sfContext::getInstance()->getUser()->getId())
-          ->orderBy('wso.rank, g.id');
-      else
-        $q->orderBy('g.id');
-      
-      $this->Gauge = $q->fetchOne();
-    }
-    
-    // the prices
-    if ( (is_null($this->value) || is_null($this->price_id))
+    if ( (is_null($this->vat) || is_null($this->manifestation_id) || is_null($this->value) || is_null($this->price_id))
       && (!is_null($this->price_name) || !is_null($this->price_id))
       && !is_null($this->gauge_id) )
     {
-      $q = Doctrine::getTable('Price')->createQuery('p')
-        ->leftJoin('p.PriceManifestations pm')
-        ->leftJoin('pm.Manifestation mpm')
-        ->leftJoin('mpm.Gauges gpm')
-        ->leftJoin('p.PriceGauges pg')
-        ->leftJoin('pg.Gauge gpg')
-        ->leftJoin('gpg.Manifestation m')
-        ->andWhere('(gpm.id = ? OR gpg.id = ?)', array($this->gauge_id, $this->gauge_id))
-        ->orderBy('pm.value DESC, pg.value DESC, pt.name')
-      ;
+      $q = Doctrine::getTable('PriceManifestation')->createQuery('pm')
+        ->leftJoin('pm.Manifestation m')
+        ->leftJoin('pm.Price p')
+        ->leftJoin('m.Gauges g')
+        ->leftJoin('m.Vat v')
+        ->andWhere('g.id = ?',$this->gauge_id)
+        ->orderBy('pm.updated_at DESC');
       
-      if ( is_null($this->price_id) )
-        $q
-          ->leftJoin('pm.Price pmp')
-          ->leftJoin('pmp.Translation pmpt WITH pmpt.name = ?',$this->price_name)
-          ->leftJoin('pg.Price pgp')
-          ->leftJoin('pgp.Translation pgpt WITH pgpt.name = ?',$this->price_name)
-          ->andWhere('(pmpt.id IS NOT NULL OR pgpt.id IS NOT NULL)')
-        ;
+      if ( !is_null($this->price_id) )
+        $q->andWhere('p.id = ?',$this->price_id);
       else
-        $q
-          ->leftJoin('pm.Price pmp WITH pmp.id = ?',$this->price_id)
-          ->leftJoin('pg.Price pgp WITH pgp.id = ?',$this->price_id)
-          ->andWhere('(pmp.id IS NOT NULL OR pgp.id IS NOT NULL)')
-        ;
+        $q->andWhere('p.name = ?',$this->price_name);
       
-      if ( $price = $q->fetchOne() )
-      {
-        if ( is_null($this->price_name) )
-          $this->price_name = $price->name;
-        if ( is_null($this->price_id) )
-          $this->price_id = $price->id;
-        
-        // always gives priority to PriceGauge, then PriceManifestation
-        if ( is_null($this->value) )
-          $this->value    = $price->PriceGauges->count() > 0
-            ? $price->PriceGauges[0]->value
-            : $price->PriceManifestations[0]->value;
+      $pm = $q->fetchOne();
+      if ( !$pm )
+        throw new liEvenementException('Associated price not found.');
       
-        $this->Price = $price;
-      }
+      if ( is_null($this->manifestation_id) )
+        $this->manifestation_id = $pm->manifestation_id;
+      if ( is_null($this->vat) )
+        $this->vat = $pm->Manifestation->Vat->value;
+      if ( is_null($this->price_name) )
+        $this->price_name = $pm->Price->name;
+      if ( is_null($this->price_id) )
+        $this->price_id = $pm->price_id;
+      if ( is_null($this->value) )
+        $this->value    = $pm->value;
     }
-    
-    if ( !$this->price_name )
-      $this->price_name = $this->Price->name;
-    
-    if ( $this->price_id && $is_auth )
-    if ( !$this->Price->isAccessibleBy(sfContext::getInstance()->getUser()) )
-      throw new liEvenementException('You tried to save a ticket with a price that you cannot access (user: #'.sfContext::getInstance()->getUser()->getId().', price: #'.$this->price_id.')');
     
     // the transaction's last update
     $this->Transaction->updated_at = NULL;
-    
-    // get back the manifestation_id if not already set
-    if ( !$this->manifestation_id && $this->gauge_id )
-    {
-      $this->Manifestation = Doctrine::getTable('Manifestation')->createQuery('m',true)
-        ->leftJoin('m.Gauges g')
-        ->andWhere('g.id = ?',$this->gauge_id)
-        ->fetchOne();
-    }
-    
-    // the holds: we can book a seated ticket within a hold only if its transaction is a HoldTransaction
-    if ( $this->seat_id && $this->Seat instanceof Seat
-      && ($hold = $this->Seat->isHeldFor($this->Manifestation))
-      && !( $hold instanceof Hold && in_array($this->transaction_id, $tmp = $hold->HoldTransactions->toKeyValueArray('id', 'transaction_id')) )
-    )
-      $this->seat_id = NULL;
     
     // VAT resetting if the ticket is updated for a printing or an integration
     $mods = $this->getModified();
@@ -138,51 +79,21 @@ abstract class PluginTicket extends BaseTicket
       && ( $this->printed_at || $this->integrated_at )
       && is_null($this->cancelling) && is_null($this->duplicating) && $this->Duplicatas->count() == 0
     )
-      $this->vat = -1;
+      $this->vat = NULL;
     
-    // Setting the VAT to the ticket's Manifestation if not set
-    if ( is_null($this->vat) || $this->vat == -1 )
-      $this->vat = $this->Manifestation->Vat->value;
+    // last chance to set a VAT taxe rate, related to current manifestation's rate
+    if ( is_null($this->vat) && !is_null($this->manifestation_id) )
+      $this->vat = Doctrine::getTable('Manifestation')
+        ->findOneById($this->Manifestation->id)
+        ->Vat->value;
     
-    // last chance to set taxes
-    if ( !$this->printed_at && !$this->integrated_at
-      || isset($mods['printed_at'])
-      || isset($mods['integrated_at']) ) // if the ticket is being printed or is not printed
-    {
-      $this->taxes = 0;
-      $taxes = new Doctrine_Collection('Tax');
-      if ( $is_auth )
-        $taxes->merge(sfContext::getInstance()->getUser()->getGuardUser()->Taxes);
-      $taxes->merge($this->Manifestation->Taxes);
-      if ( $this->price_id )
-        $taxes->merge(is_object($this->Price) ? $this->Price->Taxes : Doctrine::getTable('Price')->find($this->price_id)->Taxes);
-      $this->addTaxes($taxes);
-    }
-    
-    // the generates a barcode (if necessary) to record in DB, cf. Ticket::getQrcode()
-    $this->qrcode;
+    // force numerotation to null if needed
+    if ( !$this->numerotation )
+      $this->numerotation = NULL;
     
     parent::preSave($event);
   }
-  
-  protected function addTaxes(Doctrine_Collection $taxes)
-  {
-    // taxes calculation (always after VAT calculation)
-    foreach ( $taxes as $tax )
-    {
-      $val = 0;
-      switch ( $tax->type ){
-      case 'value':
-        $this->taxes += $val = $this->value > 0 ? $tax->value : -$tax->value; // for cancelling tickets
-        break;
-      case 'percentage':
-        $this->taxes += $val = round($this->value * $tax->value/100,2);
-        break;
-      }
-    }
-    return $this;
-  }
-  
+
   public function preInsert($event)
   {
     // cancellation ticket with member cards
@@ -212,10 +123,10 @@ abstract class PluginTicket extends BaseTicket
     }
     
     // cancelling a seated ticket
-    if ( !is_null($this->cancelling) && $this->seat_id )
+    if ( !is_null($this->cancelling) && !is_null($this->numerotation) && $this->numerotation )
     {
-      $this->seat_id = NULL;
-      $this->Cancelled->seat_id = NULL;
+      $this->numerotation = NULL;
+      $this->Cancelled->numerotation = NULL;
       $this->Cancelled->save();
     }
     
@@ -249,7 +160,7 @@ abstract class PluginTicket extends BaseTicket
     $mods = $this->getModified();
     
     // only for normal tickets w/ member cards
-    if ( $this->price_id && is_object($this->Price) && $this->Price->member_card_linked
+    if ( $this->Price->member_card_linked
     && ( isset($mods['printed_at']) || isset($mods['integrated_at']) )
     && ( $this->printed_at || $this->integrated_at )
     && is_null($this->cancelling) && is_null($this->duplicating) && $this->Duplicatas->count() == 0 )
@@ -282,91 +193,6 @@ abstract class PluginTicket extends BaseTicket
     }
     
     parent::preUpdate($event);
-  }
-  
-  public function getNumerotation()
-  {
-    return $this->Seat->name;
-  }
-
-  public function setNumerotation($str = NULL)
-  {
-    if ( is_null($str) )
-    {
-      $this->seat_id = NULL;
-      return $this;
-    }
-    
-    $q = Doctrine::getTable('Seat')->createQuery('s')
-      ->leftJoin('s.SeatedPlan sp')
-      ->leftJoin('sp.Location l')
-      ->leftJoin('l.Manifestations m')
-      ->leftJoin('sp.Workspaces spw')
-      ->leftJoin('spw.Gauges g')
-      ->andWhere('g.id = ?', $this->gauge_id)
-      ->andWhere('g.manifestation_id = m.id')
-      ->andWhere('s.name = ?', $str)
-    ;
-    $this->Seat = $q->fetchOne();
-    
-    return $this;
-  }
-  
-  public function addLinkedProducts()
-  {
-    if ( !sfContext::hasInstance() )
-      return;
-    $sf_user = sfContext::getInstance()->getUser();
-    
-    // already bought products
-    $pdts = array();
-    foreach ( $this->BoughtProducts as $bp )
-      $pdts[] = $bp->Declination->product_id;
-    
-    $collection = array('LinkedProducts' => array());
-    foreach ( array($this->Manifestation, $this->Price, $this->Gauge->Workspace, $this->Manifestation->Event->MetaEvent) as $object )
-    {
-      if ( $object->getTable()->hasRelation($rel = 'LinkedProducts') )
-      {
-        $links = $object->$rel->getData();
-        foreach ( $links as $link )
-        if ( !in_array($link->id, $pdts) ) // no duplication
-        {
-          if ( in_array($link->id, $collection[$rel]) )
-            continue;
-          $collection[$rel][] = $link->id;
-          if (!( $link instanceof liUserAccessInterface && !$link->isAccessibleBy($sf_user) ))
-          {
-            $max_price = $link->getMostExpansivePrice($sf_user);
-            if ( $max_price['price'] && $link->Declinations->count() > 0 )
-            {
-              $bp = new BoughtProduct;
-              $declination = false;
-              foreach ( $link->Declinations as $declination )
-              if ( $declination->prioritary )
-              {
-                $bp->Declination = $declination;
-                $bp->Price = $max_price['price']->Price;
-                $bp->Transaction = $this->Transaction;
-                $this->BoughtProducts[] = $bp;
-                break;
-              }
-            }
-          }
-        }
-      }
-    }
-    
-    return $this;
-  }
-  
-  public function isSold()
-  {
-    return !(is_null($this->printed_at) && is_null($this->cancelling) && is_null($this->integrated_at));
-  }
-  public function isDuplicata()
-  {
-    return !is_null($this->duplicating);
   }
 
   public function getIndexesPrefix()

@@ -1,12 +1,11 @@
 <div class="ui-widget-content ui-corner-all" id="byPrice">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
-    <?php include_partial('both_extract') ?>
     <h2><?php echo __("Prices' summary") ?></h2>
   </div>
 
 <table>
 <tbody>
-<?php $total = array('nb+' => 0, 'nb-' => 0, 'value+' => 0, 'value-' => 0); $class = false; ?>
+<?php $total = array('nb+' => 0, 'nb-' => 0, 'value+' => 0, 'value-' => 0) ?>
 <?php foreach ( $byPrice as $price ): ?>
   <tr class="<?php echo ($class = !$class) ? 'overlined' : '' ?>">
     <td class="name"><?php echo $price->description ?></td>

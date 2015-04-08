@@ -1,9 +1,10 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
+ * @link    http://www.dompdf.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id$
  */
 
 /**
@@ -54,8 +55,7 @@ class Page_Frame_Decorator extends Frame_Decorator {
   /**
    * Class constructor
    *
-   * @param Frame  $frame the frame to decorate
-   * @param DOMPDF $dompdf
+   * @param Frame $frame the frame to decorate
    */
   function __construct(Frame $frame, DOMPDF $dompdf) {
     parent::__construct($frame, $dompdf);
@@ -152,7 +152,7 @@ class Page_Frame_Decorator extends Frame_Decorator {
       
     // Skip check if page is already split
     if ( $this->_page_full )
-      return null;
+      return;
 
     $block_types = array("block", "list-item", "table", "inline");
     $page_breaks = array("always", "left", "right");
@@ -466,7 +466,7 @@ class Page_Frame_Decorator extends Frame_Decorator {
 
     dompdf_debug("page-break","Starting search");
     while ( $iter ) {
-      // echo "\nbacktrack: " .$iter->get_node()->nodeName ." ".spl_object_hash($iter->get_node()). "";
+//       echo "\nbacktrack: " .$iter->get_node()->nodeName ." ".spl_object_hash($iter->get_node()). "";
       if ( $iter === $this ) {
          dompdf_debug("page-break", "reached root.");
         // We've reached the root in our search.  Just split at $frame.
@@ -495,7 +495,7 @@ class Page_Frame_Decorator extends Frame_Decorator {
       if ( $next = $iter->get_prev_sibling() ) {
          dompdf_debug("page-break", "following prev sibling.");
 
-        if ( $next->is_table() && !$iter->is_table() )
+             if ( $next->is_table() && !$iter->is_table() )
           $this->_in_table++;
 
         else if ( !$next->is_table() && $iter->is_table() )
@@ -524,42 +524,46 @@ class Page_Frame_Decorator extends Frame_Decorator {
 
     // No valid page break found.  Just break at $frame.
     dompdf_debug("page-break", "no valid break found, just splitting.");
-    
+
     // If we are in a table, backtrack to the nearest top-level table row
     if ( $this->_in_table ) {
+      $num_tables = $this->_in_table - 1;
+
       $iter = $frame;
-      while ($iter && $iter->get_style()->display !== "table-row")
+      while ( $iter && $num_tables && $iter->get_style()->display !== "table" ) {
         $iter = $iter->get_parent();
-      
-      $iter->split(null, true);
-    } else {
-      $frame->split(null, true);
+        $num_tables--;
+      }
+
+      $iter = $frame;
+      while ($iter && $iter->get_style()->display !== "table-row" )
+        $iter = $iter->get_parent();
     }
-    
+
+    $frame->split(null, true);
     $this->_page_full = true;
     $frame->_already_pushed = true;
     return true;
+    
   }
 
   //........................................................................
 
-  function split(Frame $frame = null, $force_pagebreak = false) {
+  function split($frame = null, $force_pagebreak = false) {
     // Do nothing
   }
-
+  
   /**
    * Add a floating frame
-   *
-   * @param Frame $frame
-   *
-   * @return void
+   * 
+   * @param $child Frame
    */
   function add_floating_frame(Frame $frame) {
     array_unshift($this->_floating_frames, $frame);
   }
   
   /**
-   * @return Frame[]
+   * @return array
    */
   function get_floating_frames() { 
     return $this->_floating_frames; 

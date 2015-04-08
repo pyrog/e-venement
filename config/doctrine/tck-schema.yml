@@ -15,8 +15,8 @@
 #    along with e-venement; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # 
-#    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
-#    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
+#    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
+#    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
 # 
 #**********************************************************************************/
 
@@ -50,10 +50,6 @@ Transaction:
       type: boolean
       default: false
       notnull: true
-    with_shipment:
-      type: boolean
-      default: true
-      notnull: true
   relations:
     Contact:
       foreignAlias: Transactions
@@ -70,13 +66,13 @@ Transaction:
 Ticket:
   package: tck
   inheritance:
-    extends: Itemable
+    extends: Traceable
     type: concrete
   indexes:
     ticket_updated_at_idx:
       fields: [updated_at]
-    ticket_seat_id_manifestation_id_idx:
-      fields: [seat_id, manifestation_id]
+    ticket_gauge_id_numerotation_id_idx:
+      fields: [numerotation, gauge_id]
       type: unique
     ticket_barcode_idx:
       fields: [barcode]
@@ -88,19 +84,30 @@ Ticket:
       fields: [printed_at]
     ticket_integrated_at_idx:
       fields: [integrated_at]
+    ticket_numerotation_idx:
+      fields: [numerotation]
   columns:
+    transaction_id:
+      type: integer
+      notnull: true
     manifestation_id:
       type: integer
       notnull: true
     gauge_id:
       type: integer
       notnull: true
-    price_id: integer
+    price_id:
+      type: integer
+      notnull: true
     price_name:
       type: string(63)
       notnull: true
       notblank: true
-    seat_id: integer
+    value:
+      type: decimal(8)
+      scale: 3
+      notnull: true
+    numerotation: string(255)
     duplicating: integer
     grouping_fingerprint: string(255)
     cancelling:
@@ -111,26 +118,15 @@ Ticket:
     barcode: string(255)
     othercode: string(255)
     member_card_id: integer
-    taxes:
-      type: decimal(6)
-      scale: 3
-    contact_id: integer
-    comment: string
-    auto_by_hold:
-      type: boolean
-      default: false
-      notnull: true
+    vat:
+      type: decimal(5)
+      scale: 4
   relations:
-    Transaction:
-      foreignAlias: Tickets
-      onDelete: RESTRICT
-      onUpdate: CASCADE
-    User:
-      class: sfGuardUser
-      foreignAlias: Tickets
-      onDelete: RESTRICT
-      onUpdate: CASCADE
     Manifestation:
+      foreignAlias: Tickets
+      onDelete: RESTRICT
+      onUpdate: CASCADE
+    Transaction:
       foreignAlias: Tickets
       onDelete: RESTRICT
       onUpdate: CASCADE
@@ -150,6 +146,11 @@ Ticket:
       class: Ticket
       onDelete: SET NULL
       onUpdate: CASCADE
+    User:
+      class: sfGuardUser
+      foreignAlias: Tickets
+      onDelete: RESTRICT
+      onUpdate: CASCADE
     Gauge:
       foreignAlias: Tickets
       onDelete: RESTRICT
@@ -157,15 +158,6 @@ Ticket:
     MemberCard:
       foreignAlias: Tickets
       onDelete: RESTRICT
-      onUpdate: CASCADE
-    Seat:
-      foreignAlias: Tickets
-      onDelete: RESTRICT
-      onUpdate: CASCADE
-    DirectContact:
-      class: Contact
-      foreignAlias: DirectTickets
-      onDelete: SET NULL
       onUpdate: CASCADE
 Cancellation:
   package: tck
@@ -334,7 +326,6 @@ Payment:
       scale: 3
       notnull: true
     member_card_id: integer
-    detail: string(255)
   relations:
     Transaction:
       foreignAlias: Payments
@@ -375,94 +366,3 @@ OptionAccounting:
     type: column_aggregation
     keyField: type
     keyValue: 'accounting'
-
-Tax:
-  package: tck
-  inheritance:
-    extends: Traceable
-    type: concrete
-  columns:
-    name:
-      type: string(255)
-      notnull: true
-    type:
-      type: enum
-      values: [percentage, value]
-      default: value
-      notnull: true
-    value:
-      type: float
-      notnull: true
-  relations:
-    Users:
-      class: sfGuardUser
-      refClass: TaxUser
-      foreignAlias: Taxes
-    Manifestations:
-      class: Manifestation
-      refClass: TaxManifestation
-      foreignAlias: Taxes
-    Prices:
-      class: Price
-      refClass: TaxPrice
-      foreignAlias: Taxes
-TaxUser:
-  package: tck
-  columns:
-    tax_id:
-      type: integer
-      notnull: true
-    sf_guard_user_id:
-      type: integer
-      notnull: true
-TaxManifestation:
-  package: tck
-  columns:
-    tax_id:
-      type: integer
-      notnull: true
-    manifestation_id:
-      type: integer
-      notnull: true
-TaxPrice:
-  package: tck
-  columns:
-    tax_id:
-      type: integer
-      notnull: true
-    price_id:
-      type: integer
-      notnull: true
-
-HoldTransaction:
-  package: tck
-  inheritance:
-    extends: Traceable
-    type: concrete
-  columns:
-    transaction_id:
-      type: integer
-      unique: true
-      notnull: true
-    hold_id:
-      type: integer
-      notnull: true
-    rank:
-      type: float
-      notnull: true
-      default: 1000
-    pretickets:
-      type: integer
-      notnull: true
-      default: 0
-  relations:
-    Transaction:
-      foreignAlias: HoldTransaction
-      foreignType: one
-      onDelete: CASCADE
-      onUpdate: CASCADE
-    Hold:
-      foreignAlias: HoldTransactions
-      onDelete: CASCADE
-      onUpdate: CASCADE
-      

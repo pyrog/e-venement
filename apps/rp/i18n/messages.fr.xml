@@ -5,158 +5,6 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Image integrated properly into the content of your email.</source>
-        <target>Image intégrée correctement au corps de votre courriel.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Append to content</source>
-        <target>Ajouter à la fin du contenu</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Minimum quantity of tickets needed in online sales</source>
-        <target>Quantité minimale de billets demandés pour les ventes en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Tickets online</source>
-        <target>Billets en ligne</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Store</source>
-        <target>Boutique</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Answered surveys</source>
-        <target>Sondages répondus</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Surveys to apply</source>
-        <target>Sondages particuliers</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Record</source>
-        <target>Enregistrer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Bad email</source>
-        <target>Mauvais courriel</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Sales ledger</source>
-        <target>Livre des ventes</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Flash on control</source>
-        <target>S'affiche au contrôle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Survey</source>
-        <target>Questionnaire</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Query</source>
-        <target>Question</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Answer</source>
-        <target>Réponse</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Transactions</source>
-        <target>Opérations</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Facebook ID</source>
-        <target>Identifiant Facebook</target>
-      </trans-unit>
-      <trans-unit>
-        <source>The field "GROUPE" is used to create groups for personal contacts, and categories for professional contacts.</source>
-        <target>Le champ "GROUPE" est utilisé pour créer des groupes dans le cas de contacts personnels, et des catégories pour des professionnels.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>You are about to import a bulk of contacts. Be careful to respect this type of file:</source>
-        <target>Vous êtes sur le point d'importer un lot de contacts. Attention à respecter ce type de fichier :</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Do not forget that this file must be UTF-8 encoded, its fields must be separated by a comma, and the first line dedicated to field titles... Actually a standard CSV format.</source>
-        <target>Ne pas oublier que ce fichier doit être encodé en UTF-8, que ses champs doivent être séparés par une virgule, que la première ligne est dédiée aux titres des champs... Ce qui en fait un format CSV standard.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>To import the culture of your contacts, you must use the standard language code (ex: en, fr, br,...). This field is optional ("fr" by default).</source>
-        <target>Pour importer la langue d'usage de vos contacts, vous devez utilisez les codes de langues standard (ex: en, fr, br, ...). Ce champ est optionnel ("fr" par défaut).</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Try to import a maximum of %%nb%% lines at once. Then repeat the import the number of times needed.</source>
-        <target>Essayer d'importer un maximum de %%nb%% lignes à chaque fois. Ensuite, répéter l'import autant que nécessaire.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Import</source>
-        <target>Importer</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Real value</source>
-        <target>Valeur réelle</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This price will be applied, as it is defined inside the product...</source>
-        <target>Ce tarif sera appliqué, tel que défini au sein du produit...</target>
-      </trans-unit>
-      <trans-unit>
-        <source>This product will become the inner price of those member cards</source>
-        <target>Ce produit deviendra le prix intrinsèque de ces cartes d'abo</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Global price</source>
-        <target>Prix global</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Product</source>
-        <target>Produit</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Money</source>
-        <target>Argent</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Price</source>
-        <target>Prix</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Best seat rank</source>
-        <target>Meilleur rang de place</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Average seat rank</source>
-        <target>Rang de place moyen</target>
-      </trans-unit>
-      <trans-unit>
-        <source>What kind of operand will we apply on seat ranks?</source>
-        <target>Quel type d'opérateur allons nous utiliser sur les rangs de place ?</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Less or equal</source>
-        <target>Inférieur ou égal</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Equal</source>
-        <target>Égal</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Equal or more</source>
-        <target>Supérieur ou égal</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Qty: %%qty%%</source>
-        <target>Qté: %%qty%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Avg: %%avg%%</source>
-        <target>Moy.: %%avg%%</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Std deviation: %%sd%%</source>
-        <target>Écart-type: %%sd%%</target>
-      </trans-unit>
-      <trans-unit>
         <source>Groups intersection</source>
         <target>Intersection des groupes</target>
       </trans-unit>
@@ -637,6 +485,10 @@
         <target>Montant sur la carte</target>
       </trans-unit>
       <trans-unit>
+        <source>Phonenumbers</source>
+        <target>Numéros</target>
+      </trans-unit>
+      <trans-unit>
         <source>Maximum tickets amount</source>
         <target>Chiffre d'affaire maximum</target>
       </trans-unit>
@@ -833,8 +685,8 @@
         <target>Doublons</target>
       </trans-unit>
       <trans-unit>
-        <source>Meta events</source>
-        <target>Meta-événements</target>
+        <source>Meta events list</source>
+        <target>Liste des meta-événements</target>
       </trans-unit>
       <trans-unit>
         <source>Others</source>
@@ -951,10 +803,6 @@
       <trans-unit id="16">
         <source>Orders</source>
         <target>Bons de commande</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Order</source>
-        <target>Bon de commande</target>
       </trans-unit>
       <trans-unit id="17">
         <source>Invoices</source>
@@ -1184,10 +1032,6 @@
         <source>Firstname</source>
         <target>Prénom</target>
       </trans-unit>
-      <trans-unit>
-        <source>Shortname</source>
-        <target>Nom court</target>
-      </trans-unit>
       <trans-unit id="80">
         <source>Technic</source>
         <target>Technique</target>
@@ -1258,7 +1102,7 @@
       </trans-unit>
       <trans-unit id="97">
         <source>yes or no</source>
-        <target>indifférent</target>
+        <target>oui ou non</target>
       </trans-unit>
       <trans-unit id="98">
         <source>yes</source>
@@ -1426,7 +1270,7 @@
       </trans-unit>
       <trans-unit id="7">
         <source>Phonenumbers</source>
-        <target>Téléphones</target>
+        <target>Numéros de téléphone</target>
       </trans-unit>
       <trans-unit id="8">
         <source>Created_at</source>
@@ -1803,10 +1647,6 @@
       <trans-unit id="27">
         <source>4. Send (test first!)</source>
         <target>4. Envoyer (tester d'abord!)</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Send</source>
-        <target>Envoyer</target>
       </trans-unit>
       <trans-unit>
         <source>Test email address:</source>

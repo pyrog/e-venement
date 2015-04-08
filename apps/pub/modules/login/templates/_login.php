@@ -1,22 +1,16 @@
-  <?php echo $form->renderHiddenFields() ?>
-  <p class="<?php echo $fieldname = 'email' ?>">
+<?php echo $form->renderHiddenFields() ?>
+<?php foreach ( array('email','password') as $fieldname ): ?>
+  <p class="<?php echo $fieldname ?>">
     <?php echo $form[$fieldname]->renderLabel() ?>
     <?php echo $form[$fieldname] ?>
     <span class="error"><?php if ( isset($errors[$fieldname]) ) echo __($errors[$fieldname]) ?></span>
   </p>
-  <p class="<?php echo $fieldname = 'password' ?>">
-    <?php echo $form[$fieldname]->renderLabel() ?>
-    <?php echo $form[$fieldname] ?>
-    <span class="error"><?php if ( isset($errors[$fieldname]) ) echo __($errors[$fieldname]) ?></span>
-    <a href="<?php echo url_for('login/forgot') ?>" class="forgot"><?php echo __('Send me a new password') ?></a></br>
-    <a href="<?php echo url_for('contact/new') ?>" class="forgot"><?php echo __('Create an account') ?></a>
-  </p>
-  <?php if (!( isset($buttons) && !$buttons )): ?>
+<?php endforeach ?>
   <p class="submit">
     <label></label>
-    <button name="<?php echo sprintf($form->getWidgetSchema()->getNameFormat(), 'url_back') ?>" value="<?php echo url_for('contact/index') ?>">
-      <?php echo __('My orders') ?>
-    </button>
-    <input type="submit" value="<?php echo __('Continue shopping') ?>" name="continue" />
+    <input type="submit" value="Ok" name="submit" />
+    <?php $vel = sfConfig::get('app_tickets_vel', array()) ?>
+    <?php if (!( isset($vel['one_shot']) && $vel['one_shot'] )): ?>
+    <a href="<?php echo url_for('login/forgot') ?>" class="forgot"><?php echo __('Send me a new password') ?></a>
+    <?php endif ?>
   </p>
-  <?php endif ?>

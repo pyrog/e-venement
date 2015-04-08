@@ -1,12 +1,3 @@
-hold:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                Hold
-    module:               hold
-    prefix_path:          /hold
-    column:               id
-    with_wildcard_routes: true
-
 seated_plan:
   class: sfDoctrineRouteCollection
   options:

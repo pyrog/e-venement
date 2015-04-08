@@ -5,22 +5,6 @@
     <header />
     <body>
       <trans-unit>
-        <source>Print tickets</source>
-        <target>Imprimer les billets</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Best free seat</source>
-        <target>Meilleure place libre</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Your language as been successfully updated.</source>
-        <target>Votre langue a été mise à jour avec succès.</target>
-      </trans-unit>
-      <trans-unit>
-        <source>Please, try again...</source>
-        <target>Essayez à nouveau SVP...</target>
-      </trans-unit>
-      <trans-unit>
         <source>Filter's name</source>
         <target>Nom du filtre</target>
       </trans-unit>
@@ -163,11 +147,11 @@
       </trans-unit>
       <trans-unit>
         <source>Save</source>
-        <target>Enregistrer</target>
+        <target>Mettre à jour</target>
       </trans-unit>
       <trans-unit>
         <source>Save and add</source>
-        <target>Enregistrer et ajouter</target>
+        <target>Mettre à jour et ajouter</target>
       </trans-unit>
       <trans-unit>
         <source>Cancel</source>
@@ -311,7 +295,7 @@
       </trans-unit>
       <trans-unit>
         <source>yes or no</source>
-        <target>indifférent</target>
+        <target>oui ou non</target>
       </trans-unit>
       <trans-unit>
         <source>yes</source>

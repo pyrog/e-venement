@@ -1,21 +1,3 @@
-web_origin_ip:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                WebOriginIp
-    module:               web_origin_ip
-    prefix_path:          /web_origin_ip
-    column:               id
-    with_wildcard_routes: true
-
-web_origin:
-  class: sfDoctrineRouteCollection
-  options:
-    model:                WebOrigin
-    module:               web_origin
-    prefix_path:          /web_origin
-    column:               id
-    with_wildcard_routes: true
-
 # You can find more information about this file on the symfony website:
 # http://www.symfony-project.org/reference/1_4/en/10-Routing
 

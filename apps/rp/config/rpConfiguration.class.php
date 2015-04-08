@@ -4,12 +4,6 @@ require_once dirname(__FILE__).'../../../../config/autoload.inc.php';
 
 class rpConfiguration extends sfApplicationConfiguration
 {
-  public function setup()
-  {
-    if (!( sfContext::hasInstance() && get_class(sfContext::getInstance()->getConfiguration()) != get_class($this) ))
-      $this->enablePlugins(array('liClassLoaderPlugin', 'sfDomPDFPlugin', 'liBarcodePlugin'));
-    parent::setup();
-  }
   public function configure()
   {
     parent::configure();
@@ -18,12 +12,6 @@ class rpConfiguration extends sfApplicationConfiguration
     $this->dispatcher->connect('admin.save_object', array($this, 'setSpecialFlash'));
     $this->dispatcher->connect('admin.save_object', array($this, 'addPhoneNumber'));
     $this->dispatcher->connect('user.change_authentication', array($this, 'logAuthentication'));
-  }
-  public function initialize()
-  {
-    if (!( sfContext::hasInstance() && get_class(sfContext::getInstance()->getConfiguration()) != get_class($this) ))
-      $this->enableSecondWavePlugins(sfConfig::get('app_options_plugins', array()));
-    ProjectConfiguration::initialize();
   }
   
   public static function changeTemplatesDir(sfAction $action)
@@ -69,7 +57,7 @@ class rpConfiguration extends sfApplicationConfiguration
     
     // Email
     if ( $params['object'] instanceof Email )
-    if ( !$params['object']->isATest() )
+    if ( $params['object']->not_a_test )
       $event->getSubject()->getUser()->setFlash('success',"Your email have been sent correctly.");
   }
   public function logAuthentication(sfEvent $event)

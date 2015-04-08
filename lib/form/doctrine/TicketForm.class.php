@@ -32,7 +32,11 @@ class TicketForm extends BaseTicketForm
       'query' => Doctrine::getTable('Gauge')->createQuery('g')->andWhereIn('g.workspace_id',array_keys(sfContext::getInstance()->getUser()->getWorkspacesCredentials())),
     ));
     $this->widgetSchema['transaction_id'] = new sfWidgetFormInputHidden();
-    $this->widgetSchema['seat_id'] = new sfWidgetFormInputHidden();
+    $this->widgetSchema['numerotation'] = new sfWidgetFormInputHidden();
+    $this->validatorSchema['numerotation'] = new sfValidatorString(array(
+      'min_length' => 1,
+      'required' => false,
+    ));
   }
   
   public function save($con = NULL)
@@ -53,10 +57,9 @@ class TicketForm extends BaseTicketForm
       $this->object->manifestation_id = $params['manifestation_id'][0];
       $q = Doctrine::getTable('Ticket')->createQuery('t')
         ->leftJoin('t.Price p')
-        ->leftJoin('p.Translation pt')
         ->andWhere('t.manifestation_id = ?', $this->object->manifestation_id)
         ->andWhere('t.transaction_id = ?', $this->object->transaction_id)
-        ->andWhere('pt.name = ?', $this->object->price_name)
+        ->andWhere('p.name = ?', $this->object->price_name)
         ->andWhere('t.printed_at IS NULL')
         ->andWhere('t.gauge_id = ?',$this->object->gauge_id)
         ->orderBy('t.integrated_at DESC, t.numerotation DESC, t.id DESC')

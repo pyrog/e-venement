@@ -13,10 +13,4 @@ require_once dirname(__FILE__).'/../lib/controlGeneratorHelper.class.php';
  */
 class controlActions extends autoControlActions
 {
-  public function executeIndex(sfWebRequest $request)
-  {
-    parent::executeIndex($request);
-    if ( $request->hasParameter('light') )
-      $this->setLayout('nude');
-  }
 }

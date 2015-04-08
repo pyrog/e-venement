@@ -25,7 +25,6 @@ body #content { width: 600px; }
 #content .sf_admin_form fieldset input[type=text] + label:after { content: ':'; }
 #content .sf_admin_form fieldset .helper { float: right; width: 80px; }
 #content .sf_admin_form fieldset input[type=text],
-#content .sf_admin_form fieldset input[type=text]:not([size]),
 #content .sf_admin_form fieldset textarea {
   float: right;
   width: 100px;
@@ -43,5 +42,3 @@ body #content { width: 600px; }
 fieldset.professional.check { clear: left; }
 
 .templates { margin: 5px; padding: 5px; }
-
-.li-form-header { padding: 10px; }

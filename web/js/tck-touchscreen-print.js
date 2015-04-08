@@ -17,19 +17,6 @@
         $(form).focusout();
         return LI.checkGauges(form);
       }
-      
-      // work around Work In Progress tickets (w/o a given price, but a seat only)
-      var go = true;
-      $('#li_transaction_manifestations .families:not(.sample) .family:not(.total) .declination').each(function(){
-        if ( parseInt($(this).attr('data-price-id'))+'' !== ''+$(this).attr('data-price-id') && $(this).find('.qty input').val() != '0' )
-          go = false;
-      });
-      if ( !go )
-      {
-        LI.alert($('#li_transaction_field_close .print .give-price-to-wip').text());
-        return false;
-      }
-      
       if ( $(form).find('[name=duplicate]').prop('checked') && $(form).find('[name=price_name]').val() )
         $(form).find('[name=manifestation_id]').val($('#li_transaction_manifestations .item.ui-state-highlight').closest('.family').attr('data-family-id'));
       setTimeout(function(){ $('#li_transaction_manifestations .footer .print [name=price_name]').val('').blur(); }, 2500);
@@ -60,18 +47,16 @@
            return false;
         }
         
-        if ( $('#li_transaction_field_content .ui-state-highlight[data-gauge-id]').length > 0 )
+        $(this).find('[name=gauge_id]').val($('#li_transaction_field_content .ui-state-highlight').attr('data-gauge-id'));
+        if ( LI.checkGauges(this) )
         {
-          $(this).find('[name=gauge_id]').val($('#li_transaction_field_content .ui-state-highlight').attr('data-gauge-id'));
-          if ( !LI.checkGauges(this) )
-            return false;
-          
           // refresh the gauge, as soon as the focus is back on the transaction
           $(window).focus(function(){
             LI.initContent();
             $(this).unbind('focus');
           });
         }
+        else return false;
         return true;
       });
     });

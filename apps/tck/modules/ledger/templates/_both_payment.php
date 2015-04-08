@@ -1,13 +1,14 @@
 <div class="ui-widget-content ui-corner-all" id="byPaymentMethod">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
-    <?php include_partial('both_extract') ?>
-    <h2><?php echo __("Payment modes") ?></h2>
+    <h2>
+      <?php echo __("Payment modes") ?>
+    </h2>
   </div>
   <?php if ( is_array($form->getValue('manifestations')) && count($form->getValue('manifestations')) > 0 ): ?>
   <?php endif ?>
 <table>
 <tbody>
-<?php $total = array('nb' => 0, 'value+' => 0, 'value-' => 0); $class = false; ?>
+<?php $total = array('nb' => 0, 'value+' => 0, 'value-' => 0) ?>
 <?php foreach ( $byPaymentMethod as $pm ): ?>
   <tr class="<?php echo ($class = !$class) ? 'overlined' : '' ?>">
     <td class="name"><?php echo $pm['name'] ?></td>

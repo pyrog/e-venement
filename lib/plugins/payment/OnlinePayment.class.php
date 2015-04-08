@@ -29,11 +29,12 @@
     protected $currency = 'EUR';
     protected $value = 0;
     protected $return, $transaction;
-    public $BankPayment = NULL;
     
     protected function __construct(Transaction $transaction)
     {
       $this->transaction = $transaction;
-      $this->value = $this->transaction->getPrice(true, true);
+      $this->value = $this->transaction->getPrice(true)
+        + $this->transaction->getMemberCardPrice(true)
+        - $this->transaction->getTicketsLinkedToMemberCardPrice(true);
     }
   }

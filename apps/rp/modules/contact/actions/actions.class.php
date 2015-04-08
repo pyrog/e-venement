@@ -39,49 +39,6 @@ class contactActions extends autoContactActions
 {
   private $force_classic_template_dir = false;
   
-  public function executePrepareImport(sfWebRequest $request)
-  {
-    $this->useClassicTemplateDir(true);
-  }
-  public function executeImport(sfWebRequest $request)
-  {
-    return require(__DIR__.'/import.php');
-  }
-  
-  public function executeDelPicture(sfWebRequest $request)
-  {
-    $this->executeShow($request);
-    $this->contact->Picture->delete();
-    return sfView::NONE;
-  }
-  public function executeNewPictureDistant(sfWebRequest $request)
-  {
-    if (!( $request->getParameter('id').'' === ''.intval($request->getParameter('id')) && $url = $request->getParameter('url') ))
-      throw new liEvenementException('Needs more informations to retrieve the expected data');
-    if ( !$this->contact = Doctrine::getTable('Contact')->find($request->getParameter('id')) )
-      throw new liEvenementException('No contact found for picture update with the id '.$request->getParameter('id'));
-    
-    file_put_contents(sfConfig::get('sf_app_cache_dir').'/fb-test.html', file_get_contents($url));
-    
-    return sfView::NONE;
-  }
-  public function executeNewPicture(sfWebRequest $request)
-  {
-    $this->executeShow($request);
-    if ( $request->getParameter('image', false) )
-    {
-      if ( !$this->contact->Picture->isNew() )
-        $this->contact->Picture->delete();
-      $this->contact->Picture = new Picture;
-      
-      $this->contact->Picture->content = $request->getParameter('image');
-      $this->contact->Picture->name = 'contact-'.$this->contact->id.'-'.date('YmdHis').'.img';
-      $this->contact->Picture->type = $request->getParameter('type');
-      $this->contact->save();
-    }
-    return sfView::NONE;
-  }
-  
   public function executeError404(sfWebRequest $request)
   {
     $this->useClassicTemplateDir(true);
@@ -276,7 +233,7 @@ class contactActions extends autoContactActions
     }
     catch (sfValidatorError $e)
     {
-      error_log('contact/batchAddToGroup: '.$e->getMessage());
+      error_log($e->getMessage());
       $this->getUser()->setFlash('error', 'A problem occurs when adding the selected items as some items do not exist anymore.');
       return $this->redirect('@contact');
     }
@@ -291,7 +248,7 @@ class contactActions extends autoContactActions
       $gc->group_id = $group_id;
       
       try { $gc->save(); }
-      catch(Doctrine_Exception $e) { error_log('contact/batchAddToGroup: '.$e->getMessage()); }
+      catch(Doctrine_Exception $e) { error_log($e->getMessage()); }
     }
     
     // professionals
@@ -409,7 +366,6 @@ class contactActions extends autoContactActions
   public function executeSearch(sfWebRequest $request)
   {
     self::executeIndex($request);
-    $this->quickest = true;
     $table = Doctrine_Core::getTable('Contact');
     
     if ( intval($request->getParameter('s')) > 0 )
@@ -633,7 +589,7 @@ class contactActions extends autoContactActions
     $transliterate = sfConfig::get('software_internals_transliterate',array());
     
     $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
-    $search = str_replace(array('_','@','.','-','+',',',"'"),' ',$search);
+    $search = str_replace(array('@','.','-','+',',',"'"),' ',$search);
     $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
     return $search;
   }

@@ -43,14 +43,32 @@ class cardActions extends sfActions
     $this->getUser()->getTransaction()->MemberCards->delete();
     
     $order = $request->getParameter('member_card_type');
-    $cpt = 0;
     foreach ( $order as $id => $qty )
     if ( intval($qty) > 0 )
+    for ( $i = 0 ; $i < intval($qty) ; $i++ )
     {
-      $cpt += intval($qty);
-      if ( $cpt <= sfConfig::get('app_member_cards_max_per_transaction', 3) )
-      for ( $i = 0 ; $i < intval($qty) ; $i++ )
-        $this->getContext()->getConfiguration()->addMemberCard($this->getUser()->getTransaction(), $id);
+      $mcf = new MemberCardForm;
+      $arr = array();
+      
+      $arr['member_card_type_id'] = $id;
+      $arr['created_at'] = date('Y-m-d');
+      $arr['transaction_id'] = $this->getUser()->getTransaction()->id;
+      $arr['contact_id'] = $this->getUser()->getTransaction()->contact_id;
+      $arr['active'] = false;
+      $arr[$mcf->getCSRFFieldName()] = $mcf->getCSRFToken();
+      
+      $arr['expire_at'] = sfConfig::has('project_cards_expiration_delay')
+        ? date('Y-m-d H:i:s',strtotime(sfConfig::get('project_cards_expiration_delay')))
+        : (strtotime(date('Y').'-'.sfConfig::get('project_cards_expiration_date')) > strtotime('now')
+          ? date('Y').'-'.sfConfig::get('project_cards_expiration_date')
+          : (date('Y')+1).'-'.sfConfig::get('project_cards_expiration_date'));
+      
+      $mcf->bind($arr);
+      
+      if ( !$mcf->isValid() )
+        throw new liEvenementException('Error when adding member cards.');
+      
+      $mcf->save();
     }
     
     $this->redirect('cart/show');
@@ -68,8 +86,8 @@ class cardActions extends sfActions
       return true;
 
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    $this->getUser()->setFlash('error',__('To order a pass, you need to be authenticated or Create an account'));
-    $this->forward('login','index');
+    $this->getUser()->setFlash('error',__('To order member cards, you need to be authenticated'));
+    $this->redirect('login/index');
     return false;
   }
 }

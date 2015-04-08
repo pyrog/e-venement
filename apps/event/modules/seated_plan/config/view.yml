@@ -6,10 +6,10 @@ createSuccess:
   javascripts: [event-seated-plan]
 updateSuccess:
   stylesheets: [picture, event-seated-plan]
-  javascripts: [event-seated-plan, event-seated-plan-nested-forms, helper, event-seated-plan-more-data]
+  javascripts: [event-seated-plan]
 editSuccess:
   stylesheets: [picture, event-seated-plan]
-  javascripts: [event-seated-plan, event-seated-plan-nested-forms, helper, event-seated-plan-more-data, event-seated-plan-shortcuts]
+  javascripts: [event-seated-plan]
 showSuccess:
   stylesheets: [picture, event-seated-plan]
   javascripts: [event-seated-plan]
@@ -17,48 +17,7 @@ showSuccess:
 indexSuccess:
   stylesheets: [event-seated-plan]
 
-linksBuildSuccess:
+getSeatsSuccess:
   has_layout: false
   http_metas:
     content-type: application/json
-getLinksSuccess:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getSeatsJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getHoldSeatsJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getControlsJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getShortnamesSuccess:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getDebtsJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getGroupJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getTransactionJson:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-getRanksSuccess:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-seatAddSuccess:
-  has_layout: false
-  http_metas:
-    content-type: application/json
-

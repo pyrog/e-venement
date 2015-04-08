@@ -13,75 +13,6 @@ require_once dirname(__FILE__).'/../lib/eventGeneratorHelper.class.php';
  */
 class eventActions extends autoEventActions
 {
-  public function executeImport(sfWebRequest $request)
-  {
-    $this->importForm = new sfForm;
-    $ws = $this->importForm->getWidgetSchema();
-    $vs = $this->importForm->getValidatorSchema();
-    $ws->setNameFormat('ics[%s]');
-    $ws['event_id'] = new sfWidgetFormInputHidden;
-    $vs['event_id'] = new sfValidatorDoctrineChoice(array('model' => 'event'));
-    $ws['location_id'] = new sfWidgetFormDoctrineChoice(array(
-      'model' => 'Location',
-      'query' => Doctrine::getTable('Location')->retrievePlaces(),
-      'label' => 'Main location',
-      'order_by' => array('name', ''),
-      'add_empty' => true,
-    ));
-    $vs['location_id'] = new sfValidatorDoctrineChoice(array(
-      'model' => 'Location',
-      'query' => Doctrine::getTable('Location')->retrievePlaces(),
-    ));
-    $ws['book_all'] = new sfWidgetFormInputCheckbox(array('value_attribute_value' => 'all'));
-    $vs['book_all'] = new sfValidatorBoolean(array('true_values' => array('all'), 'required' => false));
-    $ws['file'] = new sfWidgetFormInputFile(array('label' => 'iCal/ICS File'), array('accept' => 'text/calendar'));
-    $vs['file'] = new sfValidatorFile(array('mime_types' => array('text/calendar')));
-    
-    // import the ICS file
-    if ( $ics = $request->getParameter('ics', false) )
-    {
-      $this->forward404Unless(isset($ics['event_id']) && $ics['event_id']);
-      $this->importForm->bind($ics, $files = $request->getFiles('ics'));
-      $this->forward404Unless($this->event = Doctrine::getTable('Event')->find($ics['event_id']));
-      if ( !$this->importForm->isValid() )
-        return 'Success';
-      
-      $context = $request->getRequestContext();
-      $vcal = new vcalendar;
-      $vcal->parse(file_get_contents($this->importForm->getValue('file')->getTempName()));
-      
-      if ( $this->importForm->getValue('book_all') )
-        $all = Doctrine::getTable('Location')->createQuery('l')->execute();
-      $vat = Doctrine::getTable('VAT')->createQuery('v')->fetchOne();
-      
-      while ( $vevent = $vcal->getComponent('vevent') )
-      if ( $vevent->dtstart && $vevent->dtend )
-      {
-        $manifestation = new Manifestation;
-        $manifestation->event_id = $ics['event_id'];
-        $manifestation->happens_at = implode('-', $vevent->dtstart['value']).' 0:00';
-        $manifestation->ends_at = implode('-', $vevent->dtend['value']).' 0:00';
-        $manifestation->location_id = $this->importForm->getValue('location_id');
-        $manifestation->vat_id = $vat->id;
-        
-        if ( $this->importForm->getValue('book_all') )
-        foreach ( $all as $r )
-          $manifestation->Booking[] = $r;
-        
-        $manifestation->save();
-      }
-      
-      sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');
-      $this->getUser()->setFlash('notice', __('ICS file imported.'));
-      $this->redirect('event/edit?id='.$ics['event_id']);
-    }
-    else
-    {
-      // if nothing to import... do this:
-      $this->executeShow($request);
-      $this->importForm->setDefault('event_id', $this->event->id);
-    }
-  }
   public function executeIndex(sfWebRequest $request)
   {
     parent::executeIndex($request);
@@ -92,17 +23,8 @@ class eventActions extends autoEventActions
       $this->pager->getQuery()
         //->addSelect("(SELECT min(m2.happens_at) FROM manifestation m2 WHERE m2.event_id = $a.id) AS min_happens_at")
         ->addSelect("(SELECT (CASE WHEN max(m3.happens_at) IS NULL THEN false ELSE max(m3.happens_at) > now() END) FROM manifestation m3 WHERE m3.event_id = $a.id) AS now")
-        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date','DESC') != 'ASC' ? 'DESC' : 'ASC').", translation.name");
+        ->orderby("max_date ".(sfConfig::get('app_listing_manif_date','DESC') != 'ASC' ? 'DESC' : 'ASC').", $a.name");
     }
-  }
-  
-  public function executeDelPicture(sfWebRequest $request)
-  {
-    $q = Doctrine_Query::create()->from('Picture p')
-      ->where('p.id IN (SELECT e.picture_id FROM Event e WHERE e.id = ?)',$request->getParameter('id'))
-      ->delete()
-      ->execute();
-    return sfView::NONE;
   }
   
   public function executeOnlyFilters(sfWebRequest $request)
@@ -111,9 +33,6 @@ class eventActions extends autoEventActions
     $a = $this->pager->getQuery()->getRootAlias();
     $this->pager->getQuery()->select("$a.id");
   }
-  
-  public function executeBatchBestFreeSeat(sfWebRequest $request)
-  { $this->forward('manifestation', 'bestFreeSeat'); }
   
   public function executeSearch(sfWebRequest $request)
   {
@@ -272,9 +191,9 @@ class eventActions extends autoEventActions
     {
       $new = $event->copy();
       
-      foreach ( array('Translation', 'Manifestations', 'Companies', 'Checkpoints', 'MemberCardPrices', 'MemberCardPriceModels') as $relation )
+      foreach ( array('Companies', 'Checkpoints', 'MemberCardPrices', 'MemberCardPriceModels') as $relation )
       foreach ( $event->$relation as $relobj )
-        $new->{$relation}[] = $relobj->copy();
+        $new->{$relation}[] = $relobj;
       foreach ( array('MetaEvent', 'EventCategory') as $relation )
         $new->$relation = $event->$relation;
       foreach ( array('slug') as $prop )
@@ -299,25 +218,19 @@ class eventActions extends autoEventActions
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
-    $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q',''));
+    $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q'));
     
     $q = Doctrine::getTable('Event')
       ->createQuery('e')
-      ->orderBy('translation.name')
+      ->orderBy('name')
       ->limit($request->getParameter('limit'))
       ->andWhereIn('e.meta_event_id',array_keys($this->getUser()->getMetaEventsCredentials()));
-    if ( $request->getParameter('meta_event_id').'' === ''.intval($request->getParameter('meta_event_id')) )
-      $q->andWhere('e.meta_event_id = ?', intval($request->getParameter('meta_event_id')));
-    if ( $search )
-      $q = Doctrine_Core::getTable('Event')
-        ->search($search.'*',$q);
-    
+    $q = Doctrine_Core::getTable('Event')
+      ->search($search.'*',$q);
+
     $this->events = array();
     foreach ( $q->execute() as $event )
       $this->events[$event->id] = $request->hasParameter('with_meta_event') ? $event.' ('.$event->MetaEvent.')' : (string)$event;
-    
-    if (!( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') ))
-      return 'Json';
   }
   
   public function executeError404(sfWebRequest $request)
@@ -337,7 +250,7 @@ class eventActions extends autoEventActions
     $transliterate = sfConfig::get('software_internals_transliterate',array());
     
     $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
-    $search = str_replace(array('_','@','.','-','+',',',"'"),' ',$search);
+    $search = str_replace(array('@','.','-','+',',',"'"),' ',$search);
     $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
     return $search;
   }

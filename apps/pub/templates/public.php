@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <?php $module_name = $sf_context->getModuleName() ?>
-    <?php $sf_response->setTitle(sfConfig::get('app_informations_title')) ?>
+    <?php $sf_response->setTitle(sfConfig::get('app_title')) ?>
+    <?php use_javascript('public?'.date('Ymd')) ?>
+    <?php use_javascript('/private/public.js?'.date('Ymd')) ?>
     <?php include_http_metas() ?>
     <?php include_metas() ?>
     <?php include_title() ?>
@@ -10,7 +12,7 @@
     <?php include_stylesheets() ?>
     <?php include_javascripts() ?>
   </head>
-  <body class="<?php include_partial('global/body_classes') ?>">
+  <body>
     <div id="client-header"></div>
     <div id="content">
       <?php include_partial('global/oplog') ?>
@@ -24,5 +26,6 @@
       <?php include_partial('global/date') ?>
       <?php include_partial('global/cart_widget') ?>
     </div>
+    <div id="transition"><span class="close"></span></div>
   </body>
 </html>

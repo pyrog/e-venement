@@ -1,4 +1,3 @@
-glop
 <?php
 $first = ($pager->getPage() * $pager->getMaxPerPage() - $pager->getMaxPerPage() + 1);
 $last = $first + $pager->getMaxPerPage() - 1;
@@ -14,28 +13,28 @@ $last = $first + $pager->getMaxPerPage() - 1;
             <tr>
               <?php if ($pager->haveToPaginate()): ?>
               <td class="button">
-                <a href="<?php echo url_for($sf_context->getModuleName().'/'.$sf_context->getActionName().'?page=1') ?>"<?php if ($pager->getPage() == 1) echo ' class="ui-state-disabled"' ?>>
+                <a href="<?php echo url_for('@contact?page=1') ?>"<?php if ($pager->getPage() == 1) echo ' class="ui-state-disabled"' ?>>
                   <span class="ui-icon ui-icon-seek-first"></span>                </a>
               </td>
 
               <td class="button">
-                <a href="<?php echo url_for($sf_context->getModuleName().'/'.$sf_context->getActionName().'?page='.$pager->getPreviousPage()) ?>"<?php if ($pager->getPage() == 1) echo ' class="ui-state-disabled"' ?>>
+                <a href="<?php echo url_for('@contact?page='.$pager->getPreviousPage()) ?>"<?php if ($pager->getPage() == 1) echo ' class="ui-state-disabled"' ?>>
                   <span class="ui-icon ui-icon-seek-prev"></span>                </a>
               </td>
 
               <td align="center">
                 <?php echo __('Page') ?>
-                <input type="text" onkeypress="javascript: if(event.keyCode == 13){ window.location = '<?php echo url_for($sf_context->getModuleName().'/'.$sf_context->getActionName()) ?>?page='+this.value; this.form.onsubmit = function(){ return false;}; }" name="page" value="<?php echo $pager->getPage() ?>" maxlength="7" size="2" />
+                <input type="text" onkeypress="javascript: if(event.keyCode == 13){ window.location = 'contact?page='+this.value; this.form.onsubmit = function(){ return false;}; }" name="page" value="<?php echo $pager->getPage() ?>" maxlength="7" size="2" />
                 <?php echo __('of %1%', array('%1%' => $pager->getLastPage())) ?>
             	</td>
 
               <td class="button">
-                <a href="<?php echo url_for($sf_context->getModuleName().'/'.$sf_context->getActionName().'?page='.$pager->getNextPage()) ?>"<?php if ($pager->getPage() == $pager->getLastPage()) echo ' class="ui-state-disabled"' ?>>
+                <a href="<?php echo url_for('@contact?page='.$pager->getNextPage()) ?>"<?php if ($pager->getPage() == $pager->getLastPage()) echo ' class="ui-state-disabled"' ?>>
                   <span class="ui-icon ui-icon-seek-next"></span>                </a>
               </td>
 
               <td class="button">
-                <a href="<?php echo url_for($sf_context->getModuleName().'/'.$sf_context->getActionName().'?page='.$pager->getLastPage()) ?>"<?php if ($pager->getPage() == $pager->getLastPage()) echo ' class="ui-state-disabled"' ?>>
+                <a href="<?php echo url_for('@contact?page='.$pager->getLastPage()) ?>"<?php if ($pager->getPage() == $pager->getLastPage()) echo ' class="ui-state-disabled"' ?>>
                   <span class="ui-icon ui-icon-seek-end"></span>                </a>
               </td>
               <?php endif; ?>

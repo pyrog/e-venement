@@ -32,42 +32,14 @@ class emailActions extends autoEmailActions
   }
   public function executeDeleteAttachment(sfWebRequest $request)
   {
-    $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    
-    $q = new Doctrine_Query;
-    $attachment = $q->from('Attachment a')
-      ->andWhere('a.id = ?', $request->getParameter('attachment_id'))
-      ->andWhere('a.email_id = ?', $request->getParameter('id'))
-      ->fetchOne();
-    unlink(sfConfig::get('sf_upload_dir').'/'.$attachment->filename);
-    $attachment->delete();
-    
-    $this->getUser()->setFlash('notice', __('The item was deleted successfully.'));
-    $this->redirect('email/edit?id='.$request->getParameter('id'));
-  }
-  public function executeIntegrateAttachment(sfWebRequest $request)
-  {
-    $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    
     $q = new Doctrine_Query;
     $attachment = $q->from('Attachment a')
       ->andWhere('a.id = ?',$request->getParameter('attachment_id'))
-      ->andWhere('a.email_id = ?', $request->getParameter('id'))
-      ->leftJoin('a.Email e')
       ->fetchOne();
-    if (!( $attachment && preg_match('!^image\/!', $attachment->mime_type) === 1 ))
-    {
-      $this->getUser()->setFlash('error', __('The given attachment is not found or does not match the prequisites'));
-      $this->redirect('email/edit?id='.$request->getParameter('id'));
-    }
-    
-    $img = file_get_contents($path = sfConfig::get('sf_upload_dir').'/'.$attachment->filename);
-    $attachment->Email->addImageToContent($img, $attachment->mime_type)->save();
-    
     unlink(sfConfig::get('sf_upload_dir').'/'.$attachment->filename);
     $attachment->delete();
     
-    $this->getUser()->setFlash('notice', __('Image integrated properly into the content of your email.'));
+    $this->getUser()->setFlash('notice','The item was deleted successfully.');
     $this->redirect('email/edit?id='.$request->getParameter('id'));
   }
   
@@ -121,7 +93,7 @@ class emailActions extends autoEmailActions
     {
       $this->form->getValidator('test_address')->setOption('required',false);
       if ( !isset($email['attach']) )
-        $this->email->isATest(false);
+        $this->email->not_a_test = true;
       else
       {
         unset($email['attach']);
@@ -168,7 +140,7 @@ class emailActions extends autoEmailActions
     $this->executeNew($request);
     //$this->form = $this->configuration->getForm();
     $this->email = $this->form->getObject();
-    $this->email->isATest(true);
+    $this->email->not_a_test = false;
     
     if ( $this->getUser() instanceof sfGuardSecurityUser )
       $this->email->sf_guard_user_id = $this->getUser()->getId();

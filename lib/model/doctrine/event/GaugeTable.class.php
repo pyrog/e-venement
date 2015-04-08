@@ -17,7 +17,7 @@ class GaugeTable extends PluginGaugeTable
         return Doctrine_Core::getTable('Gauge');
     }
   
-  public function createQuery($alias = 'g', $full = true, $mini_select = false)
+  public function createQuery($alias = 'g',$full = true)
   {
     $ws = $alias != 'ws' ? 'ws' : 'ws1';
     
@@ -27,13 +27,12 @@ class GaugeTable extends PluginGaugeTable
                AND gauge_id = $alias.id";
     
     if ( $full )
-    $q->select("$alias.".($mini_select ? 'id' : '*'))
+    $q->select("$alias.*")
       ->leftJoin("$alias.Workspace ws")
       ->addSelect("(SELECT ".($full === 'with_value' ? 'sum(value)' : 'count(*)')." AS nb
                     FROM Ticket tck1
                     WHERE (printed_at IS NOT NULL OR integrated_at IS NOT NULL)
                       AND $where
-                      AND price_id IS NOT NULL
                       AND id NOT IN (SELECT tck11.cancelling FROM Ticket tck11 WHERE tck11.cancelling IS NOT NULL)
                    ) AS printed")
       ->addSelect("(SELECT ".($full === 'with_value' ? 'sum(value)' : 'count(*)')." AS nb
@@ -41,7 +40,6 @@ class GaugeTable extends PluginGaugeTable
                     WHERE printed_at IS NULL AND integrated_at IS NULL
                       AND transaction_id IN (SELECT o2.transaction_id FROM Order o2)
                       AND $where
-                      AND price_id IS NOT NULL
                       AND id NOT IN (SELECT tck22.cancelling FROM Ticket tck22 WHERE tck22.cancelling IS NOT NULL)
                    ) AS ordered")
       ->addSelect("(SELECT ".($full === 'with_value' ? 'sum(value)' : 'count(*)')." AS nb

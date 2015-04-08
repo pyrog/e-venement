@@ -1,6 +1,8 @@
   $(document).ready(function(){
+    var families = $('#li_transaction_field_content .new-family select');
+    
     $('#li_transaction_field_content .new-family select').focusout(function(){
-      LI.addFamilies(this);
+      LI.addFamilies();
     });
     LI.autoAddFamilies();
     
@@ -11,10 +13,8 @@
       setTimeout(function(){
         if ( val == $(elt).val() ) // then launch the request
         {
-          var select = $(elt).closest('.new-family').find('select');
-          
           // emptying the previous select's content
-          select.html('');
+          families.html('');
           
           // disabling the selection of any manif that is already selected (including those w/o any ticket yet) 
           var except = [];
@@ -22,29 +22,21 @@
             if ( $(this).attr('data-family-id') )
               except.push($(this).attr('data-family-id'));
           });
-          
+        
           $.ajax({
-            url: select.attr('data-content-url'),
-            data: { with_colors: true, q: $(elt).val(), except: except, max: select.attr('data-content-qty'), 'keep-order': true },
+            url: families.attr('data-content-url'),
+            data: { with_colors: true, q: $(elt).val(), except: except, max: families.attr('data-content-qty'), 'keep-order': true },
             method: 'get',
             success: function(data){
-              select.html('');
+              families.html('');
               $.each(data, function(id, manif){
-                $('<option></option>').val(manif.id)
+                $('<option></option>')
+                  .val(manif.id)
                   .css('background-color', manif.color)
-                  .text(manif.name).prop('title', manif.name)
+                  .html(manif.name).prop('title', manif.name)
                   .attr('data-gauge-url', manif.gauge_url)
-                  .appendTo(select);
+                  .appendTo(families);
               });
-              
-              // if only one option is available w/o looking for something special, select this only option
-              if ( $(elt).val() == '' && select.find('option').length == 1 && location.hash != '#debug' )
-              {
-                select.find('option').prop('selected', true);
-                select.focusout();
-              }
-              
-              // show mini-gauge w/o selecting a new family
               $('#li_transaction_manifestations .new-family select option').unbind('click').click(function(){
                 if ( !$(this).attr('data-gauge-url') )
                   return;
@@ -128,29 +120,18 @@ LI.autoAddFamilies = function(form){
         $('#li_transaction_manifestations .new-family [name="manifestation_id[]"]')
           .append($('<option>'+v+'</option>').val(v).prop('selected',true));
       });
-      LI.addFamilies($('#li_transaction_manifestations .new-family [name="manifestation_id[]"]'));
+      LI.addFamilies();
       break;
     }
   });
 }
 
-LI.addFamilies = function(elt){
-  elt == undefined
-    ? $('#li_transaction_field_content .new-family select')
-    : $(elt).closest('.new-family').find('select')
-  ;
-  
-  if ( $(elt).val() )
+LI.addFamilies = function(){
+  if ( $('#li_transaction_field_content .new-family select').val() )
   {
-    var nf = $(elt).closest('.new-family');
-    var bunch = nf.closest('.bunch');
-    
+    var nf = $('#li_transaction_field_content .new-family');
     nf.submit();
-    $('#li_transaction_field_new_transaction a.persistant').prop('href', $('#li_transaction_field_new_transaction a.persistant').prop('href')+'#'+bunch.prop('id').replace('li_transaction_','')+'-'+nf.find('select').val()); // keep the same manifestations for the next transaction
+    $('#li_transaction_field_new_transaction a.persistant').prop('href', $('#li_transaction_field_new_transaction a.persistant').prop('href')+'#'+nf.closest('.bunch').prop('id').replace('li_transaction_','')+'-'+nf.find('select').val()); // keep the same manifestations for the next transaction
     nf.find('select option:selected').remove();
-    
-    setTimeout(function(){
-      bunch.find('.families:not(.sample) .family:not(.total):last .item:first').click();
-    }, 2000);
   }
 }

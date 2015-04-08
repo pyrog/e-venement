@@ -19,9 +19,8 @@ class ContactPublicForm extends ContactForm
     foreach ( array(
         'sf_guard_user_id', 'back_relations_list', 'Relationships', 'YOBs',
         'YOBs_list', 'groups_list', 'emails_list', 'family_contact', 'relations_list',
-        'organism_category_id', 'description', 'password', 'email_no_newsletter', 'email_npai', 'npai', 'flash_on_control',
-        'latitude', 'longitude', 'slug', 'confirmed', 'version', 'culture', 'picture_id',
-        'shortname', 'involved_in_list',
+        'organism_category_id', 'description', 'password', 'email_no_newsletter', 'npai',
+        'latitude', 'longitude', 'slug', 'confirmed', 'version',
         'familial_quotient_id', 'type_of_resources_id', 'familial_situation_id') as $field )
       unset($this->widgetSchema[$field], $this->validatorSchema[$field]);
     
@@ -42,32 +41,16 @@ class ContactPublicForm extends ContactForm
     $this->validatorSchema['password_again']  = new sfValidatorString(array('required' => false));
     $this->widgetSchema   ['password']->setLabel('New password');
     
-    if ( sfConfig::get('app_contact_newsletter', true) )
-    {
-      $this->widgetSchema   ['newsletter']      = new sfWidgetFormInputCheckbox(array(
-        'default' => !$this->object->isNew() && $this->object->email_no_newsletter ? false : true,
-        'value_attribute_value' => 'yes',
-        'label' => 'I agree to receive e-mail newsletters',
-      ));
-      $this->validatorSchema['newsletter']      = new sfValidatorBoolean(array(
-        'true_values' => array('yes'),
-        'required' => false,
-      ));
-    }
-    
     foreach ( array('firstname','address','postalcode','city','email') as $field )
       $this->validatorSchema[$field]->setOption('required', true);
     
-    $fields = array(
+    $this->widgetSchema->setPositions($arr = array(
       'id',
       'title','name','firstname',
       'address','postalcode','city','country',
       'email','phone_type','phone_number',
       'password','password_again',
-    );
-    if ( sfConfig::get('app_contact_newsletter', true) )
-      $fields[] = 'newsletter';
-    $this->widgetSchema->setPositions($fields);
+    ));
     
     $this->validatorSchema['id'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Contact',
@@ -150,12 +133,6 @@ class ContactPublicForm extends ContactForm
         : $this->object->Groups->getPrimaryKeys()
       );
     }
-    
-    // feature that allows adding fields as required or not through the app.yml
-    if ( ($force = sfConfig::get('app_contact_force_fields', array())) && is_array($force) )
-    foreach ( $force as $field => $required )
-    if ( isset($this->validatorSchema[$field]) && !in_array($field, array('name', 'email')) )
-      $this->validatorSchema[$field]->setOption('required', $required === true);
   }
   
   public function bind(array $taintedValues = NULL, array $taintedFiles = NULL)
@@ -191,9 +168,6 @@ class ContactPublicForm extends ContactForm
     
     if ( is_null($this->object->confirmed) )
       $this->object->confirmed = false;
-    
-    if ( sfConfig::get('app_contact_newsletter', true) )
-      $this->object->email_no_newsletter = !$this->values['newsletter'];
     
     if ( $this->getValue('phone_number') )
     {
@@ -259,10 +233,7 @@ class ContactPublicForm extends ContactForm
     $groups = $q->execute();
     
     $possible = $groups->getPrimaryKeys();
-    $values = $this
-      ->correctGroupsListWithCredentials('special_groups_list', $object)
-      ->getValue('special_groups_list')
-    ;
+    $values = $this->getValue('special_groups_list');
     
     if (!is_array($values))
       $values = array();

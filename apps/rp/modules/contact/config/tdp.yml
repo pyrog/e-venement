@@ -19,7 +19,7 @@ all:
           credential: pr-contact
           label: Remove through filters
           attributes:
-            onclick: "javascript: var form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
+            onclick: "javascript: form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
         csv:
           credential: pr-contact-csv
           label: Extract
@@ -40,30 +40,27 @@ all:
           label: Send passwords
           attributes:
             onclick: "javascript: return confirm('<?php echo __('Are you sure?',null,'sf_admin') ?>');"
-        prepareImport:
-          label: Import
-          credential: [pr-contact-new, pr-organism-new]
         #map:
         #  label: Geolocalize
     edit:
       object:
-        title: [title, name, firstname, _show_dates, _sell, _ledger, _duplicate]
+        title: [title, name, firstname, _show_dates, _duplicate]
         new_title: [title, name, firstname]
         lines:
           Complements:
             show_labels: true
-            fields: [organism_category_id, email, email_no_newsletter, email_npai, _groups_picto]
+            fields: [organism_category_id, email, email_no_newsletter, _groups_picto]
           Address:
             fields: [address]
           City:
             extra_class: vertical
-            fields: [postalcode, _cities, city, country, _show_region, shortname]
+            fields: [postalcode, _cities, city, country, _show_region]
           Direct_Contact:
             fields: [_form_phonenumbers_list, _show_member_cards_list]
           More:
             show_labels: true
             extra_class: tdp-vertical
-            fields: [family_contact, npai, password, culture]
+            fields: [family_contact, npai, password]
           Relations:
             fields: [YOBs, Relationships]
           Social:
@@ -72,7 +69,7 @@ all:
             fields: [_familial_situation_id, _type_of_resources_id, _familial_quotient_id]
           Personal description:
             show_title: true
-            fields: [description, flash_on_control]
+            fields: [description]
           Groups:
             credential: pr-group
             fields: [groups_list]
@@ -89,13 +86,12 @@ all:
             attributes:
               onclick: "javascript: $('.tdp-object #sf_admin_content > form').submit(); return false;"
             with_id: true
-            label: Record
       subobjects:
         Professionals:
           class: Professional
           parentAlias: Contact
           credentials: pr-organism
-          title: [Organism, _organism_close_contact, _sell, _organism_category]
+          title: [Organism, _organism_close_contact, _organism_category]
           new_title: [organism_id, _new_organism]
           lines:
             line1:
@@ -105,7 +101,7 @@ all:
               fields: [contact_number, _organism_phones_list]
             Internet:
               show_labels: true
-              fields: [contact_email, contact_email_npai, contact_email_no_newsletter, _organism_email, _organism_url]
+              fields: [contact_email, contact_email_no_newsletter, _organism_email, _organism_url]
             Professional memo:
               show_labels: true
               show_title: true
@@ -115,26 +111,15 @@ all:
               fields: [groups_list]
           extra_hidden_fields: [contact_id, organism_id]
       side_properties:
-        Picture:
-          partial: global/tdp/side_widget_object_picture
         Ticketting:
           credentials: tck-reports
           partial: global/tdp/side_widget_object_events
-        Store:
-          credentials: tck-reports
-          partial: global/tdp/side_widget_object_pos
         Groups:
           credentials: pr-group
           partial: global/tdp/side_widget_object_groups
         Emails:
           credentials: pr-emailing
           partial: global/tdp/side_widget_object_emails
-        Answered surveys:
-          credentials: TODO
-          partial: global/tdp/side_widget_object_surveys_answered
-        Surveys to apply:
-          credentials: TODO
-          partial: global/tdp/side_widget_object_surveys_to_apply
         <?php if ( !sfConfig::get('app_options_no_event_archives',true) ): echo PHP_EOL; ?>
         Archives:
           credentials: tck-reports
@@ -192,8 +177,6 @@ all:
       organism_category_id: { label: Category }
       email_no_newsletter: { label: No newsletter }
       contact_email_no_newsletter: { label: No newsletter }
-      email_npai: { label: Bad email }
-      contact_email_npai: { label: Bad email }
       organism: { label: With the organism }
 
 dev:

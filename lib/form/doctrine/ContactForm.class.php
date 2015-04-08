@@ -44,11 +44,12 @@ class ContactForm extends BaseContactForm
       'method_for_query' => 'findOneByName',
     ));
     
-    $this->widgetSchema ['groups_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
-      'model' => 'Group',
-      'url'   => cross_app_url_for('rp', 'group/ajax'),
-      'config' => '{ max: 300 }',
-    ));
+    $q = Doctrine::getTable('Group')->createQuery('g');
+    $this->widgetSchema   ['groups_list']
+      ->setOption('order_by', array('u.id IS NULL DESC, u.username, name',''))
+      ->setOption('query', $q);
+    $this->validatorSchema['groups_list']
+      ->setOption('query', $q);
     
     $this->widgetSchema   ['phone_number'] = new sfWidgetFormInputText();
     $this->validatorSchema['phone_number'] = new sfValidatorString(array('required' => false));
@@ -65,14 +66,6 @@ class ContactForm extends BaseContactForm
     ));
     
     $this->validatorSchema['email'] = new liValidatorEmail(array(
-      'required' => false,
-    ));
-    
-    $this->widgetSchema['culture'] = new sfWidgetFormChoice(array(
-      'choices' => sfConfig::get('project_internals_cultures', array('fr' => 'Français')),
-    ));
-    $this->validatorSchema['culture'] = new sfValidatorChoice(array(
-      'choices' => array_keys(sfConfig::get('project_internals_cultures', array('fr' => 'Français'))),
       'required' => false,
     ));
     
@@ -119,7 +112,6 @@ class ContactForm extends BaseContactForm
   
   protected function doSave($con = NULL)
   {
-    // Relationships
     if ( isset($this->widgetSchema['Relationships']) )
     foreach ( $this->values['Relationships'] as $key => $values )
     if (!( isset($values['to_contact_id']) && $values['to_contact_id'] )
@@ -134,7 +126,6 @@ class ContactForm extends BaseContactForm
     else
       $this->object->Relationships[$key]->Contact = NULL; // hack ... to avoid an Exception based on a not-correct ->Contact
     
-    // YOBs
     if ( isset($this->widgetSchema['YOBs']) )
     foreach ( $this->values['YOBs'] as $key => $values )
     if (!( isset($values['year']) && trim($values['year']) ) && !( isset($values['name']) && trim($values['name']) ))
@@ -157,11 +148,6 @@ class ContactForm extends BaseContactForm
     foreach ( $upper as $field )
     if ( isset($this->values[$field]) )
       $this->values[$field] = ucfirst($this->values[$field]);
-    
-    // do not delete the Picture link
-    if ( $this->object->picture_id && !$this->values['picture_id'] )
-      $this->values['picture_id'] = $this->object->picture_id;
-    
     
     return parent::doSave($con);
   }

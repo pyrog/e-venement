@@ -14,15 +14,14 @@ class WorkspaceForm extends BaseWorkspaceForm
   {
     unset(
       $this->widgetSchema['manifestations_list'],
-      $this->widgetSchema['seated_plans_list'],
-      $this->widgetSchema['linked_products_list']
+      $this->widgetSchema['seated_plans_list']
     );
     
     $this->widgetSchema['users_list']->setOption('expanded', 'true')
       ->setOption('order_by', array('u.username', ''));
     
     $this->widgetSchema['prices_list']->setOption('expanded',true)
-      ->setOption('order_by', array('pt.name', ''));
+      ->setOption('order_by', array('p.name', ''));
     
     if ( !sfContext::getInstance()->getUser()->hasCredential('event-seated-plan') )
       $this->widgetSchema['seated'] = new sfWidgetFormInputHidden;

@@ -1,27 +1,4 @@
 <?php
-/**********************************************************************************
-*
-*	    This file is part of e-venement.
-*
-*    e-venement is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License.
-*
-*    e-venement is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with e-venement; if not, write to the Free Software
-*    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
-*
-***********************************************************************************/
-?>
-<?php
 
 /**
  * Organism filter form.
@@ -48,21 +25,17 @@ class OrganismFormFilter extends BaseOrganismFormFilter
     $this->widgetSchema['organism_category_id']->setOption('add_empty',false);
     $this->validatorSchema['organism_category_id']->setOption('multiple',true);
     
-    $this->widgetSchema   ['contacts_groups'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
+    $this->widgetSchema['contacts_groups'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Group',
-      'url'   => cross_app_url_for('rp', 'group/ajax'),
-      'config' => '{ max: 300 }',
+      'multiple' => true,
+      'order_by' => array('name',''),
     ));
     $this->validatorSchema['contacts_groups'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Group',
       'required' => false,
       'multiple' => true,
     ));
-    $this->widgetSchema   ['not_groups_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
-      'model' => 'Group',
-      'url'   => cross_app_url_for('rp', 'group/ajax'),
-      'config' => '{ max: 300 }',
-    ));
+    $this->widgetSchema   ['not_groups_list'] = $this->widgetSchema   ['groups_list'];
     $this->validatorSchema['not_groups_list'] = $this->validatorSchema['groups_list'];
     
     $this->widgetSchema   ['has_close_contact'] = new sfWidgetFormChoice(array(
@@ -128,17 +101,6 @@ class OrganismFormFilter extends BaseOrganismFormFilter
       return $q->addWhere("$a.email_no_newsletter = FALSE OR p.contact_email_no_newsletter = FALSE");
     else
       return $q->addWhere("$a.email_no_newsletter = TRUE AND p.contact_email_no_newsletter = TRUE");
-  }
-  public function addEmailNpaiColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    if ( $value === '' )
-      return $q;
-    
-    $a = $q->getRootAlias();
-    if ( $value )
-      return $q->addWhere("$a.email_npai = TRUE OR p.contact_email_npai IS NOT NULL AND p.contact_email_npai = TRUE");
-    else
-      return $q->addWhere("$a.email_npai = FALSE AND NOT (p.contact_email_npai IS NOT NULL AND p.contact_email_npai = TRUE)");
   }
 
   public function addRegionIdColumnQuery(Doctrine_Query $q, $field, $value)
@@ -236,25 +198,6 @@ class OrganismFormFilter extends BaseOrganismFormFilter
       
       $q->andWhere("$a.id NOT IN (".$q1.")",$value); // hack for inserting $value
     }
-    
-    return $q;
-  }
-  
-  public function addDescriptionColumnQuery(Doctrine_Query $q, $field, $value)
-  {
-    $a = $q->getRootAlias();
-    
-    if (!( $value && is_array($value)
-      && (trim($value['text']) || isset($value['is_empty']) && $value['is_empty']) ))
-      return $q;
-    
-    if ( isset($value['is_empty']) && $value['is_empty'] )
-      return $q->andWhere("$a.description = ?", '');
-    
-    // includes a batch of OR clauses inside a AND context
-    foreach ( explode(' ', str_replace('  ', ' ', trim($value['text']))) as $str )
-    if ( $str )
-      $this->addTextQuery($q, $field, array('text' => $str));
     
     return $q;
   }

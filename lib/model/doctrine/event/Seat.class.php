@@ -12,22 +12,4 @@
  */
 class Seat extends PluginSeat
 {
-  /**
-    * Seat::isHeldFor() method
-    *
-    * @param $manifestation Manifestation where to check if this seat is held for
-    * @returns FALSE if not held, the Hold that holds this seat, TRUE if a weird situation happens
-    *
-    **/
-  public function isHeldFor(Manifestation $manifestation)
-  {
-    $id = array_search($manifestation->id, $this->Holds->toKeyValueArray('id', 'manifestation_id'));
-    if ( $id === false )
-      return false;
-    
-    foreach ( $this->Holds as $hold )
-    if ( $hold->id == $id )
-      return $hold;
-    return true;
-  }
 }

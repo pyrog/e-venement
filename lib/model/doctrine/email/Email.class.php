@@ -14,8 +14,6 @@ class Email extends PluginEmail
 {
   protected $nospool = false;
   protected $read_receipt = false;
-  protected $type         = 'Email';
-  protected $dispatcher_params = array();
   
   public function setUp()
   {
@@ -34,27 +32,10 @@ class Email extends PluginEmail
     $this->read_receipt = $boolean;
   }
   
-  public function addImageToContent($img, $mime_type, $alt = '')
-  {
-    $base64 = base64_encode($img);
-    $tag = '<img src="data:'.$mime_type.';base64,'.$base64.'" alt="'.$alt.'" />';
-    if ( strpos('</body>', $this->content) === false )
-      $this->content = strpos($this->content, '</body>') === false
-        ? $this->content.' '.$tag
-        : str_replace('</body>', $tag.'</body>', $this->content);
-    return $this;
-  }
-  
   public function __toString()
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));
     return format_date($this->updated_at).' '.substr($this->field_subject,0,20).'...';
-  }
-  public function isATest($bool = NULL)
-  {
-    if ( !is_null($bool) )
-      $this->not_a_test = !$bool;
-    return !$this->not_a_test;
   }
   public function save(Doctrine_Connection $conn = null)
   {
@@ -62,7 +43,7 @@ class Email extends PluginEmail
       return $this;
     
     // send email
-    if ( !$this->isATest() )
+    if ( $this->not_a_test )
       $this->sent = $this->send();
     else
       $this->sendTest();
@@ -74,23 +55,5 @@ class Email extends PluginEmail
       $this->sf_guard_user_id = sfContext::getInstance()->getUser()->getId();
     
     return parent::save($conn);
-  }
-  public function getType()
-  {
-    return $this->type;
-  }
-  public function setType($type)
-  {
-    $this->type = $type;
-    return $this;
-  }
-  public function addDispatcherParameter($name, $value)
-  {
-    $this->dispatcher_params[$name] = $value;
-    return $this;
-  }
-  public function getDispatcherParameters()
-  {
-    return $this->dispatcher_params;
   }
 }

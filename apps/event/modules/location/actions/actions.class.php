@@ -20,19 +20,19 @@ class locationActions extends autoLocationActions
   public function executeEdit(sfWebRequest $request)
   {
     if ( !$this->getRoute()->getObject()->place )
-      throw new sfError404Exception(sprintf('Unable to find the %s object, it is not a location.', $this->options['model']));
+      throw new sfError404Exception(sprintf('Unable to find the %s object.', $this->options['model']));
     parent::executeEdit($request);
   }
   public function executeUpdate(sfWebRequest $request)
   {
     if ( !$this->getRoute()->getObject()->place )
-      throw new sfError404Exception(sprintf('Unable to find the %s object, it is not a location.', $this->options['model']));
+      throw new sfError404Exception(sprintf('Unable to find the %s object.', $this->options['model']));
     parent::executeUpdate($request);
   }
   public function executeDelete(sfWebRequest $request)
   {
     if ( !$this->getRoute()->getObject()->place )
-      throw new sfError404Exception(sprintf('Unable to find the %s object, it is not a location.', $this->options['model']));
+      throw new sfError404Exception(sprintf('Unable to find the %s object.', $this->options['model']));
     parent::executeDelete($request);
   }
   
@@ -79,7 +79,7 @@ class locationActions extends autoLocationActions
     $transliterate = sfConfig::get('software_internals_transliterate',array());
     
     $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
-    $search = str_replace(array('_','@','.','-','+',',',"'"),' ',$search);
+    $search = str_replace(array('@','.','-','+',',',"'"),' ',$search);
     $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
     return $search;
   }

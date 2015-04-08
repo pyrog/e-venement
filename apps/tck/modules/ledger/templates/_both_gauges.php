@@ -1,12 +1,11 @@
 <div class="ui-widget-content ui-corner-all" id="gauges">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
-    <?php include_partial('both_extract') ?>
     <h2><?php echo __("Involved gauges list") ?></h2>
   </div>
 
 <table>
 <tbody>
-<?php $total = array('value' => 0, 'printed' => 0, 'ordered' => 0, 'asked' => 0); $class = $display_ws = false; ?>
+<?php $total = array('value' => 0, 'printed' => 0, 'ordered' => 0, 'asked' => 0); $display_ws = false; ?>
 <?php foreach ( $gauges as $gauge ): ?>
   <tr class="<?php echo ($class = !$class) ? 'overlined' : '' ?>">
     <td class="manifestation"><?php echo cross_app_link_to($gauge->Manifestation,'event','manifestation/show?id='.$gauge->Manifestation->id) ?></td>

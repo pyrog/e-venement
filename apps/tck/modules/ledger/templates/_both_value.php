@@ -1,12 +1,11 @@
 <div class="ui-widget-content ui-corner-all" id="byValue">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
-    <?php include_partial('both_extract') ?>
     <h2><?php echo __("Values' summary") ?></h2>
   </div>
 
 <table id="byValue">
 <tbody>
-<?php $total = array('nb' => 0, 'value' => 0, 'exo' => 0); $class = false; ?>
+<?php $total = array('nb' => 0, 'value' => 0, 'exo' => 0) ?>
 <?php foreach ( $byValue as $value ): ?>
   <tr class="<?php echo ($class = !$class) ? 'overlined' : '' ?>">
     <td class="name nb"><?php echo format_currency($value['value'],'€') ?></td>
@@ -36,7 +35,6 @@
 
 <div class="ui-widget-content ui-corner-all" id="byValueSynthesis">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
-    <?php include_partial('both_extract') ?>
     <h2><?php echo __("Ticketting synthesis") ?></h2>
   </div>
 

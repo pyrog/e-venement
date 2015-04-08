@@ -1,6 +1,5 @@
 <?php include_partial('assets') ?>
 <?php include_partial('global/flashes') ?>
-<?php use_javascript('helper-cookies') ?>
 
 <div class="ui-widget-content ui-corner-all" id="cash-ledger">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
@@ -18,17 +17,14 @@
 
 <?php echo include_partial('criterias',array('form' => $form, 'ledger' => 'cash')) ?>
 
-<?php
-  $arr = array();
-  foreach ( array('manifestations', 'users', 'workspaces', 'dates') as $var )
-    $arr[$var] = isset($$var) ? $$var : false;
-?>
-<?php include_partial('show_criterias',$arr) ?>
+<?php if ( $users ): ?>
+<?php include_partial('users',array('users' => $users)) ?>
+<?php endif ?>
 
 <table class="ui-widget-content ui-corner-all" id="ledger">
   <?php $total = array('qty' => 0, 'value' => 0) ?>
   <tbody><?php foreach ( $methods as $method ): ?><?php if ( $method->Payments->count() > 0 ): ?>
-    <tr class="method" data-id="<?php echo $method->id ?>">
+    <tr class="method">
       <?php
         $value = 0;
         foreach ( $method->Payments as $payment )
@@ -41,18 +37,16 @@
       <td class="id-qty"><?php echo $qty = $method->Payments->count() ?></td>
       <td class="value"><?php echo format_currency($value,'€'); $value += $payment->weight_value ?></td>
       <td class="ref">#<?php echo $method->account ?></td>
-      <td class="contact"></td>
       <td class="date"></td>
       <td class="user"></td>
     </tr>
     <?php foreach ( $method->Payments as $payment ): ?>
-    <tr class="payment method-<?php echo $method->id ?>" data-method-id="<?php echo $method->id ?>" data-id="<?php echo $payment->id ?>">
+    <tr class="payment method-<?php echo $method->id ?>">
       <td class="method"></td>
       <td class="see-more"></td>
       <td class="id-qty">#<?php echo link_to($payment->Transaction->id,'ticket/sell?id='.$payment->Transaction->id) ?></td>
       <td class="value"><?php echo format_currency($payment->weight_value,'€'); $value += $payment->weight_value ?></td>
-      <td class="ref"><?php echo $payment->detail ?></td>
-      <td class="contact">
+      <td class="ref">
         <?php
           $transaction = $payment->getRaw('Transaction');
           $professional = $transaction->Professional;
@@ -80,7 +74,6 @@
     <td class="id-qty"><?php echo $total['qty'] ?></td>
     <td class="value"><?php echo format_currency($total['value'],'€'); ?></td>
     <td class="ref"></td>
-    <td class="contact"></td>
     <td class="date"></td>
     <td class="user"></td>
   </tr></tfoot>
@@ -90,7 +83,6 @@
     <td class="id-qty"><?php echo __('id/qty') ?></td>
     <td class="value"><?php echo __('Value') ?></td>
     <td class="ref"><?php echo __('Reference') ?></td>
-    <td class="contact"><?php echo __('Contact') ?></td>
     <td class="date"><?php echo __('Date') ?></td>
     <td class="user"><?php echo __('User') ?></td>
   </tr></thead>

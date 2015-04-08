@@ -33,7 +33,7 @@ $(document).ready(function(){
       $(window).resize(); // force the calculation of the new width by fullcalendar
     },1000);
   };
-
+  
   // the event filters
   $.get($('.sf_admin_actions_form .event_filters a').prop('href'), function(data){
     // the buttons

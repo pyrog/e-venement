@@ -18,31 +18,4 @@ abstract class PluginTraceable extends BaseTraceable
     $name = str_replace('%CLASS%', method_exists($this, 'getIndexesPrefix') ? $this->getIndexesPrefix() : $this->getTable()->getInstance()->getTableName(), $name);
     return parent::index($name, $definition);
   }
-  
-  public function actAs($tpl, array $options = array())
-  {
-    // hack to avoid inheritance from BaseTraceable and allow the special versionable behavior defined in self::setUp()
-    if ( $tpl instanceof Doctrine_Template_Versionable && $tpl->getOption('listener') !== 'Doctrine_AuditLog_Listener_I18n'
-      || in_array($tpl, array('Doctrine_Template_Versionable', 'Versionable')) && $options['listener'] !== 'Doctrine_AuditLog_Listener_I18n' )
-      return $this;
-    
-    return parent::actAs($tpl, $options);
-  }
-  public function setUp()
-  {
-    parent::setUp();
-    
-    // I18N + Versionable
-    $this->actAs('Versionable', array(
-      'versionColumn' => 'version',
-      'className' => '%CLASS%Version',
-      'auditLog' => true,
-      'listener' => 'Doctrine_AuditLog_Listener_I18n',
-    ));
-  }
-  
-  public function getIndexesPrefix()
-  {
-    return strtolower(get_class($this));
-  }
 }

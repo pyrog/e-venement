@@ -26,18 +26,17 @@
     $this->transaction = $this->getRoute()->getObject();
     $this->nocancel = $request->hasParameter('nocancel');
     
-    $this->totals = array('pet' => 0, 'tip' => 0, 'extra-taxes' => 0, 'vat' => array('total' => 0));
+    $this->totals = array('pet' => 0, 'tip' => 0, 'vat' => array('total' => 0));
     
     // retrieve tickets
-    $q = Doctrine_Query::create()->from('Ticket t')
+    $q = new Doctrine_Query();
+    $q->from('Ticket t')
       ->leftJoin('t.Manifestation m')
       ->leftJoin('m.Event e')
-      ->leftJoin("e.Translation et WITH et.lang = '".$this->getUser()->getCulture()."'")
       ->leftJoin('t.Price p')
-      ->leftJoin("p.Translation pt WITH pt.lang = '".$this->getUser()->getCulture()."'")
       ->andWhere('t.transaction_id = ?',$this->transaction->id)
       ->andWhere('t.duplicating IS NULL')
-      ->orderBy('m.happens_at, et.name, pt.description, t.value');
+      ->orderBy('m.happens_at, e.name, p.description, t.value');
     if ( $printed )
       $q->andWhere('t.printed_at IS NOT NULL OR t.integrated_at IS NOT NULL OR t.cancelling IS NOT NULL');
     if ( intval($manifestation_id) > 0 )
@@ -51,40 +50,14 @@
     foreach ( $this->tickets as $ticket )
     if ( !$this->nocancel || $ticket->Cancelling->count() == 0 )
     {
-      $this->totals['tip'] += $tmp = $ticket->value + $ticket->taxes;
+      $this->totals['tip'] += $ticket->value;
       
       if ( !isset($this->totals['vat'][$ticket->vat]) )
         $this->totals['vat'][$ticket->vat] = array($ticket->manifestation_id => 0);
       if ( !isset($this->totals['vat'][$ticket->vat][$ticket->manifestation_id]) )
         $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] = 0;
-      $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] += $tmp = round($tmp - $tmp/(1+$ticket->vat), 2);
-      $this->totals['vat']['total'] += $tmp;
-    }
-    
-    // retrieve products
-    $q = Doctrine_Query::create()->from('BoughtProduct bp')
-      ->leftJoin('bp.Price p')
-      ->andWhere('bp.transaction_id = ?',$this->transaction->id)
-      ->orderBy('bp.name, bp.code, bp.declination, bp.price_name, bp.value');
-    if ( $printed )
-      $q->andWhere('bp.integrated_at IS NOT NULL');
-    $this->products = $q->execute();
-    
-    foreach ( $this->products as $pdt )
-    {
-      $this->totals['tip'] += $pdt->shipping_fees + $pdt->value;
-      
-      $tmp = 0;
-      foreach ( array('vat' => 'value', 'shipping_fees_vat' => 'shipping_fees') as $v => $t )
-      {
-        if ( !isset($this->totals['vat'][$pdt->$v]) )
-          $this->totals['vat'][$pdt->$v] = array($pdt->product_declination_id => 0);
-        if ( !isset($this->totals['vat'][$pdt->$v][$pdt->product_declination_id]) )
-          $this->totals['vat'][$pdt->$v][$pdt->product_declination_id] = 0;
-        
-        $tmp += $buf = round($pdt->$t - $pdt->$t/(1+$pdt->$v), 2);
-        $this->totals['vat'][$pdt->$v][$pdt->product_declination_id] += $buf;
-      }
+      $tmp = $ticket->value - $ticket->value / (1+$ticket->vat);
+      $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] += $tmp;
       $this->totals['vat']['total'] += $tmp;
     }
     

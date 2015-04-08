@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -36,25 +36,6 @@ require_once dirname(__FILE__).'/../lib/groupGeneratorHelper.class.php';
  */
 class groupActions extends autoGroupActions
 {
-  public function executeAjax(sfWebRequest $request)
-  {
-    $charset = sfConfig::get('software_internals_charset');
-    $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q',''));
-    
-    $q = Doctrine::getTable('Group')
-      ->createQuery('g')
-      ->limit($request->getParameter('limit'));
-    if ( trim($search) )
-      $q->andWhere('g.name ILIKE ?', '%'.$search.'%');
-    
-    $this->groups = array();
-    foreach ( $q->execute() as $group )
-      $this->groups[$group->id] = (string)$group;
-    
-    if (!( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') ))
-      return 'Json';
-  }
-  
   public function executeMember(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
@@ -129,9 +110,9 @@ class groupActions extends autoGroupActions
       //$r['error'] = __($e->getMessage(), null, 'sf_admin');
     }
     
+    if ( !$request->hasParameter('debug') )
+      return $this->renderText(json_encode($r));
     $this->content = $r;
-    if (!( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') ))
-      return 'Json';
   }
   
   public function executeEmailing(sfWebRequest $request)
@@ -175,14 +156,9 @@ class groupActions extends autoGroupActions
   }
   public function executeEdit(sfWebRequest $request)
   {
-    $this->group = Doctrine::getTable('Group')->createQuery('g')
-      ->addSelect('g.*, u.*')
-      ->andWhere('g.id = ?', $request->getParameter('id'))
-      ->fetchOne();
-    $this->form = $this->configuration->getForm($this->group);
+    parent::executeEdit($request);
     
-    if ( !$this->getUser()->hasCredential(array('pr-group-common', 'admin-users', 'admin-power'), false)
-      && in_array($this->getUser()->id, $this->form->getObject()->Users->toKeyValueArray('id', 'id')) )
+    if ( !$this->getUser()->hasCredential(array('admin-users', 'admin-power'), false) )
       $this->form->removeUsersList();
     
     /**
@@ -200,6 +176,8 @@ class groupActions extends autoGroupActions
   {
     $this->group = $this->getRoute()->getObject();
     $this->form = $this->configuration->getForm($this->group);
+    if ( !$this->getUser()->hasCredential(array('admin-users', 'admin-power'), false) )
+      $this->form->removeUsersList();
     
     /**
       * if the user cannot modify anything
@@ -209,7 +187,7 @@ class groupActions extends autoGroupActions
       **/
     if ( !$this->getUser()->hasCredential('pr-group-perso') && !$this->getUser()->hasCredential('pr-group-common')
       || is_null($this->group->sf_guard_user_id) && !$this->getUser()->hasCredential('pr-group-common')
-      || !is_null($this->group->sf_guard_user_id) && $this->group->sf_guard_user_id !== $this->getUser()->getId() )
+      || $this->group->sf_guard_user_id !== $this->getUser()->getId() && !is_null($this->group->sf_guard_user_id) )
     $this->redirect('group/index');
     
     $this->processForm($request, $this->form);

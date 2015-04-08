@@ -51,8 +51,6 @@ class ControlFormFilter extends BaseControlFormFilter
       'model' => 'Manifestation',
       'required' => false,
     ));
-    
-    $this->options['query'] = Doctrine::getTable('Control')->createListQuery();
   }
   
   public function getFields()
@@ -72,8 +70,7 @@ class ControlFormFilter extends BaseControlFormFilter
     {
       $a = $query->getRootAlias();
       $query->leftJoin("$a.Ticket tck")
-        ->addWhere('tck.manifestation_id = ?',$value)
-      ;
+        ->addWhere('tck.manifestation_id = ?',$value);
     }
     
     return $query;

@@ -12,8 +12,4 @@
  */
 class MemberCardType extends PluginMemberCardType
 {
-  public function getDescriptionName()
-  {
-    return trim(trim($this->description) ? $this->description : $this->name);
-  }
 }

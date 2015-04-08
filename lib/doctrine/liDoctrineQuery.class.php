@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php
-class liDoctrineQuery extends sfDoctrineMasterSlaveQuery
+class liDoctrineQuery extends Doctrine_Query
 {
   public function getRawSql()
   {
@@ -30,11 +30,6 @@ class liDoctrineQuery extends sfDoctrineMasterSlaveQuery
     foreach ($this->getFlattenedParams() as $param) {
       $query = join(var_export(is_scalar($param) ? $param : (string) $param, true), explode('?', $query, 2));
     }
-    return str_replace('\\\\', '\\', $query);
-  }
-  public function addParams($part, array $params)
-  {
-    $this->_params = array_merge($this->_params, array($part => $params));
-    return $this;
+    return $query;
   }
 }

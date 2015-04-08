@@ -12,8 +12,6 @@ class GaugeForm extends BaseGaugeForm
 {
   public function configure()
   {
-    unset($this->widgetSchema['prices_list']);
-    
     $this->widgetSchema['manifestation_id'] = new sfWidgetFormDoctrineJQueryAutocompleter(array(
       'model' => 'Manifestation',
       'url' => url_for('manifestation/ajax'),
@@ -37,7 +35,6 @@ class GaugeForm extends BaseGaugeForm
   public function setHidden($hides = array('manifestation_id','workspace_id'))
   {
     foreach ( $hides as $hide )
-    if ( isset($this->widgetSchema[$hide]) )
       $this->widgetSchema[$hide] = new sfWidgetFormInputHidden();
     return $this;
   }

@@ -40,10 +40,7 @@ class GroupForm extends BaseGroupForm
     unset($this->values[$picform_name]['content_file']);
     
     if (!( $file instanceof sfValidatedFile ))
-    {
       unset($this->embeddedForms[$picform_name]);
-      unset($this->values[$picform_name]);
-    }
     else
     {
       // data translation
@@ -57,28 +54,7 @@ class GroupForm extends BaseGroupForm
       $this->values['updated_at'] = date('Y-m-d H:i:s');
     }
     
-    $r = parent::doSave($con);
-    
-    // the user cannot remove itself if it hasn't the admin-power or admin-users crendentials
-    if ( sfContext::hasInstance() )
-    {
-      $sf_user = sfContext::getInstance()->getUser();
-      if ( !$sf_user->hasCredential(array('admin-users', 'admin-power'), false) )
-      {
-        $q = Doctrine::getTable('GroupUser')->createQuery('gu')
-          ->andWhere('gu.sf_guard_user_id = ?', $sf_user->getId())
-          ->andWhere('gu.group_id = ?', $this->object->id);
-        if ( $q->count() == 0 )
-        {
-          $gu = new GroupUser;
-          $gu->group_id = $this->object->id;
-          $gu->sf_guard_user_id = $sf_user->getId();
-          $gu->save();
-        }
-      }
-    }
-    
-    return $r;
+    return parent::doSave($con);
   }
   
   public function configure()
@@ -139,15 +115,9 @@ class GroupForm extends BaseGroupForm
     foreach ( array('contacts_list', 'professionals_list', 'organisms_list') as $fieldName )
       unset($this->widgetSchema[$fieldName]);
     
-    $this->widgetSchema   ['users_list']
-      ->setOption('expanded', true)
-      ->setOption('query', $q = Doctrine::getTable('sfGuardUser')->createQuery('u')->andWhere('u.is_active = TRUE'))
-      ->setOption('order_by', array('u.username, u.last_name, u.first_name', ''));
+    $this->widgetSchema   ['users_list']->setOption('expanded', true);
+    $this->widgetSchema   ['users_list']->setOption('query', $q = Doctrine::getTable('sfGuardUser')->createQuery('u')->andWhere('u.is_active = TRUE'));
     $this->validatorSchema['users_list']->setOption('query', $q);
-    
-    // adding a default user in users list if it is a creation
-    if ( $this->object->isNew() && sfContext::hasInstance() )
-      $this->object->Users[] = sfContext::getInstance()->getUser()->getGuardUser();
   }
   
   public function removeUsersList()

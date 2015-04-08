@@ -12,7 +12,7 @@
     ));
   }
 ?>
-<?php echo form_tag_for($form, '@'.strtolower($obj_class), array('data-id' => $form->getObject()->id)) ?>
+<?php echo form_tag_for($form, '@'.strtolower($obj_class)) ?>
   <?php echo $form->renderHiddenFields() ?>
   <?php include_partial('form_actions',array('form' => $form, 'helper' => $helper, 'contact' => $object,)) ?>
 
