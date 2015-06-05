@@ -23,8 +23,8 @@
 ?>
 <?php
 // adding this to be sure... because it is also included in the config/liClassLoaderPluginConfiguration.class.php file
-require_once __DIR__.'/../lib/vendor/ClassLoader.php';
-require_once __DIR__.'/../lib/vendor/ApcClassLoader.php';
+require_once __DIR__.'/../lib/vendor/ClassLoader/ClassLoader.php';
+require_once __DIR__.'/../lib/vendor/ClassLoader/ApcClassLoader.php';
 
 class liClassLoader
 {
