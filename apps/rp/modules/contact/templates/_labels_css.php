@@ -34,7 +34,7 @@
   }
   
   // dompdf vertical error with tables
-  $error = array('y' => 1);
+  $error = array('y' => 0.5);
 ?>
 
 html body.labels {
