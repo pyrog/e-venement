@@ -1,0 +1,27 @@
+[submodule "plugins/liClassLoaderPlugin/lib/vendor/externals/symfony2"]
+	path = plugins/liClassLoaderPlugin/lib/vendor/externals/symfony2
+	url = https://github.com/symfony/symfony.git
+[submodule "lib/vendor/externals/fullcalendar"]
+	path = lib/vendor/externals/fullcalendar
+	url = https://github.com/seankenny/fullcalendar
+[submodule "plugins/liPassbookPlugin/lib/vendor/externals/php-passbook"]
+	path = plugins/liPassbookPlugin/lib/vendor/externals/php-passbook
+	url = https://github.com/eymengunay/php-passbook
+[submodule "lib/vendor/externals/sabre-vobject"]
+	path = lib/vendor/externals/sabre-vobject
+	url = https://github.com/fruux/sabre-vobject
+[submodule "lib/vendor/externals/jappix"]
+	path = lib/vendor/externals/jappix
+	url = https://github.com/jappix/jappix
+[submodule "lib/vendor/externals/ua-parser"]
+	path = lib/vendor/externals/ua-parser
+	url = https://github.com/donatj/PhpUserAgent
+[submodule "plugins/sfDomPDFPlugin/lib/vendor/externals/php-font-lib"]
+	path = plugins/sfDomPDFPlugin/lib/vendor/externals/php-font-lib
+	url = https://github.com/PhenX/php-font-lib
+[submodule "lib/vendor/externals/momentjs"]
+	path = lib/vendor/externals/momentjs
+	url = https://github.com/moment/moment
+[submodule "lib/vendor/externals/symfony1"]
+	path = lib/vendor/externals/symfony1
+	url = https://github.com/betaglop/symfony
