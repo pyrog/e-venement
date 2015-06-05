@@ -1,6 +1,6 @@
 [submodule "plugins/liClassLoaderPlugin/lib/vendor/externals/symfony2"]
 	path = plugins/liClassLoaderPlugin/lib/vendor/externals/symfony2
-	url = https://github.com/symfony/symfony.git
+	url = https://github.com/symfony/symfony
 [submodule "lib/vendor/externals/fullcalendar"]
 	path = lib/vendor/externals/fullcalendar
 	url = https://github.com/seankenny/fullcalendar
