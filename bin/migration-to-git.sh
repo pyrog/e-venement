@@ -105,6 +105,7 @@ echo ""
 echo "To finish this migration to GIT, DO NOT FORGET:"
 echo "- modifying if required the DOCUMENT_ROOT of your virtual host"
 echo "- test your new instance"
+echo "- reconfigure your liJappixPlugin instance"
 echo "- delete the old instance -after intensive tests-"
 echo "- git pull regularly your e-venement, to avoid security issues"
 
