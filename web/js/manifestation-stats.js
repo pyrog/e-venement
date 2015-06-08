@@ -9,9 +9,12 @@
                 $('<td></td>')
                   .text(user.nb)
                   .prop('title', user.user)
+                  .addClass('id-'+i)
+                  .attr('data-user-num', i)
                   .appendTo($('#sf_fieldset_statistics .'+bunch+' .'+id));
                 if ( $('#sf_fieldset_statistics .'+bunch+' thead .id-'+i).length == 0 )
                   $('<td></td>').addClass('id-'+i)
+                    .attr('data-user-num', i)
                     .text(user.user).addClass('ui-state-default').addClass('ui-th-column')
                     .prop('title', user.user)
                     .appendTo($('#sf_fieldset_statistics .'+bunch+' thead tr'));
@@ -19,6 +22,15 @@
             }
             else
               $('#sf_fieldset_statistics .'+bunch+' .'+id+' td').text(value);
+          });
+          
+          $('#sf_fieldset_statistics .'+bunch+' thead [data-user-num]').each(function(){
+            var nb = 0;
+            $(this).closest('table').find('tbody [data-user-num="'+$(this).attr('data-user-num')+'"]').each(function(){
+              nb += parseInt($(this).text(),10);
+            });
+            if ( nb == 0 )
+              $('#sf_fieldset_statistics .'+bunch+' [data-user-num="'+$(this).attr('data-user-num')+'"]').hide();
           });
         });
       });
