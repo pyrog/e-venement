@@ -13,7 +13,7 @@
     },2500);
     
     // event's picture
-    LI.pubCartPictureRowspan();
+    LI.pubPictureRowspan();
       
     // stop here if needed
     if ( $('#command thead .qty').length == 0 )
@@ -51,7 +51,7 @@
     }
     
     // event's picture
-    LI.pubCartPictureRowspan();
+    LI.pubPictureRowspan();
     
     // products
     $('#command tbody > .products').addClass('todo');
@@ -84,16 +84,3 @@
     }
   });
 
-if ( LI == undefined )
-  var LI = {};
-LI.pubCartPictureRowspan = function()
-{
-  $('#command tbody tr.tickets').addClass('picture-to-merge');
-  var trs;
-  for ( i = 0 ; (trs = $('#command tbody tr.picture-to-merge')).length > 0 && i < 200 ; i++ ) // var i is a protection
-  {
-    var tr = trs.first();
-    tr.find('td.picture').prop('rowspan', trs.parent().find('[data-manifestation-id='+tr.attr('data-manifestation-id')+']').length);
-    tr.parent().find('[data-manifestation-id='+tr.attr('data-manifestation-id')+']').removeClass('picture-to-merge').not(tr).find('td:first').hide();
-  }
-}
