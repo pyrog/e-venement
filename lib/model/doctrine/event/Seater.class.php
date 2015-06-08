@@ -37,8 +37,6 @@ class Seater
     $this->gauge_id = $gauge_id;
     $this->hold = $hold;
     $this->seats = $this->createQuery()->execute();
-    echo $this->seats;
-    //echo $this->createQuery()->getRawSql();
   }
   
   public function createQuery($alias = 's')

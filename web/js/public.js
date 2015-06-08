@@ -14,6 +14,19 @@ $(document).ready(function(){
       LI.pubCartReady[i]();
   });
   
+  // Improving the display of the list of Manifestations
+  LI.pubPictureRowspan();
+  
+  // Making the entire line of a Manifestation clickable
+  console.error($('.mod-manifestation.action-index .sf_admin_list .sf_admin_row > *:not(.sf_admin_list_td_list_picture)'));
+  $('.mod-manifestation.action-index .sf_admin_list .sf_admin_row > *:not(.sf_admin_list_td_list_picture)').click(function(){
+    window.location = $(this).closest('tr').find('.sf_admin_list_td_formatted_date a').prop('href');
+    return false;
+  });
+  $('.mod-manifestation.action-index .sf_admin_list .sf_admin_row .sf_admin_list_td_formatted_date a').click(function(event){
+    event.stopPropagation();
+  });
+  
   // adding the store at the end of meta events when it is appropriate
   if ( $('.mod-meta_event.action-index').length == 1
     && $('.mod-meta_event.action-index .sf_admin_list .sf_admin_row').length > 0
@@ -216,3 +229,30 @@ LI.manifCalculateTotal = function(elt){
     );
   });
 }
+
+LI.pubPictureRowspan = function()
+{
+  if ( $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row').length > 0 )
+  {
+    var pic = $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row .sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done)')[0];
+    var next = $(pic).closest('tr').next();
+    if ( $(pic).find('[data-event-id]').attr('data-event-id') == $(next).find('.sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done) [data-event-id]').attr('data-event-id') )
+    {
+      $(pic).prop('rowspan', $(pic).prop('rowspan')+1)
+      $(next).find('.sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done)').remove();
+    }
+  }
+  else
+  {
+    $('#command tbody tr.tickets')
+      .addClass('picture-to-merge');
+    var trs;
+    for ( i = 0 ; (trs = $('#command tbody tr.picture-to-merge')).length > 0 && i < 200 ; i++ ) // var i is a protection against infinite loops
+    {
+      var tr = trs.first();
+      tr.find('td.picture').prop('rowspan', trs.parent().find('[data-manifestation-id='+tr.attr('data-manifestation-id')+']').length);
+      tr.parent().find('[data-manifestation-id='+tr.attr('data-manifestation-id')+']').removeClass('picture-to-merge').not(tr).find('td:first').hide();
+    }
+  }
+}
+
