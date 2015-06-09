@@ -82,6 +82,9 @@ class liPassbookPluginConfiguration extends sfPluginConfiguration
     
     foreach ( $params['transaction']->Tickets as $ticket )
     {
+      if ( !class_exists('liPassbook') )
+        throw new liEvenementException('No liPassbook class found. exiting.');
+      
       $pass = new liPassbook($ticket);
       
       $attachment = new Attachment;
