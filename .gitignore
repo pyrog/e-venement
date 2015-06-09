@@ -27,4 +27,4 @@ config/autoload.inc.php
 config/databases.yml
 config/project.yml
 config/properties.ini
-
+config/private

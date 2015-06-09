@@ -72,6 +72,7 @@ echo ""
 echo -n "Copying specific files ... "
 $CP -a $OLDDIR/web/uploads/* $NEWDIR/web/uploads && \
 $CP -a $OLDDIR/web/private/* $NEWDIR/web/private && \
+[ -e $OLDDIR/config/private ] && $CP -r $OLDDIR/config/private $NEWDIR/config
 echo " ok"
 
 cd $NEWDIR
