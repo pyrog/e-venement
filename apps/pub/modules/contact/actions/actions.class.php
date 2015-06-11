@@ -108,6 +108,9 @@ class contactActions extends sfActions
       ->leftJoin('t.Order order')
       ->andWhere('order.id IS NOT NULL OR tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL')
       ->andWhere('t.contact_id = ?',$this->getUser()->getContact()->id)
+      ->andWhere('tck.price_id IS NOT NULL')
+      ->leftJoin('t.HoldTransaction ht')
+      ->andWhere('ht.id IS NULL')
       ->orderBy('m.happens_at DESC')
       ->execute();
     
@@ -123,7 +126,6 @@ class contactActions extends sfActions
       ->leftJoin('mc.Transaction t')
       ->andWhere('t.id = ? OR mc.active = ?', array($this->getUser()->getTransactionId(), true))
       ->andWhere('mc.contact_id = ?',$this->getUser()->getContact()->id)
-      
       ->leftJoin('mc.MemberCardType mct')
       ->leftJoin('mc.MemberCardPrices mcps')
       ->leftJoin('mcps.Event e')
