@@ -43,6 +43,21 @@
     <tbody>
       <?php $cpt = 0 ?>
       <?php foreach ( $contact->Transactions as $t ): ?>
+      <?php
+        // is related to a Hold
+        if ( $t->HoldTransaction->id )
+          continue;
+        
+        // has at least one normal ticket
+        foreach ( $t->Tickets as $ticket )
+        {
+          $cpt = 0;
+          if ( !is_null($ticket->price_id) )
+            $cpt++;
+        }
+        if ( $cpt == 0 )
+          continue;
+      ?>
       <?php if ( $t->Order->count() > 0 && $t->Tickets->count() > 0 || $t->getPrice() > 0 ): ?>
         <tr class="sf_admin_row <?php echo $cpt%2 == 0 ? '' : 'odd' ?> transaction-<?php echo $t->id ?>">
           <td class="sf_admin_text sf_admin_list_td_list_id">#<a href="<?php echo url_for('transaction/show?id='.$t->id) ?>" class="transaction"><?php echo $t->id ?></a></td>
