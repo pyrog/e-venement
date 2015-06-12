@@ -24,6 +24,7 @@ apps/stats/config/app.yml
 apps/tck/config/app.yml
 apps/tck/config/factories.yml
 apps/ws/config/app.yml
+apps/ws/config/factories.yml
 config/autoload.inc.php
 config/databases.yml
 config/project.yml

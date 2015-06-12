@@ -42,7 +42,7 @@ class ManifestationEntryForm extends BaseManifestationEntryForm
     $this->enableCSRFProtection();
   }
   
-  public function searchAllManifestations($all)
+  public function searchAllManifestations($all, Entry $entry)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('CrossAppLink'));
     
@@ -52,11 +52,12 @@ class ManifestationEntryForm extends BaseManifestationEntryForm
         'url'   => cross_app_url_for('event', 'manifestation/ajax'),
       ));
     else
-      $this->widgetSchema['manifestation_id']
-        ->setOption('query', $this->widgetSchema['manifestation_id']->getOption('query')
-          ->andWhere('m.event_id = ?',$event->id)
-          ->andWhereNotIn('m.id',$manifs)
-      );
+    {
+      $this->widgetSchema['manifestation_id']->getOption('query')
+        ->andWhere('e.id = ?', $entry->event_id)
+        ->andWhereNotIn('m.id', $entry->ManifestationEntries->toKeyValueArray('id', 'manifestation_id'))
+      ;
+    }
     
     return $this;
   }

@@ -16,14 +16,14 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
 <?php
 
-// THIS IS A MAJOR HACK FOR STORING SERIALIZED OBJECT IN A PGSQL DATABASE !!
+// THIS IS A MAJOR HACK FOR STORING SERIALIZED OBJECT IN A DATABASE AVOIDING FORBIDDEN CHARS !!
 
 /**
  * PluginEmailSpool
@@ -37,41 +37,13 @@
  */
 abstract class PluginEmailSpool extends BaseEmailSpool
 {
-  protected $db_driver = '';
-  const null_byte = "~~NULL_BYTE~~";
-  
-  protected function getDBDriver()
-  {
-    if ( !$this->db_driver )
-      $this->db_driver = Doctrine_Manager::connection()->getDriverName();
-    return $this->db_driver;
-  }
-  protected function isPgsql()
-  {
-    return 'Pgsql' === $this->getDBDriver();
-  }
-  
   public function setMessage($message)
   {
-    if ( $this->isPgsql() )
-      $message = $this->pg_escape_serialized($message);
-    
-    return $this->_set('message',$message);
+    return $this->_set('message',base64_encode($message));
   }
   
   public function getMessage()
   {
-    return $message = $this->isPgsql()
-        ? $this->pg_unescape_serialized($this->_get('message'))
-        : $this->_get('message');
-  }
-  
-  static protected function pg_escape_serialized($str)
-  {
-    return str_replace("\0", self::null_byte, $str);
-  }
-  static protected function pg_unescape_serialized($str)
-  {
-    return str_replace(self::null_byte, "\0", $str);
+    return base64_decode($this->_get('message'));
   }
 }

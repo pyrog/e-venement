@@ -1,118 +1,87 @@
-#!/bin/bash
-
-#**********************************************************************************
-#
-#	    This file is part of e-venement.
-# 
-#    e-venement is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License.
-# 
-#    e-venement is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-# 
-#    You should have received a copy of the GNU General Public License
-#    along with e-venement; if not, write to the Free Software
-#    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-# 
-#    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-#    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
-# 
-#**********************************************************************************/
-
-echo "Usage: bin/mirate-to-git.sh OLD_SVN_DIRECTORY [go]"
-
-# preconditions
-[ ! -d "data/sql" ] && echo "cd to your project's root directory please" && exit 3;
-[ ! -e ".gitmodules" ] && echo "cd to your project's root directory please" && exit 3;
-NEWDIR=`pwd`
-
-[ -z "$1" ] && echo "You must specify the directory used previously to be able to get back required data/setup" && exit 1
-cd $1
-OLDDIR=`pwd`
-
-[ ! -d "$OLDDIR/data/sql" ] && echo "You must provide a correct directory instead of '$OLDDIR'" && exit 2;
-
-CP="echo -n cp"
-GIT="echo git"
-CHMOD="echo chmod"
-GO=""
-SF="echo ./symfony"
-[ ! -z "$2" ] && [ "$2" == 'go' ] && \
-CP=cp     && \
-GO=yes    && \
-GIT=git   && \
-SF=./symfony && \
-CHMOD=chmod
-
-echo ""
-echo "Are you sure you want to continue with those parameters :"
-echo "The old e-venement directory, using SVN or no CVS at all is $OLDDIR"
-echo "The new e-venement directory, using GIT is $NEWDIR"
-[ "$2" == 'go' ] && echo "This IS NOT a TEST procedure... You will process it for real!"
-echo ""
-echo "To continue press ENTER"
-echo "To cancel press CTRL+C NOW !!"
-read
-
-
-for elt in `find $OLDDIR -iname '*.template'`; do
-  NEW=`echo $elt | sed 's/.template$//g'`;
-  NEW=`echo "$NEW" | sed "s!^${OLDDIR}/*!!g"`
-  if [ -e $NEW ]; then
-    echo -n "Copying $NEW ... "
-    $CP $OLDDIR/$NEW $NEWDIR/$NEW && \
-    echo " ok"
-  fi
-done
-
-echo ""
-echo -n "Copying specific files ... "
-$CP -a $OLDDIR/web/uploads/* $NEWDIR/web/uploads && \
-$CP -a $OLDDIR/web/private/* $NEWDIR/web/private && \
-echo " ok"
-
-cd $NEWDIR
-
-echo ""
-read -p "Do you want to complete your GIT deployment? (Y/n) " deploy
-if [ "$deploy" != "n" ]; then
-  $GIT pull
-  $GIT submodule init
-  $GIT submodule update
-fi
-
-echo ""
-read -p "Do you want to fix the needed file permissions for a correct usage of Symfony? (Y/n) " reset
-if [ "$reset" != 'n' ]; then
-  $CHMOD -R a+w web/uploads cache log
-fi
-
-echo ""
-read -p "Do you want to re-build your Symfony model/forms/filters (needed)? (Y/n) " rebuild
-if [ "$reset" != 'n' ]; then
-  $SF doctrine:build-model
-  $SF cc
-  $SF doctrine:build-forms
-  $SF cc
-  $SF doctrine:build-filters
-  $SF cc
-fi
-
-echo ""
-echo "To finish this migration to GIT, DO NOT FORGET:"
-echo "- modifying if required the DOCUMENT_ROOT of your virtual host"
-echo "- test your new instance"
-echo "- delete the old instance -after intensive tests-"
-echo "- git pull regularly your e-venement, to avoid security issues"
-
-echo ""
-echo "Migration provided for the community of e-venement, by Libre Informatique."
-echo "Any feedback to baptiste.simon@libre-informatique.fr."
-
-if [ -z "$GO" ]; then
-  echo ""
-  echo 'CAREFUL: this was not for real... run this script adding "go" if everthing seems ok.'
-fi
+diff --git a/lib/model/doctrine/packages/email/PluginEmail.class.php b/lib/model/doctrine/packages/email/PluginEmail.class.php
+index a0c61b5..ed4e002 100644
+--- a/lib/model/doctrine/packages/email/PluginEmail.class.php
++++ b/lib/model/doctrine/packages/email/PluginEmail.class.php
+@@ -17,6 +17,7 @@ abstract class PluginEmail extends BaseEmail
+   public $to              = array();
+   public $mailer          = NULL;
+   public $from_txt        = NULL;
++  protected $embedded_images = 0;
+   
+   protected function isNewsletter()
+   {
+@@ -88,6 +89,7 @@ abstract class PluginEmail extends BaseEmail
+     if ( $this->field_cc )
+       $message->setCc($this->field_cc);
+     
++    // attach normal file attachments
+     foreach ( $this->Attachments as $attachment )
+     {
+       $id = $attachment->getId() ? $attachment->getId() : date('YmdHis').rand(10000,99999);
+@@ -99,6 +101,10 @@ abstract class PluginEmail extends BaseEmail
+       $message->attach($att);
+     }
+     
++    // force setting the Content-Type to 'multipart/related' to really follow the norm
++    if ( $this->embedded_images > 0 )
++      $message->setContentType('multipart/related');
++    
+     $this->setMailer();
+     
+     return $immediatly === true
+@@ -121,24 +127,51 @@ abstract class PluginEmail extends BaseEmail
+ 
+   protected function compose(Swift_Message $message)
+   {
++    $relatedPart = Swift_MimePart::newInstance(null, 'text/relative', null);
++    
++    // treat inline images
++    $post_treated_content = $this->content;
++    preg_match_all('!<img\s(.*)src="data:(image/\w+);base64,(.*)"(.*)/>!U', $post_treated_content, $imgs, PREG_SET_ORDER);
++    foreach ( $imgs as $i => $img )
++    {
++      $att = Swift_Attachment::newInstance()
++        ->setFileName("img-$i.".str_replace('image/', '', $img[2]))
++        ->setContentType($img[2])
++        ->setDisposition('inline')
++        ->setBody(base64_decode($img[3]))
++        ->setId("img$i.$i@e-venement")
++      ;
++      
++      // embedding the image
++      $post_treated_content = str_replace(
++        $img[0],
++        '<img '.$img[1].' '.$img[4].' src="'.$message->embed($att).'" />',
++        $post_treated_content
++      );
++      
++      $this->embedded_images++;
++    }
++    $post_treated_content .= '<img src="cid:part.47@e-venement" />';
++    
+     $content = 
+       '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.
+       '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">'.
+       '<head>'.
+-      //'<title></title>'.
+       '<title>'.$this->field_subject.'</title>'.
+       '<meta name="title" content="'.$this->field_subject.'" />'.
+       '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.
+       '</head><body>'.
+-      $this->content.
++      $post_treated_content.
+       '</body></html>';
+     
+     $h2t = new HtmlToText($content);
+     $message
+       ->setFrom(array($this->field_from => $this->from_txt ? $this->from_txt : $this->field_from))
+       ->setSubject($this->field_subject)
+-      ->setBody($h2t->get_html(),'text/html')
+-      ->addPart($h2t->get_text(),'text/plain');
++      ->addPart($h2t->get_html(), 'text/html')
++      ->addPart($h2t->get_text(),'text/plain')
++    ;
++    
+     if ( $this->read_receipt )
+       $message->setReadReceiptTo($this->field_from);
+     return $message;
