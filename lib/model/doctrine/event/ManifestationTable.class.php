@@ -35,10 +35,15 @@ class ManifestationTable extends PluginManifestationTable
       return Doctrine_Core::getTable('Manifestation');
   }
   
-  public function retrieveList()
+  public function retrieveList($museum = false)
   {
     return $this->createQuery('m')
-      ->removeDqlQueryPart('orderby');
+      ->removeDqlQueryPart('orderby')
+      ->andWhere('e.museum = ?', $museum);
+  }
+  public function retrieveMuseumList()
+  {
+    return $this->retrieveList(true);
   }
   public function createQuery($alias = 'm', $light = false)
   {
@@ -139,7 +144,11 @@ class ManifestationTable extends PluginManifestationTable
     return $this->createQuery('m')->andWhere('g.id = ?',$id)->fetchOne();
   }
   
-  public function retrieveConflicts()
+  public function retrieveMuseumConflicts()
+  {
+    return $this->retrieveConflicts(true);
+  }
+  public function retrieveConflicts($museum = false)
   {
     // display potentialities or real conflicts, depending on the configuration
     $options = sfConfig::get('app_manifestation_reservations', array());
@@ -154,6 +163,7 @@ class ManifestationTable extends PluginManifestationTable
       ->andWhereIn('m.id',array_keys($conflicts))
       ->andWhere('m.reservation_ends_at > now()')
       ->removeDqlQueryPart('orderby')
+      ->andWhere('e.museum = ?', $museum)
     ;
     
     if ( sfContext::hasInstance() && !sfContext::getInstance()->getUser()->hasCredential('event-access-all') )
@@ -162,17 +172,22 @@ class ManifestationTable extends PluginManifestationTable
     return $q;
   }
   
-  public function retrievePending()
+  public function retrievePending($museum = false)
   {
     $q = $this->createQuery('m')
       ->andWhere('m.reservation_confirmed = FALSE')
       ->removeDqlQueryPart('orderby')
+      ->andWhere('e.museum = ?', $museum);
     ;
     
     if ( sfContext::hasInstance() && !sfContext::getInstance()->getUser()->hasCredential('event-access-all') )
       $q->andWhere('m.contact_id = ?',sfContext::getInstance()->getUser()->getContactId());
     
     return $q;
+  }
+  public function retrieveMuseumPending()
+  {
+    return $this->retrievePending(true);
   }
   
   /**

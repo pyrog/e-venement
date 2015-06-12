@@ -24,7 +24,11 @@
 <div class="sf_admin_list ui-grid-table ui-widget ui-corner-all ui-helper-reset ui-helper-clearfix">
   <table>
     <caption class="fg-toolbar ui-widget-header ui-corner-top">
-      <h2><span class="ui-icon ui-icon-triangle-1-s"></span> <?php echo __("Event's Manifestations List", array(), 'messages') ?></h2>
+      <?php $title = $sf_context->getConfiguration()->getApplication() == 'museum'
+        ? __("Exhibition's Periods List")
+        : __("Event's Manifestations List")
+      ; ?>
+      <h2><span class="ui-icon ui-icon-triangle-1-s"></span> <?php echo $title ?></h2>
     </caption>
     <?php if (!$pager->getNbResults()): ?>
     <tbody>

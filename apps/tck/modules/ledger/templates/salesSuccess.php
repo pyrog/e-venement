@@ -19,10 +19,12 @@
     $vat = array();
     $total = $sf_data->getRaw('total');
     
+    $museum = false;
     require(__DIR__.'/_sales_events_prepare.php');
   ?>
   <?php $arr = array(); ?>
   <tbody><?php foreach ( $events as $event ): ?>
+    <?php if ( $event->museum == $museum ): ?>
     <?php
       $local_vat = $qty = $value = $taxes = 0;
       $infos = array();
@@ -39,13 +41,50 @@
     <tr class="prices manif-<?php echo $manif->id ?>">
       <?php require(__DIR__.'/_sales_event_prices.php') ?>
     </tr>
-    <?php endfor; endforeach; endforeach; ?>
+    <?php endfor; endforeach; endif; endforeach; ?>
   </tbody>
   <tfoot><tr class="total">
     <?php include_partial('sales_total', array('total' => $total,)) ?>
   </tr></tfoot>
   <thead><tr>
     <?php include_partial('sales_events_header', array('total' => $total)) ?>
+  </tr></thead>
+</table>
+
+<table class="ui-widget-content ui-corner-all" id="ledger-exhibitions">
+  <?php
+    $vat = array();
+    $total = $sf_data->getRaw('total');
+    
+    $museum = true;
+    require(__DIR__.'/_sales_events_prepare.php');
+  ?>
+  <?php $arr = array(); ?>
+  <tbody><?php foreach ( $events as $event ): ?>
+    <?php if ( $event->museum == $museum ): ?>
+    <?php
+      $local_vat = $qty = $value = $taxes = 0;
+      $infos = array();
+      require(__DIR__.'/_sales_event_prepare.php');
+    ?>
+    <tr class="event">
+      <?php require(__DIR__.'/_sales_event.php') ?>
+    </tr>
+    <?php foreach ( $event->Manifestations as $manif ): $local_vat = 0; ?>
+    <tr class="manif event-<?php echo $event->id ?>">
+      <?php require(__DIR__.'/_sales_manifestation.php') ?>
+    </tr>
+    <?php if ( $nb_tickets <= sfConfig::get('app_ledger_max_tickets',5000) ) for ( $i = 0 ; $i < $manif->Tickets->count() ; $i++ ): ?>
+    <tr class="prices manif-<?php echo $manif->id ?>">
+      <?php require(__DIR__.'/_sales_event_prices.php') ?>
+    </tr>
+    <?php endfor; endforeach; endif; endforeach; ?>
+  </tbody>
+  <tfoot><tr class="total">
+    <?php include_partial('sales_total', array('total' => $total,)) ?>
+  </tr></tfoot>
+  <thead><tr>
+    <?php include_partial('sales_exhibitions_header', array('total' => $total)) ?>
   </tr></thead>
 </table>
 

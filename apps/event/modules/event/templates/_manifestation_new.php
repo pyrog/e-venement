@@ -22,12 +22,28 @@
 ***********************************************************************************/
 ?>
 <?php if ( !$form->isNew() ): ?>
+<?php
+  if ( $sf_context->getConfiguration()->getApplication() == 'museum' )
+  {
+    $txt = array(
+      'title' => __('Records your exhibition before it opens a new period screen'),
+      'new'   => __('New period'),
+    );
+  }
+  else
+  {
+    $txt = array(
+      'title' => __('Records your event before it opens a new manifestation screen'),
+      'new'   => __('New manifestation'),
+    );
+  }
+?>
 <div class="sf_admin_edit ui-widget ui-widget-content ui-corner-all">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
-    <h2 class="new_manifestation"><a title="<?php echo __('Records your event before it opens a new manifestation screen') ?>" id="manifestation-new" href="<?php echo url_for('manifestation/new?event='.$event->slug) ?>"><?php echo __('New manifestation') ?></a></h2>
-    <h2 class="import_ics"><a title="<?php echo __('Records your event before it opens a new manifestation screen') ?>" id="manifestations-import-ics" href="<?php echo url_for('event/import?id='.$event->id) ?>" class="fg-button ui-state-default fg-button-icon-left">
-        <span class="ui-icon ui-icon-calendar"></span>
-        <?php echo __('Import an ICS file') ?>
+    <h2 class="new_manifestation"><a title="<?php echo $txt['title'] ?>" id="manifestation-new" href="<?php echo url_for('manifestation/new?event='.$event->slug) ?>"><?php echo $txt['new'] ?></a></h2>
+    <h2 class="import_ics"><a title="<?php echo $txt['title'] ?>" id="manifestations-import-ics" href="<?php echo url_for('event/import?id='.$event->id) ?>" class="fg-button ui-state-default fg-button-icon-left">
+      <span class="ui-icon ui-icon-calendar"></span>
+      <?php echo __('Import an ICS file') ?>
     </a></h2>
   </div>
 </div>

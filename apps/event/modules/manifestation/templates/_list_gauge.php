@@ -44,6 +44,36 @@
       ->execute();
   }
   
+  if ( $manifestation->Gauges->count() > 0 && $manifestation->Event->museum )
+  {
+    // nb of entrances
+    $entrances = Doctrine::getTable('Ticket')->createQuery('tck')
+      ->leftJoin('tck.Controls c')
+      ->leftJoin('c.Checkpoint cp')
+      ->andWhere('cp.type = ?', 'entrance')
+      ->leftJoin('cp.Event e')
+      ->leftJoin('e.Manifestations m')
+      ->andWhereIn('m.id', $manifestation->id)
+      ->count();
+    $exits = Doctrine::getTable('Ticket')->createQuery('tck')
+      ->leftJoin('tck.Controls c')
+      ->leftJoin('c.Checkpoint cp')
+      ->andWhere('cp.type = ?', 'exit')
+      ->leftJoin('cp.Event e')
+      ->leftJoin('e.Manifestations m')
+      ->andWhereIn('m.id', $manifestation->id)
+      ->count();
+    
+    foreach ( $manifestation->Gauges as $gauge )
+      $tickets['total'] += $gauge->value;
+
+    if ( $exits - $entrances > 0 )
+      $exits = $entrances = 0;
+    
+    $tickets['free'] = $tickets['total'] + $exits - $entrances;
+    $tickets['booked'] = $tickets['ordered'] = $entrances - $exits;
+  }
+  else
   foreach ( $manifestation->Gauges as $gauge )
   {
     if ( isset($gauge->Workspace->Order[0])

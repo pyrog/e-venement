@@ -5,6 +5,14 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Periods</source>
+        <target>Périodes</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Exhibitions</source>
+        <target>Expositions</target>
+      </trans-unit>
+      <trans-unit>
         <source>Holds</source>
         <target>Retenues</target>
       </trans-unit>
@@ -243,6 +251,10 @@
       <trans-unit>
         <source>Event</source>
         <target>Événementiel</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Museum</source>
+        <target>Musée</target>
       </trans-unit>
       <trans-unit id="8">
         <source>Agenda</source>

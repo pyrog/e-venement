@@ -9,8 +9,8 @@
 </th>
 <?php end_slot(); ?>
 <?php include_slot('sf_admin.current_header') ?><?php slot('sf_admin.current_header') ?>
-<th class="sf_admin_text sf_admin_list_th_legal ui-state-default ui-th-column">
-  <?php echo __('Legal', array(), 'messages') ?>
+<th class="sf_admin_text sf_admin_list_th_type ui-state-default ui-th-column">
+  <?php echo __('Type', array(), 'messages') ?>
 </th>
 <?php end_slot(); ?>
 <?php include_slot('sf_admin.current_header') ?>

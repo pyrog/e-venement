@@ -1,6 +1,7 @@
 <?php
     // total qty
     foreach ( $events as $event )
+    if ( $event->museum == $museum )
     foreach ( $event->Manifestations as $manif )
     {
       // taxes initialization

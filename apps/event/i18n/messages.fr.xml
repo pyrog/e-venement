@@ -5,6 +5,26 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Rank %%rank%% (ex: Seat %%num%%)</source>
+        <target>Rang %%rank%% (ex: Place %%num%%)</target>
+      </trans-unit>
+      <trans-unit>
+        <source>%%n%% free seat</source>
+        <target>%%n%% place libre</target>
+      </trans-unit>
+      <trans-unit>
+        <source>entrance</source>
+        <target>entrée</target>
+      </trans-unit>
+      <trans-unit>
+        <source>info</source>
+        <target>info</target>
+      </trans-unit>
+      <trans-unit>
+        <source>exit</source>
+        <target>sortie</target>
+      </trans-unit>
+      <trans-unit>
         <source>The selected plans are now sharing their pictures.</source>
         <target>Les plans sélectionnés partagent maintenant leurs images.</target>
       </trans-unit>
@@ -1331,8 +1351,28 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Vendre</target>
       </trans-unit>
       <trans-unit>
+        <source>Manifestations</source>
+        <target>Manifestations</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Periods</source>
+        <target>Périodes</target>
+      </trans-unit>
+      <trans-unit>
         <source>New Event</source>
         <target>Nouvel événement</target>
+      </trans-unit>
+      <trans-unit>
+        <source>New exhibition</source>
+        <target>Nouvelle exposition</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Exhibition</source>
+        <target>Exposition</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Meta exhibition</source>
+        <target>Méta-exposition</target>
       </trans-unit>
       <trans-unit>
         <source>New Event category</source>
@@ -1579,7 +1619,11 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Fiche du lieu</target>
       </trans-unit>
       <trans-unit>
-        <source>Event List</source>
+        <source>List of exhibitions</source>
+        <target>Liste des expositions</target>
+      </trans-unit>
+      <trans-unit>
+        <source>List of events</source>
         <target>Liste des événements</target>
       </trans-unit>
       <trans-unit>
@@ -1674,9 +1718,17 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <source>Records your event before it opens a new manifestation screen</source>
         <target>Enregistre votre événement avant d'ouvrir une nouvelle manifestation</target>
       </trans-unit>
+      <trans-unit>
+        <source>Records your exhibition before it opens a new period screen</source>
+        <target>Enregistre votre exposition avant d'ouvrir une nouvelle période</target>
+      </trans-unit>
       <trans-unit id="102">
         <source>New manifestation</source>
         <target>Nouvelle manifestation</target>
+      </trans-unit>
+      <trans-unit>
+        <source>New period</source>
+        <target>Nouvelle période</target>
       </trans-unit>
       <trans-unit id="103">
         <source>Event List</source>
@@ -1757,6 +1809,10 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit id="122">
         <source>No registered organizer</source>
         <target>Pas d'organisateur enregistré</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Exhibition's Periods List</source>
+        <target>Liste des périodes de l'exposition</target>
       </trans-unit>
       <trans-unit id="124">
         <source>Event's Manifestations List</source>

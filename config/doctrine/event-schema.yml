@@ -205,6 +205,10 @@ Event:
       notnull: true
     accounting_account: string(50)
     slug: string(255)
+    museum:
+      type: boolean
+      notnull: true
+      default: false
   relations:
     EventCategory:
       foreignAlias: Events

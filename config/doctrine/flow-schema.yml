@@ -41,10 +41,11 @@ Checkpoint:
       notnull: true
       notblank: true
     description: string
-    legal:
-      type: boolean
+    type:
+      type: enum
+      values: [info, entrance, exit]
       notnull: true
-      default: true
+      default: entrance
   relations:
     Event:
       foreignAlias: Checkpoints

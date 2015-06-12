@@ -5,6 +5,14 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Return to period</source>
+        <target>Retour à la période</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Exhibition</source>
+        <target>Exposition</target>
+      </trans-unit>
+      <trans-unit>
         <source>State</source>
         <target>État</target>
       </trans-unit>
@@ -975,6 +983,10 @@
       <trans-unit>
         <source>[1]Manifestation ledger|(1,+Inf]Manifestations ledger</source>
         <target>[1]Bordereau de manifestation|(1,+Inf]Bordereau de manifestations</target>
+      </trans-unit>
+      <trans-unit>
+        <source>[1]Exhibition period ledger|(1,+Inf]Exhibition period ledger</source>
+        <target>[1]Bordereau de période d'exposition|(1,+Inf]Bordereau de périodes d'exposition</target>
       </trans-unit>
       <trans-unit>
         <source>Concerned manifestations</source>

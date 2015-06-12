@@ -39,7 +39,9 @@ class EventTable extends PluginEventTable
       ->andWhere('gw.id IS NOT NULL');
   }
   
-  public function retrieveList()
+  public function retrieveMuseumList($q)
+  { return $this->retrieveList($q, true); }
+  public function retrieveList($q, $museum = false)
   {
     $cid = 0;
     $admin = false;
@@ -64,6 +66,7 @@ class EventTable extends PluginEventTable
       ->leftJoin('m.Color c')
       ->leftJoin('m.Gauges g')
       ->leftJoin('m.Location l')
+      ->andWhere('e.museum = ?', $museum)
     ;
     
     if ( $sf_user )
@@ -73,11 +76,12 @@ class EventTable extends PluginEventTable
     
     return $q;
   }
-  public function retrievePublicList()
+  public function retrievePublicList($museum = false)
   {
     return $this->retrieveList()
       ->andWhere('g.online = TRUE')
       ->andWhere('m.reservation_confirmed = TRUE')
-      ->andWhere('m.happens_at > NOW()');
+      ->andWhere('m.happens_at > NOW()')
+      ->andWhere('e.museum = ?', $museum);
   }
 }

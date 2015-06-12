@@ -1,6 +1,10 @@
 <td class="sf_admin_date sf_admin_list_td_happens_at" <?php if ( $manifestation->color_id ): ?>style="background-color: <?php echo $manifestation->Color ?>"<?php endif ?>>
   <a href="<?php echo url_for('manifestation/show?id='.$manifestation->id) ?>">
     <?php echo $manifestation->happens_at ? $manifestation->getShortenedDate() : '&nbsp;' ?>
+    <?php if ( $sf_context->getConfiguration()->getApplication() == 'museum' ): ?>
+    <br/>
+    <?php echo $manifestation->ends_at ? $manifestation->getShortenedEndDate() : '&nbsp;' ?>
+    <?php endif ?>
   </a>
 </td>
 <td class="sf_admin_text sf_admin_list_td_list_location">

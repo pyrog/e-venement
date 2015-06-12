@@ -312,6 +312,17 @@ class transactionActions extends autoTransactionActions
     $vs['manifestation_id'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Manifestation',
       'query' => Doctrine::getTable('Manifestation')->createQuery('m')->select('m.id')
+        ->andWhere('e.museum = ?', false)
+        ->andWhere('m.reservation_confirmed = ? AND m.blocking = ?',array(true,true))
+        ->andWhere('pu.sf_guard_user_id = ?', $this->getUser()->getId()),
+    ));
+    $this->form['content']['museum'] = new sfForm;
+    $ws = $this->form['content']['museum']->getWidgetSchema();
+    $vs = $this->form['content']['museum']->getValidatorSchema();
+    $vs['manifestation_id'] = new sfValidatorDoctrineChoice(array(
+      'model' => 'Manifestation',
+      'query' => Doctrine::getTable('Manifestation')->createQuery('m')->select('m.id')
+        ->andWhere('e.museum = ?', true)
         ->andWhere('m.reservation_confirmed = ? AND m.blocking = ?',array(true,true))
         ->andWhere('pu.sf_guard_user_id = ?', $this->getUser()->getId()),
     ));
@@ -436,6 +447,8 @@ class transactionActions extends autoTransactionActions
   
   public function executeGetManifestations(sfWebRequest $request)
   { return $this->getAbstract($request, 'manifestations'); }
+  public function executeGetPeriods(sfWebRequest $request)
+  { return $this->getAbstract($request, 'museum'); }
   public function executeGetStore(sfWebRequest $request)
   { return $this->getAbstract($request, 'store'); }
   protected function getAbstract(sfWebRequest $request, $type)

@@ -40,6 +40,11 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
     sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));
     return format_datetime($this->happens_at,'EEE d MMM yyyy HH:mm');
   }
+  public function getShortenedEndDate()
+  {
+    sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));
+    return format_datetime($this->ends_at,'EEE d MMM yyyy HH:mm');
+  }
   public function getMiniDate()
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('Date'));

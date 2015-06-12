@@ -25,6 +25,10 @@ all:
       name: My Company
     failover:
       url: http://www.e-venement.org/
+  #museums:
+  #  enable: false
+  #events:
+  #  enable: true
   demo: false
   network:
     ipv6_ready: false

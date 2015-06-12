@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -25,7 +25,9 @@
       <li class="sf_admin_action_list">
         <a class="fg-button ui-state-default fg-button-icon-left" href="<?php echo cross_app_url_for('event','manifestation/show?id='.$manifestation->id) ?>">
           <span class="ui-icon ui-icon-arrowreturnthick-1-w"></span>
-          <?php echo __('Return to manifestation') ?>
+          <?php echo $manifestation->Event->museum
+            ? __('Return to period')
+            : __('Return to manifestation') ?>
         </a>
       </li>
     </ul>

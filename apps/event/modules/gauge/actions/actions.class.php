@@ -18,7 +18,9 @@ class gaugeActions extends autoGaugeActions
     $gauges = new Doctrine_Collection('Gauge');
     if ( $id = $request->getParameter('id',false) )
     {
-      if ( $gauge = Doctrine::getTable('Gauge')->find($id) )
+      if ( $gauge = Doctrine::getTable('Gauge')->createQuery('g')
+        ->andWhere('g.id = ?', $id)
+        ->fetchOne() )
         $gauges[] = $gauge;
     }
     if ( $mid = $request->getParameter('manifestation_id',false) )
@@ -66,9 +68,41 @@ class gaugeActions extends autoGaugeActions
     ;
     $arr['seats'] = $q->count();
     
+    if ( $gauges->count() > 0 && $gauges[0]->Manifestation->Event->museum )
+    {
+      // nb of entrance
+      $entrances = Doctrine::getTable('Ticket')->createQuery('tck')
+        ->leftJoin('tck.Controls c')
+        ->leftJoin('c.Checkpoint cp')
+        ->andWhere('cp.type = ?', 'entrance')
+        ->leftJoin('cp.Event e')
+        ->leftJoin('e.Manifestations m')
+        ->leftJoin('m.Gauges g')
+        ->andWhereIn('g.id', $ids)
+        ->count();
+      $exits = Doctrine::getTable('Ticket')->createQuery('tck')
+        ->leftJoin('tck.Controls c')
+        ->leftJoin('c.Checkpoint cp')
+        ->andWhere('cp.type = ?', 'exit')
+        ->leftJoin('cp.Event e')
+        ->leftJoin('e.Manifestations m')
+        ->leftJoin('m.Gauges g')
+        ->andWhereIn('g.id', $ids)
+        ->count();
+      
+      foreach ( $gauges as $gauge )
+        $arr['total'] += $gauge->value;
+      
+      if ( $exits - $entrances > 0 )
+        $exits = $entrances = 0;
+      
+      $arr['id']   = $gauges->count() == 1 ? $gauges[0]->id : NULL;
+      $arr['free'] = $arr['total'] + $exits - $entrances;
+      $arr['booked']['ordered'] = $entrances - $exits;
+    }
+    else
     foreach ( $gauges as $gauge )
     {
-      $this->getContext()->getConfiguration()->loadHelpers('I18N');
       if (!( isset($arr['id']) && $arr['id'] ))
         $arr['id'] = $gauge->id;
       else
@@ -86,30 +120,31 @@ class gaugeActions extends autoGaugeActions
       $arr['booked']['printed'] += $gauge->printed;
       $arr['booked']['ordered'] += $gauge->ordered;
       $arr['booked']['asked']   += sfConfig::get('project_tickets_count_demands',false) ? $gauge->asked : 0;
-      
-      $arr['txt'] = $arr['seats'] > 0
-        ? __('Total: %%total%% Seats: %%seats%% Free: %%free%%', array(
-          '%%total%%' => $arr['total'],
-          '%%seats%%' => $arr['seats'],
-          '%%free%%'  => $arr['free'],
-        ))
-        : __('Total: %%total%% Free: %%free%%', array(
-          '%%total%%' => $arr['total'],
-          '%%free%%'  => $arr['free'],
-        ))
-      ;
-      if ( !sfConfig::get('project_tickets_count_demands',false) )
-        $arr['booked_txt'] = __('Sells: %%printed%% Orders: %%ordered%%', array(
-          '%%printed%%' => $arr['booked']['printed'],
-          '%%ordered%%' => $arr['booked']['ordered'],
-        ));
-      else
-        $arr['booked_txt'] = __('Sells: %%printed%% Orders: %%ordered%% Demands: %%asked%%', array(
-          '%%printed%%' => $arr['booked']['printed'],
-          '%%ordered%%' => $arr['booked']['ordered'],
-          '%%asked%%'   => $arr['booked']['asked'],
-        ));
     }
+    
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $arr['txt'] = $arr['seats'] > 0
+      ? __('Total: %%total%% Seats: %%seats%% Free: %%free%%', array(
+        '%%total%%' => $arr['total'],
+        '%%seats%%' => $arr['seats'],
+        '%%free%%'  => $arr['free'],
+      ))
+      : __('Total: %%total%% Free: %%free%%', array(
+        '%%total%%' => $arr['total'],
+        '%%free%%'  => $arr['free'],
+      ))
+    ;
+    if ( !sfConfig::get('project_tickets_count_demands',false) )
+      $arr['booked_txt'] = __('Sells: %%printed%% Orders: %%ordered%%', array(
+        '%%printed%%' => $arr['booked']['printed'],
+        '%%ordered%%' => $arr['booked']['ordered'],
+      ));
+    else
+      $arr['booked_txt'] = __('Sells: %%printed%% Orders: %%ordered%% Demands: %%asked%%', array(
+        '%%printed%%' => $arr['booked']['printed'],
+        '%%ordered%%' => $arr['booked']['ordered'],
+        '%%asked%%'   => $arr['booked']['asked'],
+      ));
     
     $this->json = $arr;
   }

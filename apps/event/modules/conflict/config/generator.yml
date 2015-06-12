@@ -1,3 +1,4 @@
+<?php $museum = sfContext::getInstance()->getConfiguration()->getApplication() == 'museum' ?>
 generator:
   class: sfDoctrineGenerator
   param:
@@ -30,7 +31,7 @@ generator:
       list:
         title: Use conflicts
         display: [_list_resources, _list_mod_datetime, _list_date, _list_booked_by, _list_booked_from_until, _list_event, _list_location, _list_meta_event, _list_workspaces, _list_optional]
-        table_method: retrieveConflicts
+        table_method: <?php echo $museum ? 'retrieveMuseumConflicts' : 'retrieveConflicts' ?><?php echo PHP_EOL ?>
         sort: [happens_at, '']
         actions: []
         batch_actions: []

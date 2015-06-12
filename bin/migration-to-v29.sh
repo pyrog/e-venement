@@ -71,80 +71,10 @@ pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.before.pgdump && echo "DB pre dumped
 
 ## preliminary modifications & backup
 psql <<EOF
-  UPDATE ticket SET vat = 0 WHERE vat IS NULL;
-  UPDATE ticket_version SET vat = 0 WHERE vat IS NULL;
-  
-  CREATE TABLE event_translation (
-    id bigint NOT NULL,
-    name character varying(255) NOT NULL,
-    short_name character varying(127),
-    description text,
-    extradesc text,
-    extraspec text,
-    lang character(2) NOT NULL
-  );
-  INSERT INTO event_translation (SELECT id, name, short_name, description, extradesc, extraspec, 'fr' FROM event);
-  ALTER TABLE event DROP COLUMN name;
-  ALTER TABLE event DROP COLUMN short_name;
-  ALTER TABLE event DROP COLUMN description;
-  ALTER TABLE event DROP COLUMN extradesc;
-  ALTER TABLE event DROP COLUMN extraspec;
-  
-  ALTER TABLE event_version ADD COLUMN lang character(2) NOT NULL DEFAULT 'fr';
-
-  ALTER TABLE ticket ADD COLUMN seat_id integer;
-  UPDATE ticket tck
-  SET seat_id = s.id
-  FROM gauge g
-  LEFT JOIN manifestation m ON m.id = g.manifestation_id
-  LEFT JOIN location l ON l.id = m.location_id
-  LEFT JOIN seated_plan sp ON sp.location_id = l.id
-  LEFT JOIN seated_plan_workspace spw ON spw.workspace_id = g.workspace_id AND spw.seated_plan_id = sp.id
-  LEFT JOIN seat s ON s.seated_plan_id = sp.id
-  WHERE g.id = tck.gauge_id
-    AND s.name = tck.numerotation
-    AND tck.numerotation IS NOT NULL
-    AND spw.workspace_id IS NOT NULL;
-  ALTER TABLE ticket DROP COLUMN numerotation;
-
-  ALTER TABLE ticket_version ADD COLUMN seat_id integer;
-  UPDATE ticket_version tck
-  SET seat_id = s.id
-  FROM gauge g
-  LEFT JOIN manifestation m ON m.id = g.manifestation_id
-  LEFT JOIN location l ON l.id = m.location_id
-  LEFT JOIN seated_plan sp ON sp.location_id = l.id
-  LEFT JOIN seated_plan_workspace spw ON spw.workspace_id = g.workspace_id AND spw.seated_plan_id = sp.id
-  LEFT JOIN seat s ON s.seated_plan_id = sp.id
-  WHERE g.id = tck.gauge_id
-    AND s.name = tck.numerotation
-    AND tck.numerotation IS NOT NULL
-    AND spw.workspace_id IS NOT NULL;
-  ALTER TABLE ticket_version DROP COLUMN numerotation;
-  
-  ALTER TABLE web_origin ADD COLUMN user_agent TEXT DEFAULT 'Unknown';
-  
-  CREATE TABLE price_translation (
-    id bigint NOT NULL,
-    name character varying(63) NOT NULL,
-    description character varying(255),
-    lang character(2) NOT NULL
-  );
-  INSERT INTO price_translation (SELECT id, name, description, 'en' AS lang FROM price WHERE (id,'en') NOT IN (SELECT id,lang FROM price_translation));
-  ALTER TABLE price DROP COLUMN name;
-  ALTER TABLE price DROP COLUMN description;
-  
-  CREATE TABLE member_card_type_translation (
-    id bigint NOT NULL,
-    description character varying(255),
-    lang character(2) NOT NULL
-  );
-  INSERT INTO member_card_type_translation (SELECT id, description, 'en' AS lang FROM member_card_type WHERE (id,'en') NOT IN (SELECT id,lang FROM member_card_type_translation));
-  ALTER TABLE member_card_type DROP COLUMN description;
-  
-  UPDATE sf_guard_permission SET name = trim(name) WHERE name != trim(name);
+  ALTER TABLE checkpoint ADD COLUMN type VARCHAR(255);
+  UPDATE checkpoint SET type = CASE WHEN legal THEN 'entrance' ELSE 'info' END;
+  ALTER TABLE checkpoint DROP COLUMN legal;
 EOF
-
 echo "DUMPING DB..."
 pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.pgdump && echo "DB dumped"
 
@@ -207,11 +137,6 @@ else
 fi
 
 echo ""
-echo "Updating Tickets' taxes to avoid NULL data"
-echo 'UPDATE ticket SET taxes = 0 WHERE taxes IS NULL;' | psql;
-echo "... done."
-
-echo ""
 echo "Creating SQL needed functions ..."
 cat config/doctrine/functions-pgsql.sql | psql
 echo "... done."
@@ -221,51 +146,6 @@ echo "... done."
 echo ""
 echo "Be careful with DB errors. A table with an error is an empty table !... If necessary take back the DB backup and correct things by hand before retrying this migration script."
 echo ""
-
-# final data modifications
-echo ""
-read -p "Do you want to copy Price's english translations (default i18n after a migration from v2.7) into french ? [Y/n] " reset
-[ "$reset" != 'n' ] && ./symfony e-venement:copy-i18n Price en fr
-read -p "Do you want to copy MemberCardType's english translations (default i18n after a migration from v2.7) into french ? [Y/n] " reset
-[ "$reset" != 'n' ] && ./symfony e-venement:copy-i18n MemberCardType en fr
-read -p "Do you want to update the Postalcodes data (can take a while)? [y/N] " reset
-[ "$reset" = 'y' ] && echo 'DELETE FROM postalcode;' | psql && ./symfony doctrine:data-load --append data/fixtures/20-postalcodes.yml
-
-echo ""
-read -p "Do you want to add the new permissions? [Y/n] " add
-if [ "$add" != 'n' ]
-then
-  read -p "... Do you want to reset the permissions related to the holds? [y/N] " reset
-  echo "If you will get Symfony errors in the next few actions, it is not a problem, the permissions just already exist in the DB"
-  echo ""
-  echo "Permissions & groups for the grp module, if they are not yet present (an error here is a good thing...)"
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-grp.yml
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-grp.yml
-  echo "Permissions & groups for surveys..."
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-srv.yml
-  echo "Permissions & groups for accessing backups..."
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-backups.yml
-  echo "Permissions & groups for accessing taxes..."
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-taxes.yml
-  echo "Permissions & groups for accessing online sales stats..."
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-stats.yml
-  echo "Permissions & groups for accessing the store..."
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-pos.yml
-  echo "Permissions & groups for reducing the value of tickets, one by one..."
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-tck.yml
-  echo "Permissions & groups for holds..."
-  if [ "$reset" != 'n' ]
-  then
-    psql $db <<EOF
-      DELETE FROM sf_guard_permission WHERE name LIKE 'event-hold%';
-      DELETE FROM sf_guard_group WHERE name LIKE 'event-hold%';
-EOF
-  fi
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v28-hold.yml
-fi
-
-psql $db <<EOF
-EOF
 
 echo ''
 read -p "Do you want to refresh your Searchable data for Contacts & Organisms (recommanded, but it can take a while) ? [y/N] " refresh
@@ -277,6 +157,14 @@ EOF
   ./symfony e-venement:search-index Contact
   ./symfony e-venement:search-index Organism
 fi
+
+# final data modifications
+echo ""
+read -p "Do you want to update the Postalcodes data (can take a while)? [y/N] " reset
+[ "$reset" = 'y' ] && echo 'DELETE FROM postalcode;' | psql && ./symfony doctrine:data-load --append data/fixtures/20-postalcodes.yml
+
+psql $db <<EOF
+EOF
 
 echo ''
 echo "Changing (or not) file permissions for the e-venement Messaging Network ..."

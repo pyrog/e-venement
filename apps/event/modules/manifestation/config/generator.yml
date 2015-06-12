@@ -1,3 +1,4 @@
+<?php $museum = sfContext::getInstance()->getConfiguration()->getApplication() == 'museum' ?>
 generator:
   class: sfDoctrineGenerator
   param:
@@ -14,13 +15,13 @@ generator:
     config:
       actions: ~
       fields:
-        list_event: { label: Event }
+        list_event: { label: <?php echo $museum ? 'Exhibition' : 'Event' ?> }
         list_location: { label: Location }
         list_description: { label: Memo }
         list_dates: { label: Date }
         happens_at: { label: Date }
         ends_at: { type: Date }
-        id: { label: ID Manif }
+        id: { label: <?php echo $museum ? 'ID Exhibition' : 'ID Manif' ?> }
         online_limit: { label: Online limit }
         description: { label: Memo }
         no_print: { label: Preprinted ticketting }
@@ -32,6 +33,7 @@ generator:
         reservation_description: { label: Comment }
         contact_id: { label: Applicant, credentials: event-reservation-change-contact }
         list_contact: { label: Applicant }
+        event_id: { label: <?php echo $museum ? 'Exhibition' : 'Event' ?> }
         organism_id: { label: Applied by organism }
         booking_list: { label: Extra locations }
         list_booking_list: { label: Extra locations }
@@ -48,7 +50,7 @@ generator:
       list:
         display: [happens_at, _list_dates, _list_event, _list_contact, _list_location <?php $reservation = sfConfig::get('app_manifestation_reservations',array()); if ( isset($reservation['enable']) && $reservation['enable'] ): ?>, _list_booking_list, reservation_description<?php endif ?>, duration_h_r, _list_age_min, _list_gauge, _list_description<?php if ( sfConfig::get('app_manifestation_extra_informations_enable',true) ): ?>, _list_extra_informations_list<?php endif ?>, _list_best_free_seat]
         sort: [happens_at, asc]
-        table_method: retrieveList
+        table_method: retrieveMuseumList
         title: Manifestations
         object_actions:
           _edit:
@@ -109,8 +111,8 @@ generator:
         actions: { _save: ~, _list: ~ }
       show:
         display:
-          General:    [_show_event, id, _show_happens_at, _show_ends_at, _show_location, _show_gauge_txt, _show_expected_income, _show_possible_incomes, _show_best_free_seat, _show_color, <?php if ( sfConfig::get('app_manifestation_price_manifestations', true) ): ?>_show_prices_list<?php endif ?>, <?php if ( sfConfig::get('app_manifestation_price_gauges', false) ): ?>_show_gauges_prices<?php endif ?>]
-          Ticketting: [_show_duration, _show_vat, _show_online_limit, _show_online_limit_per_transaction, _show_depends_on, _show_is_necessary_to, _show_organizers_list, _show_participants_list, _show_no_print, _show_voucherized]
+          General:    [_show_event, id, _show_happens_at, _show_ends_at, _show_location, _show_gauge_txt, _show_expected_income, _show_possible_incomes, <?php if ( !$museum ): ?>_show_best_free_seat, <?php endif ?>_show_color, <?php if ( sfConfig::get('app_manifestation_price_manifestations', true) ): ?>_show_prices_list<?php endif ?>, <?php if ( sfConfig::get('app_manifestation_price_gauges', false) ): ?>_show_gauges_prices<?php endif ?>]
+          Ticketting: [<?php if ( !$museum ): ?>_show_duration, <?php endif ?>_show_vat, _show_online_limit, _show_online_limit_per_transaction, _show_depends_on, _show_is_necessary_to, _show_organizers_list, _show_participants_list, _show_no_print, _show_voucherized]
           Workspaces: [_show_workspaces_list]
           Statistics: [_show_stats_sales, _show_stats_filling, _show_stats_engine]
           <?php $config = sfConfig::get('app_manifestation_reservations',array('enable' => false)); if ( isset($config['enable']) && $config['enable'] ): echo PHP_EOL; ?>

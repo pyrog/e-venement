@@ -133,11 +133,25 @@ class eventActions extends autoEventActions
   {
     $this->securityAccessFiltering($request);
     parent::executeShow($request);
+    
+    $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
+    $museum = $this->getContext()->getConfiguration()->getApplication() == 'museum';
+    if ( $this->event->museum && !$museum )
+      $this->redirect(cross_app_url_for('museum', 'event/show?id='.$this->event->id));
+    elseif ( !$this->event->museum && $museum )
+      $this->redirect(cross_app_url_for('event', 'event/show?id='.$this->event->id));
   }
   public function executeEdit(sfWebRequest $request)
   {
     $this->securityAccessFiltering($request, true);
     parent::executeEdit($request);
+    
+    $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
+    $museum = $this->getContext()->getConfiguration()->getApplication();
+    if ( $this->event->museum && !$museum )
+      $this->redirect(cross_app_url_for('museum', 'event/edit?id='.$this->event->id));
+    elseif ( !$this->event->museum && $museum )
+      $this->redirect(cross_app_url_for('event', 'event/edit?id='.$this->event->id));
   }
   public function executeUpdate(sfWebRequest $request)
   {
@@ -152,7 +166,7 @@ class eventActions extends autoEventActions
     }
     catch ( Doctrine_Connection_Exception $e )
     {
-      sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');
+      $this->getContext()->getConfiguration()->loadHelpers('I18N');
       $this->getUser()->setFlash('error',__("Deleting this object has been canceled because of remaining links to externals (like tickets)."));
       $this->redirect('event/show?id='.$this->getRoute()->getObject()->id);
     }

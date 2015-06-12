@@ -7,7 +7,17 @@
   <div class="fg-toolbar ui-widget-header ui-corner-all">
     <h1>
       <?php if ( $manifestations || $workspaces ): ?>
-      <?php echo format_number_choice('[1]Manifestation ledger|(1,+Inf]Manifestations ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
+        <?php
+          $museum = true;
+          foreach ( $manifestations as $manifestation )
+          if ( !$manifestation->Event->museum )
+            $museum = false;
+        ?>
+        <?php if ( $museum ): ?>
+        <?php echo format_number_choice('[1]Exhibition period ledger|(1,+Inf]Exhibition periods ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
+        <?php else: ?>
+        <?php echo format_number_choice('[1]Manifestation ledger|(1,+Inf]Manifestations ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
+        <?php endif ?>
       <?php else: ?>
       <?php echo __('Ticketting Detailed Ledger') ?>
       (<?php echo __('from %%from%% to %%to%%',array(

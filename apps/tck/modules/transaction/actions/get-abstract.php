@@ -95,6 +95,8 @@
     $this->getContext()->getConfiguration()->loadHelpers('Slug');
     
     $fct = 'createQueryFor'.ucfirst($type);
+    //if ( $type == 'museum' ) $type = 'manifestations'; // a trick to avoid many code, becaude museum & manifestations are treated exactly the same way
+    
     if ( $request->getParameter('id',false) )
     {
       $table = Doctrine::getTable('Transaction');
@@ -108,6 +110,7 @@
     }
     
     switch ( $type ){
+    case 'museum':
     case 'manifestations':
       $subobj = 'Ticket';
       $product_id = 'manifestation_id';
@@ -245,6 +248,7 @@
       if ( !isset($this->json[$id]) )
       {
         switch ( $type ) {
+        case 'museum':
         case 'manifestations':
           $subobj = 'Gauge';
           $q = Doctrine::getTable('Manifestation')->createQuery('m',true)
@@ -373,6 +377,7 @@
           // available prices
           $prices = array();
           switch ( $type ) {
+          case 'museum':
           case 'manifestations':
             $pw = false;
             $pps = array();

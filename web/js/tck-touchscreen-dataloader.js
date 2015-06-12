@@ -62,9 +62,10 @@ LI.completeContent = function(data, type, replaceAll = true)
     return true;
   
   
-  // MANIFESTATIONS && PRODUCTS
+  // MANIFESTATIONS & PRODUCTS & MUSEUM
   case 'store':
   case 'manifestations':
+  case 'museum':
     var wglobal = $('#li_transaction_'+type+' .families:not(.sample)'); // first element, parent of all
     
     if ( replaceAll )
@@ -151,8 +152,9 @@ LI.completeContent = function(data, type, replaceAll = true)
           .appendTo(wdeclination.find('.data'));
         
         // graphical gauges
-        if ( type == 'manifestations' )
-        {
+        switch ( type ) {
+        case 'museum':
+        case 'manifestations':
           wdeclination.find('.data .gauge.raw').remove();
           $('<a></a>')
             .prop('href', declination.url)
@@ -167,6 +169,7 @@ LI.completeContent = function(data, type, replaceAll = true)
               .append($('<img/>').prop('src', declination.seated_plan_url).prop('alt', 'seated-plan').attr('width', width))
               .appendTo(wdeclination.find('.data'));
           }
+          break;
         }
         
         if ( add )
@@ -226,9 +229,9 @@ LI.completeContent = function(data, type, replaceAll = true)
           var ids = [];
           $.each(price.ids, function(index, value){
             var elt = price.ids_url && price.ids_url[index]
-              ? $('<span></span>').text(type == 'manifestations' && price.numerotation[index] ? ' '+price.numerotation[index] : '')
+              ? $('<span></span>').text($.inArray(type, ['manifestations', 'museum']) && price.numerotation[index] ? ' '+price.numerotation[index] : '')
                 .prepend($('<a></a>').prop('href', price.ids_url[index]).prop('target', '_blank').text(value))
-              : $('<span></span>').text(value+( type == 'manifestations' && price.numerotation[index] ? ' '+price.numerotation[index] : '' ));
+              : $('<span></span>').text(value+( $.inArray(type, ['manifestations', 'museum']) && price.numerotation[index] ? ' '+price.numerotation[index] : '' ));
             ids.push($('<div></div>').append(elt.prepend('#').attr('data-id', value)).html());
           });
           wprice.find('.ids').html(ids.join(', '));

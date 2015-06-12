@@ -246,11 +246,12 @@ class manifestationActions extends autoManifestationActions
   {
     $charset = sfConfig::get('software_internals_charset');
     $search  = iconv($charset['db'],$charset['ascii'],strtolower($request->getParameter('q')));
+    $museum  = $this->getContext()->getConfiguration()->getApplication() == 'museum';
     
     $eids = array();
     if ( $search )
     {
-      $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery());
+      $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery('e')->andWhere('e.museum = ?', $museum));
       foreach ( $e->execute() as $event )
         $eids[] = $event['id'];
     }
@@ -263,6 +264,7 @@ class manifestationActions extends autoManifestationActions
     
     $q = Doctrine::getTable('Manifestation')
       ->createQuery('m')
+      ->andWhere('e.museum = ?', $museum)
       ->leftJoin('m.Color c')
       ->orderBy('m.happens_at')
       ->limit($request->getParameter('limit',$max));
@@ -282,7 +284,10 @@ class manifestationActions extends autoManifestationActions
     if ( !$search
       || $request->hasParameter('later')
       || $request->getParameter('except_transaction',false) && !$this->getUser()->hasCredential('tck-unblock') )
-      $q->andWhere('m.happens_at > ?', date('Y-m-d H:i:s', strtotime(sfConfig::get('app_manifestation_stop_listing_after', '30 minutes').' ago')));
+      $q->andWhere("m.happens_at > ? OR m.happens_at + (m.duration||' seconds')::interval > ?", array(
+        date('Y-m-d H:i:s', strtotime(sfConfig::get('app_manifestation_stop_listing_after', '30 minutes').' ago')),
+        date('Y-m-d H:i:s'),
+      ));
     
     $manifestations = $q->select('m.*, e.*, c.*')->execute();
     
@@ -474,6 +479,13 @@ class manifestationActions extends autoManifestationActions
     $this->securityAccessFiltering($request);
     parent::executeEdit($request);
     
+    $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
+    $museum = $this->getContext()->getConfiguration()->getApplication() == 'museum';
+    if ( $this->manifestation->Event->museum && !$museum )
+      $this->redirect(cross_app_url_for('museum', 'manifestation/edit?id='.$this->manifestation->id));
+    elseif ( !$this->manifestation->Event->museum && $museum )
+      $this->redirect(cross_app_url_for('event', 'manifestation/edit?id='.$this->manifestation->id));
+    
     //$this->form->prices = $this->getPrices();
     //$this->form->spectators = $this->getSpectators();
     //$this->form->unbalanced = $this->getUnbalancedTransactions();
@@ -491,6 +503,14 @@ class manifestationActions extends autoManifestationActions
     $this->securityAccessFiltering($request, false);
     $this->manifestation = $this->getRoute()->getObject();
     $this->forward404Unless($this->manifestation);
+    
+    $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
+    $museum  = $this->getContext()->getConfiguration()->getApplication() == 'museum';
+    if ( $this->manifestation->Event->museum && !$museum )
+      $this->redirect(cross_app_url_for('museum', 'manifestation/show?id='.$this->manifestation->id));
+    elseif ( !$this->manifestation->Event->museum && $museum )
+      $this->redirect(cross_app_url_for('event', 'manifestation/show?id='.$this->manifestation->id));
+    
     $this->form = $this->configuration->getForm($this->manifestation);
     //$this->form->prices = $this->getPrices();
     //$this->form->spectators = $this->getSpectators();
@@ -599,7 +619,7 @@ class manifestationActions extends autoManifestationActions
       ->andWhere('t.id NOT IN (SELECT tt2.cancelling FROM ticket tt2 WHERE tt2.cancelling IS NOT NULL)')
       ->andWhere('t.id NOT IN (SELECT tt.duplicating FROM Ticket tt WHERE tt.duplicating IS NOT NULL)')
       ->andWhere('t.manifestation_id = ?',$mid)
-      ->andWhere('cp.legal IS NULL OR cp.legal = true')
+      ->andWhere('cp.type IS NULL OR cp.type = ?', 'entrance')
       ->andWhereIn('g.workspace_id',array_keys($this->getUser()->getWorkspacesCredentials()))
       ->orderBy('g.workspace_id, w.name, pt.name, tr.id, o.name, c.name, c.firstname');
     else
@@ -660,7 +680,7 @@ class manifestationActions extends autoManifestationActions
       ->andWhere('tck.id NOT IN (SELECT tt2.cancelling FROM ticket tt2 WHERE tt2.cancelling IS NOT NULL)')
       ->andWhere('tck.id NOT IN (SELECT tt3.duplicating FROM ticket tt3 WHERE tt3.duplicating IS NOT NULL)') // we want only the last duplicates (or originals if no duplication has been made)
       ->andWhere('tck.manifestation_id = ?',$manifestation_id ? $manifestation_id : $this->manifestation->id)
-      ->andWhere('(cp.legal IS NULL OR cp.legal = true)')
+      ->andWhere('(cp.type IS NULL OR cp.type = ?)', 'entrance')
       ->andWhereIn('g.workspace_id',array_keys($this->getUser()->getWorkspacesCredentials()))
       ->orderBy('c.name, c.firstname, o.name, pt.name, g.workspace_id, w.name, tr.id')
     ;

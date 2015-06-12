@@ -59,7 +59,16 @@ class TransactionTable extends PluginTransactionTable
       $q->leftJoin("$a.BoughtProducts bp".(is_null($tickets) ? '' : ' WITH '.($tickets == 'asked' ? 'bp.integrated_at IS NULL' : "NOT ($str)")));
     return $q;
   }
-  
+  public function createQueryForManifestations($alias = 't', $tickets = NULL, $with_products = false)
+  {
+    return $this->createQuery($alias, $tickets, $with_products)
+      ->andWhere('e.museum = ?', false);
+  }
+  public function createQueryForMuseum($alias = 't', $tickets = NULL, $with_products = false)
+  {
+    return $this->createQuery($alias, $tickets, $with_products)
+      ->andWhere('e.museum = ?', true);
+  }
   public function createQueryForStore($alias = 't', $culture = NULL)
   {
     $q = Doctrine_Query::create()->from('Transaction '.$alias)

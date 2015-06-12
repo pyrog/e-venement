@@ -10,6 +10,7 @@
 /lib/model/doctrine/packages/*/base
 /web/private/*
 /web/uploads/*
+/data/sql/*
 
 apps/default/config/app.yml
 apps/event/config/app.yml

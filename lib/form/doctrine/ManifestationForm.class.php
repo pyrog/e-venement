@@ -125,6 +125,8 @@ class ManifestationForm extends BaseManifestationForm
       ->setOption('order_by', array('translation.name', ''));
     $this->validatorSchema['event_id']
       ->setOption('query', $q);
+    if ( sfContext::hasInstance() )
+      $q->andWhere('e.museum = ?', sfContext::getInstance()->getConfiguration()->getApplication() == 'museum');
     
     if (!( $event instanceof Event && !$event->isNew() ))
       return $this;

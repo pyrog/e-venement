@@ -65,7 +65,7 @@
         ->leftJoin('tck.DirectContact dc')
         ->leftJoin('tck.Seat s')
         ->leftJoin('tck.Controls ctrl')
-        ->leftJoin('ctrl.Checkpoint cp WITH cp.legal = ?', true)
+        ->leftJoin('ctrl.Checkpoint cp WITH cp.type = ?', 'entrance')
         ->leftJoin('tck.Transaction t')
         ->leftJoin('t.Contact c WITH dc.id IS NULL')
         ->leftJoin('t.Professional pro WITH dc.id IS NULL')

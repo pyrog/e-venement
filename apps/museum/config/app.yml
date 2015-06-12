@@ -1,0 +1,49 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+#all:
+
+all:
+  google_maps:
+    api_keys:
+      default: "ABQIAAAAZ2fpUCzFKp-Wp-8Hx51qIhSaeaklBgCD_XetPZHz9wkN4fhDihSw6C560nW5AmDCVaUpfOwmhlIjEw"
+      max_display: 200
+      default_country: France
+  ticketting:
+    dematerialized: true
+    hide_demands: true
+  listing:
+    manif_date: ASC
+    max_per_page: 25
+  synchronization:
+    cron_period: 1 hour
+    email_from: e-venement@centredebeaulieu.fr
+    alarms:
+      when: [-4 hours, -1 hour]
+      what: [display, email]
+      #who: [organizers, applicant, location, admins]
+    pending_alarms:
+      when: [-1 week, -2 days]
+      what: [display, email]
+      #who: [organizers, applicant, location, admins]
+    #period:
+    #  from: now
+    #  to: +1 week
+    #config:
+     # format: email
+     # to: [baptiste.simon@libre-informatique.fr, bevlhay.ferrand@libre-informatique.fr]
+     # from: e-venement@centredebeaulieu.fr
+     # subject: Rapport concernant les manifestations de <?php $client = sfConfig::get('project_about_client'); echo $client['name'] ?> du %%from%% au %%to%%
+    security_token:
+      22117004c9bc143487e2e8557c7d0955: laura
+  manifestation:
+    depends_on_limit: 10
+    defaults:
+      reservation_confirmed: false
+    reservations:
+      enable: true
+      #shown_in_calendar: false
+      #let_restricted_users_confirm: true
+    #extra_informations_enable: false
+    #editable_in_calendar: false
