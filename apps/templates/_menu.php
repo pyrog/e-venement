@@ -25,8 +25,8 @@
 <?php include_partial('global/menu_file') ?>
 <?php if ( $sf_user->isAuthenticated() ): ?>
 <?php include_partial('global/menu_pr') ?>
-<?php include_partial('global/menu_museums') ?>
 <?php include_partial('global/menu_events') ?>
+<?php include_partial('global/menu_museums') ?>
 <?php include_partial('global/menu_pos') ?>
 <?php include_partial('global/menu_ticketting') ?>
 <?php include_partial('global/menu_accounting') ?>
