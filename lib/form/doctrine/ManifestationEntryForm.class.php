@@ -53,10 +53,11 @@ class ManifestationEntryForm extends BaseManifestationEntryForm
       ));
     else
     {
-      $this->widgetSchema['manifestation_id']->getOption('query')
-        ->andWhere('e.id = ?', $entry->event_id)
-        ->andWhereNotIn('m.id', $entry->ManifestationEntries->toKeyValueArray('id', 'manifestation_id'))
-      ;
+      $this->widgetSchema['manifestation_id']->getOption('query');
+      if ( !$entry->isNew() )
+        $q->andWhere('e.id = ?', $entry->event_id)
+          ->andWhereNotIn('m.id', $entry->ManifestationEntries->toKeyValueArray('id', 'manifestation_id'))
+        ;
     }
     
     return $this;

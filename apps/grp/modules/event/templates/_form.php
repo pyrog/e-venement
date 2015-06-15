@@ -120,7 +120,7 @@
         <?php endforeach ?>
         <td id="manifestation_entry_new" class="<?php echo ++$j%2 == 0 ? 'pair' : 'impair' ?>">
           <?php $f = new ManifestationEntryForm ?>
-          <?php $f->searchAllManifestations($sf_user->hasCredential('grp-events-multimanifs'), $sf_data->getRaw('entry')) ?>
+          <?php $f->searchAllManifestations($sf_user->hasCredential('grp-events-multimanifs'), new Entry) ?>
           <?php echo form_tag_for($f,'@manifestation_entry') ?>
             <?php echo $f->renderHiddenFields(); ?>
             <p><?php echo $f['manifestation_id']; ?></p>
