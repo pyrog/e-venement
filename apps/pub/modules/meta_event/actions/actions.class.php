@@ -33,6 +33,10 @@ class meta_eventActions extends autoMeta_eventActions
       ->andWhere('g.online = ?', true)
       ->andWhere('g.value > 0')
       
+      ->andWhere('g.online = TRUE')
+      ->andWhere('m.reservation_confirmed = TRUE')
+      ->andWhere('m.happens_at > NOW()')
+      
       ->leftJoin("$a.Users meu")
       ->andWhere('meu.id = ?', $this->getUser()->getId())
     ;
