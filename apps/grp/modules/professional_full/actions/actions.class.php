@@ -13,6 +13,11 @@ require_once dirname(__FILE__).'/../lib/professional_fullGeneratorHelper.class.p
  */
 class professional_fullActions extends autoProfessional_fullActions
 {
+  public function executeNewContact(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
+    $this->redirect(cross_app_url_for('rp', 'contact/new'));
+  }
   public function executeIndex(sfWebRequest $request)
   {
     $this->redirect('professional/index');
@@ -31,6 +36,7 @@ class professional_fullActions extends autoProfessional_fullActions
   {
     $this->form = new ContactEntryByContactForm;
     $this->form->restoreProfessionalId();
+    $this->professional = $this->form->getObject();
   }
   public function executeCreate(sfWebRequest $request)
   {

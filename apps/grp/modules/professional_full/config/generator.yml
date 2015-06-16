@@ -32,4 +32,8 @@ generator:
         display: [professional_id, _link_to_contact, event_id]
         actions:
           _list: ~
+          _new_contact:
+            action: newContact
+            ui-icon: person
+            label: New contact
           _save: ~

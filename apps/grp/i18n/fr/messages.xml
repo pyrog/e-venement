@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>New contact&lt;span class="ui-icon ui-icon-person"&gt;&lt;/span&gt;</source>
+        <target>Nouveau contact&lt;span class="ui-icon ui-icon-person"&gt;&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit>
         <source>Confirmation comment</source>
         <target>Commentaire de confirmation</target>
       </trans-unit>
