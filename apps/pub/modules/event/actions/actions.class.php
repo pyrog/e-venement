@@ -42,8 +42,8 @@ class eventActions extends autoEventActions
       sfConfig::set('pub.meta_event.slug', $request->getParameter('meta-event'));
     }
     
-    // only one event...
-    if ( $this->pager->getNbResults() == 1 )
+    // if there is only one event...
+    if ( $this->pager->getResults()->count() == 1 && false )
     {
       foreach ( array('success', 'notice', 'error') as $type )
       if ( $this->getUser()->getFlash($type) )
