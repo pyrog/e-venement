@@ -147,9 +147,9 @@ class eventActions extends autoEventActions
     parent::executeEdit($request);
     
     $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
-    $museum = $this->getContext()->getConfiguration()->getApplication();
+    $museum = $this->getContext()->getConfiguration()->getApplication() == 'museum';
     if ( $this->event->museum && !$museum )
-      $this->redirect(cross_app_url_for('museum', 'event/edit?id='.$this->event->id));
+      $this->redirect(cross_app_url_for('museum', 'museum/edit?id='.$this->event->id));
     elseif ( !$this->event->museum && $museum )
       $this->redirect(cross_app_url_for('event', 'event/edit?id='.$this->event->id));
   }
