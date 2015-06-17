@@ -16,8 +16,12 @@ all:
   transaction:
     gauge_alert: true
     #gauge_block: true
-    manifs:
+    manifestations:
       max_display: 20
+    #store:
+    #  max_display: 20
+    #museum:
+    #  max_display: 20
     touchscreen:
       prices_max_display: 13
       manifs_max_display: 12
