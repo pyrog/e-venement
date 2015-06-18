@@ -1,6 +1,8 @@
 all:
   credentials: [event-manif]
 
+state:
+  credentials: [[event-manif, tck-transaction]]
 update:
   credentials: [event-manif-gauge]
 edit:

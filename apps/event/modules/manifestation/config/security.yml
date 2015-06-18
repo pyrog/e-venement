@@ -1,6 +1,8 @@
 all:
   credentials: [event-manif]
 
+ajax:
+  credentials: [[event-manif, tck-transaction]]
 edit:
   credentials: [event-manif-edit]
 update:
