@@ -27,17 +27,19 @@ abstract class PluginEvent extends BaseEvent implements liMetaEventSecurityAcces
         $this->duration = intval($arr[1])*60 + intval($arr[0])*3600;
       }
     }
-    
+
     parent::preSave($event);
   }
   public function preInsert($event)
   {
+    
     if ( sfContext::hasInstance()
       && sfContext::getInstance()->getConfiguration()->getApplication() == 'museum' )
       $this->museum = true;
     
     parent::preSave($event);
   }
+
   public function getDurationHR()
   {
     if ( intval($this->duration).'' != ''.$this->duration )

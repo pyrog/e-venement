@@ -31,6 +31,8 @@ class EventForm extends BaseEventForm
       ),
     );
     
+    $this->widgetSchema['museum'] = new sfWidgetFormInputHidden;
+    
     $cultures = sfConfig::get('project_internals_cultures', array('fr' => 'Français'));
     foreach ( $cultures as $culture => $lang )
     {
