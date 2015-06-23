@@ -27,7 +27,7 @@ Contact:
     type: concrete
   actAs: 
     Searchable:
-      fields: [name,firstname,email,postalcode,city]
+      fields: [name,firstname,email]
     Sluggable:
       fields: [name,firstname]
     Versionable: ~
@@ -111,7 +111,7 @@ Organism:
   package: rp
   actAs:
     Searchable:
-      fields: [name, administrative_number, email, postalcode, city]
+      fields: [name, administrative_number, email]
     Versionable: ~
   inheritance:
     extends: Addressable
