@@ -719,3 +719,14 @@ SeatLink:
     seat2:
       type: integer
       notnull: true
+  relations:
+    Seat1:
+      class: Seat
+      local: seat1
+      onDelete: CASCADE
+      onUpdate: CASCADE
+    Seat2:
+      class: Seat
+      local: seat2
+      onDelete: CASCADE
+      onUpdate: CASCADE

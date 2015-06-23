@@ -74,6 +74,8 @@ psql <<EOF
   ALTER TABLE checkpoint ADD COLUMN type VARCHAR(255);
   UPDATE checkpoint SET type = CASE WHEN legal THEN 'entrance' ELSE 'info' END;
   ALTER TABLE checkpoint DROP COLUMN legal;
+  UPDATE ticket SET taxes = 0 WHERE taxes IS NULL;
+  UPDATE ticket_version SET taxes = 0 WHERE taxes IS NULL;
 EOF
 echo "DUMPING DB..."
 pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.pgdump && echo "DB dumped"
