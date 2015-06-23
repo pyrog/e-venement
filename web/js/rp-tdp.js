@@ -77,16 +77,16 @@ $(document).ready(function(){
   });  
   
   // FORMS: submitting subobjects though AJAX
-  $('.tdp-subobject form').find('select, input, textarea').change(function(e){
-    if ( e.originalEvent == undefined )
-      return;
-    $(this).attr('data-update', true);
-  });
   $('.tdp-subobject form, .tdp-object #sf_admin_content > form').submit(function(){
     $("html, body").animate({ scrollTop: 0 }, "slow");
     $('.sf_admin_flashes *').fadeOut('fast',function(){ $(this).remove(); });
     LI.tdp_submit_forms();
     return false;
+  });
+  $('.tdp-subobject form').find('select, input, textarea').change(function(e){
+    if ( e.originalEvent == undefined && !$(this).hasClass('open_list_selected') )
+      return;
+    $(this).attr('data-update', true);
   });
   
   // CONTENT: FOCUSING ON A FIELD
@@ -230,9 +230,9 @@ $(document).ready(function(){
   $('#tdp-side-bar input[type=checkbox]').click(function(){
     $('#tdp-update-filters').get(0).blink();
     if ( $(this).closest('.tdp-side-widget').is('#tdp-side-categories') )
-      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked'));
+      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
     if ( $(this).closest('.tdp-side-widget').is('#tdp-side-groups') )
-      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked'));
+      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
   });
   
   // integrated search
