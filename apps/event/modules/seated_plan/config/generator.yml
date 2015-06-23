@@ -57,6 +57,7 @@ generator:
           _duplicate:
             ui-icon: plus
             action: duplicate
+            credentials: [event-seated-plan-new, event-seated-plan-edit]
           _delete: ~
       filter:
         display: [location_id, workspaces_list, background]
@@ -68,6 +69,7 @@ generator:
           _duplicate:
             ui-icon: plus
             action: duplicate
+            credentials: [event-seated-plan-new, event-seated-plan-edit]
           _save: ~
         display:
           General: [location_id, workspaces_list, description, _show_nb_seats]
