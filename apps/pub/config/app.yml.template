@@ -108,15 +108,6 @@ all:
     #  uri: tpa/paiement.web
     #  response: cart/response
     ################################
-  seller:
-    logo: logo-200.jpg
-    name: Ligue des Pyrénées
-    address: 2 rue des Régaires
-    postalcode: 31000
-    city: TOULOUSE
-    country: France
-    other:
-    invoice_prefix: FB
   texts:
     #cart_resend_email: ''
     synthetic:
