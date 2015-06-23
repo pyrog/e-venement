@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2013 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2013 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -144,11 +144,7 @@ class ManifestationTable extends PluginManifestationTable
     return $this->createQuery('m')->andWhere('g.id = ?',$id)->fetchOne();
   }
   
-  public function retrieveMuseumConflicts()
-  {
-    return $this->retrieveConflicts(true);
-  }
-  public function retrieveConflicts($museum = false)
+  public function retrieveConflicts($q, $museum = false)
   {
     // display potentialities or real conflicts, depending on the configuration
     $options = sfConfig::get('app_manifestation_reservations', array());
@@ -171,8 +167,12 @@ class ManifestationTable extends PluginManifestationTable
     
     return $q;
   }
+  public function retrieveMuseumConflicts($q)
+  {
+    return $this->retrieveConflicts($q, true);
+  }
   
-  public function retrievePending($museum = false)
+  public function retrievePending($q, $museum = false)
   {
     $q = $this->createQuery('m')
       ->andWhere('m.reservation_confirmed = FALSE')
@@ -185,9 +185,9 @@ class ManifestationTable extends PluginManifestationTable
     
     return $q;
   }
-  public function retrieveMuseumPending()
+  public function retrieveMuseumPending($q)
   {
-    return $this->retrievePending(true);
+    return $this->retrievePending($q, true);
   }
   
   /**
