@@ -150,8 +150,8 @@ echo "Be careful with DB errors. A table with an error is an empty table !... If
 echo ""
 
 echo ''
-read -p "Do you want to refresh your Searchable data for Contacts & Organisms (recommanded, but it can take a while) ? [y/N] " refresh
-if [ "$refresh" = 'y' ]; then
+read -p "Do you want to refresh your Searchable data for Contacts & Organisms (recommanded, but it can take a while) ? [Y/n] " refresh
+if [ "$refresh" != 'n' ]; then
   psql $db <<EOF
 DELETE FROM contact_index;
 DELETE FROM organism_index;
