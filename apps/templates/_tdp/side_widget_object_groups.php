@@ -70,6 +70,10 @@
                 $('<span></span>').text($(this).val())
                   .appendTo(li);
                 li.insertBefore(input.closest('li'));
+                
+                // force adding the new group in the "to add" groups (select)
+                $('#'+$(this).prop('id').replace(/^source_/g, '')).closest('.open_list')
+                  .find('.open_list_add').click();
               });
             });
             
