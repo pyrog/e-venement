@@ -70,6 +70,10 @@
                 $('<span></span>').text($(this).val())
                   .appendTo(li);
                 li.insertBefore(input.closest('li'));
+                
+                // force adding the new group in the "to add" groups (select)
+                $('#'+$(this).prop('id').replace(/^source_/g, '')).closest('.open_list')
+                  .find('.open_list_add').click();
               });
             });
             
@@ -79,7 +83,8 @@
               var object = <?php echo $cpt == 1 ? "$('.sf_admin_edit.tdp-object')" : "$('#tdp-content [name=\"professional".($obj->isNew() ? '' : '_'.$obj->id)."[id]\"][value=".$obj->id."]').closest('.tdp-subobject')" ?>;
               var groups = <?php echo $cpt == 1 ? "$('.groups-object')" : "$('.groups-subobject-".$obj->id."')" ?>;
               
-              object.find('.tdp-groups_list .open_list .open_list_selected option[value="'+$(anchor).closest('li').find('[name=group_id]').val()+'"]')
+              object.find('.tdp-groups_list .open_list .open_list_selected').change()
+                .find('option[value="'+$(anchor).closest('li').find('[name=group_id]').val()+'"]')
                 .remove();
               $(anchor).closest('li').fadeOut('medium',function(){
                 if ( $(this).closest('ul').find('li:not(.empty):not(.new)').length <= 1 )

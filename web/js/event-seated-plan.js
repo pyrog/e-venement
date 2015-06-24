@@ -144,6 +144,10 @@
           .width($(this).width())
           .height($(this).height())
         ;
+        $(this).closest('.plan')
+          .height($(this).height()*$(this).parent().attr('data-scale'))
+          .addClass('done')
+        ;
         
         // other functions
         if ( LI.seatedPlanImageLoaded != undefined && LI.seatedPlanImageLoaded.length > 0 )
@@ -181,9 +185,9 @@
         LI.seatedPlanMouseup(data);
       }
       
-      // triggers, wait few miliseconds to let the browser display the complexe data...
+      // triggers, wait few milliseconds to let the browser display the complexe data...
       setTimeout(function(){
-        for ( $i = 0 ; fct = LI.seatedPlanInitializationFunctions[$i] ; $i++ )
+        for ( var i = 0 ; fct = LI.seatedPlanInitializationFunctions[i] ; i++ )
           fct(selector);
       },200);
       

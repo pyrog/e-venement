@@ -71,8 +71,9 @@ class groupActions extends autoGroupActions
     //try
     {
       // is the asked model is supported
+      $relations = array('contact' => 'ContactGroups', 'organism' => 'OrganismGroups', 'professional' => 'ProfessionalGroups');
       $validator = new sfValidatorChoice(array(
-        'choices' => array('contact', 'professional', 'organism'),
+        'choices' => array_keys($relations),
       ), array('required' => 'Required.', 'invalid' => sprintf('Unsupported model %s.',$request->getParameter('type','unknown'))) );
       $type = $validator->clean($request->getParameter('type'));
       
@@ -89,22 +90,21 @@ class groupActions extends autoGroupActions
       );
       
       $q = Doctrine_Query::create()->from(ucfirst($type).' o')
-        ->leftJoin('o.Groups g');
+        ->leftJoin(sprintf('o.%s og WITH og.group_id = ?', $relation = $relations[$type]), $this->form->getObject()->id)
+      ;
       
       // validating the current targetted object
-      $relations = array('contact' => 'ContactGroups', 'organism' => 'OrganismGroups', 'professional' => 'ProfessionalGroups');
       $validator = new sfValidatorDoctrineChoice(array(
         'model' => ucfirst($type),
         'required' => true,
         'query' => $q->copy()->select('o.id')
-          ->leftJoin(sprintf('g.%s og ON og.group_id = ? AND og.group_id = g.id AND og.%s_id = o.id', $relation = $relations[$type], $type), $this->form->getObject()->id)
           ->having(sprintf('count(og.group_id) %s',$modifier == 'add' ? '= 0' : '= 1'))
           ->groupBy('o.id') // big but beautiful SQL hack...
       ), array('required' => 'Required.', 'invalid' => $invalid[$modifier]));
       $object_id = $validator->clean($request->getParameter('object_id')); // throws an exception if it doesn't validate
       
       // adding / removing the object from the group
-      $object = $q->andWhere('o.id = ?',$object_id)->select('o.*, g.*')->fetchOne();
+      $object = $q->andWhere('o.id = ?',$object_id)->fetchOne();
       if ( $modifier == 'add' )
       {
         $object->Groups[] = $this->form->getObject();

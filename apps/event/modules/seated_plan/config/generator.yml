@@ -54,11 +54,23 @@ generator:
             label: <?php echo __('Share pictures').PHP_EOL ?>
         object_actions:
           _edit: ~
+          _duplicate:
+            ui-icon: plus
+            action: duplicate
+            credentials: [event-seated-plan-new, event-seated-plan-edit]
           _delete: ~
       filter:
         display: [location_id, workspaces_list, background]
       form:    ~
       edit:
+        actions:
+          _list: ~
+          _delete: ~
+          _duplicate:
+            ui-icon: plus
+            action: duplicate
+            credentials: [event-seated-plan-new, event-seated-plan-edit]
+          _save: ~
         display:
           General: [location_id, workspaces_list, description, _show_nb_seats]
           Plan:    [ideal_width, seat_diameter, background, Picture, _show_picture, _form_picture_del]

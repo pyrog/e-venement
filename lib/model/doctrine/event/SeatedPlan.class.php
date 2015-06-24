@@ -28,6 +28,10 @@ class SeatedPlan extends PluginSeatedPlan
     if ( !isset($attributes[$key]) )
       $attributes[$key] = $value;
     
+    // if no picture is set
+    if ( !$this->picture_id )
+      return '';
+    
     $img = $this->Picture->render(array(
       'app'   => is_array($attributes['app']) ? $attributes['app']['picture'] : $attributes['app'],
       'title' => $this->Picture,
@@ -40,19 +44,35 @@ class SeatedPlan extends PluginSeatedPlan
     foreach ( $gauges as $gauge )
       $ids[] = $gauge->id;
     
+    // constructs the content of the GET part of the request
     $vars = array();
     if ( $attributes['match-seated-plan'] )
-      $vars[] = 'id='.$this->id;
+      $vars['id'] = $this->id;
     if ( $attributes['hold-id'] )
-      $vars[] = 'hold_id='.$attributes['hold-id'];
+      $vars['hold-id'] = $attributes['hold-id'];
+    if ( $ids )
+      $vars['gauges_list'] = $ids;
+    
+    // constructs the GET part of the request
+    $get = array();
+    foreach ( $vars as $name => $value )
+    {
+      if ( !is_array($value) )
+        $get[] = $name.'='.$value;
+      else foreach ( $value as $val )
+        $get[] = $name.'[]='.$val;
+    }
+    
+    // the link to get back the seats
     $data = '<a
-      href="'.cross_app_url_for(is_array($attributes['app']) ? $attributes['app']['seats'] : $attributes['app'], $attributes['get-seats'].($vars ? '?'.implode('&', $vars) : '')).'?gauges_list[]='.implode('&amp;gauges_list[]=', $ids).'"
+      href="'.cross_app_url_for(is_array($attributes['app']) ? $attributes['app']['seats'] : $attributes['app'], $attributes['get-seats']).($get ? '?'.implode('&', $get) : '').'"
       class="seats-url"
     ></a>';
     
     return '<span
       id="plan-'.$this->id.(count($gauges) > 0 ? '-manif-'.$gauges[0]->Manifestation->id : '').'"
       class="seated-plan picture '.($attributes['on-demand'] ? 'on-demand' : '').'"
+      style="'.(count($gauges) == 1 ? 'background-color: '.$this->background.';' : '').'"
     >'.$img.$data.'</span>';
   }
   
