@@ -82,11 +82,18 @@ $(document).ready(function(){
 if ( LI.seatedPlanInitializationFunctions == undefined )
   LI.seatedPlanInitializationFunctions = [];
 LI.seatedPlanInitializationFunctions.push(function(selector){
-  LI.seatedPlanMouseup = function(){}; // to avoid any prompt after the seats rendering
+  // avoiding all prompts after the seats rendering, when all plans are rendered
+  if ( $('.seated-plan:not(.done)').length == 1 )
+    LI.seatedPlanMouseup = function(){};
+  
   $(selector).find('.seat.txt').mouseenter(function(event){
     if ( event.buttons == 0 || (!event.ctrlKey && !event.metaKey) )
       return;
     $(this).click();
+  }).mousedown(function(event){
+    // for the first seat selected in a batch of seats
+    if ( event.ctrlKey || event.metaKey )
+      $(this).click();
   }).click(function(){
     if ( $(this).hasClass('hold-in-progress') )
       return;
@@ -154,11 +161,11 @@ LI.seatedPlanInitializationFunctions.push(function(selector){
         }
         
         if ( data.type == 'add' )
-          $(seat).addClass('held');
+          $(seat).addClass('held').addClass('hold-'+$('form [name="hold[id]"]').val());
         else
         {
           // remove the "held" status
-          $(seat).removeClass('held');
+          $(seat).parent().find('.seat[data-id="'+$(seat).attr('data-id')+'"]').removeClass('held');
           
           // if the seat was booked in a "buffer" Transaction... remove it
           if ( $('.sf_admin_form [name="transaction_id"]').val() || data.type == 'move' )
@@ -170,4 +177,3 @@ LI.seatedPlanInitializationFunctions.push(function(selector){
     });
   });
 });
-        
