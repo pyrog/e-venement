@@ -39,7 +39,6 @@
 
 <?php
   // limitting the max quantity, especially for prices linked to member cards
-  $vel = sfConfig::get('app_tickets_vel');
   $vel['max_per_manifestation'] = isset($vel['max_per_manifestation']) ? $vel['max_per_manifestation'] : 9;
   if ( $gauge->Manifestation->online_limit_per_transaction && $gauge->Manifestation->online_limit_per_transaction < $vel['max_per_manifestation'] )
     $vel['max_per_manifestation'] = $gauge->Manifestation->online_limit_per_transaction;
@@ -55,8 +54,9 @@
     $tickets[] = $ticket;
 ?>
   <tr class="seating in-progress">
+    <?php $str = __('To remove a booked seat, click it on the plan') ?>
     <?php if ( $vel['full_seating_by_customer'] ): ?>
-      <td class="seats" title="<?php echo $str = __('To remove a booked seat, click it on the plan') ?>">
+      <td class="seats" title="<?php echo $str ?>">
         <?php include_partial('show_prices_seats', array('form' => $form, 'tickets' => $tickets)) ?>
       </td>
     <?php endif ?>
