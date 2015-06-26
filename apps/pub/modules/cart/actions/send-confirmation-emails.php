@@ -127,8 +127,10 @@
     // footer
     $command .= "\n";
     $command .= __('Total')."\n";
-    $command .= "&nbsp;&nbsp;".__('Tickets').": ".format_currency($transaction->getTicketsPrice(true),'€')."\n";
-    $command .= "&nbsp;&nbsp;".__('Store').": ".format_currency($transaction->getProductsPrice(true),'€')."\n";
+    if ( $amount = $transaction->getTicketsPrice(true) || $transaction->Tickets->count() > 0 )
+    $command .= "&nbsp;&nbsp;".__('Tickets').": ".format_currency($amount,'€')."\n";
+    if ( $amount = $transaction->getProductsPrice(true) )
+    $command .= "&nbsp;&nbsp;".__('Store').": ".format_currency($amount,'€')."\n";
     if ( $amount = $transaction->getMemberCardPrice(true) )
     $command .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($amount,'€')."\n";
     if ( sfConfig::get('app_payment_type', 'paybox') != 'onthespot' )
