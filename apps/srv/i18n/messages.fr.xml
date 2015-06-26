@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Tickets</source>
+        <target>Billets</target>
+      </trans-unit>
+      <trans-unit>
         <source>Contact</source>
         <target>Contact</target>
       </trans-unit>

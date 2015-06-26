@@ -71,7 +71,8 @@ if ( $group->Answers->count() > 0 )
   {
     if ( $ticket->hasBeenCancelled() || $ticket->duplicating )
       continue;
-    $cpt++;
+    if ( $group->Transaction->Order->count() > 0 || $ticket->printed_at || $ticket->integrated_at )
+      $cpt++;
   }
   $this->lines[$i]['tickets'] = $cpt;
   
