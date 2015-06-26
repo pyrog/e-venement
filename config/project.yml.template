@@ -32,6 +32,7 @@ all:
   demo: false
   network:
     ipv6_ready: false
+    #proxy: tcp://PROXY:PORT
   login_alert:
     beginning_at: 2014-02-22 # optional
     ending_at: 2014-06-22
