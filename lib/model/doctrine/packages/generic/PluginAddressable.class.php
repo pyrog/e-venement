@@ -51,14 +51,7 @@ abstract class PluginAddressable extends BaseAddressable
     // auto-adding user's auto-groups
     if ( sfContext::hasInstance() && $this->hasRelation('Groups') )
     foreach ( sfContext::getInstance()->getUser()->getGuardUser()->AutoGroups as $group )
-    {
-      $users = array();
-      foreach ( $group->Users as $user )
-        $users[] = $user->id;
-      
-      if ( in_array(sfContext::getInstance()->getUser()->getId(), $users) )
-        $this->Groups[] = $group;
-    }
+      $this->Groups[] = $group;
     
     parent::preSave($event);
   }
