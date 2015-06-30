@@ -74,7 +74,7 @@ generator:
           Organism:   [name, postalcode, city, region_id, country, email, administrative_number, organism_category_id]
           Relations:  [contacts_groups, groups_list, not_groups_list]
           Communication: [npai, email_npai, email_newsletter, has_close_contact]
-          Others:     [duplicates, professional_meta_event_id, email_npai, description]
+          Others:     [duplicates, professional_meta_event_id, description]
       show:
         display:
           NONE: [name, address, postalcode, city, country, _show_region, _show_email, _show_phonenumbers_list, _show_url, Category, _show_groups_list]
