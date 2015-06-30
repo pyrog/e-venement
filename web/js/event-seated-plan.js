@@ -132,6 +132,7 @@
           var alternate = (+$(window).height()-$(this).position().top-15)/$(this).height();
           if ( scale > alternate ) scale = alternate; // security for graphical bugs
         }
+        scale = scale > 1.25 ? 1.25 : scale; // avoiding very big zooms
         elt.css('transform', 'scale('+(scale)+')')
            .attr('data-scale', scale)
            .attr('data-scale-init', scale);
