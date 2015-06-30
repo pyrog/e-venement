@@ -127,7 +127,7 @@
     // footer
     $command .= "\n";
     $command .= __('Total')."\n";
-    if ( $amount = $transaction->getTicketsPrice(true) || $transaction->Tickets->count() > 0 )
+    if ( ($amount = $transaction->getTicketsPrice(true)) || $transaction->Tickets->count() > 0 )
     $command .= "&nbsp;&nbsp;".__('Tickets').": ".format_currency($amount,'€')."\n";
     if ( $amount = $transaction->getProductsPrice(true) )
     $command .= "&nbsp;&nbsp;".__('Store').": ".format_currency($amount,'€')."\n";
