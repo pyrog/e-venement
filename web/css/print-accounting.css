@@ -81,12 +81,9 @@ body.bdc #echeance { display: none; }
 #lines { margin-bottom: 20px; }
 
 #min-height { height: 250mm; float: left; }
-.footer {
-  clear: both;
-  text-align: center;
-}
+.footer { text-align: center; }
 #payments { border: 1px solid silver; margin-left: 4px; padding: 5px 10px; width: 280px; position: relative; bottom: 30px; }
-.pdf #payments { width: 180px; }
+.pdf #payments { width: 180px; position: relative; top: -50px; }
 #payments h2 { font-size: 13px; margin: 0 10px 0 0; float: left; }
 #payments div { display: table; }
 .pdf #payments div { display: block; }
@@ -94,14 +91,14 @@ body.bdc #echeance { display: none; }
 .pdf #payments div p { display: block; margin: 0; padding: 0; }
 #payments div p span { display: table-cell; padding-right: 1em; }
 .pdf #payments div p span { display: inline-block; }
-.pdf #payments div p span:first-child { width: 24mm; }
+.pdf #payments div p span:first-child { width: 30mm; }
 .pdf #payments div p span + span { width: 18mm; }
 #payments div p span + span { text-align: right; padding-right: 0; }
 #payments div p span:last-child { padding-right: 0; }
 #payments div p.total span { text-decoration: underline; }
 #payments div p.topay { text-decoration: underline; font-weight: bold; }
 
-tbody { font-size: 80%; }
+#lines td { font-size: 10px; }
 
 @media print {
 .get-a-pdf, .inline-modifications { display: none; }
