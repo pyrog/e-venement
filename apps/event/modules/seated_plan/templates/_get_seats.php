@@ -92,7 +92,8 @@
           && (!$ht || $ht->hold_id != $hold->id) )
           continue(2);
         // inside a Hold
-        elseif ( $sf_request->hasParameter('hold_id', NULL) && $hold->id != $sf_request->getParameter('hold_id', NULL) )
+        elseif ( $sf_request->hasParameter('hold-id') && $hold->id != $sf_request->getParameter('hold-id', NULL)
+          || $sf_request->hasParameter('hold_id') && $hold->id != $sf_request->getParameter('hold_id', NULL) )
           continue(2);
       }
       break;

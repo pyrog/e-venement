@@ -52,13 +52,6 @@ class contactActions extends sfActions
     catch ( liEvenementException $e )
     { $this->form = new ContactPublicForm; }
     
-    // formatting data
-    $contact = $request->getParameter('contact');
-    if ( sfConfig::has('app_contact_capitalize') && is_array($fields = sfConfig::get('app_contact_capitalize')) )
-    foreach ( $fields as $field )
-    if ( isset($contact[$field]) )
-      $contact[$field] = mb_strtoupper($contact[$field],'UTF-8');
-    
     // validating and saving form
     $this->form->bind($contact);
     if ( $this->form->isValid() )

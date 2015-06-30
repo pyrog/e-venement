@@ -205,7 +205,7 @@ body { line-height: 1; font: 13px/1.231 arial,helvetica,clean,sans-serif; }
 .gauge.full-seating:hover .blank { z-index: 5; }
 .picture.seated-plan.done .seat { cursor: default; }
 .gauge.full-seating.active .blank, .gauge.full-seating:hover .blank { display: block; }
-.manifestation_bottom { margin-top: 2em; }
+.manifestation_full, .manifestation_bottom { margin-top: 2em; }
 .manifestation-ical { position: absolute; top: 10px; right: 10px; background-color: white; padding: 3px; border: 1px solid black; }
 .manifestation-ical img { max-width: 180px; }
 body.mod-contact.action-edit #cart-widget, body.mod-manifestation #cart-widget, body.mod-transaction.action-show #cart-widget { display: none; }
@@ -273,7 +273,7 @@ a.actions a:hover { color: #000; background: #F4F4F4; }
 #ariane .access {
   display: inline-table;
   height: 49px;
-  padding: 0px 25px 0px 2px;
+  padding: 0px 25px 0px 10px;
   font-weight: bold;
   margin-left: 0px;
   background-attachment: scroll;
@@ -290,7 +290,7 @@ a.actions a:hover { color: #000; background: #F4F4F4; }
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F4F4F4', endColorstr='#DBDBDB',GradientType=0 ); /* IE6-9 */
   background-image: url("../images/vel/breadcrumb.png");
   background-origin: padding-box;
-  background-position: right top;
+  background-position: right center;
   background-repeat: no-repeat;
   background-size: auto auto;
   display: table-cell;
