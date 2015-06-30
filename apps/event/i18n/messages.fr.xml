@@ -161,6 +161,10 @@
         <target>Liste des retenues</target>
       </trans-unit>
       <trans-unit>
+        <source>Holds</source>
+        <target>Retenues</target>
+      </trans-unit>
+      <trans-unit>
         <source>New Hold</source>
         <target>Nouvelle retenue</target>
       </trans-unit>

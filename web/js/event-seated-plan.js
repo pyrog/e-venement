@@ -141,7 +141,7 @@
         
         // box resizing
         $(this).parent()
-          .css('display', 'block')
+          .css('display', 'inline-block')
           .width($(this).width())
           .height($(this).height())
         ;
