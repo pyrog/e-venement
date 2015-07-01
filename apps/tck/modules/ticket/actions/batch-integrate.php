@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -170,6 +170,52 @@
           $tck->id = $ticket['id'];
           $tck->gauge_id = $gauges[$ticket['workspace_id']];
           $tck->created_at = date('Y-m-d H:i:s',strtotime(isset($ticket['created_at']) && $ticket['created_at'] ? $ticket['created_at'] : NULL));
+          
+          // seated integration...
+          if ( isset($ticket['seat']) && $ticket['seat'] )
+          {
+            $seat = Doctrine::getTable('Seat')->createQuery('s')
+              ->leftJoin('s.SeatedPlan sp')
+              ->leftJoin('sp.Workspaces ws')
+              ->leftJoin('ws.Gauges g')
+              ->andWhere('g.id = ?', $tck->gauge_id)
+              ->leftJoin('sp.Location l')
+              ->leftJoin('l.Manifestations m')
+              ->andWhere('m.id = ?', $tck->manifestation_id)
+              ->leftJoin('s.Tickets tck')
+              ->andWhere('tck.id IS NULL')
+              ->andWhere('lower(s.name) = ?', strtolower($ticket['seat']))
+              ->leftJoin('s.Holds h WITH h.manifestation_id = m.id')
+              ->fetchOne()
+            ;
+            if ( $seat )
+            {
+              // creates a HoldTransaction if required
+              if ( $seat->Holds->count() > 0 )
+              {
+                if ( is_null($transaction->HoldTransaction->hold_id) )
+                {
+                  $transaction->HoldTransaction = new HoldTransaction;
+                  $transaction->HoldTransaction->Hold = $seat->Holds[0];
+                }
+                $transaction->save(); // to be sure that we have a $transaction->id set
+                
+                if ( $transaction->HoldTransaction->hold_id != $seat->Holds[0]->id )
+                {
+                  $transaction->save(); // to get to the new transaction on the new hold
+                  $t = new Transaction;
+                  $t->Contact = $transaction->Contact;
+                  $transaction = $t;
+                  $transaction->HoldTransaction->Hold = $seat->Holds[0];
+                  $transaction->save(); // to be sure that we have a transaction->id set
+                }
+              }
+              
+              $tck->Seat = $seat;
+            }
+            elseif ( sfConfig::get('sf_web_debug', false) )
+              error_log('Seat not found: '.$ticket['seat']);
+          }
           
           if ( !$tck->gauge_id )
             $nberr++;
