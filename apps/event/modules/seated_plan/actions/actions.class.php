@@ -374,7 +374,7 @@ class seated_planActions extends autoSeated_planActions
     
     if ( $request->getParameter('id',false) )
       $q->andWhere('sp.id = ?',$request->getParameter('id'));
-    else
+    if ( $request->getParameter('gauge_id',false) )
     {
       // if only gauge_id is set
       $q->leftJoin('sp.Workspaces ws')
