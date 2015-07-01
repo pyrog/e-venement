@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2011 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2011 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -92,6 +92,7 @@ for ( $i = 0 ; $line = fgetcsv($fp, 0, $separator) ; $i++ )
     $ticket['value']      = isset($this->translation['prices'][$ticket['price_name']]) ? $this->translation['prices'][$ticket['price_name']]['value'] : $line[23];
     $ticket['id']         = $line[15];
     $ticket['type']       = 'fb';
+    $ticket['seat']       = $line[18];
     
     // created_at
     $ticket['created_at'] = explode(' ',$line[2]);
