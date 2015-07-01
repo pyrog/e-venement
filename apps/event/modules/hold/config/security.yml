@@ -37,3 +37,6 @@ orderTransaction:
   credentials: [event-hold-transaction-order] #140
 convertTransaction:
   credentials: [event-hold-transaction-convert] #141
+
+css:
+  credentials: [event-hold]
