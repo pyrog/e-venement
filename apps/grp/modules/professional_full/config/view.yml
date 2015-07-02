@@ -8,3 +8,4 @@ gaugeSuccess:
   stylesheets: [gauge, grp-event]
 newSuccess:
   stylesheets: [grp-professional]
+  javascripts: [grp-professional]
