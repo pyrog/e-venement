@@ -1,7 +1,7 @@
 <?php use_helper('Number') ?>
 <?php
   $q = Doctrine_Query::create()->from('EntryTickets et')
-    ->select('et.*, ee.id, me.id')
+    ->select('et.*, ee.id, me.id, p.id, pm.id, pm.value, pm.manifestation_id')
     ->leftJoin('et.Price p')
     ->leftJoin('et.EntryElement ee')
     ->leftJoin('ee.ContactEntry ce')

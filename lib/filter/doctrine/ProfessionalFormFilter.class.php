@@ -46,6 +46,12 @@ class ProfessionalFormFilter extends BaseProfessionalFormFilter
       'multiple' => true,
       'required' => false,
     ));
+    
+    $this->widgetSchema['groups_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
+      'model' => 'Group',
+      'url'   => cross_app_url_for('rp', 'group/ajax'),
+      //'config' => '{ max: 300 }',
+    ));
   }
   
   public function getFields()
