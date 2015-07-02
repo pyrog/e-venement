@@ -31,6 +31,13 @@ class professional_fullActions extends autoProfessional_fullActions
       ->andWhere('p.id = ?',$request->getParameter('id'));
     Doctrine::getTable('Professional')->doSelectOnlyGrp($q);
     $this->professional = $q->fetchOne();
+    
+    if ( !$this->professional )
+    {
+      $this->getContext()->getConfiguration()->loadHelpers('I18N');
+      $this->getUser()->setFlash('notice', __('This entry is now empty. Create a new one if needed.'));
+      $this->redirect('professional_full/new');
+    }
   }
   public function executeNew(sfWebRequest $request)
   {
