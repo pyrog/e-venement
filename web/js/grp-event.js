@@ -74,6 +74,9 @@ LI.grpCopyPaste = function()
   $('.grp-entry tbody td:not(.contact):not(.ticketting)').unbind().mouseup(function(e){
     // preventing gauges' multi-calculation
     $('body').append('<div id="no-calculate-gauge"></div>');
+
+    if ( $(this).siblings('.ticketting').find('.untranspose').length > 0 )
+      return;
     
     var src = $('.grp-entry .copy');
     if ( !$(this).hasClass('copy')
