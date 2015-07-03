@@ -108,6 +108,12 @@ class professionalActions extends autoProfessionalActions
           ->andWhere('ee.accepted = ?',true)
         ;
         
+        $filters = $this->getFilters();
+        if ( isset($filters['grp_meta_events_list']) && $filters['grp_meta_events_list'] )
+          $q->andWhereIn('e.meta_event_id', $filters['grp_meta_events_list']);
+        if ( isset($filters['grp_events_list']) && $filters['grp_events_list'] )
+          $q->andWhereIn('e.id', $filters['grp_events_list']);
+        
         $nb = array('all' => 0, 'pay' => 0);
         $mids = array();
         foreach ( $q->execute() as $tickets )
