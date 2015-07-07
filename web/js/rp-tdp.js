@@ -83,6 +83,11 @@ $(document).ready(function(){
     LI.tdp_submit_forms();
     return false;
   });
+  $('.tdp-subobject form').find('select, input, textarea').change(function(e){
+    if ( e.originalEvent == undefined && !$(this).hasClass('open_list_selected') )
+      return;
+    $(this).attr('data-update', true);
+  });
   
   // CONTENT: FOCUSING ON A FIELD
   highlight = $('#tdp-content #sf_admin_content input, #tdp-content #sf_admin_content select, #tdp-content #sf_admin_content textarea');
@@ -208,17 +213,6 @@ $(document).ready(function(){
     window.integrated_search_end = new Array();
   window.integrated_search_end[window.integrated_search_end.length] = LI.tdp_show_orgs;
   
-  // CONTENT: NEW FUNCTION FOR A CONTACT
-  $('.tdp-subobject.tdp-object-new .tdp-widget-header input[type=text]').each(function(){
-    $(this).focusin(function(){
-      if ( $(this).val() == $(this).closest('span').prop('title')+'...' )
-        $(this).val('');
-    }).focusout(function(){
-      if ( $(this).val() == '' )
-        $(this).val($(this).closest('span').prop('title')+'...');
-    }).focusout();
-  });
-  
   // FILTERS
   $('#tdp-update-filters').get(0).blink = function(){
     $(this).addClass('blink');
@@ -236,9 +230,9 @@ $(document).ready(function(){
   $('#tdp-side-bar input[type=checkbox]').click(function(){
     $('#tdp-update-filters').get(0).blink();
     if ( $(this).closest('.tdp-side-widget').is('#tdp-side-categories') )
-      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked'));
+      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
     if ( $(this).closest('.tdp-side-widget').is('#tdp-side-groups') )
-      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked'));
+      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
   });
   
   // integrated search
@@ -422,6 +416,13 @@ LI.tdp_submit_forms = function(i = 0)
 {
   if ( i < $('.tdp-subobject form').length )
   {
+    // checks if an update is required
+    if ( $('.tdp-subobject form').eq(i).find('[data-update]').length == 0 )
+    {
+      LI.tdp_submit_forms(i+1);
+      return;
+    }
+    
     $('.tdp-subobject form').eq(i).find('select[multiple] option').prop('selected',true);
     
     var id = $('.tdp-subobject form').eq(i).attr('data-id');
@@ -431,7 +432,6 @@ LI.tdp_submit_forms = function(i = 0)
       data: $('.tdp-subobject form').eq(i).serialize()
     })
     .done(function(data) {
-      console.error(data);
       data = $.parseHTML(data);
       
       // retrieving corresponding subobject

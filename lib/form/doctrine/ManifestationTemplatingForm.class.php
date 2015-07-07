@@ -65,7 +65,7 @@ class ManifestationTemplatingForm extends BaseFormDoctrine
       ->execute();
     
     // direct properties
-    foreach ( array('color', 'location', 'online_limit', 'duration', 'vat') as $prop )
+    foreach ( array('color', 'location_id', 'online_limit', 'duration', 'vat_id') as $prop )
     if ( in_array($prop, $values['apply_to']) )
     foreach ( $this->objects as $manif )
     {

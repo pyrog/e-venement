@@ -1,7 +1,7 @@
 <?php use_helper('Number') ?>
 <?php
   $q = Doctrine_Query::create()->from('EntryTickets et')
-    ->select('et.*, ee.id, me.id')
+    ->select('et.*, ee.id, me.id, p.id, pm.id, pm.value, pm.manifestation_id')
     ->leftJoin('et.Price p')
     ->leftJoin('et.EntryElement ee')
     ->leftJoin('ee.ContactEntry ce')
@@ -13,6 +13,12 @@
     ->andWhere('ce.professional_id = ?',$professional->id)
     ->andWhere('ee.accepted = ?',true)
   ;
+  
+  $filters = $sf_user->getRawValue()->getAttribute('professional.filters', null, 'admin_module');
+  if ( isset($filters['grp_meta_events_list']) && $filters['grp_meta_events_list'] )
+    $q->andWhereIn('e.meta_event_id', $filters['grp_meta_events_list']);
+  if ( isset($filters['grp_events_list']) && $filters['grp_events_list'] )
+    $q->andWhereIn('e.id', $filters['grp_events_list']);
   
   $nb = 0;
   $mids = array();
@@ -28,5 +34,7 @@
     }
   }
   
-  echo format_number(round($nb/count($mids),1));
+  if ( count($mids) > 0 )
+    echo format_number(round($nb/count($mids),1));
+  //print_r($sf_user->filters->getValue('grp_meta_events_list'));
 ?>

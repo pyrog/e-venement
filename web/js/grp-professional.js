@@ -4,6 +4,8 @@ $(document).ready(function(){
     window.list_scroll_end = new Array()
   window.list_scroll_end[window.list_scroll_end.length] = grp_professional_total;
   grp_professional_total();
+  
+  $('.sf_admin_action_new_contact a').prop('target', '_blank');
 });
 
 function grp_professional_total()

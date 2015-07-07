@@ -84,6 +84,18 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
     $this->enableSecondWavePlugins(sfConfig::get('project_internals_plugins', array()));
     $this->loadSecondWavePlugins();
     $this->failover();
+    if ( sfConfig::get('project_network_proxy', false) )
+      stream_context_set_default($var = [
+        'http'  => [
+          'proxy' => sfConfig::get('project_network_proxy'),
+          'request_fulluri' => true,
+        ],
+        'https' => [
+          'proxy' => sfConfig::get('project_network_proxy'),
+          'request_fulluri' => true,
+        ],
+        'ssl' => ['SNI_enabled' => false], // Disable SNI for https over http proxies
+      ]);
   }
   
   // pass-by the native symfony restriction, if and only if the plugin developper knows what's going on

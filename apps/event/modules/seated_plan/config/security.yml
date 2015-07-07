@@ -7,6 +7,8 @@ update:
   credentials: [event-seated-plan-edit]
 new:
   credentials: [event-seated-plan-new]
+duplicate:
+  credentials: [event-seated-plan-new, event-seated-plan-edit]
 create:
   credentials: [event-seated-plan-new]
 delete:

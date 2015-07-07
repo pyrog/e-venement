@@ -13,6 +13,11 @@ require_once dirname(__FILE__).'/../lib/professional_fullGeneratorHelper.class.p
  */
 class professional_fullActions extends autoProfessional_fullActions
 {
+  public function executeNewContact(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
+    $this->redirect(cross_app_url_for('rp', 'contact/new'));
+  }
   public function executeIndex(sfWebRequest $request)
   {
     $this->redirect('professional/index');
@@ -26,11 +31,19 @@ class professional_fullActions extends autoProfessional_fullActions
       ->andWhere('p.id = ?',$request->getParameter('id'));
     Doctrine::getTable('Professional')->doSelectOnlyGrp($q);
     $this->professional = $q->fetchOne();
+    
+    if ( !$this->professional )
+    {
+      $this->getContext()->getConfiguration()->loadHelpers('I18N');
+      $this->getUser()->setFlash('notice', __('This entry is now empty. Create a new one if needed.'));
+      $this->redirect('professional_full/new');
+    }
   }
   public function executeNew(sfWebRequest $request)
   {
     $this->form = new ContactEntryByContactForm;
     $this->form->restoreProfessionalId();
+    $this->professional = $this->form->getObject();
   }
   public function executeCreate(sfWebRequest $request)
   {

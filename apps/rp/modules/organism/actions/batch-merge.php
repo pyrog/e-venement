@@ -99,7 +99,7 @@
           $collection = $base_organism->{$elts}[] = $obj;
           if ( isset($obj->organism_id) )
           {
-            $obj->organism_id = $base_organism->id
+            $obj->organism_id = $base_organism->id;
             $obj->save();
           }
         }

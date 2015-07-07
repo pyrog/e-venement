@@ -34,6 +34,7 @@ class ProfessionalFormFilter extends BaseProfessionalFormFilter
     $this->validatorSchema['grp_meta_events_list'] = new sfValidatorDoctrineChoice(array(
       'model' => 'MetaEvent',
       'multiple' => true,
+      'required' => false,
     ));
     $this->widgetSchema   ['grp_events_list'] = new liWidgetFormDoctrineChoice(array(
       'model' => 'Event',
@@ -43,6 +44,13 @@ class ProfessionalFormFilter extends BaseProfessionalFormFilter
     $this->validatorSchema['grp_events_list'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Event',
       'multiple' => true,
+      'required' => false,
+    ));
+    
+    $this->widgetSchema['groups_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
+      'model' => 'Group',
+      'url'   => cross_app_url_for('rp', 'group/ajax'),
+      //'config' => '{ max: 300 }',
     ));
   }
   

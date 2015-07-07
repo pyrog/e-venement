@@ -17,7 +17,6 @@ generator:
       list:
         display: [Group]
         object_actions:
-          _edit: ~
           _delete: ~
       filter:
         display: [id]

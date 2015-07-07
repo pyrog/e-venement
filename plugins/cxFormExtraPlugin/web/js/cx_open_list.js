@@ -54,6 +54,8 @@ CxOpenSelect = function(className, srcId, destId, jsonUrl, config, optionFactory
     }
     
     this.dest.options[this.dest.options.length] = opt;
+    if ( jQuery != undefined )
+      jQuery(this.dest).change();
   }
   
   this.remove = function()
@@ -65,6 +67,8 @@ CxOpenSelect = function(className, srcId, destId, jsonUrl, config, optionFactory
       {
         this.dest.options[i] = null;
         --i;
+        if ( jQuery != undefined )
+          jQuery(this.dest).change();
       }
     }
   }

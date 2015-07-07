@@ -36,6 +36,40 @@ require_once dirname(__FILE__).'/../lib/seated_planGeneratorHelper.class.php';
  */
 class seated_planActions extends autoSeated_planActions
 {
+  public function executeDuplicate(sfWebRequest $request)
+  {
+    $this->executeShow($request);
+    $sp = $this->seated_plan->copy();
+    $sp->save();
+    
+    // copying the seats
+    foreach ( $this->seated_plan->Seats as $seat )
+    {
+      $s = $seat->copy();
+      $sp->Seats[$seat->name] = $s;
+      $s->SeatedPlan = $sp;
+      $s->save();
+    }
+    
+    // creating the neighborhood
+    $neighbors = array();
+    foreach ( $this->seated_plan->Seats as $seat )
+    foreach ( $seat->Neighbors as $neighbor )
+    {
+      if ( !in_array(array($seat->name, $neighbor->name), $neighbors)
+        && !in_array(array($neighbor->name, $seat->name), $neighbors) )
+      {
+        $sl = new SeatLink;
+        $sl->seat1 = $sp->Seats[$seat->name]->id;
+        $sl->seat2 = $sp->Seats[$neighbor->name]->id;
+        $sl->save();
+        $neighbors[] = array($seat->name, $neighbor->name);
+      }
+    }
+    
+    $this->redirect('seated_plan/edit?id='.$sp->id);
+  }
+  
   public function executeBatchMerge(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
@@ -340,7 +374,7 @@ class seated_planActions extends autoSeated_planActions
     
     if ( $request->getParameter('id',false) )
       $q->andWhere('sp.id = ?',$request->getParameter('id'));
-    else
+    if ( $request->getParameter('gauge_id',false) )
     {
       // if only gauge_id is set
       $q->leftJoin('sp.Workspaces ws')
