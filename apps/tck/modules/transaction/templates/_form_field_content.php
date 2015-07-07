@@ -14,7 +14,7 @@
     else
       $go = $sf_user->hasCredential($creds);
     
-    if ( !$go ) continue;
+    if ( !$go ) continue(2);
   }
 ?>
 <div id="li_transaction_<?php echo $id ?>" class="bunch" data-bunch-id="<?php echo $id ?>">
