@@ -156,8 +156,12 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
       && sfContext::getInstance()->getUser()->hasCredential(array('tck-transaction', 'event-admin-price',), false) )
       $add_prices = true;
     
+    $q = Doctrine::getTable('Price')->createQuery('p', false)
+      ->andWhere('p.hide = ?', false)
+    ;
+    
     if ( $this->PriceManifestations->count() == 0 && $add_prices )
-    foreach ( Doctrine::getTable('Price')->createQuery('p')->andWhere('p.hide = FALSE')->execute() as $price )
+    foreach ( $q->execute() as $price )
     {
       $pm = PriceManifestation::createPrice($price);
       $pm->manifestation_id = $this->id;
