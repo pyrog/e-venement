@@ -87,7 +87,7 @@ float: left;
 .price_vat { display: none; }
 .price_name .name { display: none; }
 .right .price_name { display: none; }
-.event { font-size: 26px; margin-top: 1mm; height: 30px; }
+.event { font-size: 26px; margin-top: 1mm; height: 30px; text-overflow: ellipsis; }
 .event-short { display: none; }
 .cie { font-size: 12pt; margin-top: 1mm; height: 14pt; }
 .seat, .mentions, .org { font-size: 8pt; height: 10pt; }
