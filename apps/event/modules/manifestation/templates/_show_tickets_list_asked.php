@@ -40,12 +40,13 @@
   $total['value'] += $value;
   ?>
   <tr class="<?php echo ($overlined = !$overlined) ? 'overlined' : '' ?>">
-    <td class="name"><?php echo $price ?></td>
-    <td class="qty"><?php echo $qty ?></td>
-    <td class="price"><?php echo format_currency($value,'€') ?></td>
-    <td class="transaction"><?php echo implode('<br/>',$transaction) ?></td>
-    <td class="contact"><?php echo implode('<br/>',$contact) ?></td>
-    <td class="nb_contacts"><?php if ( count($contact) > 0 ): ?><span class="nb"><?php $cpt = 0; foreach ( $contact as $c ) if ( $c != '&nbsp;' ) $cpt++; echo $cpt ?></span>/<span class="total"><?php echo count($contact) ?></span><?php endif ?></td>
+    <?php include_partial('show_tickets_list_line', array(
+      'price'       => $price,
+      'qty'         => $qty,
+      'value'       => $value,
+      'transaction' => $transaction,
+      'contact'     => $contact,
+    )) ?>
   </tr>
   <?php endforeach ?>
   </tbody>
