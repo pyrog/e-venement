@@ -53,7 +53,7 @@ class contactActions extends sfActions
     { $this->form = new ContactPublicForm; }
     
     // validating and saving form
-    $this->form->bind($contact);
+    $this->form->bind($request->getParameter('contact'));
     if ( $this->form->isValid() )
     {
       $this->form->save();
