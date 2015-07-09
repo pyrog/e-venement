@@ -216,6 +216,7 @@ class transactionActions extends autoTransactionActions
     $ws['contact_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
       'model' => 'Contact',
       'url'   => cross_app_url_for('rp', 'contact/ajax'),
+      'config' => '{ max: 50 }',
     ));
     $vs['contact_id'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Contact',
