@@ -16,7 +16,8 @@ class contact_entryActions extends autoContact_entryActions
   public function executeDel(sfWebRequest $request)
   {
     $this->getRoute()->getObject()->delete();
-    return $this->redirect($this->getModuleName());
+    return sfView::NONE;
+    //$this->redirect($this->getModuleName());
   }
   
   public function executeTranspose(sfWebRequest $request)

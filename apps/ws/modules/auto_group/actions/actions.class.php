@@ -13,4 +13,8 @@ require_once dirname(__FILE__).'/../lib/auto_groupGeneratorHelper.class.php';
  */
 class auto_groupActions extends autoAuto_groupActions
 {
+  public function executeEdit(sfWebRequest $request)
+  {
+    $this->redirect('@auto_group');
+  }
 }

@@ -31,13 +31,28 @@
           <a class="occupation"
              href="<?php echo url_for('seated_plan/getSeats?id='.$seated_plan->id) ?>?<?php echo $param ?>"
              onclick="javascript: var plan = $(this).closest('.seated-plan-parent').find('.seated-plan'); LI.seatedPlanLoadData($(this).prop('href'), plan); return false;"
+             title="<?php echo __('Reload') ?>"
           >
             <?php echo __('Reload') ?>
+          </a>
+          <a class="holds"
+             href="<?php echo url_for('hold/css?manifestation_id='.$gauge->manifestation_id) ?>"
+             onclick="javascript: $('<link></link>').prop('rel','stylesheet').prop('type','text/css').prop('href', $(this).prop('href')).addClass('holds').appendTo('head'); setTimeout(function(){ $('#transition .close').click(); },1000); return false;"
+             title="<?php echo __('Holds') ?>"
+          >
+            <?php echo __('Holds') ?>
+            <!-- remove Holds stylesheet as soon as an other action is clicked -->
+            <script type="text/javascript"><!--
+              $('.seated-plan-actions *:not(.holds)').click(function(){
+                $('head link.holds').remove();
+              });
+            --></script>
           </a>
           <input class="controls-loop" type="checkbox" name="live-controls" value="yes" title="<?php echo __('Auto') ?>" onchange="javascript: return LI.controls_repeat(this);" />
           <a class="controls"
              href="<?php echo url_for('seated_plan/getControls?id='.$seated_plan->id) ?>?<?php echo $param ?>"
              onclick="javascript: var plan = $(this).closest('.seated-plan-parent').find('.seated-plan'); LI.seatedPlanLoadData($(this).prop('href'), plan); return false;"
+             title="<?php echo __('Ticket control',null,'menu') ?>"
           >
             <?php echo __('Ticket control',null,'menu') ?>
             <script type="text/javascript"><!--
@@ -54,18 +69,21 @@
           <a class="shortnames"
              href="<?php echo url_for('seated_plan/getShortnames?id='.$seated_plan->id) ?>?<?php echo $param ?>"
              onclick="javascript: var plan = $(this).closest('.seated-plan-parent'); LI.seatedPlanMoreDataInitialization($(this).prop('href'), true, plan); return false;"
+             title="<?php echo __('Spectators') ?>"
           >
             <?php echo __('Spectators') ?>
           </a>
           <a class="ranks"
              href="<?php echo url_for('seated_plan/getRanks?id='.$seated_plan->id) ?>"
              onclick="javascript: var plan = $(this).closest('.seated-plan-parent'); LI.seatedPlanMoreDataInitialization($(this).prop('href'), true, plan); return false;"
+             title="<?php echo __('Ranks') ?>"
           >
             <?php echo __('Ranks') ?>
           </a>
           <a class="debts"
              href="<?php echo url_for('seated_plan/getDebts?id='.$seated_plan->id) ?>?<?php echo $param ?>"
              onclick="javascript: var plan = $(this).closest('.seated-plan-parent'); LI.seatedPlanMoreDataInitialization($(this).prop('href'), true, plan); return false;"
+             title="<?php echo __('Debts') ?>"
           >
             <?php echo __('Debts') ?>
           </a>

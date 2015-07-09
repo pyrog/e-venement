@@ -186,14 +186,20 @@ class ContactPublicForm extends ContactForm
   public function save($con = NULL)
   {
     // formatting central data
-    $this->object->name = trim($this->object->name);
-    $this->object->firstname = trim($this->object->firstname);
+    foreach ( array('name', 'firstname') as $field )
+    $this->values[$field] = trim($this->values[$field]);
+    
+    // formatting data
+    if ( sfConfig::has('app_contact_capitalize') && is_array($fields = sfConfig::get('app_contact_capitalize')) )
+    foreach ( $fields as $field )
+    if ( isset($this->values[$field]) )
+      $this->values[$field] = mb_strtoupper($this->values[$field], 'UTF-8');
     
     if ( is_null($this->object->confirmed) )
-      $this->object->confirmed = false;
+      $this->values['confirmed'] = false;
     
     if ( sfConfig::get('app_contact_newsletter', true) )
-      $this->object->email_no_newsletter = !$this->values['newsletter'];
+      $this->values['email_no_newsletter'] = !$this->values['newsletter'];
     
     if ( $this->getValue('phone_number') )
     {

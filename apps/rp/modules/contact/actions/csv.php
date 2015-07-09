@@ -36,7 +36,8 @@
       ->addSelect('p.department AS professional_department, p.contact_number AS professional_number, p.contact_email AS professional_email')
       ->addSelect('pt.name AS professional_type_name, p.name AS professional_name, (p.id = o.professional_id) AS professional_important')
       ->addSelect("o.address AS organism_address, o.postalcode AS organism_postalcode, o.city AS organism_city, o.country AS organism_country, o.email AS organism_email, o.url AS organism_url, o.npai AS organism_npai, o.description AS organism_description")
-      ->orderBy("$a.name, $a.firstname");
+      ->orderBy("$a.name, $a.firstname")
+    ;
     
     if ( $labels )
       $q->limit($request->getParameter('limit', 500))
@@ -89,6 +90,34 @@
       $this->filters->setProfessionalData(true);
     
     foreach ( $this->lines as $key => $line )
+    if ( count($line['Professionals']) > 1 )
+    {
+      $pros = $line['Professionals'];
+      $this->lines[$key]['Professionals'] = array($pros[0]);
+      for ( $i = 1 ; $i < count($pros) ; $i++ )
+      {
+        $line['Professionals'] = array($pros[$i]);
+        $line['organism_name']        = $line['Professionals'][0]['Organism']['organism_name'];
+        $line['organism_address']     = $line['Professionals'][0]['Organism']['organism_address'];
+        $line['organism_postalcode']  = $line['Professionals'][0]['Organism']['organism_postalcode'];
+        $line['organism_city']        = $line['Professionals'][0]['Organism']['organism_city'];
+        $line['organism_country']     = $line['Professionals'][0]['Organism']['organism_country'];
+        $line['organism_email']       = $line['Professionals'][0]['Organism']['organism_email'];
+        $line['organism_url']         = $line['Professionals'][0]['Organism']['organism_url'];
+        $line['organism_npai']        = $line['Professionals'][0]['Organism']['organism_npai'];
+        $line['organism_description'] = $line['Professionals'][0]['Organism']['organism_description'];
+        $line['organism_category']       = $line['Professionals'][0]['Organism']['Category']['organism_category'];
+        $line['professional_department'] = $line['Professionals'][0]['professional_department'];
+        $line['professional_number']  = $line['Professionals'][0]['professional_number'];
+        $line['professional_email']   = $line['Professionals'][0]['professional_email'];
+        $line['professional_name']    = $line['Professionals'][0]['professional_name'];
+        $line['professional_type_name']  = $line['Professionals'][0]['Professional']['ProfessionalType'];
+        
+        array_splice($this->lines, $key+1, 0, array($line));
+      }
+    }
+    
+    foreach ( $this->lines as $key => $line )
     {
       // check if it's in a group (as a professional) because of a link to an organism or not
       $groups_pro = array();
@@ -115,14 +144,16 @@
         $this->lines[$key][$field] = OptionCsvForm::getImplodedData($line, array_values($fields));
       }
       
-      // removing professionals objects to get a flat array
-      unset($this->lines[$key]['YOBs'], $this->lines[$key]['Groups'], $this->lines[$key]['Professionals'], $this->lines[$key]['ContactGroups']);
-      
       // empty-ing links to professionals and organisms if not needed
       if ( !$this->filters->showProfessionalData() && !$group_pro )
-      foreach ( $line as $field => $value )
-      if ( strpos($field,'professional_') !== false || strpos($field,'organism_') !== false )
-        $this->lines[$key][$field] = '';
+      {
+        foreach ( $line as $field => $value )
+        if ( strpos($field,'professional_') !== false || strpos($field,'organism_') !== false )
+          $this->lines[$key][$field] = '';
+      }
+      
+      // removing professionals objects to get a flat array
+      unset($this->lines[$key]['YOBs'], $this->lines[$key]['Groups'], $this->lines[$key]['Professionals'], $this->lines[$key]['ContactGroups']);
     }
     
     $this->options = array(

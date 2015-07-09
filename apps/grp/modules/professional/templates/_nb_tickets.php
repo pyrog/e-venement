@@ -12,6 +12,12 @@
     ->andWhere('ee.accepted = ?',true)
   ;
   
+  $filters = $sf_user->getRawValue()->getAttribute('professional.filters', null, 'admin_module');
+  if ( isset($filters['grp_meta_events_list']) && $filters['grp_meta_events_list'] )
+    $q->andWhereIn('e.meta_event_id', $filters['grp_meta_events_list']);
+  if ( isset($filters['grp_events_list']) && $filters['grp_events_list'] )
+    $q->andWhereIn('e.id', $filters['grp_events_list']);
+  
   $nb = 0;
   $mids = array();
   foreach ( $q->execute() as $tickets )
@@ -20,5 +26,6 @@
     $nb += $tickets->quantity;
   }
   
-  echo format_number(round($nb/count($mids),1));
+  if ( count($mids) > 0 )
+    echo format_number(round($nb/count($mids),1));
 ?>

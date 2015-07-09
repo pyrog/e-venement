@@ -33,7 +33,9 @@
   foreach ( $seated_plans as $sp )
   {
     $prepare[] = '?';
-    $seated_plans_gauges[$sp->id] = !$sp->Workspaces[0]->isNew() && !$sp->Workspaces[0]->Gauges[0]->isNew() ? $sp->Workspaces[0]->Gauges[0] : NULL;
+    $seated_plans_gauges[$sp->id] = !$sp->Workspaces[0]->isNew() && !$sp->Workspaces[0]->Gauges[0]->isNew()
+      ? $sp->Workspaces[0]->Gauges[0]
+      : NULL;
   }
   
   // optimized Seats fetching
@@ -41,7 +43,7 @@
   //foreach ( $seated_plans as $seated_plan )
   //  $seat_records->merge($seated_plan->Seats);
   $q = Doctrine::getTable('Seat')->createQuery('s')
-    ->leftJoin('s.Holds h')
+    ->leftJoin('s.Holds h WITH h.manifestation_id IN (SELECT m.id FROM Manifestation m LEFT JOIN m.Gauges g WHERE g.id IN ('.implode(',',$seated_plans_gauges->getPrimaryKeys()).'))')
     ->leftJoin('s.SeatedPlan sp WITH sp.id IN ('.implode(',', $prepare).')', array_merge(array(0),$seated_plans_gauges->getKeys()))
   ;
   if ( $sf_request->getParameter('transaction_id', false) )
@@ -64,6 +66,7 @@
       if ( !isset($occupied[$seat->name]) )
         continue(2);
       break;
+    
     case 'holds':
     case 'seat':
       if ( isset($occupied[$seat->name]) && $occupied[$seat->name]['type'] == 'out' )
@@ -92,7 +95,8 @@
           && (!$ht || $ht->hold_id != $hold->id) )
           continue(2);
         // inside a Hold
-        elseif ( $sf_request->hasParameter('hold_id', NULL) && $hold->id != $sf_request->getParameter('hold_id', NULL) )
+        elseif ( $sf_request->hasParameter('hold-id') && $hold->id != $sf_request->getParameter('hold-id', NULL)
+          || $sf_request->hasParameter('hold_id') && $hold->id != $sf_request->getParameter('hold_id', NULL) )
           continue(2);
       }
       break;
