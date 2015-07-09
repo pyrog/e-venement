@@ -58,12 +58,10 @@ EOF;
       ->setOption('analyzer', new MySearchAnalyzer());
     
     if ( $options['force'] )
-    {
-      $q = new Doctrine_Query;
-      $q->from($arguments['model'].'Index')
+      Doctrine_Query::create()
+      	->from($arguments['model'].'Index')
         ->delete()
         ->execute();
-    }
     
     $nb = $modelTable->batchUpdateIndex();
     $this->logSection('search', sprintf('%s %s updated', $nb, $arguments['model']));
