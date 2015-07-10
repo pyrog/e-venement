@@ -1,27 +1,4 @@
 <?php
-/**********************************************************************************
-*
-*	    This file is part of e-venement.
-*
-*    e-venement is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License.
-*
-*    e-venement is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with e-venement; if not, write to the Free Software
-*    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
-*
-***********************************************************************************/
-?>
-<?php
 
 /**
  * geo actions.
@@ -75,29 +52,39 @@ class geoActions extends sfActions
     $this->data = $this->getData($request->getParameter('type','ego'), isset($criterias['by_tickets']) && $criterias['by_tickets'] === 'y');
     
     $total = 0;
-    foreach ( $this->data as $data )
+    foreach ( $this->data['nb'] as $data )
       $total += $data;
+    $totalvalue = 0;
+    foreach ( $this->data['value'] as $data )
+      $totalvalue += $data;
     
     $this->lines = array();
-    foreach ( $this->data as $name => $data )
+    foreach ( $this->data['nb'] as $name => $data )
     {
-      $this->lines[] = array(
+      $this->lines[$name] = array(
         'name' => __($name),
         'qty' => $data,
         'percent' => format_number(round($data*100/$total,2)),
       );
     }
+    foreach ( $this->data['value'] as $name => $data )
+    {
+      $this->lines[$name]['value'] = format_currency($data, '€');
+      $this->lines[$name]['value%'] = format_number(round($data*100/$totalvalue, 2));
+    }
     
-    $this->lines[] = array(
-      'name' => __('Total'),
-      'qty'   => $total,
+    $this->lines['total'] = array(
+      'name'    => __('Total'),
+      'qty'     => $total,
       'percent' => 100,
+      'value'   => format_currency($totalvalue,'€'),
+      'value%' => 100,
     );
     
     $params = OptionCsvForm::getDBOptions();
     $this->options = array(
       'ms' => in_array('microsoft',$params['option']),
-      'fields' => array('name','qty','percent'),
+      'fields' => array('name','qty','percent','value','value%'),
       'tunnel' => false,
       'noheader' => false,
     );
@@ -123,7 +110,8 @@ class geoActions extends sfActions
   public function executeData(sfWebRequest $request)
   {
     $criterias = $this->getCriterias();
-    $this->data = $this->getData($request->getParameter('type','ego'), isset($criterias['by_tickets']) && $criterias['by_tickets'] === 'y');
+    $data = $this->getData($request->getParameter('type','ego'), isset($criterias['by_tickets']) && $criterias['by_tickets'] === 'y');
+    $this->data = $data['nb'];
     
     if ( !$request->hasParameter('debug') )
     {
@@ -135,7 +123,7 @@ class geoActions extends sfActions
   
   protected function buildQuery()
   {
-    return  $this->addFiltersToQuery(Doctrine_Query::create()->from('Contact c'))
+    $q = $this->addFiltersToQuery(Doctrine_Query::create()->from('Contact c'))
       ->leftJoin('c.Transactions t')
       ->leftJoin('t.Professional pro')
       ->leftJoin('pro.Organism o')
@@ -152,6 +140,7 @@ class geoActions extends sfActions
       ->leftJoin('p.Users u')
       ->andWhere('u.id = ?', $this->getUser()->getId())
     ;
+    return $q;
   }
   protected function addFiltersToQuery(Doctrine_Query $q)
   {
@@ -204,83 +193,109 @@ class geoActions extends sfActions
   protected function getData($type = 'ego', $count_tickets = false)
   {
     $this->type = $type;
-    $res = array();
-    $total = 0;
+    $res = array('nb' => array(), 'value' => array());
+    $total = $totalval = 0;
     switch ( $type ) {
     
     case 'postalcodes':
-      foreach ( $this->buildQuery()
-        ->select('c.id, (CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END) AS postalcode, count(DISTINCT tck.id) AS qty')
+      foreach ( $arr = $this->buildQuery()
+        ->select('c.id')
+        ->addSelect('(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END) AS postalcode')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
         ->fetchArray() as $pc )
       {
-        if ( !isset($res[$pc['postalcode']]) )
-          $res[$pc['postalcode']] = 0;
-        $res[$pc['postalcode']] += $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['nb'][$pc['postalcode']]) )
+          $res['nb'][$pc['postalcode']] = 0;
+        $res['nb'][$pc['postalcode']] += $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['value'][$pc['postalcode']]) )
+          $res['value'][$pc['postalcode']] = 0;
+        $res['value'][$pc['postalcode']] += $pc['sum'];
       }
-      arsort($res);
+      arsort($res['nb']);
+      arsort($res['value']);
       
-      $cpt = 0;
-      $others = 0;
-      foreach ( $res as $code => $qty )
+      $cpt = $others = $othersval = 0;
+      foreach ( $res['nb'] as $code => $qty )
       {
         if ( intval($code).'' !== ''.$code )
         {
           $others += $qty;
-          unset($res[$code]);
+          $othersval += $res['value'][$code];
+          unset($res['nb'][$code]);
+          unset($res['value'][$code]);
           continue;
         }
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 8) )
         {
           $others += $qty;
-          unset($res[$code]);
+          $othersval += $res['value'][$code];
+          unset($res['nb'][$code]);
+          unset($res['value'][$code]);
         }
         $cpt++;
       }
-      $res['others'] = $others;
-      arsort($res);
+      $res['nb']['others'] = $others;
+      $res['value']['others'] = $othersval;
+      arsort($res['nb']);
+      arsort($res['value']);
     break;
     
     case 'departments':
       foreach ( $this->buildQuery()
-        ->select('c.id, substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END,1,2) AS dpt, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END,1,2) AS dpt')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
         ->fetchArray() as $pc )
       {
-        if ( !isset($res[$pc['dpt']]) )
-          $res[$pc['dpt']] = 0;
-        $res[$pc['dpt']] += $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['nb'][$pc['dpt']]) )
+          $res['nb'][$pc['dpt']] = 0;
+        $res['nb'][$pc['dpt']] += $count_tickets ? $pc['qty'] : 1;
         $total += $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['value'][$pc['dpt']]) )
+          $res['value'][$pc['dpt']] = 0;
+        $res['value'][$pc['dpt']] += $pc['sum'];
+        $total += $count_tickets ? $pc['qty'] : 1;
+        $totalval += $pc['sum'];
       }
-      arsort($res);
+      arsort($res['nb']);
       
-      $cpt = 0;
-      $others = 0;
-      foreach ( $res as $code => $qty )
+      $cpt = $others = $othersval = 0;
+      foreach ( $res['nb'] as $code => $qty )
       {
         if ( intval($code).'' !== ''.$code )
         {
           $others += $qty;
-          unset($res[$code]);
+          $othersval += $res['value'][$code];
+          unset($res['nb'][$code]);
+          unset($res['value'][$code]);
           continue;
         }
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 4) )
         {
           $others += $qty;
-          unset($res[$code]);
+          $othersval += $res['value'][$code];
+          unset($res['nb'][$code]);
+          unset($res['value'][$code]);
         }
         $cpt++;
       }
-      $res['others'] = $others;
+      $res['nb']['others'] = $others;
+      $res['value']['others'] = $othersval;
       
       foreach ( Doctrine::getTable('GeoFrDepartment')->createQuery('gd')
-        ->andWhereIn('gd.num', array_keys($res))
+        ->andWhereIn('gd.num', array_keys($res['nb']))
         ->execute() as $dpt )
       {
-        $res[$dpt->name] = $res[$dpt->num];
-        unset($res[$dpt->num]);
+        $res['nb'][$dpt->name] = $res['nb'][$dpt->num];
+        $res['value'][$dpt->name] = $res['value'][$dpt->num];
+        unset($res['nb'][$dpt->num]);
+        unset($res['value'][$dpt->num]);
       }
-      arsort($res);
+      arsort($res['nb']);
     break;
     
     case 'regions':
@@ -293,36 +308,51 @@ class geoActions extends sfActions
       $dpts[''] = '';
       
       foreach ( $this->buildQuery()
-        ->select('c.id, substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END,1,2) AS dpt, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END,1,2) AS dpt')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
         ->fetchArray() as $pc )
       {
         if ( !isset($dpts[trim($pc['dpt'])]) )
           $pc['dpt'] = '';
-        if ( !isset($res[$dpts[trim($pc['dpt'])]]) )
-          $res[$dpts[trim($pc['dpt'])]] = 0;
-        $res[$dpts[trim($pc['dpt'])]] += $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['nb'][$dpts[trim($pc['dpt'])]]) )
+          $res['nb'][$dpts[trim($pc['dpt'])]] = 0;
+        $res['nb'][$dpts[trim($pc['dpt'])]] += $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['value'][$dpts[trim($pc['dpt'])]]) )
+          $res['value'][$dpts[trim($pc['dpt'])]] = 0;
+        $res['value'][$dpts[trim($pc['dpt'])]] += $pc['sum'];
         $total += $count_tickets ? $pc['qty'] : 1;
+        $totalval += $pc['sum'];
       }
-      $others = 0;
-      if ( isset($res['']) )
+      $others = $othersval = 0;
+      if ( isset($res['nb']['']) )
       {
-        $others += $res[''];
-        unset($res['']);
+        $others += $res['nb'][''];
+        unset($res['nb']['']);
+      }
+      if ( isset($res['value']['']) )
+      {
+        $othersval += $res['value'][''];
+        unset($res['value']['']);
       }
       
       $cpt = 0;
-      foreach ( $res as $code => $qty )
+      foreach ( $res['nb'] as $code => $qty )
       {
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 4) )
         {
           $others += $qty;
-          unset($res[$code]);
+          $othersval += $qty;
+          unset($res['nb'][$code]);
+          unset($res['value'][$code]);
         }
         $cpt++;
       }
-      $res['others'] = $others;
-      arsort($res);
+      $res['nb']['others'] = $others;
+      $res['value']['others'] = $othersval;
+      arsort($res['nb']);
     break;
     
     case 'countries':
@@ -331,132 +361,188 @@ class geoActions extends sfActions
       $default_country = isset($tmp['country']) ? $tmp['country'] : '';
       
       foreach ( $this->buildQuery()
-        ->select('c.id, (CASE WHEN pro.id IS NOT NULL THEN o.country ELSE c.country END) AS country, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('(CASE WHEN pro.id IS NOT NULL THEN o.country ELSE c.country END) AS country')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id, c.country, pro.id, o.country')
         ->fetchArray() as $pc )
       {
         if ( !trim($pc['country']) )
           $pc['country'] = $default_country;
         $pc['country'] = trim(strtolower($pc['country']));
-        if ( !isset($res[$pc['country']]) )
-          $res[$pc['country']] = 0;
-        $res[$pc['country']] += $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['nb'][$pc['country']]) )
+          $res['nb'][$pc['country']] = 0;
+        $res['nb'][$pc['country']] += $count_tickets ? $pc['qty'] : 1;
         $total = $count_tickets ? $pc['qty'] : 1;
+        if ( !isset($res['value'][$pc['country']]) )
+          $res['value'][$pc['country']] = 0;
+        $res['value'][$pc['country']] += $pc['sum'];
+        $totalval = $pc['qty'];
       }
-      $others = 0;
-      if ( isset($res['']) )
+      $others = $othersval = 0;
+      if ( isset($res['nb']['']) )
       {
-        $others += $res[''];
-        unset($res['']);
+        $others += $res['nb'][''];
+        unset($res['nb']['']);
+      }
+      if ( isset($res['value']['']) )
+      {
+        $othersval += $res['value'][''];
+        unset($res['value']['']);
       }
       
       $cpt = 0;
-      foreach ( $res as $country => $qty )
+      foreach ( $res['nb'] as $country => $qty )
       {
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 4) )
         {
           $others += $qty;
-          unset($res[$country]);
+          $othersval += $res['value'][$country];
+          unset($res['nb'][$country]);
+          unset($res['value'][$country]);
         }
         elseif ( ucwords($country) != $country )
         {
-          $res[ucwords($country)] = $res[$country];
-          unset($res[$country]);
+          $res['nb'][ucwords($country)] = $res['nb'][$country];
+          $res['value'][ucwords($country)] = $res['value'][$country];
+          unset($res['nb'][$country]);
+          unset($res['value'][$country]);
         }
         $cpt++;
       }
-      $res['others'] = $others;
-      arsort($res);
+      $res['nb']['others'] = $others;
+      $res['value']['others'] = $othersval;
+      arsort($res['nb']);
     break;
     
     default:
       $client = sfConfig::get('app_about_client',array());
-      $res = array('exact' => 0, 'department' => 0, 'region' => 0, 'country' => 0, 'others' => 0);
+      $res['nb'] = $res['value'] = array('exact' => 0, 'department' => 0, 'region' => 0, 'country' => 0, 'others' => 0);
       $q = $this->buildQuery()
-        ->select('c.id, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
-        ->andWhere('(pro.id IS NULL AND c.postalcode = ? OR pro.id IS NOT NULL AND o.postalcode = ?)', array(''.$client['postalcode'], ''.$client['postalcode']))
+        ->andWhere('(pro.id IS NULL AND c.postalcode = ? OR pro.id IS NOT NULL AND o.postalcode = ?)', array($client['postalcode'], $client['postalcode']))
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['exact'] = 0;
+      $res['nb']['exact'] = $res['value']['exact'] = 0;
       if ( $count_tickets )
-      foreach ( $q->fetchArray() as $c )
+      foreach ( $arr = $q->fetchArray() as $c )
       {
-        $res['exact'] += $c['qty'];
+        $res['nb']['exact'] += $c['qty'];
         $total += $c['qty'];
       }
       else
       {
-        $res['exact'] = $q->count();
+        $res['nb']['exact'] = $q->count();
         $total = 1;
       }
+      foreach ( $arr as $c )
+      {
+        $res['value']['exact'] += $c['sum'];
+        $totalval += $c['sum'];
+      }
       
       $q = $this->buildQuery()
-        ->select('c.id, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
-        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) = substring(?, 1, 2)', ''.$client['postalcode'])
+        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) = substring(?, 1, 2)', $client['postalcode'])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['department'] = -$res['exact'];
+      $res['nb']['department'] = -$res['nb']['exact'];
+      $res['value']['department'] = -$res['value']['exact'];
       if ( $count_tickets )
-      foreach ( $q->fetchArray() as $c )
+      foreach ( $arr = $q->fetchArray() as $c )
       {
-        $res['department'] += $c['qty'];
+        $res['nb']['department'] += $c['qty'];
         $total += $c['qty'];
       }
       else
       {
-        $res['department'] += $q->count();
+        $res['nb']['department'] += $q->count();
         $total += 1;
+      }
+      foreach ( $arr as $c )
+      {
+        $res['value']['department'] += $c['sum'];
+        $totalval += $c['sum'];
       }
       
       $q = $this->buildQuery()
-        ->select('c.id, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
-        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) IN (SELECT gd.num FROM GeoFrRegion gr LEFT JOIN gr.Departments gd LEFT JOIN gr.Departments gdc WHERE gdc.num = substring(?, 1, 2))', ''.$client['postalcode'])
+        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) IN (SELECT gd.num FROM GeoFrRegion gr LEFT JOIN gr.Departments gd LEFT JOIN gr.Departments gdc WHERE gdc.num = substring(?, 1, 2))', $client['postalcode'])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['region'] = -$res['department'] -$res['exact'];
+      $res['nb']['region'] = -$res['nb']['department'] -$res['nb']['exact'];
+      $res['value']['region'] = -$res['value']['department'] -$res['value']['exact'];
       if ( $count_tickets )
-      foreach ( $q->fetchArray() as $c )
+      foreach ( $arr = $q->fetchArray() as $c )
       {
-        $res['region'] += $c['qty'];
+        $res['nb']['region'] += $c['qty'];
         $total += $c['qty'];
       }
       else
       {
-        $res['region'] += $q->count();
+        $res['nb']['region'] += $q->count();
         $total += 1;
+      }
+      foreach ( $arr as $c )
+      {
+        $res['value']['region'] += $c['sum'];
+        $totalval += $c['sum'];
       }
       
       $q = $this->buildQuery()
-        ->select('c.id, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['country'] = -$res['region'] -$res['department'] -$res['exact'];
+      $res['nb']['country'] = -$res['nb']['region'] -$res['nb']['department'] -$res['nb']['exact'];
+      $res['value']['country'] = -$res['value']['region'] -$res['value']['department'] -$res['value']['exact'];
       if ( $count_tickets )
-      foreach ( $q->fetchArray() as $c )
+      foreach ( $arr = $q->fetchArray() as $c )
       {
-        $res['country'] += $c['qty'];
+        $res['nb']['country'] += $c['qty'];
         $total += $c['qty'];
       }
       else
       {
-        $res['country'] += $q->count();
+        $res['nb']['country'] += $q->count();
         $total += 1;
+      }
+      foreach ( $arr as $c )
+      {
+        $res['value']['country'] += $c['sum'];
+        $totalval += $c['sum'];
       }
       
       $q = $this->buildQuery()
-        ->select('c.id, count(DISTINCT tck.id) AS qty')
+        ->select('c.id')
+        ->addSelect('count(DISTINCT tck.id) AS qty')
+        ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id');
-      $res['others'] = -$res['country'] -$res['region'] -$res['department'] -$res['exact'];
+      $res['nb']['others'] = -$res['nb']['country'] -$res['nb']['region'] -$res['nb']['department'] -$res['nb']['exact'];
+      $res['value']['others'] = -$res['value']['country'] -$res['value']['region'] -$res['value']['department'] -$res['value']['exact'];
       if ( $count_tickets )
-      foreach ( $q->fetchArray() as $c )
+      foreach ( $arr = $q->fetchArray() as $c )
       {
-        $res['others'] += $c['qty'];
+        $res['nb']['others'] += $c['qty'];
         $total += $c['qty'];
       }
       else
       {
-        $res['others'] += $q->count();
+        $res['nb']['others'] += $q->count();
         $total += 1;
+      }
+      foreach ( $arr as $c )
+      {
+        $res['value']['others'] += $c['sum'];
+        $totalval += $c['sum'];
       }
       break;
     }
