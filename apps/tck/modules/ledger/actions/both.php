@@ -29,7 +29,7 @@
       $criterias['users'] = array();
     
     // redirect to avoid POST re-sending
-    if ( $request->getParameter($this->form->getName(),false) )
+    if ( $request->getPostParameter($this->form->getName(),false) )
       $this->redirect('ledger/both');
     
     require(dirname(__FILE__).'/both-payment.php');
