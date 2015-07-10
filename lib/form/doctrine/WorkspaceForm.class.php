@@ -19,7 +19,13 @@ class WorkspaceForm extends BaseWorkspaceForm
     );
     
     $this->widgetSchema['users_list']->setOption('expanded', 'true')
-      ->setOption('order_by', array('u.username', ''));
+      ->setOption('order_by', array('u.username', ''))
+      ->setOption('query', $q = Doctrine::getTable('sfGuardUser')->createQuery('u'))
+    ;
+    if ( !$this->object->isNew() )
+      $q->andWhere('ws.id IS NOT NULL AND ws.id = ? OR u.is_active = ?', array($this->object->id, true));
+    else
+      $q->andWhere('u.is_active = ?', true);
     
     $this->widgetSchema['prices_list']->setOption('expanded',true)
       ->setOption('order_by', array('pt.name', ''));
