@@ -51,12 +51,10 @@ class geoActions extends sfActions
     $criterias = $this->getCriterias();
     $this->data = $this->getData($request->getParameter('type','ego'), !(isset($criterias['approach']) && $criterias['approach'] === ''));
     
-    $total = 0;
-    foreach ( $this->data['nb'] as $data )
-      $total += $data;
-    $totalvalue = 0;
-    foreach ( $this->data['value'] as $data )
-      $totalvalue += $data;
+    $total = array('nb' => 0, 'value' => 0, 'tickets' => 0);
+    foreach ( $total as $approach => $val )
+    foreach ( $this->data[$approach] as $data )
+      $total[$approach] += $data;
     
     $this->lines = array();
     foreach ( $this->data['nb'] as $name => $data )
@@ -64,27 +62,34 @@ class geoActions extends sfActions
       $this->lines[$name] = array(
         'name' => __($name),
         'qty' => $data,
-        'percent' => format_number(round($data*100/$total,2)),
+        'percent' => format_number(round($data*100/$total['nb'],2)),
       );
+    }
+    foreach ( $this->data['tickets'] as $name => $data )
+    {
+      $this->lines[$name]['tickets'] = $data;
+      $this->lines[$name]['tickets%'] = format_number(round($data*100/$total['tickets'], 2));
     }
     foreach ( $this->data['value'] as $name => $data )
     {
       $this->lines[$name]['value'] = format_currency($data, '€');
-      $this->lines[$name]['value%'] = format_number(round($data*100/$totalvalue, 2));
+      $this->lines[$name]['value%'] = format_number(round($data*100/$total['value'], 2));
     }
     
     $this->lines['total'] = array(
       'name'    => __('Total'),
-      'qty'     => $total,
+      'contacts'     => $total['nb'],
       'percent' => 100,
-      'value'   => format_currency($totalvalue,'€'),
+      'tickets'   => $total['tickets'],
+      'tickets%' => 100,
+      'value'   => format_currency($total['value'],'€'),
       'value%' => 100,
     );
     
     $params = OptionCsvForm::getDBOptions();
     $this->options = array(
       'ms' => in_array('microsoft',$params['option']),
-      'fields' => array('name','qty','percent','value','value%'),
+      'fields' => array('name','qty','percent','tickets', 'tickets%', 'value','value%'),
       'tunnel' => false,
       'noheader' => false,
     );
