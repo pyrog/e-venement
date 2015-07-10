@@ -76,6 +76,10 @@ psql <<EOF
   ALTER TABLE checkpoint DROP COLUMN legal;
   UPDATE ticket SET taxes = 0 WHERE taxes IS NULL;
   UPDATE ticket_version SET taxes = 0 WHERE taxes IS NULL;
+
+  INSERT INTO sf_guard_permission(name, description, created_at, updated_at) values ('tck-duplicate-ticket', 'Permission to duplicate tickets', now(), now());
+  INSERT INTO sf_guard_group_permission(permission_id, group_id, created_at, updated_at) values ((select id from sf_guard_permission where name = 'tck-duplicate-ticket'), (select id from sf_guard_group where name = 'tck-responsible'), now(), now());
+  INSERT INTO sf_guard_group_permission(permission_id, group_id, created_at, updated_at) values ((select id from sf_guard_permission where name = 'tck-duplicate-ticket'), (select id from sf_guard_group where name = 'tck-admin'), now(), now());
 EOF
 echo "DUMPING DB..."
 pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.pgdump && echo "DB dumped"

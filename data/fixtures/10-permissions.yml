@@ -424,6 +424,11 @@ sfGuardPermission:
     description: 'Permission for printing tickets'
     created_at: '2011-05-19 15:30:54'
     updated_at: '2011-05-19 15:30:54'
+  sfGuardPermission_145:
+    name: tck-duplicate-ticket
+    description: 'Permission for duplicating tickets'
+    created_at: '2015-07-10 15:30:54'
+    updated_at: '2015-05-10 15:30:54'
   sfGuardPermission_47:
     name: tck-payment
     description: 'Permission to add a payment on a transaction'
@@ -1346,6 +1351,11 @@ sfGuardGroupPermission:
     Permission: sfGuardPermission_55
     created_at: '2011-05-19 17:10:09'
     updated_at: '2011-05-19 17:10:09'
+  sfGuardGroupPermission_18_145:
+    Group: sfGuardGroup_18
+    Permission: sfGuardPermission_145
+    created_at: '2015-07-10 15:30:09'
+    updated_at: '2011-07-10 15:30:09'
   sfGuardGroupPermission_19_56:
     Group: sfGuardGroup_19
     Permission: sfGuardPermission_56
@@ -1391,6 +1401,11 @@ sfGuardGroupPermission:
     Permission: sfGuardPermission_63
     created_at: '2011-05-19 17:10:09'
     updated_at: '2011-05-19 17:10:09'
+  sfGuardGroupPermission_15_145:
+    Group: sfGuardGroup_15
+    Permission: sfGuardPermission_145
+    created_at: '2015-07-10 15:30:09'
+    updated_at: '2011-07-10 15:30:09'
   sfGuardGroupPermission_15_63:
     Group: sfGuardGroup_15
     Permission: sfGuardPermission_63

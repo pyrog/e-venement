@@ -70,7 +70,7 @@
     $fingerprint = NULL;
     $this->print_again = false;
     $this->grouped_tickets = false;
-    $this->duplicate = $request->getParameter('duplicate') == 'true';
+    $this->duplicate = $request->getParameter('duplicate') == 'true' && $this->getUser()->hasCredential('tck-duplicate-ticket');
     $this->tickets = array();
     $update = array('printed_at' => array(), 'integrated_at' => array());
     

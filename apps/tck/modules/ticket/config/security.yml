@@ -15,7 +15,7 @@ integrate:
 batchIntegrate:
   credentials: [tck-integrate-foreign]
 duplicate:
-  credentials: [tck-print-ticket]
+  credentials: [tck-print-ticket, tck-duplicate-ticket]
 partial:
   credentials: [tck-print-ticket]
 control:
