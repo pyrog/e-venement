@@ -26,7 +26,7 @@ class geoActions extends sfActions
     
     $this->form = new StatsCriteriasForm();
     $this->form
-      ->addByTicketsCriteria()
+      ->addApproachCriteria()
       ->addEventCriterias()
       ->addManifestationCriteria()
       ->addGroupsCriteria();
@@ -49,7 +49,7 @@ class geoActions extends sfActions
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink','Number'));
     
     $criterias = $this->getCriterias();
-    $this->data = $this->getData($request->getParameter('type','ego'), isset($criterias['by_tickets']) && $criterias['by_tickets'] === 'y');
+    $this->data = $this->getData($request->getParameter('type','ego'), !(isset($criterias['approach']) && $criterias['approach'] === ''));
     
     $total = 0;
     foreach ( $this->data['nb'] as $data )
@@ -110,8 +110,18 @@ class geoActions extends sfActions
   public function executeData(sfWebRequest $request)
   {
     $criterias = $this->getCriterias();
-    $data = $this->getData($request->getParameter('type','ego'), isset($criterias['by_tickets']) && $criterias['by_tickets'] === 'y');
+    $data = $this->getData($request->getParameter('type','ego'), !(isset($criterias['approach']) && $criterias['approach'] === ''));
+    
     $this->data = $data['nb'];
+    if ( isset($criterias['approach']) )
+    switch ( $criterias['approach'] ) {
+    case 'financial':
+      $this->data = $data['value'];
+      break;
+    case 'by-tickets':
+      $this->data = $data['tickets'];
+      break;
+    }
     
     if ( !$request->hasParameter('debug') )
     {
@@ -193,8 +203,8 @@ class geoActions extends sfActions
   protected function getData($type = 'ego', $count_tickets = false)
   {
     $this->type = $type;
-    $res = array('nb' => array(), 'value' => array());
-    $total = $totalval = 0;
+    $res = array('nb' => array(), 'tickets' => array(), 'value' => array());
+    $others = $total = array('nb' => 0, 'tickets' => 0, 'value' => 0);
     switch ( $type ) {
     
     case 'postalcodes':
@@ -206,40 +216,43 @@ class geoActions extends sfActions
         ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
         ->fetchArray() as $pc )
       {
-        if ( !isset($res['nb'][$pc['postalcode']]) )
-          $res['nb'][$pc['postalcode']] = 0;
-        $res['nb'][$pc['postalcode']] += $count_tickets ? $pc['qty'] : 1;
-        if ( !isset($res['value'][$pc['postalcode']]) )
-          $res['value'][$pc['postalcode']] = 0;
-        $res['value'][$pc['postalcode']] += $pc['sum'];
+        foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        {
+          if ( !isset($res[$approach][$pc['postalcode']]) )
+            $res[$approach][$pc['postalcode']] = 0;
+          $res[$approach][$pc['postalcode']] += is_int($field) ? $field : $pc[$field];
+        }
       }
-      arsort($res['nb']);
-      arsort($res['value']);
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        arsort($res[$approach]);
       
-      $cpt = $others = $othersval = 0;
-      foreach ( $res['nb'] as $code => $qty )
+      $cpt = 0;
+      foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
         if ( intval($code).'' !== ''.$code )
         {
-          $others += $qty;
-          $othersval += $res['value'][$code];
-          unset($res['nb'][$code]);
-          unset($res['value'][$code]);
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
           continue;
         }
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 8) )
         {
-          $others += $qty;
-          $othersval += $res['value'][$code];
-          unset($res['nb'][$code]);
-          unset($res['value'][$code]);
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
         }
         $cpt++;
       }
-      $res['nb']['others'] = $others;
-      $res['value']['others'] = $othersval;
-      arsort($res['nb']);
-      arsort($res['value']);
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+      {
+        $res[$approach]['others'] = $others[$approach];
+        arsort($res[$approach]);
+      }
     break;
     
     case 'departments':
@@ -251,51 +264,53 @@ class geoActions extends sfActions
         ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
         ->fetchArray() as $pc )
       {
-        if ( !isset($res['nb'][$pc['dpt']]) )
-          $res['nb'][$pc['dpt']] = 0;
-        $res['nb'][$pc['dpt']] += $count_tickets ? $pc['qty'] : 1;
-        $total += $count_tickets ? $pc['qty'] : 1;
-        if ( !isset($res['value'][$pc['dpt']]) )
-          $res['value'][$pc['dpt']] = 0;
-        $res['value'][$pc['dpt']] += $pc['sum'];
-        $total += $count_tickets ? $pc['qty'] : 1;
-        $totalval += $pc['sum'];
+        foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        {
+          if ( !isset($res[$approach][$pc['dpt']]) )
+            $res[$approach][$pc['dpt']] = 0;
+          $res[$approach][$pc['dpt']] += is_int($field) ? $field : $pc[$field];
+          $total[$approach] += is_int($field) ? $field : $pc[$field];
+        }
       }
-      arsort($res['nb']);
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        arsort($res[$approach]);
       
-      $cpt = $others = $othersval = 0;
-      foreach ( $res['nb'] as $code => $qty )
+      $cpt = 0;
+      foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
         if ( intval($code).'' !== ''.$code )
         {
-          $others += $qty;
-          $othersval += $res['value'][$code];
-          unset($res['nb'][$code]);
-          unset($res['value'][$code]);
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
           continue;
         }
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 4) )
         {
-          $others += $qty;
-          $othersval += $res['value'][$code];
-          unset($res['nb'][$code]);
-          unset($res['value'][$code]);
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
         }
         $cpt++;
       }
-      $res['nb']['others'] = $others;
-      $res['value']['others'] = $othersval;
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+      {
+        $res[$approach]['others'] = $others[$approach];
+        arsort($res[$approach]);
+      }
       
       foreach ( Doctrine::getTable('GeoFrDepartment')->createQuery('gd')
         ->andWhereIn('gd.num', array_keys($res['nb']))
         ->execute() as $dpt )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        $res['nb'][$dpt->name] = $res['nb'][$dpt->num];
-        $res['value'][$dpt->name] = $res['value'][$dpt->num];
-        unset($res['nb'][$dpt->num]);
-        unset($res['value'][$dpt->num]);
+        $res[$approach][$dpt->name] = $res[$approach][$dpt->num];
+        unset($res[$approach][$dpt->num]);
       }
-      arsort($res['nb']);
     break;
     
     case 'regions':
@@ -315,48 +330,56 @@ class geoActions extends sfActions
         ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
         ->fetchArray() as $pc )
       {
-        if ( !isset($dpts[trim($pc['dpt'])]) )
-          $pc['dpt'] = '';
-        if ( !isset($res['nb'][$dpts[trim($pc['dpt'])]]) )
-          $res['nb'][$dpts[trim($pc['dpt'])]] = 0;
-        $res['nb'][$dpts[trim($pc['dpt'])]] += $count_tickets ? $pc['qty'] : 1;
-        if ( !isset($res['value'][$dpts[trim($pc['dpt'])]]) )
-          $res['value'][$dpts[trim($pc['dpt'])]] = 0;
-        $res['value'][$dpts[trim($pc['dpt'])]] += $pc['sum'];
-        $total += $count_tickets ? $pc['qty'] : 1;
-        $totalval += $pc['sum'];
+        foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        {
+          if ( !isset($dpts[trim($pc['dpt'])]) )
+            $pc['dpt'] = '';
+          if ( !isset($res[$approach][$dpts[trim($pc['dpt'])]]) )
+            $res[$approach][$dpts[trim($pc['dpt'])]] = 0;
+          $res[$approach][$dpts[trim($pc['dpt'])]] += is_int($field) ? $field : $pc[$field];
+          $total[$approach] += is_int($field) ? $field : $pc[$field];
+        }
       }
-      $others = $othersval = 0;
-      if ( isset($res['nb']['']) )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        arsort($res[$approach]);
+      
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+      if ( isset($res[$approach]['']) )
       {
-        $others += $res['nb'][''];
-        unset($res['nb']['']);
-      }
-      if ( isset($res['value']['']) )
-      {
-        $othersval += $res['value'][''];
-        unset($res['value']['']);
+        $others[$approach] += $res[$approach][''];
+        unset($res[$approach]['']);
       }
       
       $cpt = 0;
-      foreach ( $res['nb'] as $code => $qty )
+      foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
+        if ( $code === '' )
+        {
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
+          continue;
+        }
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 4) )
         {
-          $others += $qty;
-          $othersval += $qty;
-          unset($res['nb'][$code]);
-          unset($res['value'][$code]);
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
         }
         $cpt++;
       }
-      $res['nb']['others'] = $others;
-      $res['value']['others'] = $othersval;
-      arsort($res['nb']);
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+      {
+        $res[$approach]['others'] = $others[$approach];
+        arsort($res[$approach]);
+      }
     break;
     
     case 'countries':
-      $dpts = array();
       $tmp = sfConfig::get('app_about_client', array());
       $default_country = isset($tmp['country']) ? $tmp['country'] : '';
       
@@ -370,55 +393,57 @@ class geoActions extends sfActions
       {
         if ( !trim($pc['country']) )
           $pc['country'] = $default_country;
-        $pc['country'] = trim(strtolower($pc['country']));
-        if ( !isset($res['nb'][$pc['country']]) )
-          $res['nb'][$pc['country']] = 0;
-        $res['nb'][$pc['country']] += $count_tickets ? $pc['qty'] : 1;
-        $total = $count_tickets ? $pc['qty'] : 1;
-        if ( !isset($res['value'][$pc['country']]) )
-          $res['value'][$pc['country']] = 0;
-        $res['value'][$pc['country']] += $pc['sum'];
-        $totalval = $pc['qty'];
+        $pc['country'] = trim(ucwords(strtolower($pc['country'])));
+        foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        {
+          if ( !isset($res[$approach][$pc['country']]) )
+            $res[$approach][$pc['country']] = 0;
+          $res[$approach][$pc['country']] += is_int($field) ? $field : $pc[$field];
+          $total[$approach] += is_int($field) ? $field : $pc[$field];
+        }
       }
-      $others = $othersval = 0;
-      if ( isset($res['nb']['']) )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        arsort($res[$approach]);
+      
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+      if ( isset($res[$approach]['']) )
       {
-        $others += $res['nb'][''];
-        unset($res['nb']['']);
-      }
-      if ( isset($res['value']['']) )
-      {
-        $othersval += $res['value'][''];
-        unset($res['value']['']);
+        $others[$approach] += $res[$approach][''];
+        unset($res[$approach]['']);
       }
       
       $cpt = 0;
-      foreach ( $res['nb'] as $country => $qty )
+      foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
+        if ( $code === '' )
+        {
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
+          continue;
+        }
         if ( $cpt >= sfConfig::get('app_geo_limits_'.$type, 4) )
         {
-          $others += $qty;
-          $othersval += $res['value'][$country];
-          unset($res['nb'][$country]);
-          unset($res['value'][$country]);
-        }
-        elseif ( ucwords($country) != $country )
-        {
-          $res['nb'][ucwords($country)] = $res['nb'][$country];
-          $res['value'][ucwords($country)] = $res['value'][$country];
-          unset($res['nb'][$country]);
-          unset($res['value'][$country]);
+          foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          {
+            $others[$approach] += $res[$approach][$code];
+            unset($res[$approach][$code]);
+          }
         }
         $cpt++;
       }
-      $res['nb']['others'] = $others;
-      $res['value']['others'] = $othersval;
-      arsort($res['nb']);
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+      {
+        $res[$approach]['others'] = $others[$approach];
+        arsort($res[$approach]);
+      }
     break;
     
     default:
       $client = sfConfig::get('app_about_client',array());
-      $res['nb'] = $res['value'] = array('exact' => 0, 'department' => 0, 'region' => 0, 'country' => 0, 'others' => 0);
+      
       $q = $this->buildQuery()
         ->select('c.id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
@@ -426,22 +451,14 @@ class geoActions extends sfActions
         ->groupBy('c.id')
         ->andWhere('(pro.id IS NULL AND c.postalcode = ? OR pro.id IS NOT NULL AND o.postalcode = ?)', array($client['postalcode'], $client['postalcode']))
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['nb']['exact'] = $res['value']['exact'] = 0;
-      if ( $count_tickets )
-      foreach ( $arr = $q->fetchArray() as $c )
-      {
-        $res['nb']['exact'] += $c['qty'];
-        $total += $c['qty'];
-      }
-      else
-      {
-        $res['nb']['exact'] = $q->count();
-        $total = 1;
-      }
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        $res[$approach]['exact'] = 0;
+      $arr = $q->fetchArray();
       foreach ( $arr as $c )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        $res['value']['exact'] += $c['sum'];
-        $totalval += $c['sum'];
+        $res[$approach]['exact'] += is_int($field) ? $field : $c[$field];
+        $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
       $q = $this->buildQuery()
@@ -451,23 +468,14 @@ class geoActions extends sfActions
         ->groupBy('c.id')
         ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) = substring(?, 1, 2)', $client['postalcode'])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['nb']['department'] = -$res['nb']['exact'];
-      $res['value']['department'] = -$res['value']['exact'];
-      if ( $count_tickets )
-      foreach ( $arr = $q->fetchArray() as $c )
-      {
-        $res['nb']['department'] += $c['qty'];
-        $total += $c['qty'];
-      }
-      else
-      {
-        $res['nb']['department'] += $q->count();
-        $total += 1;
-      }
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        $res[$approach]['department'] = -$res[$approach]['exact'];
+      $arr = $q->fetchArray();
       foreach ( $arr as $c )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        $res['value']['department'] += $c['sum'];
-        $totalval += $c['sum'];
+        $res[$approach]['department'] += is_int($field) ? $field : $c[$field];
+        $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
       $q = $this->buildQuery()
@@ -477,23 +485,14 @@ class geoActions extends sfActions
         ->groupBy('c.id')
         ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) IN (SELECT gd.num FROM GeoFrRegion gr LEFT JOIN gr.Departments gd LEFT JOIN gr.Departments gdc WHERE gdc.num = substring(?, 1, 2))', $client['postalcode'])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['nb']['region'] = -$res['nb']['department'] -$res['nb']['exact'];
-      $res['value']['region'] = -$res['value']['department'] -$res['value']['exact'];
-      if ( $count_tickets )
-      foreach ( $arr = $q->fetchArray() as $c )
-      {
-        $res['nb']['region'] += $c['qty'];
-        $total += $c['qty'];
-      }
-      else
-      {
-        $res['nb']['region'] += $q->count();
-        $total += 1;
-      }
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        $res[$approach]['region'] = -$res[$approach]['exact'] -$res[$approach]['department'];
+      $arr = $q->fetchArray();
       foreach ( $arr as $c )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        $res['value']['region'] += $c['sum'];
-        $totalval += $c['sum'];
+        $res[$approach]['region'] += is_int($field) ? $field : $c[$field];
+        $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
       $q = $this->buildQuery()
@@ -502,23 +501,14 @@ class geoActions extends sfActions
         ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
-      $res['nb']['country'] = -$res['nb']['region'] -$res['nb']['department'] -$res['nb']['exact'];
-      $res['value']['country'] = -$res['value']['region'] -$res['value']['department'] -$res['value']['exact'];
-      if ( $count_tickets )
-      foreach ( $arr = $q->fetchArray() as $c )
-      {
-        $res['nb']['country'] += $c['qty'];
-        $total += $c['qty'];
-      }
-      else
-      {
-        $res['nb']['country'] += $q->count();
-        $total += 1;
-      }
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        $res[$approach]['country'] = -$res[$approach]['exact'] -$res[$approach]['department'] -$res[$approach]['region'];
+      $arr = $q->fetchArray();
       foreach ( $arr as $c )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        $res['value']['country'] += $c['sum'];
-        $totalval += $c['sum'];
+        $res[$approach]['country'] += is_int($field) ? $field : $c[$field];
+        $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
       $q = $this->buildQuery()
@@ -526,24 +516,16 @@ class geoActions extends sfActions
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id');
-      $res['nb']['others'] = -$res['nb']['country'] -$res['nb']['region'] -$res['nb']['department'] -$res['nb']['exact'];
-      $res['value']['others'] = -$res['value']['country'] -$res['value']['region'] -$res['value']['department'] -$res['value']['exact'];
-      if ( $count_tickets )
-      foreach ( $arr = $q->fetchArray() as $c )
-      {
-        $res['nb']['others'] += $c['qty'];
-        $total += $c['qty'];
-      }
-      else
-      {
-        $res['nb']['others'] += $q->count();
-        $total += 1;
-      }
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        $res[$approach]['others'] = -$res[$approach]['exact'] -$res[$approach]['department'] -$res[$approach]['region'] -$res['nb']['country'];
+      $arr = $q->fetchArray();
       foreach ( $arr as $c )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        $res['value']['others'] += $c['sum'];
-        $totalval += $c['sum'];
+        $res[$approach]['others'] += is_int($field) ? $field : $c[$field];
+        $total[$approach] += is_int($field) ? $field : $c[$field];
       }
+      
       break;
     }
     
