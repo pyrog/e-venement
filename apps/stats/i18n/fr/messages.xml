@@ -149,8 +149,16 @@
         <target>Description</target>
       </trans-unit>
       <trans-unit>
-        <source>Quantity</source>
-        <target>Quantité</target>
+        <source>Contacts</source>
+        <target>Contacts</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Tickets</source>
+        <target>Billets</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Value</source>
+        <target>Valeur</target>
       </trans-unit>
       <trans-unit>
         <source>Percent</source>
