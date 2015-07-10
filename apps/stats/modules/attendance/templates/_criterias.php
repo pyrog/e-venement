@@ -3,10 +3,10 @@
     <?php echo $form->renderHiddenFields() ?>
   </div>
   <ul>
-    <?php if ( isset($form['by_tickets']) ): ?>
+    <?php if ( isset($form['approach']) ): ?>
     <li class="by_tickets">
-      <?php echo $form['by_tickets']->renderLabel() ?>
-      <span><?php echo $form['by_tickets'] ?></span>
+      <?php echo $form['approach']->renderLabel() ?>
+      <span><?php echo $form['approach'] ?></span>
     </li>
     <?php endif ?>
     <?php if ( isset($form['dates']) ): ?>

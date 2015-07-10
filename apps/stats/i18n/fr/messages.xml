@@ -157,8 +157,20 @@
         <target>Pourcentage</target>
       </trans-unit>
       <trans-unit>
-        <source>Counting tickets</source>
-        <target>Décompte les billets</target>
+        <source>By tickets</source>
+        <target>Par billets</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Type of approach</source>
+        <target>Approche</target>
+      </trans-unit>
+      <trans-unit>
+        <source>By contacts</source>
+        <target>Par contacts</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Financial</source>
+        <target>Financière</target>
       </trans-unit>
       <trans-unit>
         <source>From your localization</source>
