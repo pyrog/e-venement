@@ -40,6 +40,8 @@
     'name'              => __('Description'),
     'qty'               => __('Quantity'),
     'percent'           => __('Percent'),
+    'value'             => __('Value'),
+    'value%'            => __('Percent'),
   );
   
   include_partial('global/csv',$vars);
