@@ -25,7 +25,7 @@
 $tickets = array();
 $charset = sfConfig::get('software_internals_charset');
 
-for ( $i = 0 ; $line = fgets($fp) ; $i++ )
+for ( $i = 0 ; $line = preg_replace('/\r/', '', str_replace('\r','',fgets($fp))) ; $i++ )
 // if !EOF and !BOF
 if ( strlen($line) == 215 || strlen($line) >= 107 && strlen($line) <= 108 )
 {
