@@ -1,6 +1,7 @@
 // the global var that can be used everywhere as a "root"
 if ( LI == undefined )
   var LI = {};
+LI.pub_month_classes = ['.sf_admin_list_td_dates', '.sf_admin_list_td_list_locations', '.sf_admin_list_td_list_depends_on', '.sf_admin_list_td_list_depends_on_dates'];
 
 if ( LI.pubCartReady == undefined )
   LI.pubCartReady = [];
@@ -95,14 +96,18 @@ $(document).ready(function(){
         
         evt.find('.month:last').remove();
         nevt.find('.month:not(:last)').remove();
-        nevt.find('.sf_admin_list_td_dates li:not(.'+month+')').remove();
+        $.each(LI.pub_month_classes, function(i, classname){
+          nevt.find(classname+' li:not(.'+month+')').remove();
+        });
         
         if ( arr.indexOf(month) == -1 )
           arr.push(month);
       });
       
       var month = '.'+evt.find('.month:first').clone().removeClass('month').prop('class');
-      evt.find('.sf_admin_list_td_dates li:not('+month+')').remove();
+      $.each(LI.pub_month_classes, function(i, classname){
+        evt.find(classname+' li:not('+month+')').remove();
+      });
     });
     
     // adding a class depending on current month on every event
@@ -120,11 +125,13 @@ $(document).ready(function(){
     });
     
     // reordering inside the month groups, by the date of the first manifestation
-    $('.sf_admin_list tbody .sf_admin_row .sf_admin_list_td_dates li:first-child').each(function(){
-      var cur = parseInt($(this).attr('data-time'));
-      var next = parseInt($(this).closest('.sf_admin_row').next().find('.sf_admin_list_td_dates li:first').attr('data-time'));
-      if ( cur > next )
-        $(this).closest('.sf_admin_row').next().insertBefore($(this).closest('.sf_admin_row'));
+    $.each(LI.pub_month_classes, function(i, classname){
+      $('.sf_admin_list tbody .sf_admin_row '+classname+' li:first-child').each(function(){
+        var cur = parseInt($(this).attr('data-time'));
+        var next = parseInt($(this).closest('.sf_admin_row').next().find(classname+' li:first').attr('data-time'));
+        if ( cur > next )
+          $(this).closest('.sf_admin_row').next().insertBefore($(this).closest('.sf_admin_row'));
+      });
     });
     
     // grouping by month
@@ -181,6 +188,17 @@ $(document).ready(function(){
         .after(arr[key]);
     });
   }
+  
+  // underlining same lines in different <td>s in the same <tr>
+  $('.sf_admin_list .no-bullet a').mouseenter(function(){
+    $(this).closest('tr')
+      .find('.no-bullet li:nth-child('+($(this).closest('li').index()+1)+')')
+      .addClass('highlight');
+  });
+  $('.sf_admin_list .no-bullet a').mouseleave(function(){
+    $(this).closest('tr').find('.no-bullet li')
+      .removeClass('highlight');
+  });
   
   // change quantities in manifestations list
   $('.sf_admin_list_td_list_tickets .qty input').change(function(){
