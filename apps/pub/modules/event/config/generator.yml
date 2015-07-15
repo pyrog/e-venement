@@ -20,15 +20,19 @@ generator:
         list_companies: { label: Companies }
         list_picture: { label: '' }
         list_locations: { label: Location }
+        list_depends_on: { label: With }
+        list_depends_on_dates: { label: '' }
+        list_locations: { label: Where? }
       list:
         batch_actions: []
         object_actions: []
         actions: []
-        display: [_list_picture, _month, =name, MetaEvent, EventCategory, _dates, _list_locations, _age_min, _list_companies]
+        display: [_list_picture, _month, =name, MetaEvent, EventCategory, _dates, _list_depends_on, _list_depends_on_dates, _list_locations, _age_min, _list_companies]
         table_method: retrievePublicList
         sort: ['min_date, m.happens_at', '']
         title: <?php echo sfConfig::get('app_informations_index','Events list').PHP_EOL ?>
-        max_per_page: 100
+        max_per_page: <?php echo sfConfig::get('app_tickets_nb_manifestations_per_default',100).PHP_EOL ?>
+        
       filter:
         display: [name, meta_event_id, event_category_id]
       form:    ~

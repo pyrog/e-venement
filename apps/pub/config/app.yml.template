@@ -37,6 +37,7 @@ all:
     #id: qrcode # can be id (default), qrcode, othercode
     #no_conflict: 30 minutes # the needed minimum delay to go from one location to another
     #pdf_attachments: true
+    #nb_manifestations_per_default: 100
   store:
     #disabled: false
     max_per_product: 9

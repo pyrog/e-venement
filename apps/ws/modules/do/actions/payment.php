@@ -119,6 +119,7 @@
     $transaction = Doctrine::getTable('Transaction')->findOneById($this->getUser()->getAttribute('transaction_id'));
     if ( $transaction->Order->count() <= 0 )
     {
+      error_log('WS: Initiating an Order after a positive response from e-voucher for #'.$transaction->id);
       $form_order = new OrderForm($this->Transaction->Order[0]);
       $order = array(
         'transaction_id' => $transaction->id,
@@ -129,11 +130,15 @@
       $form_order->bind($order);
       if ( !$form_order->isValid() )
       {
+        error_log('WS: An error occurred creating an Order after a positive response from e-voucher for #'.$transaction->id);
         $this->getResponse()->setStatusCode('500');
         return sfView::NONE;
       }
       $form_order->save();
+      error_log('WS: The Order is correctly recorded for #'.$transaction->id);
     }
+    else
+      error_log('WS: No need to create an Order for #'.$transaction->id);
     
     // last elements to build the response
     $this->getResponse()->setStatusCode( $this->getWhatToPay() > $paid ? '202' : '200' );
