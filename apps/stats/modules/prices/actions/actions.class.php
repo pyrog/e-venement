@@ -121,7 +121,7 @@ class pricesActions extends sfActions
     }
     
     $q = Doctrine::getTable('Price')->createQuery('p')
-      ->select('p.id, pt.id, pt.lang, pt.name, p.value, count(t.id) AS nb')
+      ->select('p.id, pt.id, pt.lang, pt.name AS name, p.value, count(t.id) AS nb')
       ->leftJoin('p.Tickets t')
       ->leftJoin('t.Manifestation m')
       ->leftJoin('m.Event e')
