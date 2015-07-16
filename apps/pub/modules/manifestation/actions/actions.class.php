@@ -85,6 +85,7 @@ class manifestationActions extends autoManifestationActions
       ->andWhere('m.id = ?',$request->getParameter('id'))
       ->andWhere('m.reservation_confirmed = ?',true)
       
+      ->leftJoin('m.IsNecessaryTo int')
       //->leftJoin('g.Workspace ws')
       ->leftJoin('ws.Users wu')
       ->leftJoin('m.Location l')
@@ -123,6 +124,10 @@ class manifestationActions extends autoManifestationActions
     
     $this->manifestation = $this->gauges[0]->Manifestation;
     $this->form = new PricesPublicForm;
+    
+    if ( $this->manifestation->IsNecessaryTo->count() > 0 )
+      $this->redirect('manifestation/show?id='.$this->manifestation->IsNecessaryTo[0]->id);
+    
     sfConfig::set('pub.meta_event.slug', $this->manifestation->Event->MetaEvent->slug);
     
     $this->mcp = $this->getAvailableMCPrices($this->manifestation);
