@@ -1,2 +1,3 @@
 all:
   javascripts: [default-check-all]
+  stylesheets: [event-meta-event]

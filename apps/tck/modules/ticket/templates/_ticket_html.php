@@ -48,6 +48,9 @@
              <span class="contact"><?php echo $ticket->Transaction->Contact ?></span>
          <?php else: ?><?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?><?php endif ?></p>
     <p class="mentions">
+      <?php if ( $ticket->Manifestation->Location->licenses ): ?>
+      <span class="licenses"><?php echo $ticket->Manifestation->Location->licenses ?></span>
+      <?php endif ?>
       <span class="optional"><?php $mentions = sfConfig::get('app_tickets_mentions'); echo nl2br($mentions['optional']) ?></span>
       <?php if ( $ticket->cancelling ): ?>
         <span class="cancelled-id">#<?php echo $ticket->cancelling ?></span>

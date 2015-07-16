@@ -22,8 +22,9 @@ class EventFormFilter extends BaseEventFormFilter
     $this->widgetSchema   ['meta_event_id']->setOption('query', Doctrine::getTable('MetaEvent')->createQuery('me')
       ->andWhereIn('me.id',array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials()))
     );
-    $this->widgetSchema   ['meta_event_id']->setOption('add_empty',false);
-    $this->widgetSchema   ['meta_event_id']->setOption('order_by',array('name',''));
+    $this->widgetSchema   ['meta_event_id']
+      ->setOption('add_empty',false)
+      ->setOption('order_by',array('translation.name',''));
     $this->validatorSchema['meta_event_id']->setOption('multiple',true);
     $this->widgetSchema   ['workspaces_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Workspace',

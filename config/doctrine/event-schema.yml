@@ -97,6 +97,8 @@ MetaEvent:
       unique: true
       fields: [name]
       canUpdate: false
+    I18n:
+      fields: [name, description]
   indexes:
     meta_event_hide_in_month_calendars_idx:
       fields: [hide_in_month_calendars]
@@ -106,6 +108,7 @@ MetaEvent:
       notblank: true
       notnull:  true
       unique:   true
+    description: text
     hide_in_month_calendars:
       type: boolean
       default: false
@@ -272,6 +275,7 @@ Location:
       type: boolean
       notnull: true
       default: true
+    licenses: string(255)
   relations:
     Organism:
       foreignAlias: Locations

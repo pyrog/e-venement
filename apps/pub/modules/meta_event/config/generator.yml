@@ -16,7 +16,7 @@ generator:
       fields:
         list_name: { label: Name }
       list:
-        display: [_list_name]
+        display: [_list_name, description]
         object_actions: []
         batch_actions: []
         actions: []

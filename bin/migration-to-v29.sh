@@ -76,7 +76,11 @@ psql <<EOF
   ALTER TABLE checkpoint DROP COLUMN legal;
   UPDATE ticket SET taxes = 0 WHERE taxes IS NULL;
   UPDATE ticket_version SET taxes = 0 WHERE taxes IS NULL;
-
+  
+  CREATE TABLE meta_event_translation (id INTEGER, name VARCHAR(255), description TEXT, lang CHARACTER(2));
+  INSERT INTO meta_event_translation (SELECT id, name, '', 'en' FROM meta_event);
+  ALTER TABLE meta_event DROP COLUMN name;
+  
   INSERT INTO sf_guard_permission(name, description, created_at, updated_at) values ('tck-duplicate-ticket', 'Permission to duplicate tickets', now(), now());
   INSERT INTO sf_guard_group_permission(permission_id, group_id, created_at, updated_at) values ((select id from sf_guard_permission where name = 'tck-duplicate-ticket'), (select id from sf_guard_group where name = 'tck-responsible'), now(), now());
   INSERT INTO sf_guard_group_permission(permission_id, group_id, created_at, updated_at) values ((select id from sf_guard_permission where name = 'tck-duplicate-ticket'), (select id from sf_guard_group where name = 'tck-admin'), now(), now());
@@ -154,8 +158,8 @@ echo "Be careful with DB errors. A table with an error is an empty table !... If
 echo ""
 
 echo ''
-read -p "Do you want to refresh your Searchable data for Contacts & Organisms (recommanded, but it can take a while) ? [Y/n] " refresh
-if [ "$refresh" != 'n' ]; then
+read -p "Do you want to refresh your Searchable data for Contacts & Organisms (recommanded, but it can take a while) ? [y/N] " refresh
+if [ "$refresh" == 'y' ]; then
   psql $db <<EOF
 DELETE FROM contact_index;
 DELETE FROM organism_index;
@@ -165,6 +169,9 @@ EOF
 fi
 
 # final data modifications
+echo ""
+read -p "Do you want to copy MetaEvent's english translations (default i18n after a migration from v2.7) into french ? [Y/n] " reset
+[ "$reset" != 'n' ] && ./symfony e-venement:copy-i18n MetaEvent en fr
 echo ""
 read -p "Do you want to update the Postalcodes data (can take a while)? [y/N] " reset
 [ "$reset" = 'y' ] && echo 'DELETE FROM postalcode;' | psql && ./symfony doctrine:data-load --append data/fixtures/20-postalcodes.yml
