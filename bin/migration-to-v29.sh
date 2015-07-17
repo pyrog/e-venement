@@ -91,13 +91,6 @@ pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.pgdump && echo "DB dumped"
 fi #end of "allow dumps" condition
 
 echo ""
-read -p "Do you want to reset properly your lib/model, lib/form & lib/filter files using SVN ? [y/N] " reset
-if [ "$reset" = 'y' ]; then
-  rm -rf lib/*/doctrine/
-  svn update
-fi
-
-echo ""
 echo ""
 db="$PGDATABASE"
 [ -z "$db" ] && db=$USER
