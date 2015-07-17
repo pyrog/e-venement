@@ -48,12 +48,12 @@
   <?php $nb++ ?>
   <div class="event choices <?php if ( $active == $nb ) echo 'active'; else echo $active < $nb ? 'future' : 'past' ?> access <?php echo $sf_user->isStoreActive() ? 'with-store' : '' ?>">
     <ul>
-      <li><?php echo link_to(sfConfig::get('app_informations_index',__('Events')), '@homepage', array('class' => 'event')) ?></li>
+      <li><?php echo link_to(pubConfiguration::getText('app_informations_index',__('Events')), '@homepage', array('class' => 'event')) ?></li>
       <?php if ( $sf_user->isStoreActive() ): ?>
-      <li><?php echo link_to(sfConfig::get('app_informations_store',__('Store')), 'store/index', array('class' => 'store')) ?></li>
+      <li><?php echo link_to(pubConfiguration::getText('app_informations_store',__('Store')), 'store/index', array('class' => 'store')) ?></li>
       <?php endif ?>
       <?php if ( $sf_user->getGuardUser()->MemberCards->count() > 0 ): ?>
-      <li><?php echo link_to(sfConfig::get('app_member_cards_title', __('Member cards')), 'card/index', array('class' => 'mc')) ?></li>
+      <li><?php echo link_to(pubConfiguration::getText('app_member_cards_title', __('Member cards')), 'card/index', array('class' => 'mc')) ?></li>
       <?php endif ?>
     </ul>
   </div>
@@ -61,7 +61,7 @@
   <div class="cart <?php if ( $active == $nb ) echo 'active'; else echo $active < $nb ? 'future' : 'past' ?> access">
     <ul>
       <li><?php echo link_to(__('Cart'),'cart/show') ?></li>
-      <?php if ( count($cultures = sfConfig::get('project_internals_cultures',array('fr' => 'Français'))) > 1 ): ?>
+      <?php if ( count($cultures = pubConfiguration::getText('project_internals_cultures',array('fr' => 'Français'))) > 1 ): ?>
       <?php endif ?>
     </ul>
   </div>
