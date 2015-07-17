@@ -78,7 +78,7 @@ generator:
           Event:              [name, meta_event_id, event_category_id]
           <?php echo $museum ? 'Periods' : 'Manifestations' ?>: [dates_range, location_id, workspaces_list, participants_list, duration, colors_list, voucherized]
           Bookings:           [contact_id, manif_confirmed, manif_blocking, manif_conflict, manif_optional]
-          Extra informations: [staging, writer, age_min, age_max, companies_list, display_by_default]
+          Extra informations: [age_min, age_max, companies_list, display_by_default]
       form: ~
       edit:
         title: Edit Event %%name%%
@@ -91,12 +91,12 @@ generator:
         <?php if ( $museum ): ?>title: New exhibition<?php endif ?><?php echo PHP_EOL ?>
         display:
           General:   [name, short_name, subtitle, meta_event_id, event_category_id, event_category_description<?php if ( !$museum ): ?>, companies_list<?php endif ?>]
-          Details:   [<?php echo !$museum ? 'duration, ' : '' ?>display_by_default, accounting_account, age_min, age_max, description, staging_label, staging, writer_label, writer]
+          Details:   [<?php echo !$museum ? 'duration, ' : '' ?>display_by_default, accounting_account, age_min, age_max, description]
           <?php echo $museum ? 'Periods' : 'Manifestations' ?>: [Manifestations]
-          Web Content: [web_price, web_price_group, extradesc, extraspec]
+          Web Content: [extradesc, extraspec]
       show:
         display:
           General:   [name, short_name, subtitle, _show_meta_event, _show_event_category, event_category_description, _show_companies_list]
-          Details:   [_show_duration, _show_display_by_default, age_min_h_r, age_max_h_r, _show_description, staging_label, staging, writer_label, writer]
-          Web Content: [_show_picture, _show_extradesc, _show_extraspec, web_price, web_price_group]
+          Details:   [_show_duration, _show_display_by_default, age_min_h_r, age_max_h_r, _show_description]
+          Web Content: [_show_picture, _show_extradesc, _show_extraspec]
           Checkpoints: [_show_checkpoints, _show_checkpoints_notice]

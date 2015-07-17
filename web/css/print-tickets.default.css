@@ -97,6 +97,7 @@ float: left;
 .transaction { font-size: 6pt; margin-top: 1.5mm; height: 8pt; }
 .mentions { margin-top: 1mm; }
 .mentions .cancelled-id { text-decoration: line-through; }
+.mentions .licenses + .optional { display: none; }
 .left .mentions .keep-it { margin-left: 15px; }
 .right .mentions .keep-it { margin-right: 15px; }
 
