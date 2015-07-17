@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Licenses</source>
+        <target>Licences</target>
+      </trans-unit>
+      <trans-unit>
         <source>Duplicate&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</source>
         <target>Dupliquer&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</target>
       </trans-unit>

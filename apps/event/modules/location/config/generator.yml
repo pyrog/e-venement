@@ -51,7 +51,7 @@ generator:
         display:
           General: [name, rank, email, contact_id, organism_id, reservation_price]
           Address: [address, postalcode, _cities, city, country, npai]
-          More: [description, gauge_min, gauge_max]
+          More: [description, licenses]
           #Geolocalization: [_gmap]
       new:
         display:
