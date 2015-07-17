@@ -1,6 +1,6 @@
 <?php
 
-header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
+header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA NOI COR NID CUR ADM DEV CNT BUS"');
 require_once(dirname(__FILE__).'/../config/ProjectConfiguration.class.php');
 
 $configuration = ProjectConfiguration::getApplicationConfiguration('pub', 'prod', false);
