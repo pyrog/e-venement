@@ -11,9 +11,11 @@ class PluginMetaEventTable extends Doctrine_Table
     {
       $q = parent::createQuery($alias);
 
-      if (!( sfContext::hasInstance()
-        && sfContext::getInstance()->getActionName()
-        && in_array(sfContext::getInstance()->getActionName(), array('edit', 'update'))
+      if ( !sfContext::hasInstance() || !sfContext::getInstance()->getActionName() )
+        $q->leftJoin("$alias.Translation translation");
+      elseif (!( sfContext::hasInstance()
+         && sfContext::getInstance()->getActionName()
+         && in_array(sfContext::getInstance()->getActionName(), array('edit', 'update'))
       ))
       {
         $culture = sfContext::hasInstance() ? sfContext::getInstance()->getUser()->getCulture() : 'fr';

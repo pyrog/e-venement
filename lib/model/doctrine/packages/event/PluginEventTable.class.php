@@ -27,7 +27,9 @@ class PluginEventTable extends Doctrine_Table implements CompositeSearchableTabl
     {
       $q = parent::createQuery($alias);
       
-      if (!( sfContext::hasInstance()
+      if ( !sfContext::hasInstance() || !sfContext::getInstance()->getActionName() )
+        $q->leftJoin("$alias.Translation translation");
+      elseif (!( sfContext::hasInstance()
         && sfContext::getInstance()->getActionName()
         && in_array(sfContext::getInstance()->getActionName(), array('edit', 'update'))
       ))
