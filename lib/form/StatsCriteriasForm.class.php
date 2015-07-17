@@ -163,15 +163,19 @@ class StatsCriteriasForm extends BaseForm
     ));
     return $this;
   }
-  public function addByTicketsCriteria()
+  public function addApproachCriteria()
   {
-    $this->widgetSchema   ['by_tickets'] = new sfWidgetFormInputCheckbox(array(
-      'value_attribute_value'   => 'y',
-      'label' => 'Counting tickets',
+    $this->widgetSchema   ['approach'] = new sfWidgetFormChoice(array(
+      'choices' => $arr = array(
+        '' => 'By contacts',
+        'by-tickets' => 'By tickets',
+        'financial' => 'Financial',
+      ),
+      'label' => 'Type of approach',
     ));
-    $this->validatorSchema['by_tickets'] = new sfValidatorBoolean(array(
+    $this->validatorSchema['approach'] = new sfValidatorChoice(array(
       'required' => false,
-      'true_values' => array('y'),
+      'choices' => array_keys($arr),
     ));
     return $this;
   }

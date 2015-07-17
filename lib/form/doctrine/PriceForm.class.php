@@ -30,12 +30,19 @@ class PriceForm extends BasePriceForm
 
     $this->widgetSchema['manifestations_list']
       ->setOption('renderer_class','sfWidgetFormSelectDoubleList');
-    $this->widgetSchema['users_list']
-      ->setOption('expanded',true)
-      ->setOption('order_by',array('username',''));
     $this->widgetSchema['workspaces_list']
       ->setOption('expanded',true)
       ->setOption('order_by',array('name',''));
+    $this->widgetSchema['users_list']
+      ->setOption('expanded',true)
+      ->setOption('order_by',array('username',''))
+      ->setOption('query', $q = Doctrine::getTable('sfGuardUser')->createQuery('u'))
+    ;
+    if ( !$this->object->isNew() )
+      $q->leftJoin('u.Prices p WITH p.id = ?', $this->object->id)
+        ->andWhere('p.id IS NOT NULL OR u.is_active = ?', true);
+    else
+      $q->andWhere('u.is_active = ?', true);
     unset(
       $this->widgetSchema['gauges_list'],
       $this->widgetSchema['member_cards_list'],

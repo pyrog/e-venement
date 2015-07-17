@@ -38,8 +38,12 @@
   
   $vars['options']['header'] = array(
     'name'              => __('Description'),
-    'qty'               => __('Quantity'),
+    'qty'               => __('Contacts'),
     'percent'           => __('Percent'),
+    'tickets'           => __('Tickets'),
+    'tickets%'          => __('Percent'),
+    'value'             => __('Value'),
+    'value%'            => __('Percent'),
   );
   
   include_partial('global/csv',$vars);

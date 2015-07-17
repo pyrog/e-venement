@@ -75,9 +75,13 @@ class EventTable extends PluginEventTable
   }
   public function retrievePublicList()
   {
-    return $this->retrieveList()
-      ->andWhere('g.online = TRUE')
+    $q = $this->retrieveList();
+    $a = $q->getRootAlias();
+    $q->andWhere('g.online = TRUE')
+      ->andWhere("$a.display_by_default = TRUE")
       ->andWhere('m.reservation_confirmed = TRUE')
-      ->andWhere('m.happens_at > NOW()');
+      ->andWhere('m.happens_at > NOW()')
+    ;
+    return $q;
   }
 }

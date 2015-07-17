@@ -1,10 +1,10 @@
 <?php if ( $event->Manifestations->count() > 0 ): ?>
 <ul class="no-bullet">
-  <?php foreach ( $event->Manifestations as $manif ): ?>
+<?php foreach ( $event->Manifestations as $manif ): ?>
   <li class="month-<?php echo format_date(strtotime($manif->happens_at), 'yyyyMM') ?>" data-time="<?php echo strtotime($manif->happens_at) ?>">
-    <?php echo link_to($manif->getFormattedDate(),'manifestation/edit?id='.$manif->id) ?>
+    <?php echo $manif->DependsOn->Event ?>
   </li>
-  <?php endforeach ?>
+<?php endforeach ?>
 </ul>
 <?php endif ?>
 

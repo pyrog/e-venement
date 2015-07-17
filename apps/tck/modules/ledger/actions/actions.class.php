@@ -100,9 +100,10 @@ class ledgerActions extends sfActions
       $criterias[$param] = $request->getParameter($param);
     
     // session stuff
-    if ( $criterias )
-      $this->getUser()->setAttribute('ledger.criterias', $criterias, 'tck_module');
-    $criterias = $this->getUser()->getAttribute('ledger.criterias',$criterias,'tck_module');
+    if ( $request->getPostParameter($this->form->getName(),array()) )
+      $this->getUser()->setAttribute('ledger.criterias', $request->getPostParameter($this->form->getName(),array()), 'tck_module');
+    if ( !$request->getGetParameter($this->form->getName(),array()) )
+      $criterias = $this->getUser()->getAttribute('ledger.criterias',$criterias,'tck_module');
     
     // Hack for form validation
     if ( isset($criterias['users']) && $criterias['users'][0] === '' && count($criterias['users']) == 1 )

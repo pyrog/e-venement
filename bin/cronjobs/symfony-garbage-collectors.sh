@@ -29,5 +29,7 @@ for dir in /var/www/*; do
     ./symfony e-venement:garbage-collector tck
     ./symfony e-venement:garbage-collector pub
     ./symfony e-venement:garbage-collector pos
+    ./symfony e-venement:garbage-collector rp
+    ./symfony e-venement:garbage-collector ws
   fi
 done

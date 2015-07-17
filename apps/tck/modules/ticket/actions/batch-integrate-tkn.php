@@ -25,9 +25,9 @@
 $tickets = array();
 $charset = sfConfig::get('software_internals_charset');
 
-for ( $i = 0 ; $line = fgets($fp) ; $i++ )
+for ( $i = 0 ; $line = preg_replace('/\r/', '', str_replace('\r','',fgets($fp))) ; $i++ )
 // if !EOF and !BOF
-if ( strlen($line) == 216 || strlen($line) >= 107 && strlen($line) <= 108 )
+if ( strlen($line) == 215 || strlen($line) >= 107 && strlen($line) <= 108 )
 {
   $line = iconv($charset['old'],$charset['db'],$line);
   
@@ -40,9 +40,8 @@ if ( strlen($line) == 216 || strlen($line) >= 107 && strlen($line) <= 108 )
   $tck['price_id']  = isset($this->translation['prices'][$tck['price_name']]) ? $this->translation['prices'][$tck['price_name']]['id'] : NULL;
   $tck['fiscal']    = trim(substr($line,39,10));
   $tck['zone']      = trim(substr($line,49,4));
-  $tck['rank']      = trim(substr($line,53,4));
-
-  $tck['seat']      = trim(substr($line,57,4));
+  $tck['rank']      = ltrim(trim(substr($line,53,4)),'0');
+  $tck['seat']      = $tck['rank'].ltrim(trim(substr($line,57,4)),'0');
   $tck['value']     = isset($this->translation['prices'][$tck['price_name']]) ? $this->translation['prices'][$tck['price_name']]['value'] : trim(substr($line,61,10));
   $tck['devise']    = trim(substr($line,71,3));
   $tck['id']        = trim(substr($line,74,16));
@@ -60,3 +59,5 @@ if ( strlen($line) == 216 || strlen($line) >= 107 && strlen($line) <= 108 )
   else
     $tickets[$tck['id']] = $tck;
 }
+else
+  error_log('TicketMaster: lines not conform ('.strlen($line).' chars)');

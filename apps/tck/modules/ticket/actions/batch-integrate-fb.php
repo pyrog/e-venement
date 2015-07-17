@@ -92,7 +92,7 @@ for ( $i = 0 ; $line = fgetcsv($fp, 0, $separator) ; $i++ )
     $ticket['value']      = isset($this->translation['prices'][$ticket['price_name']]) ? $this->translation['prices'][$ticket['price_name']]['value'] : $line[23];
     $ticket['id']         = $line[15];
     $ticket['type']       = 'fb';
-    $ticket['seat']       = $line[18];
+    $ticket['seat']       = $line[17].$line[18];
     
     // created_at
     $ticket['created_at'] = explode(' ',$line[2]);

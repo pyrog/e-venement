@@ -1,4 +1,3 @@
-<?php sfApplicationConfiguration::getActive()->loadHelpers(array('I18N')) ?>
 # You can find more information about this file on the symfony website:
 # http://www.symfony-project.org/reference/1_4/en/11-App
 
@@ -18,8 +17,9 @@ all:
   informations:
     title: Libre Informatique
     email: contact@to-be-changed.tld
-    #index: <?php //echo __('') ?>
-    #store: <?php //echo __('') ?>
+    #index: Events list
+    #store: Products list
+    #events_title: Events
   timeout:
     item: 40 minutes # WARNING: it's directly related to the configuration of apps/tck/config/app.yml for the tck garbage collector
     global: 1 hour
@@ -37,6 +37,7 @@ all:
     #id: qrcode # can be id (default), qrcode, othercode
     #no_conflict: 30 minutes # the needed minimum delay to go from one location to another
     #pdf_attachments: true
+    #nb_manifestations_per_default: 100
   store:
     #disabled: false
     max_per_product: 9

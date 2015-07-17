@@ -149,16 +149,36 @@
         <target>Description</target>
       </trans-unit>
       <trans-unit>
-        <source>Quantity</source>
-        <target>Quantité</target>
+        <source>Contacts</source>
+        <target>Contacts</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Tickets</source>
+        <target>Billets</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Value</source>
+        <target>Valeur</target>
       </trans-unit>
       <trans-unit>
         <source>Percent</source>
         <target>Pourcentage</target>
       </trans-unit>
       <trans-unit>
-        <source>Counting tickets</source>
-        <target>Décompte les billets</target>
+        <source>By tickets</source>
+        <target>Par billets</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Type of approach</source>
+        <target>Approche</target>
+      </trans-unit>
+      <trans-unit>
+        <source>By contacts</source>
+        <target>Par contacts</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Financial</source>
+        <target>Financière</target>
       </trans-unit>
       <trans-unit>
         <source>From your localization</source>

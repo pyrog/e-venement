@@ -4,6 +4,17 @@ require_once dirname(__FILE__).'../../../../config/autoload.inc.php';
 
 class rpConfiguration extends sfApplicationConfiguration
 {
+  protected $collectors = array();
+  protected $task;
+  protected $init_configuration = false;
+  protected $bad_indexes_email = array(
+    'orange',
+    'sfr',
+    'free',
+    'yahoo',
+    'gmail',
+  );
+  
   public function setup()
   {
     if (!( sfContext::hasInstance() && get_class(sfContext::getInstance()->getConfiguration()) != get_class($this) ))
@@ -95,5 +106,23 @@ class rpConfiguration extends sfApplicationConfiguration
     $auth->success          = $params['authenticated'];
     
     $auth->save();
+  }
+  
+  public function initGarbageCollectors(sfCommandApplicationTask $task = NULL)
+  {
+    $this->task = $task;
+    
+    // Bad indexes removal
+    $this->addGarbageCollector('indexes-removal', function(){
+      $section = 'Indexes removal';
+      $this->stdout($section, 'Removing bad indexes...', 'COMMAND');
+      $nb = 0;
+      
+      $q = "DELETE FROM contact_index WHERE field = 'email' AND keyword IN ('".implode("','", $this->bad_indexes_email)."')";
+      $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
+      $stmt = $pdo->prepare($q);
+      $stmt->execute();
+      $this->stdout($section, "[OK] indexes removed", 'INFO');
+    });
   }
 }

@@ -53,7 +53,7 @@
       <li><?php echo link_to(sfConfig::get('app_informations_store',__('Store')), 'store/index', array('class' => 'store')) ?></li>
       <?php endif ?>
       <?php if ( $sf_user->getGuardUser()->MemberCards->count() > 0 ): ?>
-      <li><?php echo link_to(sfConfig::get('app_member_cards_title',false) ? pubConfiguration::getText('app_member_cards_title') : __('Member cards'),'card/index', array('class' => 'mc')) ?></li>
+      <li><?php echo link_to(sfConfig::get('app_member_cards_title', __('Member cards')), 'card/index', array('class' => 'mc')) ?></li>
       <?php endif ?>
     </ul>
   </div>

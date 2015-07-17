@@ -123,6 +123,30 @@
     }
     
     $form->setMaxQuantity($max);
+    
+    // value of the current price on the current manif + value of the same price for the DependsOn manif
+    $value = $pm->value;
+    if ( $gauge->Manifestation->depends_on )
+    foreach ( $gauge->Manifestation->DependsOn->Gauges as $dogauge )
+    if ( $dogauge->workspace_id == $gauge->workspace_id )
+    {
+      if ( $pm instanceof PriceGauge )
+      {
+        foreach ( $gauge->Manifestation->DependsOn->Gauges as $dogauge )
+        if ( $dogauge->workspace_id == $gauge->workspace_id )
+          $dopms = $dogauge->PriceGauges;
+      }
+      elseif ( $pm instanceof PriceManifestation )
+        $dopms = $gauge->Manifestation->DependsOn->PriceManifestations;
+      
+      foreach ( $dopms as $dopm )
+      if ( $dopm->price_id == $pm->price_id )
+      {
+        $value += $dopm->value;
+        break;
+      }
+      break;
+    }
   ?>
   <tr data-price-id="<?php echo $pm->price_id ?>">
     <?php if ( $vel['full_seating_by_customer'] ): ?>
@@ -134,7 +158,7 @@
       <?php echo $pm->Price->description ? $pm->Price->description : $pm->Price ?>
       <?php echo $form->renderHiddenFields() ?>
     </td>
-    <td class="value"><?php echo format_currency($pm->value,'€') ?></td>
+    <td class="value"><?php echo format_currency($value,'€') ?></td>
     <td class="quantity"><?php echo $form['quantity'] ?></td>
     <td class="total"><?php echo format_currency(0,'€') ?></td>
     <td class="extra-taxes"></td>
