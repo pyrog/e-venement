@@ -17,7 +17,7 @@ generator:
         list_hide_in_month_calendars: { label: In calendars? }
         hide_in_month_calendars: { label: To be hidden in calendars? }
       list:
-        display: [name, description, _list_hide_in_month_calendars]
+        display: [name, _list_description, _list_hide_in_month_calendars]
         sort: [translation.name,'']
       filter:  ~
       form:

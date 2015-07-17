@@ -37,6 +37,8 @@ class ManifestationTable extends PluginManifestationTable
   
   public function retrieveList($q, $museum = false)
   {
+    if ( !$q )
+      $q = $this->createQuery('m');
     return $q
       ->removeDqlQueryPart('orderby')
       ->andWhere('e.museum = ?', $museum);
@@ -50,6 +52,7 @@ class ManifestationTable extends PluginManifestationTable
     $e  = $alias != 'e'  ? 'e'  : 'e1';
     $et = $alias != 'et' ? 'et' : 'et1';
     $me = $alias != 'me' ? 'me' : 'me1';
+    $met= $alias != 'met'? 'met': 'met1';
     $l  = $alias != 'l'  ? 'l'  : 'l1';
     $pm = $alias != 'pm' ? 'pm' : 'pm1';
     $p  = $alias != 'p'  ? 'p'  : 'p1';
@@ -71,8 +74,9 @@ class ManifestationTable extends PluginManifestationTable
     
     $q = parent::createQuery($alias)
       ->leftJoin("$alias.Event $e")
-      ->leftJoin("$e.Translation $et WITH lang = '$culture'")
+      ->leftJoin("$e.Translation $et WITH $et.lang = '$culture'")
       ->leftJoin("$e.MetaEvent $me")
+      ->leftJoin("$me.Translation $met WITH $met.lang = '$culture'")
       ->leftJoin("$alias.Location $l");
     
     // security features: limitating manifestation's access to owner, or confirmed manifestation, or confirmations administrator
@@ -96,10 +100,10 @@ class ManifestationTable extends PluginManifestationTable
         ->leftJoin("$alias.Gauges $g")
         ->leftJoin("$g.Workspace $w")
         ->leftJoin("$alias.Organizers $o")
-        ->orderBy("$et.name, $me.name, $alias.happens_at, $alias.duration, $w.name");
+        ->orderBy("$et.name, $met.name, $alias.happens_at, $alias.duration, $w.name");
       if ( sfContext::hasInstance() )
       $q->leftJoin("$w.Order $wuo ON $wuo.workspace_id = $w.id AND $wuo.sf_guard_user_id = ".($uid = sfContext::getInstance()->getUser()->getId() ))
-        ->orderBy("$et.name, $me.name, $alias.happens_at, $alias.duration, $wuo.rank, $w.name")
+        ->orderBy("$et.name, $met.name, $alias.happens_at, $alias.duration, $wuo.rank, $w.name")
         ->leftJoin("$w.Users $wu")
         ->leftJoin("$me.Users $meu")
         ->andWhere("$meu.id = ?",$uid)

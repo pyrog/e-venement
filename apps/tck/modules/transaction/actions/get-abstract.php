@@ -262,7 +262,7 @@
             ->leftJoin('g.Workspace w')
             ->leftJoin('w.Order wuo ON wuo.workspace_id = w.id AND wuo.sf_guard_user_id = ?',$this->getUser()->getId())
             //->orderBy('et.name, me.name, m.happens_at, m.duration, wuo.rank, w.name, pmpt.name, pgpt.name') // BUG 2015-05-13 3è étage: selecting translations from PriceGauges & PriceManifestations is impossible: Couldn't hydrate. Found non-unique key mapping named 'lang'.
-            ->orderBy('et.name, me.name, m.happens_at, m.duration, wuo.rank, w.name')
+            ->orderBy('et.name, met.name, m.happens_at, m.duration, wuo.rank, w.name')
             ->leftJoin('pmp.WorkspacePrices pmpwp WITH pmpwp.workspace_id = w.id')
             ->leftJoin('pmp.UserPrices      pmpup WITH pmpup.sf_guard_user_id = ?',$this->getUser()->getId())
             ->leftJoin('pgp.WorkspacePrices pgpwp WITH pgpwp.workspace_id = w.id')
