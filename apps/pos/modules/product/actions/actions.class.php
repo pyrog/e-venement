@@ -13,6 +13,35 @@ require_once dirname(__FILE__).'/../lib/productGeneratorHelper.class.php';
  */
 class productActions extends autoProductActions
 {
+  public function executeSalesEvolution(sfWebRequest $request)
+  {
+    $this->json = array();
+    
+    $q = Doctrine::getTable('Product')->createQuery('p')
+      ->leftJoin('p.Declinations pd')
+      ->leftJoin('pd.BoughtProducts bp')
+      ->andWhere('bp.integrated_at IS NOT NULL')
+      ->andWhere('bp.integrated_at > ?', date('Y-m-d', strtotime('1 year ago')))
+      ->andWhere('p.id = ?', $request->getParameter('id'))
+    ;
+    
+    for ( $i = 365 ; $i >= 0 ; $i-- )
+      $this->json[date('Y-m-d', strtotime($i.' days ago'))] = 0;
+    
+    $pdt = $q->fetchOne();
+    foreach ( $pdt->Declinations as $declination )
+    foreach ( $declination->BoughtProducts as $bp )
+    {
+      $date = date('Y-m-d', strtotime($bp->integrated_at));
+      if ( !isset($this->json[$date]) )
+        $this->json[$date] = 0;
+      $this->json[$date]++;
+    }
+    
+    if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
+      return 'Success';
+    return 'Json';
+  }
   public function executeDuplicate(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers('I18N');

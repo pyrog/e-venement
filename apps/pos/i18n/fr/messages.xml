@@ -4,6 +4,26 @@
   <file source-language="EN" target-language="fr" datatype="plaintext" original="messages" date="2014-09-09T17:16:42Z" product-name="messages">
     <header/>
     <body>
+      <trans-unit id="163">
+        <source>Sales evolution</source>
+        <target>Évolution des ventes</target>
+      </trans-unit>
+      <trans-unit id="162">
+        <source>Stocks</source>
+        <target>Stocks</target>
+      </trans-unit>
+      <trans-unit id="161">
+        <source>Critical stock</source>
+        <target>Stock critique</target>
+      </trans-unit>
+      <trans-unit id="160">
+        <source>Perfect stock</source>
+        <target>Stock idéal</target>
+      </trans-unit>
+      <trans-unit id="159">
+        <source>Stock</source>
+        <target>Stock</target>
+      </trans-unit>
       <trans-unit id="158">
         <source>Duplicate&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</source>
         <target>Dupliquer&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</target>

@@ -2,6 +2,21 @@
 if ( LI == undefined )
   var LI = {};
 
+LI.array_keys = function(obj)
+{
+  var r = [];
+  for ( var key in obj )
+    r.push(key);
+  return r;
+}
+LI.array_values = function(obj)
+{
+  var r = [];
+  for ( var key in obj )
+    r.push(obj[key]);
+  return r;
+}
+
 LI.pad_num = function (num, digits){return(1e15+num+"").slice(-digits)}
 
 // CURRENCY STYLE ("fr" / "en")

@@ -73,6 +73,29 @@ abstract class PluginBoughtProduct extends BaseBoughtProduct
       $this->vat = $this->Declination->Product->Vat->value;
   }
   
+  public function preUpdate($event)
+  {
+    // decrease the stock of this declination
+    $mods = $this->getModified();
+    if ( isset($mods['integrated_at']) && $this->product_declination_id )
+    {
+      $this->Declination->stock = $this->Declination->stock + ($this->integrated_at ? -1 : 1);
+      $this->Declination->save();
+    }
+    return parent::preUpdate($event);
+  }
+  
+  public function postDelete($event)
+  {
+    // increase the stock with this declination
+    if ( $this->product_declination_id && $this->integrated_at )
+    {
+      $this->Declination->stock = $this->Declination->stock + 1;
+      $this->Declination->save();
+    }
+    return parent::postDelete($event);
+  }
+  
   public function getValueFromSchema()
   {
     $value = NULL;

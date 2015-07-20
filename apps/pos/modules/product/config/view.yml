@@ -4,4 +4,7 @@ ajaxSuccess:
   has_layout: false
   http_metas:
     content-type: application/json
-          
+salesEvolutionJson:
+  has_layout: false
+  http_metas:
+    content-type: application/json

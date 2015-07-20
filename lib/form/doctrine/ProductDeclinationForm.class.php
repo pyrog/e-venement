@@ -16,9 +16,20 @@ class ProductDeclinationForm extends BaseProductDeclinationForm
   public function configure()
   {
     parent::configure();
+    
     $this->widgetSchema['product_id'] = new sfWidgetFormInputHidden;
+    $this->widgetSchema['stock_perfect']->setLabel('Perfect stock')
+      ->setAttribute('class', 'stock stock-perfect');
+    $this->widgetSchema['stock_critical']->setLabel('Critical stock')
+      ->setAttribute('class', 'stock stock-critical');
+    $this->widgetSchema['stock']
+      ->setAttribute('class', 'stock stock-current');
+    
     $this->useFields(array_merge(array(
       'id', 'product_id', 'prioritary', 'code',
-    ),array_keys($this->embeddedForms)));
+    ),array_keys($this->embeddedForms),
+    array(
+      'stock', 'stock_perfect', 'stock_critical',
+    )));
   }
 }

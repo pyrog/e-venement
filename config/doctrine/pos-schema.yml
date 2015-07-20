@@ -87,6 +87,18 @@ Product:
       type: boolean
       default: true
       notnull: true
+    use_stock:
+      type: boolean
+      default: true
+      notnull: true
+    online_limit:
+      type: integer
+      notnull: true
+      default: 0
+    online_max_by_transaction:
+      type: integer
+      notnull: true
+      default: 5
   relations:
     Category:
       class: ProductCategory
@@ -166,6 +178,18 @@ ProductDeclination:
     prioritary:
       type: boolean
       default: false
+    stock:
+      type: integer
+      notnull: true
+      default: 20
+    stock_perfect:
+      type: integer
+      notnull: true
+      default: 100
+    stock_critical:
+      type: integer
+      notnull: true
+      default: 10
   relations:
     Product:
       foreignAlias: Declinations
