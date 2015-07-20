@@ -8,3 +8,7 @@ salesEvolutionJson:
   has_layout: false
   http_metas:
     content-type: application/json
+stateJson:
+  has_layout: false
+  http_metas:
+    content-type: application/json

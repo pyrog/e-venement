@@ -13,6 +13,39 @@ require_once dirname(__FILE__).'/../lib/productGeneratorHelper.class.php';
  */
 class productActions extends autoProductActions
 {
+  public function executeState(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    
+    $q = Doctrine::getTable('Product')->createQuery('p')
+      ->andWhere('p.id = ?', $request->getParameter('id'))
+      ->orderBy('d.code');
+    $this->forward404Unless($pdt = $q->fetchOne());
+    
+    $this->json = array(
+      'id' => $pdt->id,
+      'declinations' => array(),
+      'texts' => array(
+        'critical'  => __('Critical'),
+        'correct'   => __('Correct'),
+        'perfect'   => __('Good'),
+      ),
+    );
+    
+    foreach ( $pdt->Declinations as $declination )
+      $this->json['declinations'][$declination->code] = array(
+        'name' => $declination->name,
+        'id'   => $declination->id,
+        'current' => $declination->stock,
+        'critical' => $declination->stock_critical,
+        'perfect' => $declination->stock_perfect,
+      );
+    
+    if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
+      return 'Success';
+    return 'Json';
+  }
+  
   public function executeSalesEvolution(sfWebRequest $request)
   {
     $this->json = array();
@@ -28,7 +61,7 @@ class productActions extends autoProductActions
     for ( $i = 365 ; $i >= 0 ; $i-- )
       $this->json[date('Y-m-d', strtotime($i.' days ago'))] = 0;
     
-    $pdt = $q->fetchOne();
+    $this->forward404Unless($pdt = $q->fetchOne());
     foreach ( $pdt->Declinations as $declination )
     foreach ( $declination->BoughtProducts as $bp )
     {
