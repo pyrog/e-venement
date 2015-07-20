@@ -114,12 +114,26 @@ $(document).ready(function(){
         var gauge = this;
         $.get($(this).find('.data .gauge.raw').prop('href'), function(data){
           $(gauge).find('.data .gauge.raw').text(JSON.stringify(data));
-          LI.renderGauge(gauge);
+          switch ( $(gauge).closest('[data-type]').attr('data-type') ) {
+          case 'gauge':
+            LI.renderGauge(gauge);
+            break;
+          case 'declination':
+            LI.renderStock(gauge);
+            break;
+          }
         });
       }
       else
       {
-        LI.renderGauge(this);
+        switch ( $(this).attr('data-type') ) {
+        case 'gauge':
+          LI.renderGauge(this);
+          break;
+        case 'declination':
+          LI.renderStock(this);
+          break;
+        }
       }
     }
   }).dblclick(function(){
@@ -387,6 +401,79 @@ LI.checkGauges = function(form){
   return false;
 }
 
+LI.renderStock = function(item)
+{
+  if ( typeof item != 'string' && $(item).find('.data .gauge.raw').length == 0 )
+    return;
+  
+  var data = JSON.parse(typeof item == 'string' ? item : $(item).find('.data .gauge.raw').text());
+  if ( typeof data.declinations != 'object' )
+    return;
+  
+  var fdata = [[], [], []];
+  var ticks = [];
+  var cpt = 0;
+  $.each(data.declinations, function(code, stocks){
+    ticks[cpt] = code;
+    if ( stocks.current <= stocks.critical )
+    {
+      fdata[0][cpt] = stocks.current;
+      fdata[1][cpt] = 0;
+      fdata[2][cpt] = 0;
+    }
+    else if ( stocks.current > stocks.critical && stocks.current <= stocks.perfect )
+    {
+      fdata[0][cpt] = 0;
+      fdata[1][cpt] = stocks.current;
+      fdata[2][cpt] = 0;
+    }
+    else
+    {
+      fdata[0][cpt] = 0;
+      fdata[1][cpt] = 0;
+      fdata[2][cpt] = stocks.current;
+    }
+    cpt++;
+  });
+  
+  $.jqplot(
+    'li_transaction_field_product_infos', fdata, {
+      series: [
+        { label: data.texts.critical },
+        { label: data.texts.correct },
+        { label: data.texts.perfect }
+      ],
+      stackSeries: true,
+      seriesColors: [
+        'rgba(255,0,0,0.7)',
+        'rgba(255,165,0,0.7)',
+        'rgba(0,128,0,0.7)'
+      ],
+      seriesDefaults: {
+        renderer: $.jqplot.BarRenderer,
+        rendererOptions: { barMargin: 30 },
+        pointLabels: {
+          stackedValue: true,
+          location: 's',
+          show: true
+        }
+      },
+      legend: {
+        show: true,
+        location: 'e',
+        placement: 'outside'
+      },
+      axes: {
+        xaxis: {
+          ticks: ticks,
+          renderer: $.jqplot.CategoryAxisRenderer
+        }
+      },
+      captureRightClick: true
+    }
+  );
+}
+
 LI.renderGauge = function(item, only_inline_gauge)
 {
   if ( only_inline_gauge == undefined )
@@ -395,7 +482,7 @@ LI.renderGauge = function(item, only_inline_gauge)
   // the small gauge
   if (!( typeof item != 'string' && $(item).find('.data .gauge.raw').length == 0 ))
   {
-    data = JSON.parse(typeof item == 'string' ? item : $(item).find('.data .gauge.raw').text());
+    var data = JSON.parse(typeof item == 'string' ? item : $(item).find('.data .gauge.raw').text());
     var total = data.total > data.booked.printed + data.booked.ordered + data.booked.asked
       ? data.total
       : data.booked.printed + data.booked.ordered + data.booked.asked;

@@ -346,11 +346,20 @@
         $cpt = 0;
         foreach ( $product[$subobj.'s'] as $declination )
         {
+          switch ( $subobj ) {
+          case 'Gauge':
+            $url = cross_app_url_for('event','gauge/state?id='.$declination->id.'&json=true',true);
+            break;
+          case 'Declination':
+            $url = cross_app_url_for('pos','product/state?id='.$declination->product_id,true);
+            break;
+          }
+          
           $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id] = array(
             'id' => $declination->id,
             'sort' => $cpt,
             'name' => (string)$declination,
-            'url' => cross_app_url_for('event','gauge/state?id='.$declination->id.'&json=true',true),
+            'url' => $url,
             'type' => strtolower($subobj),
             'description' => NULL,
             'available_prices' => array(),

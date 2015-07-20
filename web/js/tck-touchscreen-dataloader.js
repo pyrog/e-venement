@@ -153,6 +153,7 @@ LI.completeContent = function(data, type, replaceAll = true)
         
         // graphical gauges
         switch ( type ) {
+        case 'store':
         case 'museum':
         case 'manifestations':
           wdeclination.find('.data .gauge.raw').remove();
