@@ -72,7 +72,7 @@
           <?php
             // calculating how many products we can buy at once
             $general = sfConfig::get('app_store_max_per_product', 9) - count($products);
-            $max = $max > $general ? $general : $max;
+            $max = !$declination->use_stock || $max > $general ? $general : $max;
           ?>
           <?php foreach ( !is_null($pp->value) ? range(0, $max) : range(0,1) as $val ): ?>
             <option <?php echo !is_null($pp->value) && isset($prices[$pp->price_id]) && $prices[$pp->price_id] == $val ? 'selected="selected"' : '' ?> value="<?php echo $val ?>">
