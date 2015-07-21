@@ -246,14 +246,23 @@
         break;
       case 'store_integrate':
         $this->json['success']['success_fields'][$field] = $success;
-        foreach ( $products = Doctrine::getTable('BoughtProduct')->createQuery('bp')
+        $error_stock = 0;
+        $products = new Doctrine_Collection('BoughtProduct');
+        foreach ( Doctrine::getTable('BoughtProduct')->createQuery('bp')
           ->andWhere('bp.transaction_id = ?', $this->form[$field]->getValue('id'))
           ->andWhere('bp.integrated_at IS NULL')
           ->leftJoin('bp.Transaction t')
+          ->leftJoin('bp.Declination d')
           ->execute() as $bp )
         {
-          $bp->integrated_at = date('Y-m-d H:i:s');
-          $bp->save();
+          if ( $bp->product_declination_id && $bp->Declination->stock > 0 )
+          {
+            $bp->integrated_at = date('Y-m-d H:i:s');
+            $bp->save();
+            $products[] = $bp;
+          }
+          else
+            $error_stock++;
         }
         
         if ( $products->count() > 0 )
@@ -264,6 +273,14 @@
             'user'        => $this->getUser(),
           )));
         
+        if ( $error_stock > 0 )
+          $this->json['error'] = array(true, format_number_choice(
+            '[1]One product cannot be delivered, its stock is empty.'.
+            '|'.
+            '(1,+Inf]%%nb%% products cannot be delivered, their stocks are empty.',
+            array('%%nb%%' => $error_stock),
+            $error_stock
+          ));
         $this->json['success']['success_fields'][$field]['remote_content']['load']['type']  = 'store_price';
         $this->json['success']['success_fields'][$field]['remote_content']['load']['url']   = url_for('transaction/getStore?id='.$request->getParameter('id'), true);
         break;

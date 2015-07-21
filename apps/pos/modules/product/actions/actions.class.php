@@ -33,12 +33,13 @@ class productActions extends autoProductActions
     );
     
     foreach ( $pdt->Declinations as $declination )
-      $this->json['declinations'][$declination->code] = array(
+      $this->json['declinations'][$declination->id] = array(
         'name' => $declination->name,
+        'code' => $declination->code,
         'id'   => $declination->id,
-        'current' => $declination->stock,
+        'current'  => $declination->stock,
         'critical' => $declination->stock_critical,
-        'perfect' => $declination->stock_perfect,
+        'perfect'  => $declination->stock_perfect,
       );
     
     if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )

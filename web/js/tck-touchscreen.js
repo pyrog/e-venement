@@ -413,8 +413,8 @@ LI.renderStock = function(item)
   var fdata = [[], [], []];
   var ticks = [];
   var cpt = 0;
-  $.each(data.declinations, function(code, stocks){
-    ticks[cpt] = code;
+  $.each(data.declinations, function(id, stocks){
+    ticks[cpt] = stocks.name;
     if ( stocks.current <= stocks.critical )
     {
       fdata[0][cpt] = stocks.current;
