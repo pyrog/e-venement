@@ -178,6 +178,10 @@ ProductDeclination:
     prioritary:
       type: boolean
       default: false
+    use_stock:
+      type: boolean
+      notnull: true
+      default: true
     stock:
       type: integer
       notnull: true

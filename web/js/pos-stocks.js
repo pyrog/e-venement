@@ -8,6 +8,19 @@ $(document).ready(function(){
   $('[href="#sf_fieldset_stocks"]').click(function(){
     LI.posStocks();
   });
+  
+  $('.sf_admin_form .sf_admin_form_field_declinations .use-stock').change(function(){
+    if ( !$(this).prop('checked') )
+    {
+      console.error('glop');
+      $(this).closest('table').find('.stock').closest('tr').fadeOut();
+    }
+    else
+    {
+      console.error('not checked');
+      $(this).closest('table').find('.stock').closest('tr').fadeIn();
+    }
+  }).change();
 });
 
 LI.posPrepareSalesData = function(obj)

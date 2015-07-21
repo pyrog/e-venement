@@ -4,6 +4,10 @@
   <file source-language="EN" target-language="fr" datatype="plaintext" original="messages" date="2014-09-09T17:16:42Z" product-name="messages">
     <header/>
     <body>
+      <trans-unit id="168">
+        <source>Use stock</source>
+        <target>Utiliser le stock</target>
+      </trans-unit>
       <trans-unit id="167">
         <source>The limit in the stocks when the online sales are stopped</source>
         <target>La limite dans les stocks à partir de laquelle la vente en ligne est arrêtée</target>

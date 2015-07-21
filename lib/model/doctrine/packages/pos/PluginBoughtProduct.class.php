@@ -77,7 +77,9 @@ abstract class PluginBoughtProduct extends BaseBoughtProduct
   {
     // decrease the stock of this declination
     $mods = $this->getModified();
-    if ( (isset($mods['destocked']) || isset($mods['integrated_at'])) && $this->product_declination_id )
+    if ( (isset($mods['destocked']) || isset($mods['integrated_at']))
+      && $this->product_declination_id
+      && $this->Declination->use_stock )
     {
       // if integrating
       if ( isset($mods['integrated_at']) )
@@ -97,7 +99,7 @@ abstract class PluginBoughtProduct extends BaseBoughtProduct
   public function postDelete($event)
   {
     // increase the stock with this declination
-    if ( $this->product_declination_id && $this->integrated_at )
+    if ( $this->product_declination_id && $this->integrated_at && $this->Declination->use_stock )
     {
       $this->Declination->stock = $this->Declination->stock + 1;
       $this->Declination->save();
