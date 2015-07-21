@@ -33,7 +33,41 @@ class productActions extends autoProductActions
     return 'Json';
   }
   
-  public function executeSalesEvolution(sfWebRequest $request)
+  public function executeDeclinationsTrends(sfWebRequest $request)
+  {
+    $q = Doctrine::getTable('ProductDeclination')->createQuery('d')
+      ->leftJoin('d.Translation dt WITH dt.lang = ?', $this->getUser()->getCulture())
+      ->leftJoin('d.Product p')
+      ->leftJoin('p.Translation pt WITH pt.lang = dt.lang')
+      ->select('d.id, d.code, dt.id, dt.name, dt.lang, d.product_id, p.id, pt.id, pt.name, pt.lang')
+      ->leftJoin('d.BoughtProducts bp WITH bp.integrated_at IS NOT NULL')
+      ->addSelect('count(DISTINCT bp.id) AS sales')
+      ->groupBy('d.id, d.code, dt.id, dt.name, dt.lang, d.product_id, p.id, pt.id, pt.name, pt.lang')
+      ->andWhere('d.product_id = ?', $request->getParameter('id'));
+    $this->forward404Unless($declinations = $q->execute());
+    
+    $this->json = array();
+    foreach ( $declinations as $declination )
+    if ( $request->hasParameter('full') )
+    {
+      $this->json[] = array(
+        'id'    => $declination->id,
+        'code'  => $declination->code,
+        'name'  => $declination->name,
+        'product' => (string)$declination->Product,
+        'product_id' => $declination->product_id,
+        'quantity' => $declination->sales,
+      );
+    }
+    else
+      $this->json[] = array($declination->name, $declination->sales);
+    
+    if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
+      return 'Success';
+    return 'Json';
+  }
+  
+  public function executeSalesTrends(sfWebRequest $request)
   {
     $this->json = array();
     

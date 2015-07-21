@@ -4,7 +4,11 @@ ajaxSuccess:
   has_layout: false
   http_metas:
     content-type: application/json
-salesEvolutionJson:
+salesTrendsJson:
+  has_layout: false
+  http_metas:
+    content-type: application/json
+declinationsTrendsJson:
   has_layout: false
   http_metas:
     content-type: application/json

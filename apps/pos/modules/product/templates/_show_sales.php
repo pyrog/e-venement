@@ -2,9 +2,9 @@
 
 <?php include_partial('global/graph_jqplot', array(
   'id'    => 'sales',
-  'data'  => url_for('product/salesEvolution?id='.$form->getObject()->id),
-  'label' => __('Sales evolution'),
-  'width' => '100%',
+  'data'  => url_for('product/salesTrends?id='.$form->getObject()->id),
+  'label' => __('Sales trends'),
+  'name' => $form->getObject()->name,
 )) ?>
 
 <?php use_javascript('helper') ?>

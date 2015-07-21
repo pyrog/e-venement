@@ -4,6 +4,22 @@
   <file source-language="EN" target-language="fr" datatype="plaintext" original="messages" date="2014-09-09T17:16:42Z" product-name="messages">
     <header/>
     <body>
+      <trans-unit id="172">
+        <source>Good</source>
+        <target>Bon</target>
+      </trans-unit>
+      <trans-unit id="171">
+        <source>Correct</source>
+        <target>Correct</target>
+      </trans-unit>
+      <trans-unit id="170">
+        <source>Critical</source>
+        <target>Critique</target>
+      </trans-unit>
+      <trans-unit id="169">
+        <source>Declinations trends</source>
+        <target>Tendances</target>
+      </trans-unit>
       <trans-unit id="168">
         <source>Use stock</source>
         <target>Utiliser le stock</target>
@@ -25,7 +41,7 @@
         <target>Limite vente en ligne par transaction</target>
       </trans-unit>
       <trans-unit id="163">
-        <source>Sales evolution</source>
+        <source>Sales trends</source>
         <target>Évolution des ventes</target>
       </trans-unit>
       <trans-unit id="162">

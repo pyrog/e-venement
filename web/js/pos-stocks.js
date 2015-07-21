@@ -26,11 +26,41 @@ LI.posPrepareSalesData = function(obj)
 }
 
 LI.posStocks = function(){
+  // declinations
+  if ( $('#declinations_chart > *').length == 0 )
+  {
+    LI.csvData.declinations = [
+      [[$('.jqplot.declinations h2').prop('title') ? $('.jqplot.declinations h2').prop('title')+': ' : ''],[$('.jqplot.declinations h2').text()]],
+    ]; 
+    
+    $.get($('#declinations_chart').attr('data-json-url'), function(json){
+      $.each(json, function(i, data){
+        LI.csvData.declinations.push(data);
+      });
+      $.jqplot('declinations_chart', [json], {
+        seriesDefaults: {
+          rendererOptions: {
+            fill: false,
+            showDataLabels: true,
+            slideMargin: 4,
+            lineWidth: 5
+          },
+          renderer: $.jqplot.PieRenderer
+        },
+        legend: {
+          show: true,
+          location: 'e'
+        },
+        captureRightClick: true
+      });
+    });
+  }
+  
   // sales
   if ( $('#sales_chart > *').length == 0 )
   {
     LI.csvData.sales = [
-      [($('.jqplot.sales h2').prop('title') ? $('.jqplot.sales h2').prop('title')+': ' : '')+$('.jqplot.sales h2').text()],
+      [[$('.jqplot.sales h2').prop('title') ? $('.jqplot.sales h2').prop('title') : ''],[$('.jqplot.sales h2').text()]],
     ]; 
     
     var sales;
@@ -78,7 +108,7 @@ LI.posStocks = function(){
   var ticks = [];
   LI.series.stocks = [[], [], []];
   LI.csvData.stocks = [
-    [($('.jqplot.stocks h2').prop('title') ? $('.jqplot.stocks h2').prop('title')+': ' : '')+$('.jqplot.stocks h2').text()],
+    [[$('.jqplot.stocks h2').prop('title') ? $('.jqplot.stocks h2').prop('title')+': ' : ''],[$('.jqplot.stocks h2').text()]],
     [
       $('#sf_fieldset_declinations .sf_admin_form_field_declinations > label').text(),
       $('#sf_fieldset_declinations .stock-current:first') .closest('tr').find('label').text(),
@@ -136,9 +166,9 @@ LI.posStocks = function(){
   $.jqplot(
     'stocks_chart', LI.series.stocks, {
       series: [
-        { label: 'Critical' },
-        { label: 'Correct' },
-        { label: 'Good' }
+        { label: $('#sf_fieldset_stocks .i18n .critical').text() },
+        { label: $('#sf_fieldset_stocks .i18n .correct').text() },
+        { label: $('#sf_fieldset_stocks .i18n .good').text() }
       ],
       stackSeries: true,
       seriesColors: [
