@@ -30,6 +30,8 @@ generator:
         linked_manifestations_list: { label: Manifestations }
         linked_prices_list: { label: Prices }
         linked_products_list: { label: Products }
+        online_limit: { help: The limit in the stocks when the online sales are stopped }
+        online_limit_per_transaction: { help: The maximum that can be bought at once online }
       list:
         display: [Category, name, short_name, MetaEvent, Vat, _list_stocks, online]
         sort: [pt.name, '']
@@ -40,12 +42,12 @@ generator:
             action: duplicate
           _delete: ~
       filter:
-        display: [meta_event_id, product_category_id, code, name, short_name, prices_list, vat_id, online, online_limit, online_max_per_transaction]
+        display: [meta_event_id, product_category_id, code, name, short_name, prices_list, vat_id, online, online_limit, online_limit_per_transaction]
       form:
         display:
           General: [name, short_name, product_category_id, prices_list, prices, vat_id, shipping_fees, shipping_fees_vat_id, online]
           Declinations: [_show_description_for_buyers_help, declinations, _form_declination_del]
-          Details: [meta_event_id, online_limit, online_max_per_transaction, description, picture, _show_picture, _form_picture_del, accounting_account]
+          Details: [meta_event_id, online_limit, online_limit_per_transaction, description, picture, _show_picture, _form_picture_del, accounting_account]
           Links:   [linked_meta_events_list, linked_workspaces_list, linked_manifestations_list, linked_prices_list, linked_products_list]
           Stocks:  [_show_stocks, _show_sales]
       edit:

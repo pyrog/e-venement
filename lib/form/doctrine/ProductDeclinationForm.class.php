@@ -20,13 +20,13 @@ class ProductDeclinationForm extends BaseProductDeclinationForm
     $this->widgetSchema['product_id'] = new sfWidgetFormInputHidden;
     $this->widgetSchema['stock_perfect']->setLabel('Perfect stock')
       ->setAttribute('class', 'stock stock-perfect')
-      ->setOption('type', 'number');
+      ->setOption('type', 'number')->setAttribute('min', 0);
     $this->widgetSchema['stock_critical']->setLabel('Critical stock')
       ->setAttribute('class', 'stock stock-critical')
-      ->setOption('type', 'number');
+      ->setOption('type', 'number')->setAttribute('min', 0);
     $this->widgetSchema['stock']
       ->setAttribute('class', 'stock stock-current')
-      ->setOption('type', 'number');
+      ->setOption('type', 'number')->setAttribute('min', 0);
     
     $this->useFields(array_merge(array(
       'id', 'product_id', 'prioritary', 'code',

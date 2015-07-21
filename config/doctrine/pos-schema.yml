@@ -95,10 +95,10 @@ Product:
       type: integer
       notnull: true
       default: 0
-    online_max_by_transaction:
+    online_limit_per_transaction:
       type: integer
       notnull: true
-      default: 5
+      default: 9
   relations:
     Category:
       class: ProductCategory
@@ -269,6 +269,10 @@ BoughtProduct:
       type: decimal(5)
       scale: 4
       default: 0
+      notnull: true
+    destocked:
+      type: boolean
+      default: false
       notnull: true
   relations:
     Transaction:

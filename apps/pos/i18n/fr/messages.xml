@@ -4,6 +4,14 @@
   <file source-language="EN" target-language="fr" datatype="plaintext" original="messages" date="2014-09-09T17:16:42Z" product-name="messages">
     <header/>
     <body>
+      <trans-unit id="167">
+        <source>The limit in the stocks when the online sales are stopped</source>
+        <target>La limite dans les stocks à partir de laquelle la vente en ligne est arrêtée</target>
+      </trans-unit>
+      <trans-unit id="166">
+        <source>The maximum that can be bought at once online</source>
+        <target>Le maximum qui peut être acheté en une seule fois en ligne</target>
+      </trans-unit>
       <trans-unit id="165">
         <source>Online limit</source>
         <target>Limite vente en ligne</target>
