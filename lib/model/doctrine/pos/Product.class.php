@@ -59,4 +59,29 @@ class Product extends PluginProduct implements liUserAccessInterface
       $max = array('value' => $pp->value, 'price' => $pp);
     return $max;
   }
+  
+  public function getStocksData($texts = array(
+    'critical'  => 'critical',
+    'correct'   => 'correct',
+    'perfect'   => 'perfect',
+  ), $json)
+  {
+    $data = array(
+      'id' => $this->id,
+      'declinations' => array(),
+      'texts' => $texts,
+    );
+    
+    foreach ( $this->Declinations as $declination )
+      $data['declinations'][$declination->id] = array(
+        'name' => $declination->name,
+        'code' => $declination->code,
+        'id'   => $declination->id,
+        'current'  => $declination->stock,
+        'critical' => $declination->stock_critical,
+        'perfect'  => $declination->stock_perfect,
+      );
+    
+    return $json ? json_encode($data) : $data;
+  }
 }

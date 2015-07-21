@@ -1,3 +1,7 @@
+.sf_admin_list .sf_admin_list_td_list_stocks .data { display: none; }
+.sf_admin_list .sf_admin_list_td_list_stocks .jqplot { height: 100px; width: 150px; }
+.sf_admin_list table tbody tr.sf_admin_row .sf_admin_boolean { text-align: center; }
+
 .sf_admin_form_field_prices_list ul { list-style-type: none; }
 .sf_admin_form_field_prices_list label { min-width: 100px; display: inline-block; }
 .sf_admin_form_field_prices_list .value label { min-width: 0; padding-right: 10px; }

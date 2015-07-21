@@ -81,7 +81,7 @@
                   switch ( $(option).closest('[data-bunch-id]').attr('data-bunch-id') ) {
                   case 'store':
                     console.error('temp gauge store');
-                    LI.renderStock(JSON.stringify(data));
+                    LI.renderStocks(JSON.stringify(data));
                     break;
                   default:
                     console.error('temp gauge manifs');

@@ -4,6 +4,14 @@
   <file source-language="EN" target-language="fr" datatype="plaintext" original="messages" date="2014-09-09T17:16:42Z" product-name="messages">
     <header/>
     <body>
+      <trans-unit id="165">
+        <source>Online limit</source>
+        <target>Limite vente en ligne</target>
+      </trans-unit>
+      <trans-unit id="164">
+        <source>Online limit per transaction</source>
+        <target>Limite vente en ligne par transaction</target>
+      </trans-unit>
       <trans-unit id="163">
         <source>Sales evolution</source>
         <target>Évolution des ventes</target>

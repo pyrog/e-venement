@@ -15,6 +15,9 @@ class ProductForm extends BaseProductForm
   {
     parent::configure();
     
+    $this->widgetSchema['online_limit']->setOption('type', 'number');
+    $this->widgetSchema['online_max_by_transaction']->setOption('type', 'number');
+    
     //$this->object->Declinations[] = new ProductDeclination;
     $this->embedRelation('Declinations AS declinations');
     

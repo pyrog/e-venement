@@ -69,7 +69,12 @@
         <input type="hidden" name="store[price_id]" value="<?php echo $pp->Price->id ?>" />
         <input type="hidden" name="store[free-price]" value="<?php echo sfConfig::get('project_tickets_free_price_default',1) ?>" />
         <select name="store[qty]">
-          <?php foreach ( !is_null($pp->value) ? range(0, sfConfig::get('app_store_max_per_product', 9) - count($products)) : range(0,1) as $val ): ?>
+          <?php
+            // calculating how many products we can buy at once
+            $general = sfConfig::get('app_store_max_per_product', 9) - count($products);
+            $max = $max > $general ? $general : $max;
+          ?>
+          <?php foreach ( !is_null($pp->value) ? range(0, $max) : range(0,1) as $val ): ?>
             <option <?php echo !is_null($pp->value) && isset($prices[$pp->price_id]) && $prices[$pp->price_id] == $val ? 'selected="selected"' : '' ?>>
               <?php echo $val ?>
             </option>

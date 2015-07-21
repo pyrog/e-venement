@@ -22,25 +22,11 @@ class productActions extends autoProductActions
       ->orderBy('d.code');
     $this->forward404Unless($pdt = $q->fetchOne());
     
-    $this->json = array(
-      'id' => $pdt->id,
-      'declinations' => array(),
-      'texts' => array(
-        'critical'  => __('Critical'),
-        'correct'   => __('Correct'),
-        'perfect'   => __('Good'),
-      ),
-    );
-    
-    foreach ( $pdt->Declinations as $declination )
-      $this->json['declinations'][$declination->id] = array(
-        'name' => $declination->name,
-        'code' => $declination->code,
-        'id'   => $declination->id,
-        'current'  => $declination->stock,
-        'critical' => $declination->stock_critical,
-        'perfect'  => $declination->stock_perfect,
-      );
+    $this->json = $pdt->getStocksData(array(
+      'critical'  => __('Critical'),
+      'correct'   => __('Correct'),
+      'perfect'   => __('Good'),
+    ));
     
     if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
       return 'Success';

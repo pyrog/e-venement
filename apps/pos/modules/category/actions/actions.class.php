@@ -13,4 +13,8 @@ require_once dirname(__FILE__).'/../lib/categoryGeneratorHelper.class.php';
  */
 class categoryActions extends autoCategoryActions
 {
+  public function executeShow(sfWebRequest $request)
+  {
+    $this->redirect('category/edit?id='.$request->getParameter('id'));
+  }
 }

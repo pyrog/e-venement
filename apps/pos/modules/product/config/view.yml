@@ -12,3 +12,5 @@ stateJson:
   has_layout: false
   http_metas:
     content-type: application/json
+indexSuccess:
+  javascripts: [pos-list]

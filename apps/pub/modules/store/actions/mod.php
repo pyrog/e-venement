@@ -98,6 +98,7 @@ elseif ( $qty > 0 )
     $bp->transaction_id = $this->getUser()->getTransactionId();
     if ( !is_null($free_price) )
       $bp->value = $free_price;
+    $bp->destocked = true;
     $bp->save();
     $this->json['success']['qty'] = $q->count();
   }
