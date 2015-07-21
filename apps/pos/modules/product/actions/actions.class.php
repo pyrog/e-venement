@@ -157,6 +157,7 @@ class productActions extends autoProductActions
       ->search($search.'*',$q);
     $q->andWhere('TRUE)');
     
+    $this->getContext()->getConfiguration()->loadHelpers('Url');
     $this->products = array();
     foreach ( $q->execute() as $product )
     if ( $product->isAccessibleBy($this->getUser()) )
@@ -166,6 +167,7 @@ class productActions extends autoProductActions
         'id'    => $product->id,
         'color' => NULL,
         'name'  => (string)$product,
+        'gauge_url' => url_for('product/state?id='.$product->id),
       );
     }
     else

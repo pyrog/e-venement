@@ -288,6 +288,7 @@ class manifestationActions extends autoManifestationActions
     
     $manifestations = $q->select('m.*, e.*, c.*')->execute();
     
+    $this->getContext()->getConfiguration()->loadHelpers('Url');
     $manifs = array();
     foreach ( $manifestations as $manif )
     {
@@ -303,7 +304,6 @@ class manifestationActions extends autoManifestationActions
       
       if ( $go )
       {
-        $this->getContext()->getConfiguration()->loadHelpers('Url');
         $short = sfConfig::get('app_manifestation_prefer_short_name', true);
         $arr = array(
           'name'  => $manif->getName($short).(sfConfig::get('app_manifestation_show_location_ajax', false) ? ' '.$manif->Location : ''),
