@@ -40,7 +40,10 @@
   // records a BankPayment Record and valid (or not)
   $r = $this->online_payment->response($request);
   if ( !$r['success'] )
-    throw new liOnlineSaleException('An error occurred during the bank verifications');
+  {
+    error_log('An error occurred during the bank verifications for transaction #'.$r['transaction_id']);
+    return sfView::NONE;
+  }
   
   if ( $transaction->getPaid().'' >= ''.$transaction->getPrice(true, true) ) // this .'' is a hack for precise float values
     return sfView::NONE;
