@@ -68,6 +68,8 @@ $(document).ready(function(){
             LI.alert(json.success.message, 'success');
           if ( json.error.message )
           LI.alert(json.error.message, 'error');
+          $('[data-declination-id='+json.success.declination_id+'] [data-price-id='+json.success.price_id+'] [name="store[qty]"]')
+            .val(json.success.qty).change();
         }
       });
       return false; // submit only w/ ajax

@@ -75,7 +75,7 @@
             $max = $max > $general ? $general : $max;
           ?>
           <?php foreach ( !is_null($pp->value) ? range(0, $max) : range(0,1) as $val ): ?>
-            <option <?php echo !is_null($pp->value) && isset($prices[$pp->price_id]) && $prices[$pp->price_id] == $val ? 'selected="selected"' : '' ?>>
+            <option <?php echo !is_null($pp->value) && isset($prices[$pp->price_id]) && $prices[$pp->price_id] == $val ? 'selected="selected"' : '' ?> value="<?php echo $val ?>">
               <?php echo $val ?>
             </option>
           <?php endforeach ?>

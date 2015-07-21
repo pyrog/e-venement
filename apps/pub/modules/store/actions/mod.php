@@ -79,13 +79,14 @@ if ( $qty == 0 )
 }
 elseif ( $qty < 0 )
 {
+  $count = $q->copy();
   $q->limit(abs($qty));
   if ( !is_null($free_price) )
     $q->andWhere('bp.value = ?', $free_price);
   $bps = $q->execute();
   $nb = $bps->count();
   $bps->delete();
-  $this->json['success']['qty'] = $nb;
+  $this->json['success']['qty'] = $count->count();
 }
 elseif ( $qty > 0 )
 {
@@ -98,10 +99,17 @@ elseif ( $qty > 0 )
     $bp->transaction_id = $this->getUser()->getTransactionId();
     if ( !is_null($free_price) )
       $bp->value = $free_price;
-    $bp->destocked = true;
-    $bp->save();
-    $this->json['success']['qty'] = $q->count();
+    if (!( $bp->product_declination_id &&
+       ( $bp->Declination->stock - $bp->Declination->Product->online_limit <= 0
+      || $bp->Declination->Product->online_limit_per_transaction <= $i )
+    ))
+    {
+      $bp->destocked = true;
+      $bp->save();
+    }
   }
+  $this->json['success']['qty'] = $q->copy()->andWhere('bp.integrated_at IS NULL')->count();
+  error_log($this->json['success']['qty']);
 }
 
 if (!( $request->hasParameter('debug') && sfConfig::get('sf_web_debug', false) ))

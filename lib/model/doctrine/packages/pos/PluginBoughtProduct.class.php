@@ -71,27 +71,31 @@ abstract class PluginBoughtProduct extends BaseBoughtProduct
     // VAT
     if ( $this->product_declination_id )
       $this->vat = $this->Declination->Product->Vat->value;
-  }
-  
-  public function preUpdate($event)
-  {
+    
     // decrease the stock of this declination
     $mods = $this->getModified();
     if ( (isset($mods['destocked']) || isset($mods['integrated_at']))
       && $this->product_declination_id
       && $this->Declination->use_stock )
     {
-      // if integrating
-      if ( isset($mods['integrated_at']) )
+      if ( $this->Declination->stock > 0 )
       {
-        $this->Declination->stock = $this->Declination->stock + ($this->integrated_at ? -1 : 1);
-        $this->destocked = true;
+        // if integrating
+        if ( isset($mods['integrated_at']) )
+        {
+          $this->Declination->stock = $this->Declination->stock + ($this->integrated_at ? -1 : 1);
+          $this->destocked = true;
+        }
+        // if not currently integrating, but it needs to be count in the stock's outputs
+        elseif ( isset($mods['destocked']) && !$this->integrated_at )
+          $this->Declination->stock = $this->Declination->stock + ($this->destocked ? -1 : 1);
+        $this->Declination->save();
       }
-      // if not currently integrating, but it needs to be count in the stock's outputs
-      elseif ( isset($mods['destocked']) && !$this->integrated_at )
-        $this->Declination->stock = $this->Declination->stock + ($this->destocked ? 1 : -1);
-      
-      $this->Declination->save();
+      else // if there is no more stock...
+      {
+        $this->integrated_at = NULL;
+        $this->destocked = false;
+      }
     }
     return parent::preUpdate($event);
   }
@@ -99,7 +103,9 @@ abstract class PluginBoughtProduct extends BaseBoughtProduct
   public function postDelete($event)
   {
     // increase the stock with this declination
-    if ( $this->product_declination_id && $this->integrated_at && $this->Declination->use_stock )
+    if ( $this->product_declination_id
+      && $this->Declination->use_stock
+      && $this->destocked )
     {
       $this->Declination->stock = $this->Declination->stock + 1;
       $this->Declination->save();

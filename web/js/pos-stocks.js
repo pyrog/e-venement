@@ -11,15 +11,9 @@ $(document).ready(function(){
   
   $('.sf_admin_form .sf_admin_form_field_declinations .use-stock').change(function(){
     if ( !$(this).prop('checked') )
-    {
-      console.error('glop');
       $(this).closest('table').find('.stock').closest('tr').fadeOut();
-    }
     else
-    {
-      console.error('not checked');
       $(this).closest('table').find('.stock').closest('tr').fadeIn();
-    }
   }).change();
 });
 
@@ -75,6 +69,7 @@ LI.posStocks = function(){
   
   // pure stocks
   var cpt = 0;
+  var i = 0;
   var ticks = [];
   LI.series.stocks = [[], [], []];
   LI.csvData.stocks = [
@@ -87,16 +82,23 @@ LI.posStocks = function(){
     ]
   ]; 
   
-  $('.sf_admin_form_field_declinations .widget > table > tbody > tr').each(function(){
+  $('.sf_admin_form_field_declinations .use-stock').each(function(){
+    var elt = $(this).closest('table');
+    if ( !$(this).prop('checked') )
+    {
+      cpt++;
+      return;
+    }
+    
     var stocks = {
-      critical: parseInt($(this).find('[name="product[declinations]['+cpt+'][stock_critical]"]').val()),
-      current:  parseInt($(this).find('[name="product[declinations]['+cpt+'][stock]"]').val()),
-      perfect:  parseInt($(this).find('[name="product[declinations]['+cpt+'][stock_perfect]"]').val())
+      critical: parseInt($(elt).find('[name="product[declinations]['+cpt+'][stock_critical]"]').val()),
+      current:  parseInt($(elt).find('[name="product[declinations]['+cpt+'][stock]"]').val()),
+      perfect:  parseInt($(elt).find('[name="product[declinations]['+cpt+'][stock_perfect]"]').val())
     };
     
     // the name of the declination
     LI.csvData.stocks.push([
-      ticks[cpt] = $(this).find('[name="product[declinations]['+cpt+'][code]"]').val(),
+      ticks[i] = $(elt).find('[name="product[declinations]['+cpt+'][code]"]').val(),
       stocks.current,
       stocks.critical,
       stocks.perfect
@@ -104,23 +106,24 @@ LI.posStocks = function(){
     
     if ( stocks.current <= stocks.critical )
     {
-      LI.series.stocks[0][cpt] = stocks.current;
-      LI.series.stocks[1][cpt] = 0;
-      LI.series.stocks[2][cpt] = 0;
+      LI.series.stocks[0][i] = stocks.current;
+      LI.series.stocks[1][i] = 0;
+      LI.series.stocks[2][i] = 0;
     }
     else if ( stocks.current > stocks.critical && stocks.current <= stocks.perfect )
     {
-      LI.series.stocks[0][cpt] = 0;
-      LI.series.stocks[1][cpt] = stocks.current;
-      LI.series.stocks[2][cpt] = 0;
+      LI.series.stocks[0][i] = 0;
+      LI.series.stocks[1][i] = stocks.current;
+      LI.series.stocks[2][i] = 0;
     }
     else
     {
-      LI.series.stocks[0][cpt] = 0;
-      LI.series.stocks[1][cpt] = 0;
-      LI.series.stocks[2][cpt] = stocks.current;
+      LI.series.stocks[0][i] = 0;
+      LI.series.stocks[1][i] = 0;
+      LI.series.stocks[2][i] = stocks.current;
     }
     cpt++;
+    i++;
   });
   
   $('#stocks_chart > *').remove();

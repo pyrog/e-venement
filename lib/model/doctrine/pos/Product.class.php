@@ -73,7 +73,7 @@ class Product extends PluginProduct implements liUserAccessInterface
     );
     
     foreach ( $this->Declinations as $declination )
-    if ( $declination->use_stocks )
+    if ( $declination->use_stock )
       $data['declinations'][$declination->id] = array(
         'name' => $declination->name,
         'code' => $declination->code,
