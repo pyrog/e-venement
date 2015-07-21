@@ -35,12 +35,7 @@ optional:
 */
 ?>
 
-<?php use_stylesheet('/js/jqplot/jquery.jqplot.css') ?>
-<?php use_stylesheet('jqplot') ?>
-<?php use_javascript('jqplot') ?>
-<?php use_javascript('/js/jqplot/jquery.jqplot.js') ?>
-<?php use_javascript('/js/jqplot/jqplot.axisLabelRenderer.js') ?>
-<?php use_javascript('/js/jqplot/jqplot.axisTickRenderer.js') ?>
+<?php include_partial('global/assets_jqplot') ?>
 
 <?php
   if ( !isset($width) )

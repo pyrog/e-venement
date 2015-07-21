@@ -58,8 +58,13 @@ LI.posStocks = function(){
             }
           }
         },
+        highlighter: {
+          sizeAdjust: 2,
+          show: true
+        },
         cursor: {
           show: true,
+          showTooltip: false,
           zoom: true
         },
         captureRightClick: true
@@ -160,6 +165,11 @@ LI.posStocks = function(){
           ticks: ticks,
           renderer: $.jqplot.CategoryAxisRenderer
         }
+      },
+      highlighter: {
+        tooltipAxes: 'y',
+        sizeAdjust: 2,
+        show: true
       },
       captureRightClick: true
     }

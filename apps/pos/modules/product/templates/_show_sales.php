@@ -8,7 +8,5 @@
 )) ?>
 
 <?php use_javascript('helper') ?>
-<?php use_javascript('/js/jqplot/plugins/jqplot.categoryAxisRenderer.js') ?>
-<?php use_javascript('/js/jqplot/plugins/jqplot.pointLabels.js') ?>
 <?php use_javascript('/js/jqplot/plugins/jqplot.dateAxisRenderer.js') ?>
 <?php use_javascript('/js/jqplot/plugins/jqplot.cursor.js') ?>

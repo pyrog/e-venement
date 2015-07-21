@@ -67,6 +67,11 @@ LI.posRenderStocks = function(data, jObj)
           
         }
       },
+      highlighter: {
+        tooltipAxes: 'y',
+        sizeAdjust: 2,
+        show: true
+      },
       captureRightClick: true
     }
   );
