@@ -316,7 +316,7 @@ echo "- e-venement Messaging Network: rm -rf web/liJappixPlugin; svn update; the
 echo "- If this platform needs Passbooks, do not forget to set them up in the apps *pub* & *tck*"
 echo "- If this platform uses the *grp* app, you can enable *liGrpPlugin* in the *tck* app, it will update the *pub* app data when you will cancel a ticket in the *tck* app"
 echo "- If this plateform is using QRCodes, think to move the app_seller_salt from apps/tck/config/app.yml to project_eticketting_salt in config/project.yml"
-echo "- If this instance sells member cards online, do not forget to setup project_cards_expiration_date in your config/project.yml"
+echo "- If this instance sells member cards, do not forget to setup project_cards_expiration_date in your config/project.yml"
 echo "- IMPORTANT: the management of extra modules has evoluated, it has moved from config/extra-modules.php to config/project.yml, DO NOT FORGET IT!"
 
 echo ""
