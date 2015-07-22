@@ -344,11 +344,39 @@ class pubConfiguration extends sfApplicationConfiguration
   {
     $this->task = $task;
     
-    // too-old online transactions collector
-    $this->addGarbageCollector('squatters', function(){
+    // destocked products, too old to stay out of the stock
+    $this->addGarbageCollector('stocks', function(){
       $cart_timeout = sfConfig::get('app_timeout_global', '1 hour');
-      $section = 'Anti-squatters';
-      $this->stdout($section, 'Closing transactions...', 'COMMAND');
+      $section = 'Stocks';
+      $this->stdout($section, 'Incrementing stocks for elder products...', 'COMMAND');
+      $q = Doctrine_Query::create()->from('Transaction t')
+        ->leftJoin('t.BoughtProducts bp')
+        ->andWhere('bp.integrated_at IS NULL AND bp.destocked = ? AND bp.product_declination_id IS NOT NULL', true)
+        ->leftJoin('t.Order o')
+        ->andWhere('o.id IS NULL')
+        ->leftJoin('t.Payments p')
+        ->andWhere('p.id IS NULL')
+        ->leftJoin('bp.User u')
+        ->andWhereIn('u.username', array_merge(array(sfConfig::get('app_user_templating', -1)), sfConfig::get('app_user_other_templates',array())))
+        ->andWhere('bp.created_at < ?', $date = date('Y-m-d H:i:s', strtotime($cart_timeout.' ago')))
+      ;
+      $transactions = $q->execute();
+      $nb = 0;
+      foreach ( $transactions as $t )
+      foreach ( $t->BoughtProducts as $bp )
+      {
+        $bp->destocked = false;
+        $bp->save();
+        $nb++;
+      }
+      $this->stdout($section, "[OK] $nb products restocked", 'INFO');
+    });
+    
+    // too-old online transactions collector
+    $this->addGarbageCollector('transactions', function(){
+      $cart_timeout = sfConfig::get('app_timeout_global', '1 hour');
+      $section = 'Transactions';
+      $this->stdout($section, 'Closing old transactions...', 'COMMAND');
       $q = Doctrine_Query::create()->from('Transaction t')
         ->andWhere('t.closed = ?', false)
         ->leftJoin('t.Order o')
@@ -371,13 +399,6 @@ class pubConfiguration extends sfApplicationConfiguration
         $t->save();
       }
       $this->stdout($section, "[OK] $nb transactions closed", 'INFO');
-      
-      $nb = Doctrine_Query::create()->from('Ticket')
-        ->andWhere('id IN ('.$q->select('tck.id').')', array(false, sfConfig::get('app_user_templating', -1), $date))
-        ->delete()
-        ->execute()
-      ;
-      $this->stdout($section, "[OK] $nb tickets deleted", 'INFO');
     });
     
     return $this;

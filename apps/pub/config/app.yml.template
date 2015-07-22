@@ -12,6 +12,7 @@ all:
     #home: meta_event
   user:
     templating: vel
+    #other_templates: [] # usefull if more than one "pub" app is working on this instance
     must_authenticate: false
     #session_ns: ''
   informations:
