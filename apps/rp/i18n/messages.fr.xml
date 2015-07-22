@@ -5,6 +5,14 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Online</source>
+        <target>En ligne</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Public details</source>
+        <target>Détails publics</target>
+      </trans-unit>
+      <trans-unit>
         <source>Quantity</source>
         <target>Quantité</target>
       </trans-unit>

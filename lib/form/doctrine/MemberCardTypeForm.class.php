@@ -37,5 +37,21 @@ class MemberCardTypeForm extends BaseMemberCardTypeForm
       ->setAttribute('min', 0)
       ->setAttribute('type', 'number')
     ;
+    
+    $tinymce = array(
+      'config'  => array(
+        'extended_valid_elements' => 'html,head,body,hr[class|width|size|noshade],iframe[src|width|height|name|align],style',
+        'convert_urls' => false,
+        'urlconvertor_callback' => 'email_urlconvertor',
+        'paste_as_text' => false,
+        'plugins' => 'textcolor link image',
+        'toolbar1' => 'formatselect fontselect fontsizeselect | link image | forecolor backcolor | undo redo',
+        'toolbar2' => 'bold underline italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote',
+        'force_br_newlines' => false,
+        'force_p_newlines'  => false,
+        'forced_root_block' => '',
+      ),
+    );
+    $this->widgetSchema['public_details'] = new liWidgetFormTextareaTinyMCE($tinymce);
   }
 }

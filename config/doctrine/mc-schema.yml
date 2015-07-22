@@ -32,6 +32,7 @@ MemberCardType:
       notnull: true
       notblank: true
     description: string(255)
+    public_details: text
     value:
       type: decimal(8)
       scale: 3

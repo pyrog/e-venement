@@ -32,5 +32,6 @@ generator:
         display:
           NONE: [name, description, users_list, nb_tickets_mini]
           Money: [value, product_declination_id, price_id]
+          Online: [public_details]
       edit:    ~
       new:     ~
