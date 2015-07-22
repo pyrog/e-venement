@@ -313,6 +313,26 @@ abstract class PluginTicket extends BaseTicket
   {
     return $this->Seat->name;
   }
+  
+  public function preDelete($event)
+  {
+    if ( !$this->Manifestation->depends_on )
+      return parent::preDelete($event);
+    
+    foreach ( $this->Transaction->Tickets as $i => $ticket )
+    if ( !$ticket->printed_at
+      && $ticket->price_id == $this->price_id
+      && $ticket->manifestation_id == $this->Manifestation->depends_on
+      && $ticket->Gauge->workspace_id == $this->Gauge->workspace_id
+    )
+    {
+      unset($this->Transaction->Tickets[$i]);
+      $ticket->delete();
+      break;
+    }
+    
+    return parent::preDelete($event);
+  }
 
   public function setNumerotation($str = NULL)
   {

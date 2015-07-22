@@ -1,10 +1,9 @@
-<?php
-  $locations = new Doctrine_Collection('Manifestation');
-  foreach ( $event->Manifestations as $manif )
-    $locations[] = $manif->Location;
-?>
-<ul>
-  <?php foreach ( $locations as $location ): ?>
-  <li><?php echo $location ?></li>
+<?php if ( $event->Manifestations->count() > 0 ): ?>
+<ul class="no-bullet">
+  <?php foreach ( $event->Manifestations as $manif ): ?>
+  <li class="month-<?php echo format_date(strtotime($manif->happens_at), 'yyyyMM') ?>" data-time="<?php echo strtotime($manif->happens_at) ?>">
+    <?php echo $manif->Location ?>
+  </li>
   <?php endforeach ?>
 </ul>
+<?php endif ?>

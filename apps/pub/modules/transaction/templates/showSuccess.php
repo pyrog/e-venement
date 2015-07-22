@@ -68,7 +68,7 @@ $(document).ready(function(){
   <td class="linked-stuff"><?php include_partial('show_linked_stuff', array('ticket' => $ticket))  ?></td>
   <?php endif ?>
   <?php $last['gauge_id'] = $gauge->id; ?>
-  <td class="mod"><?php echo $current_transaction ? link_to(__('modify'),'manifestation/show?id='.$manif->id) : '' ?></td>
+  <td class="mod"><?php echo $current_transaction && $manif->IsNecessaryTo->count() == 0 ? link_to(__('modify'),'manifestation/show?id='.$manif->id) : '' ?></td>
 </tr>
 <?php endforeach ?>
 <?php endforeach ?>

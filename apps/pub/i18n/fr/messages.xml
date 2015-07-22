@@ -636,6 +636,13 @@
         <source>Dates</source>
         <target>Dates</target>
       </trans-unit>
+        <source>With</source>
+        <target>Avec</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Where?</source>
+        <target>Où ?</target>
+      </trans-unit>
       <trans-unit>
         <source>Date unavailable, try an other one.</source>
         <target>Date indisponible, essayez une autre.</target>

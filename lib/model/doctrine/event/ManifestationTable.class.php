@@ -240,8 +240,11 @@ class ManifestationTable extends PluginManifestationTable
   public function retrievePublicList()
   {
     return $this->retrieveList()
-      ->andWhere('g.online = TRUE')
-      ->andWhere('m.happens_at > NOW()');
+      ->andWhere('g.online = ?', true)
+      ->andWhere('m.happens_at > NOW()')
+      ->andWhere('e.display_by_default = ?', true)
+      ->andWhere('reservation_confirmed = ?', true)
+    ;
   }
   
   public function slightlyFindOneById($value)
