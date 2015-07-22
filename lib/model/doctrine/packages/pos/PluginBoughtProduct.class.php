@@ -87,7 +87,7 @@ abstract class PluginBoughtProduct extends BaseBoughtProduct
           $this->destocked = true;
         }
         // if not currently integrating, but it needs to be count in the stock's outputs
-        elseif ( isset($mods['destocked']) && !$this->integrated_at )
+        elseif ( isset($mods['destocked']) && $this->destocked && !$this->integrated_at )
           $this->Declination->stock = $this->Declination->stock + ($this->destocked ? -1 : 1);
         $this->Declination->save();
       }
