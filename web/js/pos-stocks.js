@@ -61,20 +61,43 @@ LI.posStocks = function(){
   {
     LI.csvData.sales = [
       [$('.jqplot.sales h2').prop('title') ? $('.jqplot.sales h2').prop('title') : '',$('.jqplot.sales h2').text()],
+      ['']
     ]; 
     
     var sales;
     $('#sales_chart').dblclick(function(){
       sales.resetZoom();
     });
+    
     $.get($('#sales_chart').attr('data-json-url'), function(json){
-      $.each(json, function(date, nb){
-        LI.csvData.sales.push([date, nb]);
+      var series = [];
+      var dates = [];
+      var i = 0; // add the date only on the first declination
+      
+      $.each(json, function(declination, values){
+        var d = [];
+        series.push({ label: values.name });
+        LI.csvData.sales[1].push(values.name);
+        
+        var j = 2; // the line on which we must be "writing"
+        $.each(values.dates, function(date, value){
+          d.push([date, value]);
+          if ( i == 0 )
+            LI.csvData.sales.push([date, value]);
+          else
+            LI.csvData.sales[j].push(value);
+          j++;
+        });
+        dates.push(d);
+        i++;
       });
-      sales = $.jqplot('sales_chart', [LI.posPrepareSalesData(json)], {
+      
+      console.error(dates);
+      sales = $.jqplot('sales_chart', dates, {
         seriesDefaults: {
           showMarker: false
         },
+        series: series,
         axes: { 
           xaxis: {
             renderer: $.jqplot.DateAxisRenderer,
@@ -91,6 +114,11 @@ LI.posStocks = function(){
         highlighter: {
           sizeAdjust: 2,
           show: true
+        },
+        legend: {
+          show: true,
+          location: 'e',
+          placement: 'outside'
         },
         cursor: {
           show: true,

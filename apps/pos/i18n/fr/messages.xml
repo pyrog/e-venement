@@ -4,6 +4,10 @@
   <file source-language="EN" target-language="fr" datatype="plaintext" original="messages" date="2014-09-09T17:16:42Z" product-name="messages">
     <header/>
     <body>
+      <trans-unit id="173">
+        <source>Global</source>
+        <target>Global</target>
+      </trans-unit>
       <trans-unit id="172">
         <source>Good</source>
         <target>Bon</target>

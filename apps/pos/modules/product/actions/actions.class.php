@@ -69,7 +69,15 @@ class productActions extends autoProductActions
   
   public function executeSalesTrends(sfWebRequest $request)
   {
-    $this->json = array();
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $this->json = array('all' => array(
+      'id' => 0,
+      'code' => 'all',
+      'name' => __('Global'),
+      'dates' => array(),
+    ));
+    for ( $i = 365 ; $i >= 0 ; $i-- )
+      $this->json['all']['dates'][date('Y-m-d', strtotime($i.' days ago'))] = 0;
     
     $q = Doctrine::getTable('Product')->createQuery('p')
       ->leftJoin('p.Declinations pd')
@@ -79,17 +87,28 @@ class productActions extends autoProductActions
       ->andWhere('p.id = ?', $request->getParameter('id'))
     ;
     
-    for ( $i = 365 ; $i >= 0 ; $i-- )
-      $this->json[date('Y-m-d', strtotime($i.' days ago'))] = 0;
-    
     $this->forward404Unless($pdt = $q->fetchOne());
     foreach ( $pdt->Declinations as $declination )
     foreach ( $declination->BoughtProducts as $bp )
     {
       $date = date('Y-m-d', strtotime($bp->integrated_at));
-      if ( !isset($this->json[$date]) )
-        $this->json[$date] = 0;
-      $this->json[$date]++;
+      if ( !isset($this->json[$bp->product_declination_id]) )
+        $this->json[$bp->product_declination_id] = array(
+          'id'    => $bp->product_declination_id,
+          'code'  => $bp->Declination->code,
+          'name'  => $bp->Declination->name,
+          'dates' => array(),
+        );
+      if ( count($this->json[$bp->product_declination_id]['dates']) == 0 )
+      for ( $i = 365 ; $i >= 0 ; $i-- )
+        $this->json[$bp->product_declination_id]['dates'][date('Y-m-d', strtotime($i.' days ago'))] = 0;
+      if ( !isset($this->json[$bp->product_declination_id]['dates'][$date]) )
+        $this->json[$bp->product_declination_id]['dates'][$date] = 0;
+      if ( !isset($this->json['all']['dates'][$date]) )
+        $this->json['all']['dates'][$date] = 0;
+      
+      $this->json[$bp->product_declination_id]['dates'][$date]++;
+      $this->json['all']['dates'][$date]++;
     }
     
     if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
