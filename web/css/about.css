@@ -6,11 +6,12 @@
   width: 260px;
   min-height: 425px;
   background: white url(../images/logo-evenement-big.png) no-repeat 150px 50px;
-  padding: 20px;
+  padding: 10px;
   line-height: 1.4em;
   overflow: hidden;
   font-size: 13px;
 }
+:not(.about-home) > .ui-widget.ui-widget-about { padding: 20px; }
 .ui-widget-customer, .ui-widget-last-version { min-height: 0; background-image: none; }
 
 .ui-widget.ui-widget-about a {
@@ -30,6 +31,7 @@
 }
 .ui-widget-about .desc, .ui-widget-about .desc a { color: #5b595a; }
 .ui-widget-about.ui-widget .ui-widget-header { margin: -18px -18px 0 -18px; }
+.about-home .ui-widget-about.ui-widget .ui-widget-header { margin: -5px -5px 0 -5px; }
 .ui-widget-about h3 {
   font-size: 25px;
   color: #055271;
