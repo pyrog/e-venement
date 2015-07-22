@@ -17,14 +17,6 @@ $(document).ready(function(){
   }).change();
 });
 
-LI.posPrepareSalesData = function(obj)
-{
-  var r = [];
-  for ( var key in obj )
-    r.push([key, obj[key]]);
-  return r;
-}
-
 LI.posStocks = function(){
   // declinations
   if ( $('#declinations_chart > *').length == 0 )
