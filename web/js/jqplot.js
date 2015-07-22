@@ -30,9 +30,11 @@ if ( LI.csvData == undefined )
 $(document).ready(function(){
   // record to CSV
   $('.jqplot .actions .record').click(function(){
-    var data = LI.csvData[$(this).closest('.jqplot').find('[data-series-name]').attr('data-series-name')];
-    var url = URL.createObjectURL(new Blob([data.join("\n")], { type: "text/csv" }));
-    $(this).prop('download', LI.slugify(data[0][1]+' '+data[0][0])+'.csv')
+    var data = LI.clone(LI.csvData[$(this).closest('.jqplot').find('[data-series-name]').attr('data-series-name')]);
+    var url = $(this).attr('data-type') == 'csv'
+      ? URL.createObjectURL(new Blob([data.join("\n")], { type: "text/csv" }))
+      : URL.createObjectURL(new Blob([LI.arrayToTable(data)], { type: "application/vnd.ms-excel" }));
+    $(this).prop('download', LI.slugify(data[0][1]+' '+data[0][0])+'.'+$(this).attr('data-type'))
       .prop('href', url);
   });
 });

@@ -30,7 +30,7 @@ LI.posStocks = function(){
   if ( $('#declinations_chart > *').length == 0 )
   {
     LI.csvData.declinations = [
-      [[$('.jqplot.declinations h2').prop('title') ? $('.jqplot.declinations h2').prop('title')+': ' : ''],[$('.jqplot.declinations h2').text()]],
+      [$('.jqplot.declinations h2').prop('title') ? $('.jqplot.declinations h2').prop('title')+': ' : '',$('.jqplot.declinations h2').text()],
     ]; 
     
     $.get($('#declinations_chart').attr('data-json-url'), function(json){
@@ -60,7 +60,7 @@ LI.posStocks = function(){
   if ( $('#sales_chart > *').length == 0 )
   {
     LI.csvData.sales = [
-      [[$('.jqplot.sales h2').prop('title') ? $('.jqplot.sales h2').prop('title') : ''],[$('.jqplot.sales h2').text()]],
+      [$('.jqplot.sales h2').prop('title') ? $('.jqplot.sales h2').prop('title') : '',$('.jqplot.sales h2').text()],
     ]; 
     
     var sales;
@@ -108,7 +108,7 @@ LI.posStocks = function(){
   var ticks = [];
   LI.series.stocks = [[], [], []];
   LI.csvData.stocks = [
-    [[$('.jqplot.stocks h2').prop('title') ? $('.jqplot.stocks h2').prop('title')+': ' : ''],[$('.jqplot.stocks h2').text()]],
+    [$('.jqplot.stocks h2').prop('title') ? $('.jqplot.stocks h2').prop('title')+': ' : '',$('.jqplot.stocks h2').text()],
     [
       $('#sf_fieldset_declinations .sf_admin_form_field_declinations > label').text(),
       $('#sf_fieldset_declinations .stock-current:first') .closest('tr').find('label').text(),
@@ -132,8 +132,9 @@ LI.posStocks = function(){
     };
     
     // the name of the declination
-    LI.csvData.stocks.push([
-      ticks[i] = $(elt).find('[name="product[declinations]['+cpt+'][code]"]').val(),
+    var arr;
+    LI.csvData.stocks.push(arr = [
+      ticks[i] = $(elt).closest('tr').find('> th div').text(),
       stocks.current,
       stocks.critical,
       stocks.perfect

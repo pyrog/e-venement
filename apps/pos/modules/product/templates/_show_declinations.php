@@ -1,6 +1,6 @@
 <?php use_javascript('pos-stocks') ?>
 
-<?php include_partial('global/graph_jqplot', array(
+<?php include_partial('global/chart_jqplot', array(
   'id'    => 'declinations',
   'data'  => url_for('product/declinationsTrends?id='.$form->getObject()->id),
   'label' => __('Declinations trends'),

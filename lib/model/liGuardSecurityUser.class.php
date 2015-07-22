@@ -25,6 +25,8 @@
 
 class liGuardSecurityUser extends sfGuardSecurityUser
 {
+  protected $extractionType = NULL;
+  
   public function __construct(sfEventDispatcher $dispatcher, sfStorage $storage, $options = array())
   {
     // this is a hack to avoid multiple database requests for the same data
@@ -98,5 +100,17 @@ class liGuardSecurityUser extends sfGuardSecurityUser
         return $this->getGuardUser()->Jabber;
     }
     return null;
+  }
+  
+  public function getExtractionType()
+  {
+    if ( $this->extractionType )
+      return $this->extractionType;
+    $q = Doctrine::getTable('OptionCsv')->createQuery('o')
+      ->andWhere('o.sf_guard_user_id = ?', $this->getId())
+      ->andWhere('o.name = ?', 'option')
+      ->andWhere('o.value = ?', 'microsoft')
+    ;
+    return $this->extractionType = $q->count() ? 'xls' : 'csv';
   }
 }
