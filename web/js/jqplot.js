@@ -32,7 +32,7 @@ $(document).ready(function(){
   $('.jqplot .actions .record').click(function(){
     var data = LI.csvData[$(this).closest('.jqplot').find('[data-series-name]').attr('data-series-name')];
     var url = URL.createObjectURL(new Blob([data.join("\n")], { type: "text/csv" }));
-    $(this).prop('download', 'filename.csv')
+    $(this).prop('download', LI.slugify(data[0][1]+' '+data[0][0])+'.csv')
       .prop('href', url);
   });
 });
