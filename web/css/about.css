@@ -1,4 +1,5 @@
 .about-home { position: absolute; }
+.about-home .ui-widget-search { width: 260px; }
 .ui-widget-customer, 
 .ui-widget-last-version,
 .ui-widget.ui-widget-about {

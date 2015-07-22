@@ -27,7 +27,7 @@
   </div>
   
   <form action="<?php echo cross_app_url_for('default', 'search/index') ?>" method="get"><p>
-    <input type="text" name="search" value="" size="18" />
+    <input type="text" name="search" value="" size="14" />
     <input type="submit" name="go" value="<?php echo __('Search') ?>" />
   </p></form>
 
