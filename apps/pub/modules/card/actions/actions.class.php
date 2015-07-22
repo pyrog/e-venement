@@ -21,8 +21,9 @@ class cardActions extends sfActions
     
     $this->member_card_types = Doctrine::getTable('MemberCardType')->createQuery('mct')
       ->leftJoin('mct.Users u')
+      ->leftJoin('mct.Translation translation WITH translation.lang = ?', $this->getUser()->getCulture())
       ->andWhere('u.id = ?',$this->getUser()->getId())
-      ->orderBy('name')
+      ->orderBy('translation.description')
       ->execute();
     
     $this->mct = array();
