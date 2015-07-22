@@ -1,4 +1,9 @@
 sfGuardPermission:
+  sfGuardPermission_147:
+    name: pos-product-stats
+    description: 'Permission to access the statistics of products'
+    created_at: '2015-07-22 18:36:26.864353'
+    updated_at: '2015-07-22 18:36:26.864353'
   sfGuardPermission_144:
     name: grp-events-multimanifs
     description: 'Possibility to add different manifestations into a single entry'
@@ -681,6 +686,11 @@ sfGuardPermission:
     updated_at: '2014-05-28 09:20:41'
 
 sfGuardGroupPermission:
+  sfGuardGroupPermission_58_147:
+    Group: sfGuardGroup_58
+    Permission: sfGuardPermission_147
+    created_at: '2015-07-22 18:36:26.864353'
+    updated_at: '2015-07-22 18:36:26.864353'
   sfGuardGroupPermission_57_144:
     Group: sfGuardGroup_57
     Permission: sfGuardPermission_144
@@ -1748,6 +1758,11 @@ sfGuardGroupPermission:
     updated_at: '2014-05-28 09:20:00'
 
 sfGuardGroup:
+  sfGuardGroup_58:
+    name: pos-stats
+    description: 'Ability to access the statistics of products'
+    created_at: '2015-07-22 18:36:27.000023'
+    updated_at: '2015-07-22 18:36:27.000023'
   sfGuardGroup_57:
     name: grp-multimanifs
     description: "Possibility to add different manifestations into a single entry"

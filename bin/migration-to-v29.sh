@@ -169,8 +169,29 @@ echo ""
 read -p "Do you want to update the Postalcodes data (can take a while)? [y/N] " reset
 [ "$reset" = 'y' ] && echo 'DELETE FROM postalcode;' | psql && ./symfony doctrine:data-load --append data/fixtures/20-postalcodes.yml
 
-psql $db <<EOF
+echo ""
+read -p "Do you want to add the new permissions? [Y/n] " add
+if [ "$add" != 'n' ]
+then
+  echo "If you get Symfony errors in the next few actions, it is not a problem, the permissions simply exist already in the DB"
+  echo ""
+  echo "Permissions & groups for the pos module"
+  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-pos.yml
+  echo "Permissions & groups for the grp module"
+  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-grp.yml
+fi
+
+echo ""
+read -p 'Adding "pos-admin" users in the new "pos-product-stats" group ? [Y/n]' dataload
+if [ "$dataload" != 'n' ]; then
+psql <<EOF
+  INSERT INTO sf_guard_user_group(group_id,user_id,created_at,updated_at)
+    (SELECT (SELECT id FROM sf_guard_group WHERE name = 'pos-stats'), user_id, now(), now()
+     FROM sf_guard_user_group
+     WHERE group_id = (SELECT id FROM sf_guard_group WHERE name = 'pos-admin')
+    );
 EOF
+fi
 
 echo ''
 echo "Changing (or not) file permissions for the e-venement Messaging Network ..."

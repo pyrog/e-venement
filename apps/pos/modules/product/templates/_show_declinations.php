@@ -1,3 +1,5 @@
+<?php if ( !$sf_user->hasCredential('pos-product-stats') ) return ?>
+
 <?php use_javascript('pos-stocks') ?>
 
 <?php include_partial('global/chart_jqplot', array(
@@ -9,3 +11,4 @@
 
 <?php use_javascript('helper') ?>
 <?php use_javascript('/js/jqplot/plugins/jqplot.pieRenderer.js') ?>
+
