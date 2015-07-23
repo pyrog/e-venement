@@ -1,4 +1,16 @@
 /**
+HOWTO USE IT:
+
+1. include this script
+2. use the Cookie var in this way :
+
+Cookie.set('NAME', VALUE, OPTIONS)
+Cookie.get('NAME')
+Cookie.has('NAME')
+Cookie.remove('NAME')
+  
+**/
+/**
  * Small Cookies JavaScript Helper
  *
  * Source code available at http://github.com/tdd/cookies-js-helper

@@ -291,4 +291,16 @@ LI.sumPayments = function()
     LI.parseFloat($('#li_transaction_field_payments_list tfoot .topay .sf_admin_list_td_list_value.tep').html())
     * ratio
   ));
+  
+  // hidding content as it used to be
+  if ( Cookie.has('tck.touchscreen.hidden-bunches') )
+  {
+    var settings = JSON.parse(Cookie.get('tck.touchscreen.hidden-bunches'));
+    $.each(settings, function(id, hidden){
+      if ( hidden && $('.bunch[data-bunch-id="'+id+'"] .families:not(.sample) .family:not(.total) .item').length == 0 )
+        $('.bunch[data-bunch-id="'+id+'"]').addClass('small');
+      else
+        $('.bunch[data-bunch-id="'+id+'"]').removeClass('small');
+    });
+  }
 }

@@ -19,6 +19,9 @@ $(document).ready(function(){
   
   // PLAYING W/ CART'S CONTENT
   // sliding content
+  var settings = Cookie.has('tck.touchscreen.hidden-bunches')
+    ? JSON.parse(Cookie.get('tck.touchscreen.hidden-bunches'))
+    : {};
   $('#li_transaction_field_content h2').click(function(){
     var bunch = $(this).closest('.bunch');
     
@@ -29,6 +32,10 @@ $(document).ready(function(){
     setTimeout(function(){ bunch.css('height', ''); }, 200);
     
     $(this).find('.ui-state-highlight').focusout();
+    
+    // cookies
+    settings[bunch.attr('data-bunch-id')] = bunch.hasClass('small');
+    Cookie.set('tck.touchscreen.hidden-bunches', JSON.stringify(settings));
   });
   $('#li_transaction_field_content h3').click(function(){
     $(this).closest('.family').find('.items').each(function(){
