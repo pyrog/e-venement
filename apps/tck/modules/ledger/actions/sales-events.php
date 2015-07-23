@@ -25,6 +25,7 @@
     // BE CAREFUL : ALWAYS CHECK Manifestation::getTicketsInfos() FOR CRITERIAS APPLYIANCE FOR BIG LEDGERS
     
     $q = Doctrine::getTable('Event')->createQuery('e')
+      ->select('e.*, m.*, l.*, tck.*, u.*, t.*, g.*')
       ->leftJoin('e.Manifestations m')
       ->leftJoin('m.Location l')
       ->leftJoin('m.Tickets tck')
@@ -32,9 +33,6 @@
       ->andWhere('tck.duplicating IS NULL') // to count only originals tickets, not duplicates
       ->leftJoin('tck.Transaction t')
       ->leftJoin('tck.Gauge g')
-      ->leftJoin('t.Contact c')
-      ->leftJoin('t.Professional pro')
-      ->leftJoin('pro.Organism o')
       ->orderBy('translation.name, m.happens_at, l.name, tck.price_name, u.first_name, u.last_name, tck.sf_guard_user_id, tck.cancelling IS NULL DESC, tck.updated_at');
     
     $str = 'tck.printed_at IS NOT NULL OR tck.cancelling IS NOT NULL OR tck.integrated_at IS NOT NULL';
@@ -58,7 +56,7 @@
           $dates[0],
           $dates[1],
         ))
-        ->andWhere('p.id = (SELECT min(id) FROM Payment p2 WHERE transaction_id = t.id)');
+        ->andWhere('p.id = (SELECT min(pp.id) FROM Payment pp WHERE pp.transaction_id = p.transaction_id)');
     }
     
     $q->andWhereIn('t.type',array('normal', 'cancellation'));
