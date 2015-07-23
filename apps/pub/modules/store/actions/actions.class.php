@@ -38,7 +38,7 @@ class storeActions extends autoStoreActions
     $q = Doctrine::getTable('BoughtProduct')->createQuery('bp')
       ->andWhere('bp.transaction_id = ?', $this->getUser()->getTransactionId())
       ->andWhere('bp.integrated_at IS NULL')
-      ->andWhere('bp.product_declination_id = ?', $request->getParameter('id'))
+      ->andWhere('bp.product_declination_id = ?', $request->getParameter('id',0))
     ;
     $this->forward404Unless($bps = $q->execute());
     $bps->delete();

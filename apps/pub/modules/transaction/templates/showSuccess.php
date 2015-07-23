@@ -68,7 +68,10 @@ $(document).ready(function(){
   <td class="linked-stuff"><?php include_partial('show_linked_stuff', array('ticket' => $ticket))  ?></td>
   <?php endif ?>
   <?php $last['gauge_id'] = $gauge->id; ?>
-  <td class="mod"><?php echo $current_transaction && $manif->IsNecessaryTo->count() == 0 ? link_to(__('modify'),'manifestation/show?id='.$manif->id) : '' ?></td>
+  <td class="mod"><?php if ( $current_transaction && $manif->IsNecessaryTo->count() == 0 ): ?>
+    <?php echo link_to(__('modify'),'manifestation/show?id='.$manif->id) ?>
+    <?php echo link_to(__('delete'),'manifestation/del?gauge_id='.$gauge->id) ?>
+  <?php endif ?></td>
 </tr>
 <?php endforeach ?>
 <?php endforeach ?>
@@ -91,7 +94,10 @@ $(document).ready(function(){
   <?php if ( sfConfig::get('app_options_synthetic_plans', false) && $current_transaction ): ?>
   <td class="linked-stuff"></td>
   <?php endif ?>
-  <td class="mod"><?php if ( $current_transaction ) echo link_to(__('modify'),'card/index') ?></td>
+  <td class="mod"><?php if ( $current_transaction ): ?>
+    <?php echo link_to(__('modify'),'card/index') ?>
+    <?php echo link_to(__('delete'),'card/del?mct_id='.$mc->id) ?>
+  <?php endif ?></td>
 </tr>
 <?php endforeach ?>
 <?php foreach ( $products as $product ): ?>

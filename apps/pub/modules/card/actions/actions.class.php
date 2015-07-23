@@ -36,6 +36,20 @@ class cardActions extends sfActions
     }
   }
   
+  public function executeDel(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $q = Doctrine::getTable('MemberCard')->createQuery('mc')
+      ->andWhere('mc.transaction_id = ?', $this->getUser()->getTransactionId())
+      ->andWhere('mc.active = ?', false)
+      ->andWhere('mc.id = ?', $request->getParameter('id',0))
+    ;
+    $this->forward404Unless($mcs = $q->execute());
+    $mcs->delete();
+    $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
+    $this->redirect('store/index');
+  }
+  
   public function executeOrder(sfWebRequest $request)
   {
     $this->redirectIfNotAuthenticated();

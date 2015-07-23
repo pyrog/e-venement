@@ -46,6 +46,20 @@ class manifestationActions extends autoManifestationActions
     
     parent::executeIndex($request);
   }
+  public function executeDel(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $q = Doctrine::getTable('Tickets')->createQuery('tck')
+      ->andWhere('tck.transaction_id = ?', $this->getUser()->getTransactionId())
+      ->andWhere('tck.integrated_at IS NULL AND tck.printed_at IS NULL AND tck.cancelling IS NULL')
+      ->andWhere('tck.gauge_id = ?', $request->getParameter('gauge_id',0))
+    ;
+    $this->forward404Unless($tickets = $q->execute());
+    $tickets->delete();
+    $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
+    $this->redirect('event/index');
+  }
+
   public function executeBatchDelete(sfWebRequest $request)
   {
     $this->redirect('manifestation/index');
