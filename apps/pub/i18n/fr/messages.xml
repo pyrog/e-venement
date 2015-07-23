@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Unavailable.</source>
+        <target>Indisponible.</target>
+      </trans-unit>
+      <trans-unit>
         <source>I agree to receive e-mail newsletters</source>
         <target>J'accepte de recevoir des lettres d'information</target>
       </trans-unit>

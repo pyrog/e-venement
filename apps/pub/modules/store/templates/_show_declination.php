@@ -15,6 +15,6 @@
       'max' => $max > $declination->Product->online_limit_per_transaction ? $declination->Product->online_limit_per_transaction : $max,
     )) ?>
   <?php else: ?>
-    <div class="nomore">No more</div>
+    <div class="nomore"><?php echo pubConfiguration::getText('app_texts_store_nomore', __('Unavailable.')) ?></div>
   <?php endif ?>
 </div>
