@@ -1,5 +1,5 @@
 .sf_admin_list .sf_admin_list_td_list_stocks .data { display: none; }
-.sf_admin_list .sf_admin_list_td_list_stocks .jqplot { height: 100px; width: 150px; }
+.sf_admin_list .sf_admin_list_td_list_stocks .jqplot { height: 100px; width: 150px; cursor: pointer; }
 .sf_admin_list table tbody tr.sf_admin_row .sf_admin_boolean { text-align: center; }
 
 .sf_admin_form_field_prices_list ul { list-style-type: none; }
