@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Your items were successfully removed from your cart.</source>
+        <target>Vos articles ont été correctement retirés de votre panier.</target>
+      </trans-unit>
+      <trans-unit>
         <source>Unavailable.</source>
         <target>Indisponible.</target>
       </trans-unit>
@@ -727,6 +731,10 @@
       <trans-unit id="3">
         <source>modify</source>
         <target>modifier</target>
+      </trans-unit>
+      <trans-unit>
+        <source>delete</source>
+        <target>suppr.</target>
       </trans-unit>
       <trans-unit id="4">
         <source>Event</source>

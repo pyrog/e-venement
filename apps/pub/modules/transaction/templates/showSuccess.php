@@ -131,6 +131,7 @@ $(document).ready(function(){
   <td class="mod">
     <?php if ( $current_transaction && $product->product_declination_id && $product->Declination->Product->Category->online && $current_transaction && !$product->ticket_id ): ?>
       <?php echo link_to(__('modify'),'store/edit?id='.$product->Declination->Product->id) ?>
+      <?php echo link_to(__('delete'),'store/del?id='.$product->Declination->Product->id) ?>
     <?php endif ?>
   </td>
 </tr>

@@ -32,6 +32,19 @@ class storeActions extends autoStoreActions
   {
     return require(__DIR__.'/mod-for-ticket.php');
   }
+  public function executeDel(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $q = Doctrine::getTable('BoughtProduct')->createQuery('bp')
+      ->andWhere('bp.transaction_id = ?', $this->getUser()->getTransactionId())
+      ->andWhere('bp.integrated_at IS NULL')
+      ->andWhere('bp.product_declination_id = ?', $request->getParameter('id'))
+    ;
+    $this->forward404Unless($bps = $q->execute());
+    $bps->delete();
+    $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
+    $this->redirect('store/index');
+  }
   
   public function executeIndex(sfWebRequest $request)
   {
