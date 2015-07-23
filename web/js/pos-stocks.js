@@ -166,7 +166,7 @@ LI.posStocks = function(){
       LI.series.stocks[1][i] = 0;
       LI.series.stocks[2][i] = 0;
     }
-    else if ( stocks.current > stocks.critical && stocks.current <= stocks.perfect )
+    else if ( stocks.current > stocks.critical && stocks.current < stocks.perfect )
     {
       LI.series.stocks[0][i] = 0;
       LI.series.stocks[1][i] = stocks.current;

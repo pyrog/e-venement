@@ -18,6 +18,31 @@ class ProductFormFilter extends BaseProductFormFilter
   {
     parent::configure();
     
+    $this->widgetSchema   ['use_stock'] = new sfWidgetFormChoice(array(
+      'choices' => $arr = array(
+        ''  => 'yes or no',
+        'y' => 'yes',
+        'n' => 'no',
+      ),
+    ));
+    $this->validatorSchema['use_stock'] = new sfValidatorChoice(array(
+      'required' => false,
+      'choices'  => array_keys($arr),
+    ));
+    $this->widgetSchema ['stock_status'] = new sfWidgetFormChoice(array(
+      'choices' => $choices = array(
+        ''        => '',
+        'soldout' => 'Sold out',
+        'critical'=> 'Critical',
+        'correct' => 'Correct',
+        'good'    => 'Good',
+      ),
+    ));
+    $this->validatorSchema['stock_status'] = new sfValidatorChoice(array(
+      'required' => false,
+      'choices'  => array_keys($choices),
+    ));
+    
     $this->widgetSchema   ['prices_list']
       ->setOption('multiple', true)->setOption('order_by', array('name',''))
       ->setOption('query', $q = Doctrine::getTable('Price')->createQuery('p')->leftJoin('p.PricePOS pos')->andWhere('pos.id IS NOT NULL'))
@@ -55,8 +80,33 @@ class ProductFormFilter extends BaseProductFormFilter
     );
   }
   
-  public function addNameColumnQuery($q, $field, $value)
+  public function addUseStockColumnQuery($q, $field, $value)
   {
+    if ( !$value )
+      return $q;
+    return $q->andWhere("d.$field = ?", $value == 'y' ? true : false);
+  }
+  public function addStockStatusColumnQuery($q, $field, $value)
+  {
+    if ( !$value )
+      return $q;
+    switch ( $value ) {
+    case 'soldout':
+      $q->andWhere('d.stock = ?',0);
+      break;
+    case 'critical':
+      $q->andWhere('d.stock > ? AND d.stock <= d.stock_critical', 0);
+      break;
+    case 'correct':
+      $q->andWhere('d.stock > d.stock_critical AND d.stock < d.stock_perfect');
+      break;
+    case 'good':
+      $q->andWhere('d.stock >= d.stock_perfect');
+      break;
+    }
+    return $q;
+  }
+  public function addNameColumnQuery($q, $field, $value) {
     if ( !$value['text'] )
       return $q;
     

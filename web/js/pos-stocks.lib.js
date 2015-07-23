@@ -17,7 +17,7 @@ LI.posRenderStocks = function(data, jObj)
       fdata[1][cpt] = 0;
       fdata[2][cpt] = 0;
     }
-    else if ( stocks.current > stocks.critical && stocks.current <= stocks.perfect )
+    else if ( stocks.current > stocks.critical && stocks.current < stocks.perfect )
     {
       fdata[0][cpt] = 0;
       fdata[1][cpt] = stocks.current;

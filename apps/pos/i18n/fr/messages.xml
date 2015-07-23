@@ -4,6 +4,14 @@
   <file source-language="EN" target-language="fr" datatype="plaintext" original="messages" date="2014-09-09T17:16:42Z" product-name="messages">
     <header/>
     <body>
+      <trans-unit id="175">
+        <source>Sold out</source>
+        <target>Épuisé</target>
+      </trans-unit>
+      <trans-unit id="174">
+        <source>Stock status</source>
+        <target>Statut du stock</target>
+      </trans-unit>
       <trans-unit id="173">
         <source>Global</source>
         <target>Global</target>
