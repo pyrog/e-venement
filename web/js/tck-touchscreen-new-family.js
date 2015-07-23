@@ -80,11 +80,9 @@
                   
                   switch ( $(option).closest('[data-bunch-id]').attr('data-bunch-id') ) {
                   case 'store':
-                    console.error('temp gauge store');
                     LI.renderStocks(JSON.stringify(data));
                     break;
                   default:
-                    console.error('temp gauge manifs');
                     LI.renderGauge(JSON.stringify(data), true);
                     break;
                   }
@@ -160,13 +158,24 @@ LI.autoAddFamilies = function(form){
     var id = value.replace(/^\w+-/,'');
 
     switch ( type ) {
+    case 'museum':
     case 'manifestations':
-      $('#li_transaction_manifestations .new-family [name="manifestation_id[]"] *').remove();
+      var field = 'manifestation';
+      $('#li_transaction_'+type+' .new-family [name="'+field+'_id[]"] *').remove();
       $(id.split(',')).each(function(i, v){
-        $('#li_transaction_manifestations .new-family [name="manifestation_id[]"]')
+        $('#li_transaction_'+type+' .new-family [name="'+field+'_id[]"]')
           .append($('<option>'+v+'</option>').val(v).prop('selected',true));
       });
-      LI.addFamilies($('#li_transaction_manifestations .new-family [name="manifestation_id[]"]'));
+      LI.addFamilies($('#li_transaction_'+type+' .new-family [name="'+field+'_id[]"]'));
+      break;
+    case 'store':
+      var field = 'product';
+      $('#li_transaction_'+type+' .new-family [name="'+field+'_id[]"] *').remove();
+      $(id.split(',')).each(function(i, v){
+        $('#li_transaction_'+type+' .new-family [name="'+field+'_id[]"]')
+          .append($('<option>'+v+'</option>').val(v).prop('selected',true));
+      });
+      LI.addFamilies($('#li_transaction_'+type+' .new-family [name="'+field+'_id[]"]'));
       break;
     }
   });
@@ -178,9 +187,11 @@ LI.addFamilies = function(elt){
     : $(elt).closest('.new-family').find('select')
   ;
   
-  if ( $(elt).val() )
-  {
-    var nf = $(elt).closest('.new-family');
+  $(elt).each(function(){
+    if ( !$(this).val() )
+      return
+      
+    var nf = $(this).closest('.new-family');
     var bunch = nf.closest('.bunch');
     
     nf.submit();
@@ -190,5 +201,5 @@ LI.addFamilies = function(elt){
     setTimeout(function(){
       bunch.find('.families:not(.sample) .family:not(.total):last .item:first').click();
     }, 1000);
-  }
+  });
 }
