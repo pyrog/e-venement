@@ -5,19 +5,19 @@
   'object' => $object,
 )) ?>
 </div>
-<div class="tdp-top-widget vertical">
+<div class="tdp-top-actions tdp-top-widget vertical">
 <?php include_partial('global/tdp/top_widget_actions',array(
   'object' => $object,
   'config' => $config,
 )) ?>
 </div>
-<div class="tdp-top-widget vertical">
+<div class="tdp-top-misc tdp-top-widget vertical">
 <?php include_partial('global/tdp/top_widget_misc',array(
   'object' => $object,
   'hasFilters' => $hasFilters,
 )) ?>
 </div>
-<div class="tdp-top-widget vertical">
+<div class="tdp-top-filters tdp-top-widget vertical">
 <?php include_partial('global/tdp/top_widget_filters_buttons',array(
   'object' => $object,
   'hasFilters' => $hasFilters,
@@ -25,8 +25,9 @@
   'configuration' => $configuration,
 )) ?>
 </div>
-<div id="sf_admin_bar ui-helper-hidden" style="display:none">
-  <?php if ( !$object ) include_partial($sf_context->getModuleName().'/filters', array('form' => $filters, 'configuration' => $configuration)) ?>
+<div class="sf_admin_bar ui-helper-hidden" style="display:none">
+  <?php if ( !$object ) include_partial('global/tdp/top_widget_filters_ajax') ?>
+  <?php //if ( !$object ) include_partial($sf_context->getModuleName().'/filters', array('form' => $filters, 'configuration' => $configuration)) ?>
 </div>
 
 </div>

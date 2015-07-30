@@ -452,7 +452,17 @@ class contactActions extends autoContactActions
     $this->pager->setPage($request->getParameter('page') ? $request->getParameter('page') : 1);
     $this->pager->init();
   }
-  public function executeIndex(sfWebRequest $request) {
+  
+  public function executeFilters(sfWebRequest $request)
+  {
+    $this->executeIndex($request);
+  }
+  public function executeSideBar(sfWebRequest $request)
+  {
+    $this->executeIndex($request);
+  }
+  public function executeIndex(sfWebRequest $request)
+  {
     parent::executeIndex($request);
     if ( !$this->sort[0] )
     {

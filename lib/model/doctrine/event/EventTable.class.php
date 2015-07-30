@@ -41,8 +41,11 @@ class EventTable extends PluginEventTable
   
   public function retrieveMuseumList($q)
   { return $this->retrieveList($q, true); }
-  public function retrieveList($q, $museum = false)
+  public function retrieveList($q = NULL, $museum = false)
   {
+    if (! $q instanceof Doctrine_Query )
+      $q = $this->createQuery('e');
+    
     $cid = 0;
     $admin = false;
     $sf_user = false;

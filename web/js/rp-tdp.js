@@ -11,7 +11,7 @@ $(document).ready(function(){
   {
     $('#tdp-content input, #tdp-content select, #tdp-content textarea')
       .prop('disabled',true);
-    $('#tdp-side-bar .tdp-object-groups .new').remove();
+    $('#tdp-side-bar .tdp-object-groups .new').remove(); // this can be found a second time in LI.tdp_side_bar()
   }
   
   // LINKS TO TRANSACTIONS
@@ -224,52 +224,8 @@ $(document).ready(function(){
   };
   
   // SIDEBAR
-  $('#tdp-side-bar li').each(function(){
-    $(this).prop('title',$(this).find('label').html());
-  });
-  $('#tdp-side-bar input[type=checkbox]').click(function(){
-    $('#tdp-update-filters').get(0).blink();
-    if ( $(this).closest('.tdp-side-widget').is('#tdp-side-categories') )
-      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
-    if ( $(this).closest('.tdp-side-widget').is('#tdp-side-groups') )
-      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
-  });
+  LI.tdp_side_bar();
   
-  // integrated search
-  $('#tdp-side-bar #list-integrated-search input[type=text]')
-    .keydown(function(){
-      if ( $(this).closest('#list-integrated-search').find('label').html() == $(this).val() )
-        $(this).val('').removeClass('no-text');
-    })
-    .keyup(function(){
-      if ( '' == $(this).val() )
-      {
-        $(this).val($(this).closest('#list-integrated-search').find('label').html())
-          .prop('title',$(this).val())
-          .addClass('no-text');
-      }
-    })
-    .focusout(function(){
-      $(this).keyup();
-    })
-    .keyup();
-  
-  // filters
-  $('#tdp-side-bar .filters').submit(function(){
-    $('#sf_admin_filter form').submit();
-    return false;
-  });
-  
-  // emails
-  $('#tdp-side-bar #tdp-side-emails .emails-object, #tdp-side-bar #tdp-side-emails .emails-subobject').each(function(){
-    if ( $(this).find('.archive').length > 0 )
-      $(this).find('.archive:last').after('<li class="more"><a href="#">...</a></li>');
-  });
-  $('#tdp-side-bar #tdp-side-emails .more a').click(function(){
-    $(this).closest('.emails-object, .emails-subobject').find('.archive').fadeIn();
-    $(this).remove();
-    return false;
-  });
   $('.tdp-line.internet .tdp-contact_email_npai input[type=checkbox], .tdp-line.complements .tdp-email_npai input[type=checkbox]').change(function(){
     if ( $(this).prop('checked') )
       $(this).closest('.tdp-line.complements, .tdp-line.internet').find('.tdp-email, .tdp-contact_email').addClass('bad');
@@ -524,4 +480,96 @@ LI.tdp_open_object = function(elt)
       .insertAfter($(elt).closest('tr'));
   }
   return false;
+}
+
+// FILTERS
+LI.tdp_filters = function()
+{
+  // stolen in web/sfAdminThemejRollerPlugin/js/jroller.js
+  $('.sf_admin_filter').dialog({
+   autoOpen: false,
+    width: 600,
+    height: $(window).height() - 50,
+    close: function(evt, ui){
+      $('#sf_admin_filter_button').removeClass('ui-state-active');
+    },
+    open: function(evt,ui){
+      $('#sf_admin_filter_reset, #sf_admin_filter_submit').hide();
+      $('#sf_admin_filter_button').addClass('ui-state-active');
+      setTimeout(function(){
+        $('.ui-dialog-buttonpane button .ui-button-text').each(function(){
+          if ( $(this).html() == 'Reset' )
+            $(this).html($('#sf_admin_filter_reset').html());
+          if ( $(this).html() == 'Filter' )
+            $(this).html($('#sf_admin_filter_submit').val());
+        });
+      },200);
+      $('#sf_admin_filter').animate({ scrollTop: 0 }, 'slow');
+    },
+    buttons: {
+      'Filter': function() {
+          $(this).dialog("close");
+          $('#sf_admin_filter_submit').closest('form').submit();
+        },
+        'Reset': function() {
+          $(this).dialog("close");
+          location.href = $('#sf_admin_filter_reset').attr('href');
+        }
+      }
+    });
+}
+
+// SIDEBAR
+LI.tdp_side_bar = function()
+{
+  // READ ONLY: deactivating every field if the user has no credential for modification
+  if ( $('#tdp-top-bar .action.update[href=#]').length == 1 )
+    $('#tdp-side-bar .tdp-object-groups .new').remove();
+  
+  $('#tdp-side-bar li').each(function(){
+    $(this).prop('title',$(this).find('label').html());
+  });
+  $('#tdp-side-bar input[type=checkbox]').click(function(){
+    $('#tdp-update-filters').get(0).blink();
+    if ( $(this).closest('.tdp-side-widget').is('#tdp-side-categories') )
+      $('#sf_admin_filter .sf_admin_filter_field_organism_category_id select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
+    if ( $(this).closest('.tdp-side-widget').is('#tdp-side-groups') )
+      $('#sf_admin_filter .sf_admin_filter_field_groups_list          select option[value="'+$(this).val()+'"]').prop('selected',$(this).prop('checked')).change();
+  });
+  
+  // integrated search
+  $('#tdp-side-bar #list-integrated-search input[type=text]')
+    .keydown(function(){
+      if ( $(this).closest('#list-integrated-search').find('label').html() == $(this).val() )
+        $(this).val('').removeClass('no-text');
+    })
+    .keyup(function(){
+      if ( '' == $(this).val() )
+      {
+        $(this).val($(this).closest('#list-integrated-search').find('label').html())
+          .prop('title',$(this).val())
+          .addClass('no-text');
+      }
+    })
+    .focusout(function(){
+      $(this).keyup();
+    })
+    .keyup();
+  
+  // filters
+  $('#tdp-side-bar .filters').submit(function(){
+    $('#sf_admin_filter form').submit();
+    return false;
+  });
+  
+  // emails
+  $('#tdp-side-bar #tdp-side-emails .emails-object, #tdp-side-bar #tdp-side-emails .emails-subobject').each(function(){
+    if ( $(this).find('.archive').length > 0 )
+      $(this).find('.archive:last').after('<li class="more"><a href="#">...</a></li>');
+  });
+  $('#tdp-side-bar #tdp-side-emails .more a').click(function(){
+    $(this).closest('.emails-object, .emails-subobject').find('.archive').fadeIn();
+    $(this).remove();
+    return false;
+  });
 }

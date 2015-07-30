@@ -166,6 +166,14 @@ class organismActions extends autoOrganismActions
     $this->setTemplate('index');
   }
   
+  public function executeFilters(sfWebRequest $request)
+  {
+    $this->executeIndex($request);
+  }
+  public function executeSideBar(sfWebRequest $request)
+  {
+    $this->executeIndex($request);
+  }
   public function executeIndex(sfWebRequest $request)
   {
     parent::executeIndex($request);

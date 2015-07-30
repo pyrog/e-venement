@@ -195,6 +195,3 @@ all:
       email_npai: { label: Bad email }
       contact_email_npai: { label: Bad email }
       organism: { label: With the organism }
-
-dev:
-  active: true
