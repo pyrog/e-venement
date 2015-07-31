@@ -1,0 +1,26 @@
+.versions-diff { margin: 10px; }
+
+.diff { margin: 10px; display: inline-table; }
+.diff td {
+  vertical-align: top;
+  white-space: pre;
+  white-space: pre-wrap;
+  font-family: 'Courier New',Courier,monospace;
+  padding-right: 1em;
+}
+
+.diff span {
+  display: block;
+  padding: 0 3px;
+}
+
+.diffDeleted span{
+  border:1px solid rgb(255,192,192);
+  background:rgb(255,224,224);
+}
+
+.diffInserted span{
+  border:1px solid rgb(192,255,192);
+  background:rgb(224,255,224);
+}
+
