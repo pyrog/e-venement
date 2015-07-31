@@ -540,13 +540,13 @@ LI.tdp_side_bar = function()
   // integrated search
   $('#tdp-side-bar #list-integrated-search input[type=text]')
     .keydown(function(){
-      if ( $(this).closest('#list-integrated-search').find('label').html() == $(this).val() )
+      if ( $(this).closest('#list-integrated-search').find('label').text() == $(this).val() )
         $(this).val('').removeClass('no-text');
     })
     .keyup(function(){
       if ( '' == $(this).val() )
       {
-        $(this).val($(this).closest('#list-integrated-search').find('label').html())
+        $(this).val($(this).closest('#list-integrated-search').find('label').text())
           .prop('title',$(this).val())
           .addClass('no-text');
       }
@@ -555,6 +555,7 @@ LI.tdp_side_bar = function()
       $(this).keyup();
     })
     .keyup();
+  LI.list_integrated_search_init();
   
   // filters
   $('#tdp-side-bar .filters').submit(function(){

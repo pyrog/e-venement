@@ -25,6 +25,11 @@
     ));
   }
   
+  if ( is_object($object) )
+  {
+    echo link_to(__('Versions'), $sf_context->getModuleName().'/version?id='.$object->id.'&v='.($object->version == 1 ? 1 : $object->version-1));
+  }
+  
   // emailing
   if ( $active_filters )
   {

@@ -647,8 +647,8 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Nom de la place</target>
       </trans-unit>
       <trans-unit>
-        <source>You have requested the version %%v%% that does not exist</source>
-        <target>Vous avez demandé la version %%v%% qui n'existe pas</target>
+        <source>You have requested the version #%%v%% that does not exist.</source>
+        <target>Vous avez demandé la version #%%v%% qui n'existe pas.</target>
       </trans-unit>
       <trans-unit>
         <source>Pending</source>

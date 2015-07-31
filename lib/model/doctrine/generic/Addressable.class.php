@@ -53,110 +53,50 @@ class Addressable extends PluginAddressable
       $this->longitude = $value;
     return $this;
   }
-
-/*
-  public function updateGeolocalization()
-  {
-    $geoLocAddress   = $this->getGmapLocalization();
-    
-    $this->latitude  = $geoLocAddress->getLat();
-    $this->longitude = $geoLocAddress->getLng();
-    return $this;
-  }
   
-  public function isGeolocalized()
+  // methods stolen from Traceable
+  public function preSave($event)
   {
-    return $this->latitude && $this->longitude;
-  }
-  
-  public function save(Doctrine_Connection $conn = null)
-  {
-    if ( sfConfig::has('app_google_maps_api_keys') )
-    try {
-      $this->updateGeolocalization();
-    }
-    catch ( sfFactoryException $e )
-    { }
-    
-    foreach ( array('latitude','longitude') as $field )
-    if ( $this->$field === '' )
-      $this->$field = NULL;
-    
-    return parent::save($conn);
-  }
-  
-  protected function getGmapLocalization()
-  {
-    if ( !sfConfig::has('app_google_maps_api_keys') )
-      throw new sfFactoryException("Geolocalization is not enabled in your configuration");
-    
-    $address = array(
-      'address' => $this->getAddress(),
-      'postal_code' => $this->getPostalcode(),
-      'city' => $this->getCity(),
-      'country' => $this->getCountry() ? $this->getCountry() : sfConfig::get('app_google_maps_default_country'), // to change by a param in app.yml
-    );
-    $address = implode("\n", $address);
-    $gmap = new GMap();
-    $geoLocAddress = $gmap->geocode($address);
-    
-    if ( is_null($geoLocAddress) )
-      throw new sfFactoryException("It was impossible to geolocalize \"%%contact%%\"");
-    
-    return $geoLocAddress;
-  }
-  
-  public function getGmapString()
-  {
-    return
-      '<a href="'.url_for($this->module.'/show?id='.$this->id).'">'.
-        $this.
-      '</a>';
-  }
-
-  public static function getGmapFromQuery(Doctrine_Query $query, sfWebRequest $request)
-  {
-    $display = sfConfig::get('app_google_maps_display');
-    $query
-      ->limit(intval($display['max']))
-      ->offset(intval($request->getParameter('offset')));
-    
-    if ( $display['notices'] && sfContext::hasInstance() )
+    if ( $this->isModified() )
     {
-      sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');
-      sfContext::getInstance()->getUser()->setFlash('notice',
-        __('Your map is only displaying the %%max%% first records...',array('%%max%%' => $display['max'])));
+      if ( sfContext::hasInstance() && sfContext::getInstance()->getUser()->getId() )
+      {
+        $this->last_accessor_id = sfContext::getInstance()->getUser()->getId();
+        $this->automatic = false;
+      }
+      else
+        $this->automatic = true;
+      $this->updated_at = date('Y-m-d H:i:s');
     }
-    
-    $gMap = new GMap();
-    foreach ($query->execute() as $addressable)
-      $gMap = self::getGmapFromObject($addressable,$gMap);
-    
-    $gMap->centerAndZoomOnMarkers();
-    return $gMap;
+    parent::preSave($event);
   }
   
-  public static function getGmapFromObject(Addressable $addressable, $gmap = NULL)
+  public function preInsert($event)
   {
-    if ( !($gmap instanceof GMap) )
-      $gmap = new GMap();
-    
-    try
+    if ( sfContext::hasInstance() && sfContext::getInstance()->getUser()->getId() )
     {
-      if ( !$addressable->isGeolocalized() )
-        $addressable
-          ->updateGeolocalization()
-          ->save();
-      $marker = new GMapMarker($addressable->getLatitude(), $addressable->getLongitude(),array(),'_'.$addressable->getJSSlug().'_marker');
-      $marker->addHtmlInfoWindow(new GMapInfoWindow(
-        $addressable->getGmapString(),array(),'_'.$addressable->getJSSlug().'_info'
-      ));
-      $gmap->addMarker($marker);
+      if ( is_null($this->last_accessor_id) )
+        $this->last_accessor_id = sfContext::getInstance()->getUser()->getId();
     }
-    catch ( sfException $e ) { }
+    else
+    {
+      $this->last_accessor_id = NULL;
+      $this->automatic = true;
+    }
     
-    $gmap->centerAndZoomOnMarkers();
-    return $gmap;
+    if ( is_null($this->created_at) )
+      $this->created_at = date('Y-m-d H:i:s');
+    parent::preInsert($event);
   }
-*/
+  
+  public function copy($deep = FALSE)
+  {
+    $t = parent::copy($deep);
+    
+    $t->updated_at = NULL;
+    $t->created_at = NULL;
+    $t->last_accessor_id = NULL;
+    
+    return $t;
+  }
 }

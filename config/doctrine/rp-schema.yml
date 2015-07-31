@@ -30,7 +30,6 @@ Contact:
       fields: [name,firstname,email,postalcode,city]
     Sluggable:
       fields: [name,firstname]
-    Versionable: ~
   indexes:
     contact_name_idx:
       fields: [name]
@@ -115,7 +114,6 @@ Organism:
   actAs:
     Searchable:
       fields: [name, administrative_number, email, postalcode, city]
-    Versionable: ~
   inheritance:
     extends: Addressable
     type: concrete

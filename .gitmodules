@@ -25,6 +25,3 @@
 [submodule "lib/vendor/externals/symfony1"]
 	path = lib/vendor/externals/symfony1
 	url = https://github.com/betaglop/symfony
-[submodule "lib/vendor/externals/php-diff"]
-	path = lib/vendor/externals/php-diff
-	url = https://github.com/chrisboulton/php-diff

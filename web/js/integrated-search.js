@@ -1,4 +1,7 @@
-function list_integrated_search(data)
+if ( LI == undefined )
+  var LI = {};
+
+LI.list_integrated_search = function(data)
 {
   data = $.parseHTML(data);
   
@@ -16,7 +19,7 @@ function list_integrated_search(data)
     );
   }).click(function(){
     $.get($(this).prop('href'),function(data){
-      list_integrated_search(data);
+      LI.list_integrated_search(data);
     });
     return false;
   });
@@ -49,7 +52,8 @@ function list_integrated_search(data)
     window.integrated_search_end[i]();
 }
 
-$(document).ready(function(){
+LI.list_integrated_search_init = function()
+{
   // focus on integrated search on load
   $('#list-integrated-search input[type=text]:first').focus();
   
@@ -57,11 +61,15 @@ $(document).ready(function(){
     if ( location.hash != '#debug' )
     {
       $.get($(this).prop('action'),{ s: $(this).find('input[name=s]').val() },function(data){
-        list_integrated_search(data);
+        LI.list_integrated_search(data);
       });
       return false;
     }
     else
       $(this).prop('target', '_blank');
   });
+}
+
+$(document).ready(function(){
+  LI.list_integrated_search_init();
 });

@@ -531,7 +531,7 @@ class manifestationActions extends autoManifestationActions
     if ( !$this->manifestation->current_version )
     {
       $this->getContext()->getConfiguration()->loadHelpers('I18N');
-      $this->getUser()->setFlash('error', __('You have requested the version %%v%% that does not exist', array('%%v%%' => $v)));
+      $this->getUser()->setFlash('error', __('You have requested the version #%%v%% that does not exist.', array('%%v%%' => $v)));
       $this->redirect('manifestation/show?id='.$this->manifestation->id);
     }
   }

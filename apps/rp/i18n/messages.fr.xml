@@ -5,6 +5,22 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Last accessor</source>
+        <target>Utilisateur</target>
+      </trans-unit>
+      <trans-unit>
+        <source>You have requested the version #%%v%% that does not exist.</source>
+        <target>Vous avez demandé la version #%%v%% qui n'existe pas.</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Version</source>
+        <target>Version</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Versions</source>
+        <target>Versions</target>
+      </trans-unit>
+      <trans-unit>
         <source>Online</source>
         <target>En ligne</target>
       </trans-unit>

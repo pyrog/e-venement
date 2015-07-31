@@ -322,6 +322,37 @@ class contactActions extends autoContactActions
     return parent::executeBatchDelete($request);
   }
   
+  public function executeVersion(sfWebRequest $request)
+  {
+    $this->executeShow($request);
+    
+    if ( !($v = $request->getParameter('version',false)) )
+      $v = $this->contact->version > 1 ? $this->contact->version - 1 : 1;
+    
+    if ( intval($v).'' == ''.$v )
+    foreach ( $this->contact->Version as $version )
+    if ( $version->version == $v )
+    {
+      $this->contact->searched_version = $version;
+      if ( $v <= 1 || $this->contact->previous_version )
+        break;
+    }
+    elseif ( $v > 1 && $version->version == $v-1 )
+    {
+      $this->contact->previous_version = $version;
+      if ( $this->contact->searched_version )
+        break;
+    }
+    
+    if ( !$this->contact->searched_version )
+    {
+      $this->getContext()->getConfiguration()->loadHelpers('I18N');
+      $this->getUser()->setFlash('error', __('You have requested the version #%%v%% that does not exist.', array('%%v%%' => $v)));
+      $this->redirect('contact/show?id='.$this->contact->id);
+    }
+    
+    $this->object = $this->contact;
+  }
   public function executeShow(sfWebRequest $request)
   {
     $this->contact = Doctrine::getTable('Contact')->findWithTickets($request->getParameter('id'));

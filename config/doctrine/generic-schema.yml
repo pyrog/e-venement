@@ -26,17 +26,14 @@ Addressable:
   actAs: 
     Searchable:
       fields: [name]
-    Geographical:
-      latitude:
-        options:
-          scale: 7
-      longitude:
-        options:
-          scale: 7
-    Timestampable: ~
     Sluggable:
       unique: true
       fields: [name]
+    Timestampable: ~
+    Versionable:
+      versionColumn: version
+      className: %CLASS%Version
+      auditLog: true
   indexes:
     %CLASS%_postalcode_idx:
       fields: [postalcode]
@@ -77,6 +74,19 @@ Addressable:
     vcard_uid:
       type: string(255)
       unique: true
+    last_accessor_id: integer
+    automatic:
+      type: boolean
+      notnull: true
+      default: false
+  relations:
+    LastAccessor:
+      local: last_accessor_id
+      class: sfGuardUser
+      foreignAlias: %CLASS%s
+      onDelete: RESTRICT
+      onUpdate: CASCADE
+
 Postalcode:
   package: generic
   indexes:

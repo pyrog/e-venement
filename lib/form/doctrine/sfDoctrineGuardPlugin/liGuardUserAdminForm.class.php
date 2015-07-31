@@ -83,7 +83,7 @@ class liGuardUserAdminForm extends sfGuardUserAdminForm
     $choices = array();
     foreach ( Doctrine::getTable('Contact')->getColumnNames() as $field )
     {
-      if ( !in_array($field, array('id','name','vcard_uid','latitude','longitude','sf_guard_user_id','updated_at','created_at','slug','version','confirmed','npai','email_no_newsletter',)) )
+      if ( !in_array($field, array('id','name','vcard_uid','sf_guard_user_id','updated_at','created_at','slug','version','confirmed','npai','email_no_newsletter',)) )
         $choices[$field] = __(str_replace('_', ' ', ucfirst(str_replace('_id', '', $field))));
     }
     $defaults = array();

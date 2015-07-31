@@ -71,6 +71,24 @@ pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.before.pgdump && echo "DB pre dumped
 
 ## preliminary modifications & backup
 psql <<EOF
+  ALTER TABLE contact ADD COLUMN last_accessor_id integer;
+  ALTER TABLE contact_version ADD COLUMN last_accessor_id integer;
+  
+  ALTER TABLE contact DROP COLUMN latitude;
+  ALTER TABLE contact DROP COLUMN longitude;
+  ALTER TABLE contact_version DROP COLUMN latitude;
+  ALTER TABLE contact_version DROP COLUMN longitude;
+  ALTER TABLE organism DROP COLUMN latitude;
+  ALTER TABLE organism DROP COLUMN longitude;
+  ALTER TABLE organism_version DROP COLUMN latitude;
+  ALTER TABLE organism_version DROP COLUMN longitude;
+  ALTER TABLE location DROP COLUMN latitude;
+  ALTER TABLE location DROP COLUMN longitude;
+  ALTER TABLE addressable DROP COLUMN latitude;
+  ALTER TABLE addressable DROP COLUMN longitude;
+  
+  ALTER TABLE product_declination ADD COLUMN use_stock BOOLEAN DEFAULT false;
+  
   ALTER TABLE checkpoint ADD COLUMN type VARCHAR(255);
   UPDATE checkpoint SET type = CASE WHEN legal THEN 'entrance' ELSE 'info' END;
   ALTER TABLE checkpoint DROP COLUMN legal;
@@ -182,7 +200,7 @@ then
 fi
 
 echo ""
-read -p 'Adding "pos-admin" users in the new "pos-product-stats" group ? [Y/n]' dataload
+read -p 'Adding "pos-admin" users in the new "pos-product-stats" group ? [Y/n] ' dataload
 if [ "$dataload" != 'n' ]; then
 psql <<EOF
   INSERT INTO sf_guard_user_group(group_id,user_id,created_at,updated_at)

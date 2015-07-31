@@ -65,4 +65,12 @@ class contactGeneratorHelper extends BaseContactGeneratorHelper
     $params['ui-icon'] = $this->getIcon('delete', $params);
     return '<li class="sf_admin_action_delete">'.link_to(UIHelper::addIcon($params) . __($params['label'], array(), 'sf_admin'), $this->getUrlForAction('delete'), $object, array('class' => UIHelper::getClasses($params['params']),'method' => 'delete', 'confirm' => !empty($params['confirm']) ? __($params['confirm'], array(), 'sf_admin') : $params['confirm'])).'</li>';
   }
+
+  public function linkToList($params, $object = null)
+  {
+    $params['ui-icon'] = $this->getIcon('list', $params);
+    return '<li class="sf_admin_action_list">'.link_to(UIHelper::addIcon($params) . __($params['label'], array(), 'sf_admin'), is_object($object)
+      ? ($object->id ? 'contact/edit?id='.$object->id : '@contact')
+      : '@contact', $params['params']).'</li>';
+  }
 }

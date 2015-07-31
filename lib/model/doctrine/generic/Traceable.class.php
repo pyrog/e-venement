@@ -14,6 +14,7 @@ class Traceable extends PluginTraceable
 {
   private $no_updated_at = false;
   
+  // methods copied into Addressable
   public function doNotUpdate()
   {
     $this->no_updated_at = true;
@@ -37,8 +38,17 @@ class Traceable extends PluginTraceable
   
   public function preInsert($event)
   {
-    if ( sfContext::hasInstance() && is_null($this->sf_guard_user_id) )
-      $this->sf_guard_user_id = sfContext::getInstance()->getUser()->getId();
+    if ( sfContext::hasInstance() && sfContext::getInstance()->getUser()->getId() )
+    {
+      if ( is_null($this->sf_guard_user_id) )
+        $this->sf_guard_user_id = sfContext::getInstance()->getUser()->getId();
+    }
+    else
+    {
+      $this->sf_guard_user_id = NULL;
+      $this->automatic = true;
+    }
+    
     if ( is_null($this->created_at) )
       $this->created_at = date('Y-m-d H:i:s');
     parent::preInsert($event);
