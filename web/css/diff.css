@@ -1,6 +1,5 @@
 .versions-diff { margin: 10px; }
 
-.diff + .diff { margin-top: 20px; }
 .diff { margin: 10px; display: inline-table; }
 .diff td {
   vertical-align: top;
@@ -25,3 +24,6 @@
   background:rgb(224,255,224);
 }
 
+/* versions */
+.sf_admin_action_version { height: 1em; overflow: hidden; }
+.sf_admin_action_version input { margin: -4px 0 -4px 0; width: 5em; text-align: right; }

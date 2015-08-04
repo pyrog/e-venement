@@ -17,7 +17,7 @@
       <p>
         <span class="ui-icon ui-icon-flag"></span>
         <label><?php echo __('Version') ?></label>
-        <input maxlength="4" size="3" type="number" onchange="javascript: submit();" name="version" value="<?php echo $object->searched_version ? $object->searched_version->version : $object->searched_version ?>" />
+        <input maxlength="4" size="3" type="number" onchange="javascript: submit();" name="v" value="<?php echo $object->searched_version ? $object->searched_version->version : $object->searched_version ?>" />
         <span class="max">/&nbsp;<?php echo $object->version ?></span>
       </p>
     </form>

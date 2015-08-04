@@ -326,22 +326,28 @@ class contactActions extends autoContactActions
   {
     $this->executeShow($request);
     
-    if ( !($v = $request->getParameter('version',false)) )
+    if ( !($v = $request->getParameter('v',false)) )
       $v = $this->contact->version > 1 ? $this->contact->version - 1 : 1;
+    
+    if ( $v < 1 )
+      $v = 1;
     
     if ( intval($v).'' == ''.$v )
     foreach ( $this->contact->Version as $version )
-    if ( $version->version == $v )
     {
-      $this->contact->searched_version = $version;
-      if ( $v <= 1 || $this->contact->previous_version )
-        break;
-    }
-    elseif ( $v > 1 && $version->version == $v-1 )
-    {
-      $this->contact->previous_version = $version;
-      if ( $this->contact->searched_version )
-        break;
+      if ( $version->version == $v )
+      {
+        $this->contact->searched_version = $version;
+        if ( $v == 1 || $this->contact->previous_version )
+          break;
+      }
+      elseif (  $version->version == $v-1 )
+      {
+        error_log('previous matched');
+        $this->contact->previous_version = $version;
+        if ( $this->contact->searched_version )
+          break;
+      }
     }
     
     if ( !$this->contact->searched_version )

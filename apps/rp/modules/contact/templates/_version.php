@@ -9,6 +9,11 @@
   {
     $tmpobj = $record ? $object->$record : $object;
     $$var = '';
+    
+    if ( !is_object($tmpobj) )
+      continue;
+    error_log($var);
+    
     foreach ( $first_fields as $field => $fk )
     {
       $value = $fk && $tmpobj->$field ? Doctrine::getTable($fk)->find($tmpobj->$field) : $tmpobj->$field;
