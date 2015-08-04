@@ -332,25 +332,9 @@ class contactActions extends autoContactActions
     if ( $v < 1 )
       $v = 1;
     
-    if ( intval($v).'' == ''.$v )
-    foreach ( $this->contact->Version as $version )
-    {
-      if ( $version->version == $v )
-      {
-        $this->contact->searched_version = $version;
-        if ( $v == 1 || $this->contact->previous_version )
-          break;
-      }
-      elseif (  $version->version == $v-1 )
-      {
-        error_log('previous matched');
-        $this->contact->previous_version = $version;
-        if ( $this->contact->searched_version )
-          break;
-      }
-    }
+    $request->setParameter('v',$v);
     
-    if ( !$this->contact->searched_version )
+    if (!( intval($v).'' == ''.$v && $this->contact->getSearchedVersion($v) ))
     {
       $this->getContext()->getConfiguration()->loadHelpers('I18N');
       $this->getUser()->setFlash('error', __('You have requested the version #%%v%% that does not exist.', array('%%v%%' => $v)));

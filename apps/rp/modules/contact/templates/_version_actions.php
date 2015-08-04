@@ -1,23 +1,23 @@
 <ul class="sf_admin_actions_form">
-  <?php echo $helper->linkToList(array(  'params' => 'class= fg-button ui-state-default fg-button-icon-left ',  'class_suffix' => 'list',  'label' => __('Contact'),  'ui-icon' => '',), $object) ?>
+  <?php echo $helper->linkToList(array(  'params' => 'class= fg-button ui-state-default fg-button-icon-left ',  'class_suffix' => 'list',  'label' => __(get_class($object->getRawValue())),  'ui-icon' => '',), $object) ?>
     
     <li class="sf_admin_action_version_by fg-button ui-state-default fg-button-icon-left">
       <span class="ui-icon ui-icon-person"></span>
-      <?php echo $object->searched_version->last_accessor_id
-        ? ( ($u = Doctrine::getTable('sfGuardUser')->findOneById($object->searched_version->last_accessor_id)) ? $u : $object->version->last_accessor_id )
+      <?php echo $object->getSearchedVersion($sf_request->getParameter('v',0))->last_accessor_id
+        ? ( ($u = Doctrine::getTable('sfGuardUser')->findOneById($object->getSearchedVersion($sf_request->getParameter('v',0))->last_accessor_id)) ? $u : $object->version->last_accessor_id )
         : 'n/a' ?>
     </li>
     <li class="sf_admin_action_updated_at fg-button ui-state-default fg-button-icon-left">
       <span class="ui-icon ui-icon-calendar"></span>
-      <?php echo format_datetime($object->searched_version->updated_at) ?>
+      <?php echo format_datetime($object->getSearchedVersion($sf_request->getParameter('v',0))->updated_at) ?>
     </li>
     
     <li class="sf_admin_action_version fg-button ui-state-default fg-button-icon-left">
-    <form action="<?php echo url_for('contact/version?id='.$object->id) ?>" method="get">
+    <form action="<?php echo url_for($sf_context->getModuleName().'/version?id='.$object->id) ?>" method="get">
       <p>
         <span class="ui-icon ui-icon-flag"></span>
         <label><?php echo __('Version') ?></label>
-        <input maxlength="4" size="3" type="number" onchange="javascript: submit();" name="v" value="<?php echo $object->searched_version ? $object->searched_version->version : $object->searched_version ?>" />
+        <input maxlength="4" size="3" type="number" onchange="javascript: submit();" name="v" value="<?php echo $object->getSearchedVersion($sf_request->getParameter('v',0)) ? $object->getSearchedVersion($sf_request->getParameter('v',0))->version : $object->getSearchedVersion($sf_request->getParameter('v',0)) ?>" />
         <span class="max">/&nbsp;<?php echo $object->version ?></span>
       </p>
     </form>
@@ -26,7 +26,7 @@
     <li class="sf_admin_action_versions">
     <?php echo link_to(
       '<span class="ui-icon ui-icon-document"></span>'.__('Current', array(), 'sf_admin'),
-      'contact/show?id='.$object->id,
+      $sf_context->getModuleName().'/show?id='.$object->id,
       array('class' => 'fg-button ui-state-default fg-button-icon-left')
     ) ?>
     </li>

@@ -1,4 +1,27 @@
 <?php
+/**********************************************************************************
+*
+*	    This file is part of e-venement.
+*
+*    e-venement is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License.
+*
+*    e-venement is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with e-venement; if not, write to the Free Software
+*    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*
+*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
+*
+***********************************************************************************/
+?>
+<?php
 
 require_once dirname(__FILE__).'/../lib/organismGeneratorConfiguration.class.php';
 require_once dirname(__FILE__).'/../lib/organismGeneratorHelper.class.php';
@@ -64,6 +87,28 @@ class organismActions extends autoOrganismActions
     )));
     return parent::executeBatchDelete($request);
   }
+  public function executeVersion(sfWebRequest $request)
+  {
+    $this->executeShow($request);
+    
+    if ( !($v = $request->getParameter('v',false)) )
+      $v = $this->contact->version > 1 ? $this->contact->version - 1 : 1;
+    
+    if ( $v < 1 )
+      $v = 1;
+    
+    $request->setParameter('v',$v);
+    
+    if (!( intval($v).'' == ''.$v && $this->organism->getSearchedVersion($v) ))
+    {
+      $this->getContext()->getConfiguration()->loadHelpers('I18N');
+      $this->getUser()->setFlash('error', __('You have requested the version #%%v%% that does not exist.', array('%%v%%' => $v)));
+      $this->redirect('organism/show?id='.$this->organism->id);
+    }
+    
+    $this->object = $this->organism;
+  }
+  
   public function executeEmailing(sfWebRequest $request)
   {
     $this->redirect('email/new');

@@ -5,9 +5,9 @@
   $specific_fields = array('sf_guard_user_id' => 'sfGuardUser');
   $remove_fields = array('id', 'confirmed', 'automatic');
   
-  foreach ( array('newest' => NULL, 'searched' => 'searched_version', 'previous' => 'previous_version') as $var => $record )
+  foreach ( array('newest' => NULL, 'searched' => 'getSearchedVersion', 'previous' => 'getPreviousVersion') as $var => $record )
   {
-    $tmpobj = $record ? $object->$record : $object;
+    $tmpobj = $record ? $object->$record($sf_request->getParameter('v',0)) : $object;
     $$var = '';
     
     if ( !is_object($tmpobj) )

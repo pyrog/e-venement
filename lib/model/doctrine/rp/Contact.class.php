@@ -14,7 +14,6 @@ class Contact extends PluginContact
 {
   protected $module = 'contact';
   protected $yobs_ordered = false;
-  public $searched_version = NULL, $previous_version = NULL;
   
   public function __toString()
   {

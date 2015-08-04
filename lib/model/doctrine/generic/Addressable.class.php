@@ -37,21 +37,27 @@ class Addressable extends PluginAddressable
     return str_replace('-','_',$this->slug);
   }
   
-  public function setLatitude($value)
+  public function getSearchedVersion($v)
   {
-    if ( !$value )
-      $this->latitude = NULL;
-    else
-      $this->latitude = $value;
-    return $this;
+    if ( $v <= 1 )
+      return NULL;
+    
+    foreach ( $this->Version as $version )
+    if ( $version->version == $v )
+      return $version;
+    
+    return NULL;
   }
-  public function setLongitude($value)
+  public function getPreviousVersion($v)
   {
-    if ( !$value )
-      $this->longitude = NULL;
-    else
-      $this->longitude = $value;
-    return $this;
+    if ( $v <= 1 )
+      return NULL;
+    
+    foreach ( $this->Version as $version )
+    if ( $version->version == $v-1 )
+      return $version;
+    
+    return NULL;
   }
   
   // methods stolen from Traceable
