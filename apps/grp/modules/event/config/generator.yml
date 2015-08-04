@@ -25,7 +25,6 @@ generator:
         title: By event
         table_method: getOnlyGroupEvents
         actions:
-          _new: ~
           _from_date_to_date:
             action: fromDateToDate
       filter:

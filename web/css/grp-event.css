@@ -137,15 +137,10 @@ tfoot .count p { display: inline-block; margin-left: 4px; }
 .ticketting .count .nb, tfoot .count .nb { margin-right: 2px; }
 .ticketting .count .total:before, tfoot .count .total:before { content: '='; margin: 0 4px; }
 
-.second_choice select, .second_choice input[type=text] {
-  border-style: dotted;
-}
-.accepted .tickets, .accepted select, .accepted input[type=text] {
-  border-color: red;
-}
-.confirmed .tickets, .confirmed select, .confirmed input[type=text] {
-  color: green;
-}
+.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 5%, transparent 10%, rgba(200,200,200,1) 15%); }
+.second_choice select, .second_choice input[type=text] { border-style: dotted; }
+.accepted .tickets, .accepted select, .accepted input[type=text] { border-color: red; }
+.confirmed .tickets, .confirmed select, .confirmed input[type=text] { color: green; }
 
 #contact_entry_confirmed, #contact_entry_comment2,
 #contact_entry_new confirmed, #contact_entry_new_comment2 {

@@ -117,6 +117,10 @@ EntryElement:
       type: boolean
       notnull: true
       default: false
+    impossible:
+      type: boolean
+      notnull: true
+      default: false
   relations:
     ContactEntry:
       foreignAlias: Entries

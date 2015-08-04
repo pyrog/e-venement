@@ -18,6 +18,6 @@ generator:
       list:    ~
       filter:  ~
       form:
-        display: [accepted,second_choice]
+        display: [accepted,second_choice,impossible]
       edit:    ~
       new:     ~

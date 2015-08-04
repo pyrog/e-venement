@@ -32,7 +32,6 @@ class ManifestationForm extends BaseManifestationForm
       ->setOption('order_by', array('c.name, c.firstname',''))
       ->setOption('expanded', true);
     }
-    $this->validatorSchema['participants_list']->setOption('query', $q);
     
     $this->widgetSchema['workspaces_list']->setOption('renderer_class','sfWidgetFormSelectDoubleList');
     $this->widgetSchema['color_id']

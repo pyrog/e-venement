@@ -37,6 +37,9 @@
         $(this).find('input[name="contact_entry_new[entry_id]"],input[name="contact_entry[entry_id]"],input[name="manifestation_entry[entry_id]"]').val('<?php echo $entry->id ?>');
         <?php endif ?>
         form = this;
+        if ( window.location.hash == '#debug' )
+          return true;
+        
         $.post($(this).prop('action'),$(this).serialize(),function(data){
           if ( $(form).closest('#manifestation_entry_new, #contact_entry_new').length > 0 )
             window.location.reload();
@@ -64,13 +67,11 @@
           data = $.parseHTML(data);
           $('#transition .close').click();
           
-          $(form).find('input[name="entry_element[second_choice]"]:checked').length > 0
-            ? $(form).closest('td').addClass('second_choice')
-            : $(form).closest('td').removeClass('second_choice');
-          
-          $(form).find('input[name="entry_element[accepted]"]:checked').length > 0
-            ? $(form).closest('td').addClass('accepted')
-            : $(form).closest('td').removeClass('accepted');
+          $.each(['second_choice', 'accepted', 'impossible'], function(i, field){
+            $(form).find('input[name="entry_element['+field+']"]:checked').length > 0
+              ? $(form).closest('td').addClass(field)
+              : $(form).closest('td').removeClass(field);
+          });
           
           $(form).html($(data).find('form').html());
           $(form).prepend('<p></p>');

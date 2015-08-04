@@ -12,7 +12,8 @@ class ManifestationEntryForm extends BaseManifestationEntryForm
 {
   public function configure()
   {
-    $this->widgetSchema['entry_id'] = new sfWidgetFormInputHidden();
+    $this->widgetSchema   ['entry_id'] = new sfWidgetFormInputHidden();
+    $this->validatorSchema['entry_id']->setOption('required', false);
     
     /*
     $this->widgetSchema['manifestation_id'] = new sfWidgetFormDoctrineJQueryAutocompleter(array(
@@ -49,16 +50,21 @@ class ManifestationEntryForm extends BaseManifestationEntryForm
     if ( $all )
       $this->widgetSchema['manifestation_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
         'model' => 'Manifestation',
-        'url'   => cross_app_url_for('event', 'manifestation/ajax'),
+        'url'   => cross_app_url_for('event', 'manifestation/ajax?for=grp'),
       ));
-    else
-    {
+    elseif ( !$entry->isNew() )
       $this->widgetSchema['manifestation_id']->getOption('query')
         ->andWhere('e.id = ?', $entry->event_id)
         ->andWhereNotIn('m.id', $entry->ManifestationEntries->toKeyValueArray('id', 'manifestation_id'))
       ;
-    }
     
     return $this;
+  }
+  
+  public function save($con = NULL)
+  {
+    if ( !$this->values['entry_id'] && $this->values['manifestation_id'] )
+      $this->object->Entry->event_id = Doctrine::getTable('Manifestation')->find($this->values['manifestation_id'])->event_id;
+    return parent::save($con);
   }
 }

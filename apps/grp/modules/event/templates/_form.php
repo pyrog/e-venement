@@ -59,7 +59,7 @@
             $entry_element->save();
           }
         ?>
-        <td class="manifestation-<?php echo $me->id ?> <?php echo ++$j%2 == 0 ? 'pair' : 'impair' ?> <?php echo $entry_element->second_choice ? 'second_choice' : '' ?> <?php echo $entry_element->accepted ? 'accepted' : '' ?>">
+        <td class="manifestation-<?php echo $me->id ?> <?php echo ++$j%2 == 0 ? 'pair' : 'impair' ?> <?php echo $entry_element->second_choice ? 'second_choice' : '' ?> <?php echo $entry_element->accepted ? 'accepted' : '' ?> <?php echo $entry_element->impossible ? 'impossible' : '' ?>">
           <script type="text/javascript"><!--
             $(document).ready(function(){
               $('tr.contact-<?php echo $ce->id ?> td.manifestation-<?php echo $me->id ?>').attr('title',"<?php echo $ce->Professional->Contact.' - '.$ce->Professional?>\n<?php echo $me->Manifestation ?>");
@@ -78,7 +78,10 @@
           <?php echo $f->renderHiddenFields() ?>
             <?php echo $f['second_choice']->getWidget()->getLabel() ?>
             <p>
-              <span title="<?php echo sfConfig::get('app_messages_dashed',__('Needed')) ?>"><?php echo $f['second_choice'] ?></span><span title="<?php echo __('Accepted') ?>"><?php echo $f['accepted'] ?></span><!--<input type="submit" name="submit" value="<?php echo __('Save',null,'sf_admin') ?>" />-->
+              <span title="<?php echo __('Impossible') ?>"><?php echo $f['impossible'] ?></span
+              ><span title="<?php echo sfConfig::get('app_messages_dashed',__('Needed')) ?>"><?php echo $f['second_choice'] ?></span
+              ><span title="<?php echo __('Accepted') ?>"><?php echo $f['accepted'] ?></span
+              ><!--<input type="submit" name="submit" value="<?php echo __('Save',null,'sf_admin') ?>" />-->
               <input type="hidden" name="<?php echo $f['manifestation_entry_id']->renderName() ?>" value="<?php echo $me->id ?>" />
               <input type="hidden" name="<?php echo $f['contact_entry_id']->renderName() ?>" value="<?php echo $ce->id ?>" />
               <?php if ( $entry_element->EntryTickets->count() > 0 && $ce->Transaction && $ce->Transaction->Translinked->count() > 0 ): ?>
@@ -120,7 +123,7 @@
         <?php endforeach ?>
         <td id="manifestation_entry_new" class="<?php echo ++$j%2 == 0 ? 'pair' : 'impair' ?>">
           <?php $f = new ManifestationEntryForm ?>
-          <?php $f->searchAllManifestations($sf_user->hasCredential('grp-events-multimanifs'), $sf_data->getRaw('entry')) ?>
+          <?php $f->searchAllManifestations($sf_user->hasCredential('grp-events-multimanifs'), isset($sf_data['entry']) ? $sf_data->getRaw('entry') : new Entry) ?>
           <?php echo form_tag_for($f,'@manifestation_entry') ?>
             <?php echo $f->renderHiddenFields(); ?>
             <p><?php echo $f['manifestation_id']; ?></p>

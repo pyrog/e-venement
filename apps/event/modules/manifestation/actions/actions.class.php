@@ -262,8 +262,7 @@ class manifestationActions extends autoManifestationActions
       $max = isset($conf['max_display']) && $conf['max_display'] ? $conf['max_display'] : 10;
     }
     
-    $q = Doctrine::getTable('Manifestation')
-      ->createQuery('m')
+    $q = Doctrine::getTable('Manifestation')->createQuery('m')
       ->andWhere('e.museum = ?', $museum)
       ->leftJoin('m.Color c')
       ->orderBy('m.happens_at')
@@ -285,6 +284,13 @@ class manifestationActions extends autoManifestationActions
       || $request->hasParameter('later')
       || $request->getParameter('except_transaction',false) && !$this->getUser()->hasCredential('tck-unblock') )
       $q->andWhere("manifestation_ends_at(m.happens_at, m.duration) > NOW()");
+    
+    // specific criterias
+    switch ( $request->getParameter('for') ) {
+    case 'grp':
+      $q->andWhere('g.workspace_id IN (SELECT gws.workspace_id FROM GroupWorkspace gws)');
+      break;
+    }
     
     $manifestations = $q->select('m.*, e.*, c.*')->execute();
     

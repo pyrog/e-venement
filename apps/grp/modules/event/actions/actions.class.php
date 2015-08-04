@@ -120,7 +120,7 @@ class eventActions extends autoEventActions
     if ( !$this->entry )
     {
       $this->entry = new Entry;
-      $this->entry->event_id = $request->getParameter('id');
+      $this->entry->event_id = $request->getParameter('id',NULL);
       $this->entry->save();
     }
   }
