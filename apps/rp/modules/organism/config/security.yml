@@ -1,16 +1,4 @@
-index:
-  credentials: pr-organism
-filter:
-  credentials: pr-organism
-searchIndexing:
-  credentials: pr-organism
-search:
-  credentials: pr-organism
-groupList:
-  credentials: pr-organism
-ajax:
-  credentials: pr-organism
-show:
+all:
   credentials: pr-organism
 
 new:
@@ -18,8 +6,6 @@ new:
 create:
   credentials: pr-organism-new
 
-edit:
-  credentials: pr-organism
 update:
   credentials: pr-organism-edit
 

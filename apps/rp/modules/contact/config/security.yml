@@ -1,18 +1,4 @@
-index:
-  credentials: pr-contact
-filter:
-  credentials: pr-contact
-searchIndexing:
-  credentials: pr-contact
-search:
-  credentials: pr-contact
-groupList:
-  credentials: pr-contact
-ajax:
-  credentials: pr-contact
-show:
-  credentials: pr-contact
-card:
+all:
   credentials: pr-contact
 
 new:
@@ -20,8 +6,6 @@ new:
 create:
   credentials: pr-contact-new
 
-edit:
-  credentials: pr-contact
 update:
   credentials: pr-contact-edit
 getSpecializedForm:
