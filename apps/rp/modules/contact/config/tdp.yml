@@ -95,7 +95,7 @@ all:
           class: Professional
           parentAlias: Contact
           credentials: pr-organism
-          title: [Organism, _organism_close_contact, _sell, _organism_category]
+          title: [Organism, _organism_close_contact, _sell, _organism_category, _show_dates]
           new_title: [organism_id, _new_organism]
           lines:
             line1:

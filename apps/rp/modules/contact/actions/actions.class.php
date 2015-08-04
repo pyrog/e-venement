@@ -322,6 +322,12 @@ class contactActions extends autoContactActions
     return parent::executeBatchDelete($request);
   }
   
+  public function executeArchives(sfWebRequest $request)
+  {
+    $this->executeEdit($request);
+    $this->setTemplate('edit');
+    $this->contact->Professionals = $this->contact->ProfessionalArchives;
+  }
   public function executeVersion(sfWebRequest $request)
   {
     $this->executeShow($request);

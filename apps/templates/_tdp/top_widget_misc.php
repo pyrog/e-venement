@@ -31,7 +31,7 @@
 <?php
   if ( is_object($object) )
   {
-    echo link_to(__('Versions'), $sf_context->getModuleName().'/version?id='.$object->id.'&v='.($object->version == 1 ? 1 : $object->version-1));
+    echo link_to(__('Versions'), $sf_context->getModuleName().'/v?id='.$object->id.'&v='.($object->version == 1 ? 1 : $object->version-1));
     echo link_to(__('Archives'), $sf_context->getModuleName().'/archives?id='.$object->id);
   }
   

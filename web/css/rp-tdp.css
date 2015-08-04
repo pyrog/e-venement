@@ -15,7 +15,7 @@ body #content { width: auto; }
 /* archives */
 .action-archives .tdp-object-new, .action-archives .tdp-delete,
 .action-archives #tdp-top-bar .tdp-top-misc { display: none; }
-.action-archives .tdp-Contact { width: calc(100% - 10em); display: inline-block; }
+.action-archives h1 > span:first-child { width: calc(100% - 10em); display: inline-block; }
 .action-archives #tdp-content .tdp-subobject #sf_admin_content .tdp-widget-header .tdp-dates { border-left: 1px solid silver; }
 
 /* objects */
