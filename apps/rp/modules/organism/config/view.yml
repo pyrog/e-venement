@@ -28,7 +28,7 @@ showSuccess:
 
 <?php echo sfConfig::get('app_options_design',false) && sfConfig::get(sfConfig::get('app_options_design').'_active') ? '_'.sfConfig::get('app_options_design').'/' : '' ?>
 indexSuccess:
-  javascripts: [list-scroll]
+  javascripts: [list-scroll, integrated-search]
   stylesheets: [print-list: {media: print}, batch-actions]
 <?php echo sfConfig::get('app_options_design',false) && sfConfig::get(sfConfig::get('app_options_design').'_active') ? '_'.sfConfig::get('app_options_design').'/' : '' ?>
 filterSuccess:

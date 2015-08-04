@@ -12,6 +12,12 @@
 body #content { width: auto; }
 #tdp-side-bar.object .tdp-side-widget li li > script { display: none; }
 
+/* archives */
+.action-archives .tdp-object-new, .action-archives .tdp-delete,
+.action-archives #tdp-top-bar .tdp-top-misc { display: none; }
+.action-archives .tdp-Contact { width: calc(100% - 10em); display: inline-block; }
+.action-archives #tdp-content .tdp-subobject #sf_admin_content .tdp-widget-header .tdp-dates { border-left: 1px solid silver; }
+
 /* objects */
 #tdp-content .errors, #tdp-content .error_list { display: inline-block; }
 #tdp-content .tdp-line.groups { display: none; }
@@ -378,6 +384,7 @@ body #content { width: auto; }
   border-radius: 5px;
   border-top-left-radius: 0;
   background-color: rgba(255,255,255,0.7);
+  z-index: 1;
 }
 
 

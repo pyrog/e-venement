@@ -12,4 +12,13 @@
  */
 abstract class PluginProfessional extends BaseProfessional
 {
+  public function preDelete($event)
+  {
+    $backup = new ProfessionalArchive;
+    foreach ( $this->getData() as $field => $value )
+      $backup->$field = $value;
+    $backup->updated_at = date('Y-m-d H:i:s');
+    $backup->save();
+    return parent::preDelete($event);
+  }
 }

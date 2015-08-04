@@ -1,7 +1,7 @@
 <?php if ( !isset($config['credentials'])
         || isset($config['credentials']) && $config['credentials'] && $sf_user->hasCredential($config['credentials']) ): ?>
 <?php
-  $obj_class = get_class($sf_data->getRaw('object'));
+  $obj_class = get_class($sf_data->getRaw('object')) == 'ProfessionalArchive' ? 'professional' : get_class($sf_data->getRaw('object'));
   $ws = $form->getWidgetSchema();
   if ( isset($config['extra_hidden_fields']) && $config['extra_hidden_fields'] )
   foreach ( $config['extra_hidden_fields'] as $field )

@@ -7,7 +7,7 @@ $(document).ready(function(){
   var subobjects_elts = '.sf_admin_list_td_list_professional_id, .sf_admin_list_td_list_organism, .sf_admin_list_td_list_professional, .sf_admin_list_td_list_organism_postalcode, .sf_admin_list_td_list_organism_city, .sf_admin_list_td_list_professional_emails, .sf_admin_list_td_list_organism_phones_list, .sf_admin_list_td_list_professional_description, .sf_admin_list_td_list_professional_groups_picto';
   
   // READ ONLY: deactivating every field if the user has no credential for modification
-  if ( $('#tdp-top-bar .action.update[href=#]').length == 1 )
+  if ( $('#tdp-top-bar .action.update[href=#]').length == 1 || $('body.action-archives').length == 1 )
   {
     $('#tdp-content input, #tdp-content select, #tdp-content textarea')
       .prop('disabled',true);
@@ -555,7 +555,8 @@ LI.tdp_side_bar = function()
       $(this).keyup();
     })
     .keyup();
-  LI.list_integrated_search_init();
+  if ( typeof LI.list_integrated_search_init == 'function' )
+    LI.list_integrated_search_init();
   
   // filters
   $('#tdp-side-bar .filters').submit(function(){

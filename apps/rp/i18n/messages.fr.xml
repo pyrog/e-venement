@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Archives</source>
+        <target>Archives</target>
+      </trans-unit>
+      <trans-unit>
         <source>Last accessor</source>
         <target>Utilisateur</target>
       </trans-unit>

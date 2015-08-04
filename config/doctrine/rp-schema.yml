@@ -245,6 +245,21 @@ Professional:
     Organism:
       foreignAlias: Professionals
       onDelete: CASCADE
+ProfessionalArchive:
+  package: rp
+  inheritance:
+    extends: Professional
+    type: concrete
+  relations:
+    ProfessionalType:
+      foreignAlias: ProfessionalArchives
+      onDelete: SET NULL
+    Contact:
+      foreignAlias: ProfessionalArchives
+      onDelete: CASCADE
+    Organism:
+      foreignAlias: ProfessionalArchives
+      onDelete: CASCADE
 
 ContactRelationshipType:
   package: rp

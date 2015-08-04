@@ -87,6 +87,12 @@ class organismActions extends autoOrganismActions
     )));
     return parent::executeBatchDelete($request);
   }
+  public function executeArchives(sfWebRequest $request)
+  {
+    $this->executeEdit($request);
+    $this->setTemplate('edit');
+    $this->organism->Professionals = $this->organism->ProfessionalArchives;
+  }
   public function executeVersion(sfWebRequest $request)
   {
     $this->executeShow($request);
