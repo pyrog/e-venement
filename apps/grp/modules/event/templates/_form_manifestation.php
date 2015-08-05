@@ -31,6 +31,8 @@
             <?php echo __('Extract accepted') ?>
           </a><a class="sf_admin_action_extract_refused fg-button-mini fg-button ui-state-default fg-button-icon-left" href="<?php echo url_for('event/refused?manifestation_id='.$me->id.'&id='.$me->Manifestation->Event->id) ?>" target="_blank">
             <?php echo __('Extract refused') ?>
+          </a><a class="sf_admin_action_extract_impossible fg-button-mini fg-button ui-state-default fg-button-icon-left" href="<?php echo url_for('event/impossible?manifestation_id='.$me->id.'&id='.$me->Manifestation->Event->id) ?>" target="_blank">
+            <?php echo __('Extract impossible') ?>
           </a><a class="sf_admin_action_export fg-button-mini fg-button ui-state-default fg-button-icon-left" href="<?php echo url_for('event/export?manifestation_id='.$me->id.'&id='.$me->Manifestation->Event->id) ?>">
             <?php echo __('Export accepted') ?>
           </a>

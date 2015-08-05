@@ -137,9 +137,10 @@ tfoot .count p { display: inline-block; margin-left: 4px; }
 .ticketting .count .nb, tfoot .count .nb { margin-right: 2px; }
 .ticketting .count .total:before, tfoot .count .total:before { content: '='; margin: 0 4px; }
 
-.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0%, rgba(200,200,200,1) 4%, transparent 6%, transparent 14%, rgba(200,200,200,1) 16%); }
-.impair.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0%, rgba(200,200,200,1) 4%, #F8FFDD 6%, #F8FFDD 14%, rgba(200,200,200,1) 16%); }
-tr.impair .impair.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0%, rgba(200,200,200,1) 4%, #eff8cd 6%, #eff8cd 14%, rgba(200,200,200,1) 16%); }
+.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0, rgba(200,200,200,1) 10px, transparent 14px, transparent 26px, rgba(200,200,200,1) 30px); }
+.impair.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0, rgba(200,200,200,1) 10px, #F8FFDD 14px, #F8FFDD 26px, rgba(200,200,200,1) 30px); }
+tr.impair .impair.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0, rgba(200,200,200,1) 10px, #eff8cd 14px, #eff8cd 26px, rgba(200,200,200,1) 30px); }
+li.impossible { margin-left: -5px; padding-left: 5px; }
 .second_choice select, .second_choice input[type=text] { border-style: dotted; }
 .accepted .tickets, .accepted select, .accepted input[type=text] { border-color: red; }
 .confirmed .tickets, .confirmed select, .confirmed input[type=text] { color: green; }
@@ -203,6 +204,9 @@ tr.impair .impair.impossible { background-image: repeating-linear-gradient(-45de
 }
 #sf_admin_container .sf_admin_action_extract_refused {
   background: url("../sfAdminThemejRollerPlugin/css/jquery/redmond/images/ui-icons_6da8d5_256x240.png") no-repeat scroll 0px -128px rgb(223, 239, 252);
+}
+#sf_admin_container .sf_admin_action_extract_impossible {
+  background: url("../sfAdminThemejRollerPlugin/css/jquery/redmond/images/ui-icons_6da8d5_256x240.png") no-repeat scroll -32px -144px rgb(223, 239, 252);
 }
 #sf_admin_container .sf_admin_action_export {
   background: url("../sfAdminThemejRollerPlugin/css/jquery/redmond/images/ui-icons_6da8d5_256x240.png") no-repeat scroll -144px -96px rgb(223, 239, 252);

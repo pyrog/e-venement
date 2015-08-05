@@ -27,7 +27,7 @@
       <?php if ( $last_event_id != $entry->ManifestationEntry->Manifestation->Event->id ): ?>
       <?php if ( $last_event_id != 0 ): ?></ul></li><?php endif ?>
       <li class="event event-<?php echo $entry->ManifestationEntry->Manifestation->Event->id ?>">
-        <span class="entry_id"><?php echo link_to('#'.$entry->ManifestationEntry->Manifestation->Event->id,'event/edit?id='.$entry->ManifestationEntry->Manifestation->Event->id) ?>:</span>
+        <span class="entry_id">#<?php echo link_to($entry->ManifestationEntry->Entry->event_id,'event/edit?id='.$entry->ManifestationEntry->Entry->event_id) ?>:</span>
         <span class="event"><?php echo cross_app_link_to($entry->ManifestationEntry->Manifestation->Event,'event','event/edit?id='.$entry->ManifestationEntry->Manifestation->Event->id) ?></span>
         <?php if ( !is_null($ce->transaction_id) ): ?>
         <?php $form = new ContactEntryForm($ce); $form->reduce(); ?>
@@ -38,13 +38,13 @@
         <?php endif ?>
         <ul>
       <?php endif ?>
-      <?php if ( $entry->EntryTickets->count() ): ?>
-          <li class="<?php echo $entry->accepted ? 'accepted' : '' ?> <?php echo $entry->second_choice ? 'second_choice' : '' ?> <?php if ( $entry->accepted && $ce->confirmed ) echo 'confirmed'; ?>">
+      <?php if ( $entry->EntryTickets->count() || $entry->impossible ): ?>
+          <li class="<?php echo $entry->accepted ? 'accepted' : '' ?> <?php echo $entry->second_choice ? 'second_choice' : '' ?> <?php if ( $entry->accepted && $ce->confirmed ) echo 'confirmed'; ?> <?php if ( $entry->impossible ) echo 'impossible' ?>">
             <span class="manifestation_happens_at"><?php echo cross_app_link_to($entry->ManifestationEntry->Manifestation->getFormattedDate(),'event','manifestation/show?id='.$entry->ManifestationEntry->Manifestation->id) ?></span>
             <?php foreach ( $entry->EntryTickets as $et ): ?>
             <span class="tickets" title="<?php echo $entry->accepted ? __('Accepted') : '' ?>"><?php echo $et->quantity.' '.$et->Price ?></span>
             <?php endforeach ?>
-          <?php if ( $entry->accepted ): ?>
+          <?php if ( $entry->accepted && $entry->EntryTickets->count() ): ?>
             <a class="transpose" title="<?php echo __('Transpose to ticketting') ?>" href="<?php echo url_for('contact_entry/transpose?id='.$ce->id) ?>">&gt;&gt;</a>
           <?php endif ?>
           <?php if ( $ce->transaction_id ): ?>

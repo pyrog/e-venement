@@ -61,6 +61,9 @@
   case 'accepted':
     $q->andWhere('ee.accepted = true');
     break;
+  case 'impossible':
+    $q->andWhere('ee.impossible = true');
+    break;
   default:
     break;
   }

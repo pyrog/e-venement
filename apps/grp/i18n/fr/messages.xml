@@ -145,6 +145,10 @@
         <target>Extraire les refusés</target>
       </trans-unit>
       <trans-unit>
+        <source>Extract impossible</source>
+        <target>Extraire les impossibles</target>
+      </trans-unit>
+      <trans-unit>
         <source>Extract accepted</source>
         <target>Extraire les acceptés</target>
       </trans-unit>

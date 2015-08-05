@@ -72,6 +72,11 @@ class eventActions extends autoEventActions
     $request->setParameter('type','refused');
     $this->executeCsv($request);
   }
+  public function executeImpossible(sfWebRequest $request)
+  {
+    $request->setParameter('type','impossible');
+    $this->executeCsv($request);
+  }
   public function executeAccepted(sfWebRequest $request)
   {
     $request->setParameter('type','accepted');

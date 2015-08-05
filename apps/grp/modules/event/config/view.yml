@@ -14,6 +14,11 @@ acceptedSuccess:
   http_metas:
     content-type: text/comma-separated-values
     content-disposition: attachment; filename="accepted.csv"
+impossibleSuccess:
+  has_layout: false
+  http_metas:
+    content-type: text/comma-separated-values
+    content-disposition: attachment; filename="impossible.csv"
 refusedSuccess:
   has_layout: false
   http_metas:
