@@ -137,7 +137,9 @@ tfoot .count p { display: inline-block; margin-left: 4px; }
 .ticketting .count .nb, tfoot .count .nb { margin-right: 2px; }
 .ticketting .count .total:before, tfoot .count .total:before { content: '='; margin: 0 4px; }
 
-.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 5%, transparent 10%, rgba(200,200,200,1) 15%); }
+.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0%, rgba(200,200,200,1) 4%, transparent 6%, transparent 14%, rgba(200,200,200,1) 16%); }
+.impair.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0%, rgba(200,200,200,1) 4%, #F8FFDD 6%, #F8FFDD 14%, rgba(200,200,200,1) 16%); }
+tr.impair .impair.impossible { background-image: repeating-linear-gradient(-45deg, rgba(200,200,200,1) 0%, rgba(200,200,200,1) 4%, #eff8cd 6%, #eff8cd 14%, rgba(200,200,200,1) 16%); }
 .second_choice select, .second_choice input[type=text] { border-style: dotted; }
 .accepted .tickets, .accepted select, .accepted input[type=text] { border-color: red; }
 .confirmed .tickets, .confirmed select, .confirmed input[type=text] { color: green; }
