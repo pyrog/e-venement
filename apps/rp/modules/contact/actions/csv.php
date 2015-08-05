@@ -152,6 +152,21 @@
           $this->lines[$key][$field] = '';
       }
       
+      // address: split new lines in multiple cells
+      if ( in_array('no_nl', $params['option']) )
+      {
+        unset($params['field']['address']);
+        $addr = explode("\r\n", $this->lines[$key]['address']);
+        for ( $i = 0 ; $i < count($addr) ; $i++ )
+        {
+          $j = $i>2?3:$i+1;
+          $this->lines[$key]['address'.$j] = !isset($this->lines[$key]['address'.$j])
+            ? $addr[$i]
+            : $this->lines[$key]['address'.$j]."\n".$addr[$i];
+        }
+        unset($this->lines[$key]['address']);
+      }
+      
       // removing professionals objects to get a flat array
       unset($this->lines[$key]['YOBs'], $this->lines[$key]['Groups'], $this->lines[$key]['Professionals'], $this->lines[$key]['ContactGroups']);
     }

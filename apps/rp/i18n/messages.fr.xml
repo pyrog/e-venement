@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Split addresses in 3 cells</source>
+        <target>Couper les adresses en 3 cell.</target>
+      </trans-unit>
+      <trans-unit>
         <source>Archives</source>
         <target>Archives</target>
       </trans-unit>

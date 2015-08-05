@@ -70,6 +70,7 @@ class OptionCsvForm extends BaseOptionCsvForm
       'extra' => array(
         'information' => 'More informations',
         'microsoft'   => 'Microsoft-Compatible',
+        'no_nl'       => 'Split addresses in 3 cells',
         'noheader'    => 'No header',
         'always_pro'  => 'Professional data: always',
         'tunnel'      => 'Prefer professional informations',
@@ -100,6 +101,9 @@ class OptionCsvForm extends BaseOptionCsvForm
     	'name'      => 'Name',
 	    'firstname' => 'Firstname',
   	  'address'   => 'Address',
+  	  'address1'   => 'Address',
+  	  'address2'   => 'Address',
+  	  'address3'   => 'Address',
     	'postalcode'=> 'Postalcode',
 	    'city'      => 'City',
   	  'country'   => 'Country',
@@ -151,6 +155,15 @@ class OptionCsvForm extends BaseOptionCsvForm
       $options[$option['name']][] = $option['value'];
     
     $options['field'] = self::orderData($options['field']);
+    if ( in_array('no_nl', $options['option']) )
+    {
+      if ( ($i = array_search('address', $options['field'])) !== false )
+        unset($options['field'][$i]);
+      $options['field'][] = 'address1';
+      $options['field'][] = 'address2';
+      $options['field'][] = 'address3';
+      $options['field'] = self::orderData($options['field']);
+    }
     
     return $options;
   }
