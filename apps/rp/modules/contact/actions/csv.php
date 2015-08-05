@@ -162,7 +162,7 @@
           $j = $i>2?3:$i+1;
           $this->lines[$key]['address'.$j] = !isset($this->lines[$key]['address'.$j])
             ? $addr[$i]
-            : $this->lines[$key]['address'.$j]."\n".$addr[$i];
+            : $this->lines[$key]['address'.$j]."\r\n".$addr[$i];
         }
         unset($this->lines[$key]['address']);
       }
