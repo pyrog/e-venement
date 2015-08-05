@@ -18,9 +18,22 @@ generator:
         display: [MetaEvent,=name]
         object_actions:
           _edit: ~
-          _extract_accepted: { name: Accepted, action: accepted }
-          _extract_refused: { name: Refused, action: refused }
-          _export: { name: Export accepted, action: export }
+          _extract_accepted:
+            name: Accepted
+            action: accepted
+            ui-icon: cart
+          _extract_refused:
+            name: Refused
+            action: refused
+            ui-icon: cancel
+          _extract_impossible:
+            name: Impossible
+            action: impossible
+            ui-icon: notice
+          _export: 
+            name: Export accepted
+            action: export
+            ui-icon: person
         batch_actions: {}
         title: By event
         table_method: getOnlyGroupEvents
