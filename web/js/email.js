@@ -1,5 +1,45 @@
 $(document).ready(function(){
 
+// saving templates 
+$('.sf_admin_form_field_save_button button').click(function(){
+  var messages = {
+    success: $(this).siblings('[data-msg-success]').attr('data-msg-success'),
+    error:   $(this).siblings('[data-msg-error]').attr('data-msg-error')
+  }
+  
+  if ( !$.trim($(this).siblings('input').val()) )
+  {
+    LI.alert(messages.error, 'error');
+    return false;
+  }
+  
+  $.ajax({
+    url: $(this).siblings('[data-url]').attr('data-url'),
+    data: {
+      name: $.trim($(this).siblings('input').val()),
+      content: tinyMCE.activeEditor.getContent()
+    },
+    method: 'post',
+    success: function(){
+      LI.alert(messages.success, 'success');
+      $('.sf_admin_form_field_save_button input').val('');
+    },
+    error: function(){
+      LI.alert(messages.error, 'error');
+      $('.sf_admin_form_field_save_button input').val('');
+    }
+  });
+  
+  return false;
+});
+$('.sf_admin_form_field_save_button input').keypress(function(e){
+  if ( e.which == 13 )
+  {
+    $(this).siblings('button').click();
+    return false;
+  }
+});
+
 setTimeout(function() {
   if ( $('#sf_admin_content a[href="#'+$('#sf_admin_form_tab_menu .ui-state-error:first').parent().prop('id')+'"]').length > 0 )
     $('#sf_admin_content a[href="#'+$('#sf_admin_form_tab_menu .ui-state-error:first').parent().prop('id')+'"]').click();
@@ -55,7 +95,7 @@ $('.sf_admin_form_field_attachments a').click(function(){
   return false;
 });
 
-});
+}); // end of $(document).ready()
 
 function manage_attachment_widget(ed, l)
 {
@@ -85,10 +125,4 @@ function email_organisms_list(data)
     $.get($(this).prop('href'), email_organisms_list);
     return false;
   });
-}
-
-function email_urlconvertor(url, node, on_save)
-{
-  alert(url);
-  return url;
 }

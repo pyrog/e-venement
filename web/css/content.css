@@ -84,12 +84,6 @@ body .ui-widget-header { margin: 2px 2px auto 2px; }
   border: 1px solid #0acd12;
 }
 
-.sf_admin_form_field_load_button {
-  position: absolute;
-  margin-top: -30px;
-  margin-left: 280px;
-}
-
 .sf_admin_show .rich-content {
   padding: 5px;
   margin: 5px 0;

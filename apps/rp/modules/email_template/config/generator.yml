@@ -1,0 +1,38 @@
+generator:
+  class: sfDoctrineGenerator
+  param:
+    model_class:           EmailTemplate
+    theme:                 jroller
+    non_verbose_templates: true
+    with_show:             false
+    singular:              ~
+    plural:                ~
+    route_prefix:          email_template
+    with_doctrine_route:   true
+    actions_base_class:    sfActions
+
+    config:
+      actions: ~
+      fields:
+        list_content: { label: Content }
+      list:
+        display: [name, _list_content, created_at]
+        actions: []
+        object_actions:
+          _new:
+            ui-icon: plus
+            action: createEmail
+          _edit: ~
+          _delete: ~
+      filter:  ~
+      form:    ~
+      edit:
+        actions:
+          _delete: ~
+          _list: ~
+          _createEmail:
+            ui-icon: plus
+            action: createEmail
+            label: New email
+          _save: ~
+      new:     ~

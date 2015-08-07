@@ -5,6 +5,18 @@
     <header/>
     <body>
       <trans-unit>
+        <source>New from template&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</source>
+        <target>Nouveau (modèles)&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit>
+        <source>New email&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</source>
+        <target>Nouvel email&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Save the content as a model</source>
+        <target>Enregistrer le contenu comme modèle</target>
+      </trans-unit>
+      <trans-unit>
         <source>Split addresses in 3 cells</source>
         <target>Couper les adresses en 3 cell.</target>
       </trans-unit>

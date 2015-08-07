@@ -4,12 +4,12 @@
 #content .sf_admin_form_field_field_bcc textarea,
 #content .sf_admin_form_field_field_subject textarea { height: 1em; width: 420px; }
 
-#sf_admin_content .sf_admin_actions_form li,
-#sf_admin_content .sf_admin_actions_form.no-float {
+.mod-email #sf_admin_content .sf_admin_actions_form li,
+.mod-email #sf_admin_content .sf_admin_actions_form.no-float {
   text-align: left;
   float: none;
 }
-#sf_admin_content .sf_admin_actions_form li {
+.mod-email #sf_admin_content .sf_admin_actions_form li {
   margin-left: 8px;
   position: static;
 }
@@ -32,3 +32,6 @@
   border: 1px dashed gray;
   padding: 2px 0 2px 50px;
 }
+
+.sf_admin_form_field_load_button input, .sf_admin_form_field_save_button input { margin-right: 1.5em; }
+.sf_admin_list table tbody tr.sf_admin_row .sf_admin_list_td_list_content .max-height { max-height: 3em; overflow: hidden; }

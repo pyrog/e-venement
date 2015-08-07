@@ -13,6 +13,21 @@ require_once dirname(__FILE__).'/../lib/emailGeneratorHelper.class.php';
  */
 class emailActions extends autoEmailActions
 {
+  public function executeNewFromTemplate(sfWebRequest $request)
+  {
+    $this->redirect('@email_template');
+  }
+  public function executeSaveTemplate(sfWebRequest $request)
+  {
+    $template = new EmailTemplate;
+    $template->name = $request->getParameter('name');
+    $template->content = $request->getParameter('content');
+    $template->created_at = date('Y-m-d H:i:s');
+    $template->save();
+    
+    return sfView::NONE;
+  }
+  
   public function executeUpload(sfWebRequest $request)
   {
     $this->email = $this->getRoute()->getObject();
@@ -189,6 +204,7 @@ class emailActions extends autoEmailActions
   public function executeNew(sfWebRequest $request)
   {
     $r = parent::executeNew($request);
+    $edit = false;
     
     // CONTACTS
     $criterias = $this->getUser()->getAttribute('contact.filters', $this->configuration->getFilterDefaults(), 'admin_module');
@@ -228,14 +244,7 @@ class emailActions extends autoEmailActions
         else
           $this->form->getObject()->Contacts[] = $contact;
       }
-      
-      $this->form->getObject()->field_from = $this->getUser()->getGuardUser()->getEmailAddress();
-      $this->form->getObject()->field_subject = '*****';
-      $this->form->getObject()->content = '*****';
-      $this->form->getObject()->save();
-      
-      $this->getUser()->setFlash('notice', __('Your email has been temporary recorded. Please be careful, modify its subject and its content before sending...'));
-      $this->redirect('email/edit?id='.$this->form->getObject()->id);
+      $edit = true;
     }
     
     // ORGANISMS
@@ -253,6 +262,27 @@ class emailActions extends autoEmailActions
       $filters = new OrganismFormFilter($criterias);
       foreach ( $filters->buildQuery($criterias)->execute() as $organism )
         $this->form->getObject()->Organisms[] = $organism;
+      $edit = true;
+    }
+    
+    // templating
+    if ( intval($request->getParameter('template')).'' === ''.$request->getParameter('template')
+      && ($template = Doctrine::getTable('EmailTemplate')->find($request->getParameter('template'))) )
+    {
+      $this->form->getObject()->content = $template->content;
+      $this->form->setDefault('content', $template->content);
+    }
+    
+    if ( $edit )
+    {
+      $this->form->getObject()->field_from = $this->getUser()->getGuardUser()->getEmailAddress();
+      $this->form->getObject()->field_subject = '*****';
+      if ( !$this->form->getObject()->content )
+        $this->form->getObject()->content = '*****';
+      $this->form->getObject()->save();
+      
+      $this->getUser()->setFlash('notice', __('Your email has been temporary recorded. Please be careful, modify its subject and its content before sending...'));
+      $this->redirect('email/edit?id='.$this->form->getObject()->id);
     }
     
     //$this->form->setDefault('contacts_list',$contacts_list);

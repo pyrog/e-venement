@@ -5,6 +5,10 @@
     <header />
     <body>
       <trans-unit>
+        <source>Load</source>
+        <target>Charger</target>
+      </trans-unit>
+      <trans-unit>
         <source>Print tickets</source>
         <target>Imprimer les billets</target>
       </trans-unit>

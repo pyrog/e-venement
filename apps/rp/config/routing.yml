@@ -1,3 +1,12 @@
+email_template:
+  class: sfDoctrineRouteCollection
+  options:
+    model:                EmailTemplate
+    module:               email_template
+    prefix_path:          /email_template
+    column:               id
+    with_wildcard_routes: true
+
 contact_relationship_type:
   class: sfDoctrineRouteCollection
   options:

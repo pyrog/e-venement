@@ -20,6 +20,16 @@
 # 
 #**********************************************************************************/
 
+EmailTemplate:
+  package: email
+  columns:
+    name:
+      type: string(255)
+      notnull: true
+      notblank: true
+    content: string
+    created_at: timestamp
+
 Email:
   package: email
   actAs:
