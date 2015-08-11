@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Unlimited</source>
+        <target>Illimité</target>
+      </trans-unit>
+      <trans-unit>
         <source>Licenses</source>
         <target>Licences</target>
       </trans-unit>

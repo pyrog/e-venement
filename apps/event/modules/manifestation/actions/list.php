@@ -46,7 +46,7 @@
     
     $end = "m.reservation_ends_at"; // + (m.duration||' seconds')::interval";
     $q = Doctrine::getTable('Manifestation')->createQuery('m')
-      ->select('m.*, l.*, mb.*, me.*, c.*, e.*, g.*')
+      ->select('m.*, l.*, mb.*, me.*, c.*, e.*, et.*, g.*')
       ->leftJoin('m.Color c')
       ->leftJoin('m.Booking mb')
       ->andWhere('(TRUE')
@@ -56,17 +56,23 @@
       ->andWhere('TRUE)')
       ->orderBy('m.happens_at DESC');
     if ( $this->location_id )
+    {
       $q->andWhere('(TRUE')
-        ->andWhere('m.location_id = ?',$this->location_id)
-        ->leftJoin('m.Booking b')
-        ->orWhere('b.id = ?',$this->location_id)
-        ->andWhere('TRUE)');
+        ->andWhere('m.location_id = ?',$this->location_id);
+      if ( $request->getParameter('conflicts',NULL) === 'true' )
+        $q->andWhere('l.unlimited = ?', false);
+      $q->leftJoin('m.Booking b')
+        ->orWhere('b.id = ?',$this->location_id);
+      if ( $request->getParameter('conflicts',NULL) === 'true' )
+        $q->andWhere('b.unlimited = ?', false);
+      $q->andWhere('TRUE)');
+    }
     if ( $this->only_blocking )
-      $q->andWhere('m.blocking = TRUE');
+      $q->andWhere('m.blocking = ?', true);
     if ( $this->only_pending )
-      $q->andWhere('m.reservation_confirmed = FALSE');
+      $q->andWhere('m.reservation_confirmed = ?', false);
     if ( $this->only_display_by_default )
-      $q->andWhere('e.display_by_default = TRUE');
+      $q->andWhere('e.display_by_default = ?', true);
     if ( $this->event_id )
       $q->andWhere('m.event_id = ?', $this->event_id);
     elseif ( $this->month_view )

@@ -276,6 +276,9 @@ Location:
       notnull: true
       default: true
     licenses: string(255)
+    unlimited:
+      type: boolean
+      default: false
   relations:
     Organism:
       foreignAlias: Locations

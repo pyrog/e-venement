@@ -31,7 +31,7 @@ generator:
         reservation_price: { label: Costs, help: Reservation costs }
         rank:         { helper: Number }
       list:
-        display: [rank, name, email, Contact, Organism, reservation_price]
+        display: [rank, name, email, Contact, Organism, unlimited, reservation_price]
         table_method: retrieveResources
         title: List of resources
         object_actions:
@@ -42,15 +42,14 @@ generator:
           _delete: ~
         sort: ['rank IS NULL, rank, name', '']
       filter:
-        display: [name, email, contact_id, organism_id, npai]
+        display: [name, email, contact_id, organism_id, unlimited, npai]
       form:
+        display:
+          General: [name, email, contact_id, organism_id, unlimited]
+          Details: [rank, reservation_price, description]
       edit:
         title: Editting resource %%name%%
-        display:
-          General: [name, rank, email, contact_id, organism_id, reservation_price, description]
-      new:
-        display:
-          General: [name, rank, email, contact_id, organism_id, reservation_price, description]
+      new: ~
       show:
         display:
-          General: [name, _show_email, _show_contact, _show_organism, _show_reservation_price, _show_description]
+          General: [name, _show_email, _show_contact, _show_organism, _show_reservation_price, _show_description, unlimited]

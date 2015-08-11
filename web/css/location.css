@@ -12,3 +12,5 @@
 .batch label { display: block; }
 
 #sf_admin_footer .new-manif.dialog { display: none; }
+
+#sf_fieldset_details .sf_admin_form_field_description .widget { margin-left: -105px; }

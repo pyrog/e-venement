@@ -232,10 +232,13 @@ class ManifestationTable extends PluginManifestationTable
           LEFT JOIN location l2 ON l2.id = m2.location_id
           LEFT JOIN location_booking lb1 ON lb1.manifestation_id = m1.id
           LEFT JOIN location_booking lb2 ON lb2.manifestation_id = m2.id
+          LEFT JOIN location llb1 ON lb1.location_id = llb1.id
+          LEFT JOIN location llb2 ON lb2.location_id = llb2.id
           WHERE m2.blocking AND m1.blocking AND ".( isset($filters['potentially']) && $filters['potentially'] === true ? 'TRUE = :potentially' : 'm2.reservation_confirmed' ).' AND '.(isset($filters['potentially']) ? ($filters['potentially'] === true ? 'TRUE = :potentially' : '(m1.reservation_confirmed OR m1.id = :potentially)') : 'm1.reservation_confirmed')."
             AND (m1.location_id = m2.location_id OR m1.location_id = lb2.location_id OR m2.location_id = lb1.location_id OR lb1.location_id = lb2.location_id)
             AND m2.id IS NOT NULL
             ".(isset($filters['id']) ? 'AND m1.id = :id' : '')."
+            AND l1.unlimited = FALSE AND l2.unlimited = FALSE AND llb1.unlimited = FALSE AND llb2.unlimited = FALSE
           ORDER BY m1.id";
     
     $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
