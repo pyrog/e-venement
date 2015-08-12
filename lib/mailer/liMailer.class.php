@@ -31,8 +31,6 @@ class liMailer extends sfMailer
     {
       $message->setTo(is_int($address) ? $name : array($address => $name));
       $this->send($message);
-      
-      file_put_contents('/tmp/liMailer.log',date('Y-m-d H:i:s').' -- '.$address."\n", FILE_APPEND);
     }
     
     return count($arr) > 0;

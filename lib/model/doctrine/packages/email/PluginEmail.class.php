@@ -152,6 +152,23 @@ abstract class PluginEmail extends BaseEmail
       $this->embedded_images++;
     }
     
+    // treat links
+    preg_match_all('!<a\s(.*)href="(http.*)"(.*)>!U', $post_treated_content, $links, PREG_SET_ORDER);
+    foreach ( $links as $link )
+    {
+      $el = new EmailLink;
+      $el->original_url = $link[2];
+      $el->encrypted_uri = md5($link[2].'|'.sfConfig::get('app_salt','').'|'.microtime());
+      $el->email_id = $this->id;
+      $el->save();
+      
+      $post_treated_content = str_replace(
+        $link[0],
+        '<a '.$link[1].' href="'.cross_app_url_for('email','link/follow?u='.$el->encrypted_uri/*.'&t=%%TYPE%%&i=%%ID%%'*/).'"'.$link[3].'>',
+        $post_treated_content
+      );
+    }
+    
     $content = 
       '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.
       '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">'.

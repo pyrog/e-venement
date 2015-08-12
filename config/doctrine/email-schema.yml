@@ -160,3 +160,58 @@ EmailSpool:
       type: text
       notnull: true
     priority: integer
+
+EmailAction:
+  package: email
+  actAs: [Timestampable]
+  indexes:
+    email_action_source_idx:
+      fields: [source]
+  columns:
+    email_id:
+      type: integer
+      notnull: true
+    type:
+      type: enum
+      values: [open, link]
+      notnull: true
+    contact_id: integer
+    professional_id: integer
+    organism_id: integer
+    detail: string
+    source: string
+  relations:
+    Email:
+      foreignAlias: Actions
+      onDelete: CASCADE
+      onUpdate: CASCADE
+    Contact:
+      foreignAlias: Actions
+      onDelete: CASCADE
+      onUpdate: CASCADE
+    Professional:
+      foreignAlias: Actions
+      onDelete: CASCADE
+      onUpdate: CASCADE
+    Organism:
+      foreignAlias: Actions
+      onDelete: CASCADE
+      onUpdate: CASCADE
+EmailLink:
+  package: email
+  actAs: [Timestampable]
+  columns:
+    email_id:
+      type: integer
+      notnull: true
+    original_url:
+      type: string(255)
+      notnull: true
+    encrypted_uri:
+      type: string(255)
+      notnull: true
+  relations:
+    Email:
+      foreignAlias: Links
+      onDelete: CASCADE
+      onUpdate: CASCADE
