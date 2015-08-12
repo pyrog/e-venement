@@ -209,7 +209,7 @@ ProfessionalType:
       type: string(255)
       notnull: true
       notblank: true
-Professional:
+ProfessionalBase:
   package: rp
   actAs: [Timestampable]
   columns:
@@ -235,6 +235,11 @@ Professional:
       default: false
     department: string(255)
     description: string
+Professional:
+  package: rp
+  inheritance:
+    extends: ProfessionalBase
+    type: concrete
   relations:
     ProfessionalType:
       foreignAlias: Professionals
@@ -248,7 +253,7 @@ Professional:
 ProfessionalArchive:
   package: rp
   inheritance:
-    extends: Professional
+    extends: ProfessionalBase
     type: concrete
   relations:
     ProfessionalType:

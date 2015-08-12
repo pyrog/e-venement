@@ -1,0 +1,10 @@
+.ui-widget-content { padding: 5px 15px; margin: 5px; }
+#sf_admin_container ul { padding: 5px 0; margin-right: 20px; list-style-type: none; }
+.clear { clear: both; }
+
+.desc { font-weight: normal; }
+.desc:before { content: '('; }
+.desc:after { content: ')'; }
+
+.sf_admin_actions_form { min-height: 2.5em; }
+.sf_admin_actions_form .sf_admin_action_show { position: absolute; left: 0.4em; margin-left: 42px; }

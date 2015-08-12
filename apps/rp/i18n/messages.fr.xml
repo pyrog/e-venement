@@ -5,6 +5,18 @@
     <header/>
     <body>
       <trans-unit>
+        <source>[0,1]%%cpt%% member card has been created|(1,+Inf]%%cpt%% member cards have been created</source>
+        <target>[0,1]%%cpt%% carte d'abo a été créée|(1,+Inf]%%cpt%% cartes d'abo ont été créées</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Please select a type of member card to assign</source>
+        <target>Sélectionnez un type de carte d'abo à affecter</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Assigns a member card of the type given to all members of this group (with the exception of organisms)</source>
+        <target>Affecte une carte d'abo d'un type donné à tous les membres de ce groupe (à l'exception des organismes)</target>
+      </trans-unit>
+      <trans-unit>
         <source>New from template&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</source>
         <target>Nouveau (modèles)&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</target>
       </trans-unit>
@@ -71,6 +83,10 @@
       <trans-unit>
         <source>Store</source>
         <target>Boutique</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Surveys</source>
+        <target>Sondages</target>
       </trans-unit>
       <trans-unit>
         <source>Answered surveys</source>

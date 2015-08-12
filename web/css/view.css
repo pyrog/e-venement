@@ -56,3 +56,6 @@ div:hover > .sf_admin_form_field_cities { display: block; }
   margin-top: -20px;
   margin-bottom: 40px;
 }
+
+#sf_admin_container .sf_admin_actions_form .li-submenu ul { display: none; position: absolute; padding-top: 2em; }
+#sf_admin_container .sf_admin_actions_form .li-submenu:hover ul { display: block; }

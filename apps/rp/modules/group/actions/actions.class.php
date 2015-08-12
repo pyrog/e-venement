@@ -36,6 +36,69 @@ require_once dirname(__FILE__).'/../lib/groupGeneratorHelper.class.php';
  */
 class groupActions extends autoGroupActions
 {
+  public function executeAddMemberCards(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    
+    $this->executeEdit($request);
+    $q = Doctrine::getTable('MemberCardType')->createQuery('mct')
+      ->leftJoin('mct.Users u')
+      ->andWhere('u.id = ?', $this->getUser()->getId())
+      ->orderBy('mct.name');
+    if ( $mctids = $request->getParameter('member_card_types',array()) )
+      $q->andWhereIn('mct.id', $mctids);
+    $this->member_card_types = $q->execute();
+    
+    $form = new sfForm;
+    $this->csrf_token = $form->getCSRFToken();
+    
+    if ( $mctids && $this->member_card_types instanceof Doctrine_Collection && $this->member_card_types->count() > 0
+      && $this->csrf_token == $request->getParameter('_csrf_token') )
+    {
+      $cpt = 0;
+      
+      foreach ( $this->member_card_types as $mct )
+      {
+        $cids = array();
+        foreach ( $this->group->Contacts as $contact )
+        {
+          $cids[] = $contact->id;
+          $mc = new MemberCard;
+          $mc->expire_at = sfConfig::has('project_cards_expiration_delay')
+            ? date('Y-m-d H:i:s',strtotime(sfConfig::get('project_cards_expiration_delay'),strtotime($params['created_at'])))
+            : (strtotime(date('Y').'-'.sfConfig::get('project_cards_expiration_date')) > strtotime('now')
+            ? date('Y').'-'.sfConfig::get('project_cards_expiration_date')
+            : (date('Y')+1).'-'.sfConfig::get('project_cards_expiration_date'));
+          $mc->MemberCardType = $mct;
+          $mc->Contact = $contact;
+          $mc->save();
+          $cpt++;
+        }
+        
+        foreach ( $this->group->Professionals as $pro )
+        if ( !in_array($pro->contact_id, $cids) )
+        {
+          $cids[] = $pro->contact_id;
+          $mc = new MemberCard;
+          $mc->expire_at = sfConfig::has('project_cards_expiration_delay')
+            ? date('Y-m-d H:i:s',strtotime(sfConfig::get('project_cards_expiration_delay'),strtotime($params['created_at'])))
+            : (strtotime(date('Y').'-'.sfConfig::get('project_cards_expiration_date')) > strtotime('now')
+            ? date('Y').'-'.sfConfig::get('project_cards_expiration_date')
+            : (date('Y')+1).'-'.sfConfig::get('project_cards_expiration_date'));
+          $mc->MemberCardType = $mct;
+          $mc->contact_id = $pro->contact_id;
+          $mc->save();
+          $cpt++;
+        }
+      }
+      
+      $this->getUser()->setFlash('notice', format_number_choice('[0,1]%%cpt%% member card has been created|(1,+Inf]%%cpt%% member cards have been created', array('%%cpt%%' => $cpt), $cpt));
+      $this->redirect('group/show?id='.$this->group->id);
+    }
+    elseif ( $request->hasParameter('submit') )
+      $this->getUser()->setFlash('error', __('Please select a type of member card to assign'));
+  }
+  
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');

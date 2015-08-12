@@ -29,6 +29,8 @@
     <h1><?php echo __('View of group %%group%%', array('%%group%%' => $group), 'messages') ?></h1>
   </div>
 
+  <?php include_partial('group/flashes') ?>
+
   <div class="sf_admin_actions_block ui-widget">
       <?php include_partial('group/show_actions', array('form' => $form, 'group' => $group, 'configuration' => $configuration, 'helper' => $helper)) ?>
   </div>
