@@ -24,8 +24,29 @@
 <?php
 class liMailer extends sfMailer
 {
-  public function batchSend($message)
+  protected $email = NULL;
+  
+  public function send(Swift_Mime_Message $message, &$failedRecipients = NULL)
   {
+    if ( $this->email instanceof Email && count($to = $message->getTo()) == 1 )
+    foreach ( $to as $address => $name )
+    {
+      $content = str_replace('%%EMAILADDRESS%%', is_int($address) ? $name : $address, $this->email->getFormattedContent());
+      error_log($content);
+      $message = $this->email->removePart('text')->removePart('html')
+        ->addParts($content)
+        ->getMessage();
+    }
+    return parent::send($message);
+  }
+  public function setEmail(Email $email)
+  {
+    $this->email = $email;
+    return $this;
+  }
+  public function batchSend(Swift_Message $message)
+  {
+    $this->email = $email;
     $arr = $message->getTo();
     foreach ( $arr as $address => $name )
     {

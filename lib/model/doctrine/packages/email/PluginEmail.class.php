@@ -17,7 +17,9 @@ abstract class PluginEmail extends BaseEmail
   public $to              = array();
   public $mailer          = NULL;
   public $from_txt        = NULL;
+  protected $parts        = array('text' => NULL, 'html' => NULL);
   protected $embedded_images = 0;
+  protected $message = NULL;
   
   protected function isNewsletter()
   {
@@ -74,7 +76,8 @@ abstract class PluginEmail extends BaseEmail
     if ( !$to && !$this->field_to )
       return false;
     
-    $message = $this->compose(Swift_Message::newInstance()->setTo($to));
+    $this->message = Swift_Message::newInstance()->setTo($to);
+    $this->compose();
     
     // sfEventDispatcher
     if ( sfContext::hasInstance() )
@@ -84,10 +87,10 @@ abstract class PluginEmail extends BaseEmail
     }
     
     if ( $this->field_bcc )
-      $message->setBcc($this->field_bcc);
+      $this->message->setBcc($this->field_bcc);
     
     if ( $this->field_cc )
-      $message->setCc($this->field_cc);
+      $this->message->setCc($this->field_cc);
     
     // attach normal file attachments
     foreach ( $this->Attachments as $attachment )
@@ -98,18 +101,18 @@ abstract class PluginEmail extends BaseEmail
           : sfConfig::get('sf_upload_dir').DIRECTORY_SEPARATOR.$attachment->filename, $attachment->mime_type)
         ->setFilename($attachment->original_name)
         ->setId('part.'.$id.'@e-venement');
-      $message->attach($att);
+      $this->message->attach($att);
     }
     
     // force setting the Content-Type to 'multipart/related' to really follow the norm
     if ( $this->embedded_images > 0 )
-      $message->setContentType('multipart/related');
+      $this->message->setContentType('multipart/related');
     
     $this->setMailer();
     
     return $immediatly === true
-      ? $this->mailer->sendNextImmediately()->send($message)
-      : $this->mailer->batchSend($message);
+      ? $this->mailer->sendNextImmediately()->send($this->message)
+      : $this->mailer->batchSend($this->message);
   }
   
   public function setMailer(sfMailer $mailer = NULL)
@@ -122,14 +125,15 @@ abstract class PluginEmail extends BaseEmail
     elseif ( sfContext::hasInstance() )
       $this->mailer = sfContext::getInstance()->getMailer();
     
+    if ( method_exists($this->mailer, 'setEmail') )
+      $this->mailer->setEmail($this);
+    
     return $this;
   }
-
-  protected function compose(Swift_Message $message)
+  
+  public function getFormattedContent()
   {
-    $relatedPart = Swift_MimePart::newInstance(null, 'text/relative', null);
-    
-    // treat inline images
+    // treats inline images
     $post_treated_content = $this->content;
     preg_match_all('!<img\s(.*)src="data:(image/\w+);base64,(.*)"(.*)/>!U', $post_treated_content, $imgs, PREG_SET_ORDER);
     foreach ( $imgs as $i => $img )
@@ -145,14 +149,14 @@ abstract class PluginEmail extends BaseEmail
       // embedding the image
       $post_treated_content = str_replace(
         $img[0],
-        '<img '.$img[1].' '.$img[4].' src="'.$message->embed($att).'" />',
+        '<img '.$img[1].' '.$img[4].' src="'.$this->message->embed($att).'" />',
         $post_treated_content
       );
       
       $this->embedded_images++;
     }
     
-    // treat links
+    // treats links
     preg_match_all('!<a\s(.*)href="(http.*)"(.*)>!U', $post_treated_content, $links, PREG_SET_ORDER);
     foreach ( $links as $link )
     {
@@ -164,10 +168,13 @@ abstract class PluginEmail extends BaseEmail
       
       $post_treated_content = str_replace(
         $link[0],
-        '<a '.$link[1].' href="'.cross_app_url_for('email','link/follow?u='.$el->encrypted_uri/*.'&t=%%TYPE%%&i=%%ID%%'*/).'"'.$link[3].'>',
+        '<a '.$link[1].'href="'.str_replace('https','http',cross_app_url_for('email','link/follow?u='.$el->encrypted_uri,true)).'&e=%%EMAILADDRESS%%"'.$link[3].'>',
         $post_treated_content
       );
     }
+    
+    // adds a tracking external image
+    $post_treated_content .= '<img src="'.str_replace('https','http',cross_app_url_for('email','track/index?i='.$this->id.'&s='.md5(sfConfig::get('app_salt','').'|'.microtime()),true)).'&e=%%EMAILADDRESS%%" alt=" " />';
     
     $content = 
       '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.
@@ -180,16 +187,43 @@ abstract class PluginEmail extends BaseEmail
       $post_treated_content.
       '</body></html>';
     
-    $h2t = new HtmlToText($content);
-    $message
+    return $content;
+  }
+  
+  public function addParts($content = NULL)
+  {
+    $h2t = new HtmlToText($content ? $content : $this->getFormattedContent());
+    $this->message
+      ->attach($this->parts['html'] = Swift_MimePart::newInstance($h2t->get_html(), 'text/html'))
+      ->attach($this->parts['text'] = Swift_MimePart::newInstance($h2t->get_html(), 'text/plain'))
+    ;
+    
+    return $this;
+  }
+  
+  public function removePart($type)
+  {
+    if ( !in_array($type, array('text', 'html')) )
+      return $this;
+    $this->message->detach($this->parts[$type]);
+    return $this;
+  }
+  
+  public function getMessage()
+  {
+    return $this->message;
+  }
+
+  protected function compose()
+  {
+    $this->addParts();
+    $this->message
       ->setFrom(array($this->field_from => $this->from_txt ? $this->from_txt : $this->field_from))
       ->setSubject($this->field_subject)
-      ->addPart($h2t->get_html(), 'text/html')
-      ->addPart($h2t->get_text(),'text/plain')
     ;
     
     if ( $this->read_receipt )
-      $message->setReadReceiptTo($this->field_from);
-    return $message;
+      $this->message->setReadReceiptTo($this->field_from);
+    return $this->message;
   }
 }

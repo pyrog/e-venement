@@ -180,6 +180,7 @@ EmailAction:
     organism_id: integer
     detail: string
     source: string
+    email_address: string(255)
   relations:
     Email:
       foreignAlias: Actions

@@ -1,27 +1,30 @@
 <?php
 
 /**
- * link actions.
+ * track actions.
  *
  * @package    e-venement
- * @subpackage link
+ * @subpackage track
  * @author     Baptiste SIMON <baptiste.simon AT e-glop.net>
  * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
-class linkActions extends sfActions
+class trackActions extends sfActions
 {
-  public function executeFollow(sfWebRequest $request)
+  public function executeIndex(sfWebRequest $request)
   {
-    $q = Doctrine::getTable('EmailLink')->createQuery('el')
-      ->andWhere('el.encrypted_uri = ?',$request->getParameter('u',false));
-    $this->forward404Unless($this->link = $q->fetchOne());
+    $q = Doctrine::getTable('Email')->createQuery('e')
+      ->andWhere('e.id = ?', $request->getParameter('i',false))
+    //  ->leftJoin('e.Tracks t')
+    //  ->andWhere('t.detail != ?', $request->getParameter('s',''))
+    ;
+    $this->forward404Unless($this->email = $q->fetchOne());
     
     $ea = new EmailAction;
-    $ea->email_id = $this->link->email_id;
-    $ea->type = 'link';
-    $ea->detail = $this->link->original_url;
-    $ea->source = $_SERVER['REQUEST_URI'];
-    $ea->email_address = $request->getParameter('e');
+    
+    $ea->email_id = $this->email->id;
+    $ea->type = 'open';
+    $ea->detail = $request->getParameter('s', '--');
+    $ea->email_address = $request->getParameter('e','');
     
     if ( intval($request->getParameter('i')).'' === ''.$request->getParameter('i') )
     switch ( $request->getParameter('t') ) {
@@ -38,10 +41,6 @@ class linkActions extends sfActions
     
     $ea->save();
     
-    $this->redirect($this->link->original_url);
-  }
-  
-  public function executeError404(sfWebRequest $request)
-  {
+    return sfView::NONE;
   }
 }
