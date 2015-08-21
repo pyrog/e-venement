@@ -7,7 +7,7 @@ $(document).ready(function(){
   <?php
     $nb = 0;
     foreach ( $transaction->MemberCards as $mc )
-    $nb += $mc->BoughtProducts->count();
+      $nb += $mc->BoughtProducts->count();
   ?>
   <?php if ( sfConfig::get('app_cards_auto_close', true) ): ?>
     <?php if ( $transaction->Payments->count() > 0 || $nb > 0 ): ?>

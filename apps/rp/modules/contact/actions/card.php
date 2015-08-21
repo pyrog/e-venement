@@ -114,12 +114,14 @@
           ->andWhere('mc.member_card_type_id = ?',$params['member_card_type_id'])
           ->andWhere('mc.expire_at > NOW()')
           ->orderBy('mc.id DESC')
+          ->leftJoin('mc.Transaction t')
           ->limit(1);
         $card = $q->fetchOne();
         
         if ( !$card )
           return 'Params';
         
+        $this->transaction = $card->Transaction;
         // some kind of a hack
         $this->card = $card; // replacing MemberCardForm by MemberCard...
         $this->card->updated_at = NULL;
