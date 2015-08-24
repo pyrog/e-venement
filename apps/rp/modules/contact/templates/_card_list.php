@@ -1,6 +1,6 @@
 <script type="text/javascript"><!--
   $(document).ready(function(){
-    $.get('<?php echo url_for('member_card/index?contact_id='.$contact->id) ?>',get_member_card_index);
+    $.get('<?php echo url_for('member_card/index?contact_id='.$contact->id.'&page=1') ?>',get_member_card_index);
   });
   
   function get_member_card_index(data)
