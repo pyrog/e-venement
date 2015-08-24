@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Checks</source>
+        <target>Vérifications</target>
+      </trans-unit>
+      <trans-unit>
         <source>[0,1]%%cpt%% member card has been created|(1,+Inf]%%cpt%% member cards have been created</source>
         <target>[0,1]%%cpt%% carte d'abo a été créée|(1,+Inf]%%cpt%% cartes d'abo ont été créées</target>
       </trans-unit>

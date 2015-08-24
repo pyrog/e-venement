@@ -19,9 +19,11 @@ generator:
           credentials: [pr-card-mod]
       fields:
         expire_at: { label: Expire at }
+        list_contact: { label: Contact }
+        checks_count: { label: Checks }
       list:
         title: List of active member cards on the period (cf. filters)
-        display: [_id, _name, Contact, created_at, expire_at, _value]
+        display: [_id, _name, _list_contact, created_at, expire_at, _value, checks_count]
         sort: [created_at, desc]
         object_actions:
           _show: ~
@@ -38,4 +40,4 @@ generator:
       show:
         display:
           Ticketting: [_show_prices_list, _show_tickets_list, _show_payments_list]
-          General: [_show_id, _show_contact, name, _show_value, expire_at, _show_active, created_at]
+          General: [_show_id, _show_contact, name, _show_value, expire_at, _show_active, created_at, checks_count]

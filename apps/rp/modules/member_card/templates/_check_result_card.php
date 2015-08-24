@@ -14,6 +14,10 @@
     <td><?php echo __('Expire at') ?></td>
     <td><?php echo format_date($member_card->expire_at) ?></td>
   </tr>
+  <tr class="checks_count">
+    <td><?php echo __('Checks') ?></td>
+    <td><?php echo $member_card->checks_count ?></td>
+  </tr>
   <?php if ( $member_card->Payments->count() > 0 ): ?>
   <tr class="value">
     <?php use_helper('Number') ?>

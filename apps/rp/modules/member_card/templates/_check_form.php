@@ -3,7 +3,12 @@
     #<input type="text" name="id" value="" />
     <?php include_partial('global/capslock') ?>
   </div>
-  <p class="submit"><button value="" name="s" class="fg-button ui-state-default"><?php echo __('Search') ?></button></p>
+  <p class="submit">
+    <button value="" name="s" class="fg-button fg-button-icon-left ui-state-default">
+      <span class="ui-icon ui-icon-search"></span>
+      <?php echo __('Search') ?>
+    </button>
+  </p>
 </form>
 <script type="text/javascript"><!--
   $(document).ready(function(){

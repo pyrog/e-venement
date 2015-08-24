@@ -90,7 +90,11 @@ class member_cardActions extends autoMember_cardActions
     $this->nb_valid = 0;
     foreach ( $this->member_cards as $mc )
     if ( strtotime($mc->expire_at) > strtotime('now') )
+    {
+      $this->member_card->checks_count = $this->member_card->checks_count+1;
+      $this->member_card->save();
       $this->nb_valid++;
+    }
     
     $this->type = $this->member_card && $this->nb_valid > 0
       ? 'success'
