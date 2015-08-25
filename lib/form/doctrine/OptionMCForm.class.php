@@ -31,7 +31,7 @@ class OptionMCForm extends OptionForm
     
     $this->widgets = array(
       '' => array(
-        'enabled'        => array('label' => 'Activate alerts', 'type' => 'boolean', 'default' => '', 'helper' => NULL),
+        'enabled'        => array('label' => 'Activate the alerts', 'type' => 'boolean', 'default' => '', 'helper' => NULL),
         'delay_before'   => array('label' => 'Alert before expiration', 'type' => 'integer', 'helper' => __('Days'), 'default' => '7'),
         'delay_after'    => array('label' => 'Alert after expiration', 'type' => 'integer', 'helper' => __('Days'), 'default' => '1'),
         'email_from'     => array('label' => 'Email sender', 'type' => 'email', 'helper' => NULL, 'default' => ''),

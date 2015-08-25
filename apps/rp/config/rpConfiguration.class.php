@@ -138,13 +138,23 @@ class rpConfiguration extends sfApplicationConfiguration
         return;
       }
       
-      $file = sfConfig::get('sf_app_cache_dir').'/mc_expire.emails_sent.touch';
-      if ( file_exists($file) && filemtime($file) + 24*60*60 > time() )
+      $last_run = Doctrine::getTable('Option')->createQuery('o')
+        ->andWhere('o.type = ?', 'mc_alerts')
+        ->andWhere('o.name = ?', 'last_run')
+        ->fetchOne();
+      if ( $last_run && strtotime($last_run->value) + 24*60*60 > time() )
       {
         $this->stdout($section, 'The emails have been sent less than 24 hours ago', 'COMMAND');
         return;
       }
-      touch($file);
+      if ( $last_run )
+        $last_run->delete();
+      
+      $last_run = new Option;
+      $last_run->type = 'mc_alerts';
+      $last_run->name = 'last_run';
+      $last_run->value = date('Y-m-d H:i:s');
+      $last_run->save();
       
       $mcs = new Doctrine_Collection('MemberCard');
       
