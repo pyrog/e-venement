@@ -26,11 +26,11 @@ generator:
       filter:
         display:
           Base: [name, type, value]
-          Relations: [users_list, manifestations_list, prices_list]
+          Relations: [users_list, manifestations_list, prices_list, with_shipment]
       form:
         display:
           Base: [name, type, value]
-          Relations: [users_list, manifestations_list, prices_list]
+          Relations: [users_list, manifestations_list, prices_list, with_shipment]
       edit:
         title: Tax %%name%%
       new:

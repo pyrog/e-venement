@@ -395,6 +395,10 @@ Tax:
     value:
       type: float
       notnull: true
+    with_shipment:
+      type: boolean
+      notnull: true
+      default: false
   relations:
     Users:
       class: sfGuardUser

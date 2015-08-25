@@ -153,6 +153,8 @@ abstract class PluginTicket extends BaseTicket
       $taxes->merge($this->Manifestation->Taxes);
       if ( $this->price_id )
         $taxes->merge(is_object($this->Price) ? $this->Price->Taxes : Doctrine::getTable('Price')->find($this->price_id)->Taxes);
+      if ( $this->Transaction->with_shipment )
+        $taxes->merge(Doctrine::getTable('Tax')->createQuery('t')->andWhere('t.with_shipment = ?', true)->execute());
       $this->addTaxes($taxes);
     }
     
@@ -197,7 +199,7 @@ abstract class PluginTicket extends BaseTicket
       $val = 0;
       switch ( $tax->type ){
       case 'value':
-        $this->taxes += $val = $this->value > 0 ? $tax->value : -$tax->value; // for cancelling tickets
+        $this->taxes += $val = $this->value >= 0 ? $tax->value : -$tax->value; // for cancelling tickets
         break;
       case 'percentage':
         $this->taxes += $val = round($this->value * $tax->value/100,2);
