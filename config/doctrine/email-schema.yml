@@ -198,7 +198,7 @@ EmailAction:
       foreignAlias: Actions
       onDelete: CASCADE
       onUpdate: CASCADE
-EmailLink:
+EmailExternalLink:
   package: email
   actAs: [Timestampable]
   columns:

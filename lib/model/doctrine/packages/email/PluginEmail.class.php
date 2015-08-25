@@ -160,7 +160,7 @@ abstract class PluginEmail extends BaseEmail
     preg_match_all('!<a\s(.*)href="(http.*)"(.*)>!U', $post_treated_content, $links, PREG_SET_ORDER);
     foreach ( $links as $link )
     {
-      $el = new EmailLink;
+      $el = new EmailExternalLink;
       $el->original_url = $link[2];
       $el->encrypted_uri = md5($link[2].'|'.sfConfig::get('app_salt','').'|'.microtime());
       $el->email_id = $this->id;
@@ -174,7 +174,7 @@ abstract class PluginEmail extends BaseEmail
     }
     
     // adds a tracking external image
-    $post_treated_content .= '<img src="'.str_replace('https','http',cross_app_url_for('email','track/index?i='.$this->id.'&s='.md5(sfConfig::get('app_salt','').'|'.microtime()),true)).'&e=%%EMAILADDRESS%%" alt=" " />';
+    $post_treated_content .= '<img src="'.str_replace('https','http',cross_app_url_for('email','track/index?i='.$this->id.'&s='.md5(sfConfig::get('app_salt','').'|'.microtime()),true)).'&e=%%EMAILADDRESS%%" alt=" " width="1" height="1" />';
     
     $content = 
       '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.
@@ -195,7 +195,7 @@ abstract class PluginEmail extends BaseEmail
     $h2t = new HtmlToText($content ? $content : $this->getFormattedContent());
     $this->message
       ->attach($this->parts['html'] = Swift_MimePart::newInstance($h2t->get_html(), 'text/html'))
-      ->attach($this->parts['text'] = Swift_MimePart::newInstance($h2t->get_html(), 'text/plain'))
+      ->attach($this->parts['text'] = Swift_MimePart::newInstance($h2t->get_text(), 'text/plain'))
     ;
     
     return $this;

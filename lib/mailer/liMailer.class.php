@@ -32,7 +32,6 @@ class liMailer extends sfMailer
     foreach ( $to as $address => $name )
     {
       $content = str_replace('%%EMAILADDRESS%%', is_int($address) ? $name : $address, $this->email->getFormattedContent());
-      error_log($content);
       $message = $this->email->removePart('text')->removePart('html')
         ->addParts($content)
         ->getMessage();
@@ -46,7 +45,6 @@ class liMailer extends sfMailer
   }
   public function batchSend(Swift_Message $message)
   {
-    $this->email = $email;
     $arr = $message->getTo();
     foreach ( $arr as $address => $name )
     {

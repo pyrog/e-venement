@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Alerts</source>
+        <target>Alertes</target>
+      </trans-unit>
+      <trans-unit>
         <source>Periods</source>
         <target>Périodes</target>
       </trans-unit>

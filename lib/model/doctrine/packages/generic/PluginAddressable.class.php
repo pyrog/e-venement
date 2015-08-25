@@ -49,7 +49,7 @@ abstract class PluginAddressable extends BaseAddressable
       $this->vcard_uid = NULL;
     
     // auto-adding user's auto-groups
-    if ( sfContext::hasInstance() && $this->hasRelation('Groups') )
+    if ( sfContext::hasInstance() && $this->hasRelation('Groups') && sfContext::getInstance()->getUser()->getGuardUser() )
     foreach ( sfContext::getInstance()->getUser()->getGuardUser()->AutoGroups as $group )
       $this->Groups[] = $group;
     

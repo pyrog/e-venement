@@ -26,6 +26,7 @@
             <ul class="third">
               <?php if ( $sf_user->hasCredential('pr-card-admin') ): ?>
               <li><a href="<?php echo cross_app_url_for('rp','member_card_type') ?>"><?php echo __('Types',array(),'menu') ?></a></li>
+              <li><a href="<?php echo cross_app_url_for('rp','member_card_alerts/index') ?>"><?php echo __('Alerts',array(),'menu') ?></a></li>
               <?php endif ?>
               <?php if ( $sf_user->hasCredential('tck-admin-member-cards') ): ?>
               <li><a href="<?php echo cross_app_url_for('tck','@member_card_price_model') ?>"><?php echo __("Prices association",array(),'menu') ?></a></li>

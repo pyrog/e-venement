@@ -5,6 +5,34 @@
     <header/>
     <body>
       <trans-unit>
+        <source>##EXPIRATION## is replaced by the expiration date</source>
+        <target>##EXPIRATION## est remplacé par la date d'expiration</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Email sender</source>
+        <target>Expéditeur du courriel</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Alerts for member cards expirations</source>
+        <target>Alertes liées aux expirations de cartes d'abo.</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Enabled</source>
+        <target>Actif</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Alert after expiration</source>
+        <target>Alerte après expiration</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Alert before expiration</source>
+        <target>Alerte avant expiration</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Days</source>
+        <target>Jours</target>
+      </trans-unit>
+      <trans-unit>
         <source>Checks</source>
         <target>Vérifications</target>
       </trans-unit>

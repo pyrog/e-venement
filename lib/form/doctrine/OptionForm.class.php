@@ -11,6 +11,7 @@
 class OptionForm extends sfForm
 {
   protected $model = NULL;
+  protected $db_type = NULL;
   public $widgets = array();
   
   public function configure()
@@ -35,6 +36,8 @@ class OptionForm extends sfForm
       $q->where('sf_guard_user_id = ?',$user_id);
     else
       $q->where('sf_guard_user_id IS NULL');
+    if ( $this->db_type )
+      $q->andWhere('type = ?', $this->db_type);
     $q->execute();
     
     $cpt = 0;
@@ -49,6 +52,8 @@ class OptionForm extends sfForm
         $opt->sf_guard_user_id = $user_id;
         $opt->name  = $name;
         $opt->value = $value;
+        if ( $this->db_type )
+          $opt->type = $this->db_type;
         $opt->save();
         $cpt++;
       }

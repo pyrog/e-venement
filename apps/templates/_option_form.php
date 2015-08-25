@@ -10,15 +10,20 @@
       <?php endif ?>
       <?php foreach ( $fieldset as $name => $value ): ?>
       <div class="line ui-corner-all sf_admin_form_row sf_admin_field_<?php echo $form[$name]->getName() ?> <?php echo $form[$name]->hasError() ? 'ui-state-error' : '' ?>">
-        <?php if ( is_array($value) ): ?><span class="helper">&nbsp;<?php echo $value['helper'] ?></span><?php endif ?>
-        <?php echo $form[$name] ?>
         <?php echo $form[$name]->renderLabel() ?>
+        <?php echo $form[$name] ?>
         <?php if ($form[$name]->hasError()): ?>
         <div class="errors">
           <span class="ui-icon ui-icon-alert floatleft"></span>
           <?php echo $form[$name]->renderError() ?>
         </div>
         <?php endif; ?>
+        <?php if ( is_array($value) && isset($value['helper']) && $value['helper'] ): ?>
+        <div class="help">
+          <span class="ui-icon ui-icon-help floatleft"></span>
+          <?php echo $value['helper'] ?>
+        </div>
+        <?php endif ?>
         <div style="clear: both"></div>
       </div>
       <?php endforeach ?>

@@ -124,5 +124,64 @@ class rpConfiguration extends sfApplicationConfiguration
       $stmt->execute();
       $this->stdout($section, "[OK] indexes removed", 'INFO');
     });
+    
+    // Alerts related to MemberCards expiration
+    $this->addGarbageCollector('mc-alerts', function(){
+      sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date', 'CrossAppLink'));
+      $section = 'MC expiration';
+      $nb = 0;
+      
+      $options = OptionMCForm::getDBOptions();
+      if ( !$options['enabled'] || !$options['email_from'] )
+      {
+        $this->stdout($section, 'This feature is currently disabled...', 'COMMAND');
+        return;
+      }
+      
+      $file = sfConfig::get('sf_app_cache_dir').'/mc_expire.emails_sent.touch';
+      if ( file_exists($file) && filemtime($file) + 24*60*60 > time() )
+      {
+        $this->stdout($section, 'The emails have been sent less than 24 hours ago', 'COMMAND');
+        return;
+      }
+      touch($file);
+      
+      $mcs = new Doctrine_Collection('MemberCard');
+      
+      $this->stdout($section, 'Looking for member cards that are going to expire...', 'COMMAND');
+      $q = Doctrine::getTable('MemberCard')->createQuery('mc')
+        ->leftJoin('mc.Contact c')
+        ->andWhere('mc.expire_at <= ?', date('Y-m-d', strtotime($options['delay_before'].' days')))
+        ->andWhere('mc.expire_at >  ?', date('Y-m-d', strtotime(($options['delay_before']-1).' days')))
+        ->andWhere('(SELECT COUNT(mmc.id) FROM MemberCard mmc WHERE mmc.member_card_type_id = mc.member_card_type_id AND mc.contact_id = mmc.contact_id AND mmc.expire_at > mc.expire_at) = 0')
+      ;
+      $mcs->merge($q->execute());
+      
+      $this->stdout($section, 'Looking for member cards that have just expired...', 'COMMAND');
+      $q = Doctrine::getTable('MemberCard')->createQuery('mc')
+        ->leftJoin('mc.Contact c')
+        ->andWhere('mc.expire_at >= ?', date('Y-m-d', strtotime($options['delay_after'].' days')))
+        ->andWhere('mc.expire_at <  ?', date('Y-m-d', strtotime(($options['delay_after']+1).' days')))
+        ->andWhere('(SELECT COUNT(mmc.id) FROM MemberCard mmc WHERE mmc.member_card_type_id = mc.member_card_type_id AND mc.contact_id = mmc.contact_id AND mmc.expire_at > mc.expire_at) = 0')
+      ;
+      $mcs->merge($q->execute());
+      
+      
+      $nb = 0;
+      foreach ( $mcs as $mc )
+      {
+        $email = new Email;
+        $email->field_from = $options['email_from'];
+        $email->field_subject = $options['email_subject'];
+        $email->content = str_replace('##EXPIRATION##', format_date($mc->expire_at), $options['email_content']);
+        $email->Contacts[] = $mc->Contact;
+        $email->isATest(false);
+        $email->save();
+        $nb++;
+        break;
+      }
+      
+      $this->stdout($section, "[OK] $nb emails sent", 'INFO');
+    });
   }
 }
