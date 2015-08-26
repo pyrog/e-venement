@@ -99,7 +99,7 @@ Attachment:
     Email:
       foreignAlias: Attachments
       onDelete: CASCADE
-EmailExternalLink:
+EmailLink:
   package: email
   actAs:
     Timestampable: ~
