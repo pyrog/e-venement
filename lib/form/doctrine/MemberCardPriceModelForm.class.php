@@ -26,5 +26,34 @@ class MemberCardPriceModelForm extends BaseMemberCardPriceModelForm
     $this->widgetSchema   ['event_id']->setOption('order_by',array('translation.name',''));
     $this->widgetSchema   ['event_id']->setOption('query',$q = Doctrine::getTable('Event')->createQuery('e')->andWhereIn('e.meta_event_id',array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials())));
     $this->validatorSchema['event_id']->setOption('query',$q);
+    
+    if ( $this->object->isNew() )
+    {
+      $this->widgetSchema   ['event_id']->setOption('multiple', true)
+        ->setOption('add_empty', false);
+      $this->validatorSchema['event_id']->setOption('multiple', true);
+    }
+  }
+  
+  public function doSave($con = null)
+  {
+    if (null === $con)
+      $con = $this->getConnection();
+    
+    if ( is_array($this->values['event_id']) )
+    foreach ( $this->values['event_id'] as $event_id )
+    {
+      $last = $this->object;
+      $this->values['event_id'] = $event_id;
+      $this->updateObject();
+      $this->getObject()->save($con);
+    
+      // embedded forms
+      $this->saveEmbeddedForms($con);
+      
+      $class = $this->getModelName();
+      $this->object = new $class;
+    }
+    $this->object = $last;
   }
 }
