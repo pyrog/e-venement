@@ -28,6 +28,7 @@
   $matches = array(
     'id',
     'etablissement1',
+    'titre',
     'prenom',
     'nom',
     'adresse1',
@@ -88,6 +89,7 @@
     if ( $entry['nom'] )
     {
       $contact = new Contact;
+      $contact->title = $entry['titre'];
       $contact->name = $entry['nom'];
       $contact->firstname = $entry['prenom'];
       $contact->description = $entry['id'];
