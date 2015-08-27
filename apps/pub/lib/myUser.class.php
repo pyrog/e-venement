@@ -119,7 +119,7 @@ class myUser extends pubUser
     
     // controlling if there is any max_per_event_per_contact conflict
     $vel['max_per_event_per_contact'] = isset($vel['max_per_event_per_contact']) ? $vel['max_per_event_per_contact'] : false;
-    if ( $vel['max_per_event_per_contact'] > 0 && $event->getReturnValue() )
+    if ( $vel['max_per_event_per_contact'] && $vel['max_per_event_per_contact'] > 0 && $event->getReturnValue() )
     {
       $last_conflict = NULL;
       foreach ( $this->getContact()->Transactions as $transaction )
@@ -151,7 +151,14 @@ class myUser extends pubUser
     if ( ($delay = sfConfig::get('app_tickets_no_conflict', false)) && $event->getReturnValue() )
     {
       $manifs = array();
-      foreach ( $this->getContact()->Transactions as $transaction )
+      if ( $this->getTransaction()->contact_id )
+        $transactions = $this->getContact()->Transactions;
+      else
+      {
+        $transactions = new Doctrine_Collection('Transaction');
+        $transactions[] = $this->getTransaction();
+      }
+      foreach ( $transactions as $transaction )
       foreach ( $transaction->Tickets as $ticket )
       if (( $ticket->transaction_id == $this->getTransaction()->id || $ticket->printed_at || $ticket->integrated_at || $transaction->Order->count() > 0 )
         && !$ticket->hasBeenCancelled()
@@ -164,9 +171,8 @@ class myUser extends pubUser
       {
         $start = strtotime('- '.$delay, strtotime($ticket->Manifestation->happens_at));
         $stop  = strtotime('+ '.$delay, strtotime($ticket->Manifestation->ends_at));
-        if ( strtotime($manifestation->happens_at) >= $start && strtotime($manifestation->happens_at) <= $stop
-          || strtotime($manifestation->ends_at)    >= $start && strtotime($manifestation->ends_at)    <= $stop
-          || strtotime($manifestation->happens_at) <= $start && strtotime($manifestation->ends_at)    >= $stop )
+        if ( strtotime($manifestation->happens_at) <= $stop
+          && strtotime($manifestation->ends_at) >= $start )
         {
           sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
           if ( $ticket->transaction_id == $this->getTransaction()->id )

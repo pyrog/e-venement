@@ -71,7 +71,11 @@ class ticketActions extends sfActions
     
     foreach ( $prices as $gid => $gauge )
     {
-      $manifestation = Doctrine::getTable('Manifestation')->createQuery('m', true)->leftJoin('m.Gauges g')->andWhere('g.id = ?', $gid)->fetchOne();
+      $manifestation = Doctrine::getTable('Manifestation')->createQuery('m', true)
+        ->leftJoin('m.Gauges g')
+        ->andWhere('g.id = ?', $gid)
+        ->fetchOne()
+      ;
       $event = new sfEvent($this, 'pub.before_adding_tickets', array('manifestation' => $manifestation));
       
       foreach ( $gauge as $pid => $price )

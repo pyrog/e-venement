@@ -19,7 +19,7 @@ $(document).ready(function(){
   LI.pubPictureRowspan();
   
   // Making the entire line of a Manifestation clickable
-  console.error($('.mod-manifestation.action-index .sf_admin_list .sf_admin_row > *:not(.sf_admin_list_td_list_picture)'));
+  if ( $('.mod-manifestation.action-index .sf_admin_list .sf_admin_list_td_list_tickets').length == 0 ) // if not in 'display tickets in the list of manifestations
   $('.mod-manifestation.action-index .sf_admin_list .sf_admin_row > *:not(.sf_admin_list_td_list_picture)').click(function(){
     window.location = $(this).closest('tr').find('.sf_admin_list_td_formatted_date a').prop('href');
     return false;
@@ -207,6 +207,9 @@ $(document).ready(function(){
   });
   LI.manifCalculateTotal();
   $('.sf_admin_list_td_list_tickets form').submit(function(){
+    if ( location.hash == '#debug' )
+      return true;
+    
     $.ajax({
       type: $(this).prop('method'),
       url: $(this).prop('action'),
