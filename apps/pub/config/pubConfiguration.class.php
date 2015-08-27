@@ -165,6 +165,7 @@ class pubConfiguration extends sfApplicationConfiguration
       
       // then affects the tickets if only one choice is possible
       foreach ( $gauges as $gauge )
+      if ( !$mcp->event_id || $mcp->event_id == $gauge->Manifestation->event_id )
       {
         $ticket = new Ticket;
         $ticket->Gauge = $gauge;

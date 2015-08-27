@@ -54,7 +54,10 @@ class cardActions extends sfActions
         $this->getContext()->getConfiguration()->addMemberCard($this->getUser()->getTransaction(), $id);
     }
     
-    $this->redirect('cart/show');
+    if ( $cpt > 0 )
+      $this->redirect('cart/show');
+    if ( $cpt == 0 )
+      $this->redirect('homepage');
   }
   
   protected function isAuthenticated()
