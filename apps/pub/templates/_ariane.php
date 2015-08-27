@@ -61,7 +61,7 @@
   <div class="cart <?php if ( $active == $nb ) echo 'active'; else echo $active < $nb ? 'future' : 'past' ?> access">
     <ul>
       <li><?php echo link_to(__('Cart'),'cart/show') ?></li>
-      <?php if ( count($cultures = pubConfiguration::getText('project_internals_cultures',array('fr' => 'Français'))) > 1 ): ?>
+      <?php if ( count($cultures = sfConfig::get('project_internals_cultures',array('fr' => 'Français'))) > 1 ): ?>
       <?php endif ?>
     </ul>
   </div>
