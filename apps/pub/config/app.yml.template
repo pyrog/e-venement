@@ -53,6 +53,7 @@ all:
   #member_cards: # this feature allows auto-creation of passes if some prerequisites match or deletion of passes if conditions are not matched
   #  trigger_after_manifestations: 3 # does not count tickets whose price are linked to member cards
   #  type_id: 1 # goes w/ the previous option
+  #  auto_add_tickets: false
   #  max_per_transaction: 3 # 3 by default
   #  title: Member cards    # tweak this for the ariane widget
   #  show_expire_at: true
