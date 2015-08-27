@@ -129,4 +129,36 @@ class eventActions extends autoEventActions
       $this->entry->save();
     }
   }
+
+  protected function getSort()
+  {
+    if (!is_null($sort = $this->getUser()->getAttribute('grp.event.sort', null, 'admin_module')))
+    {
+      return $sort;
+    }
+
+    $this->setSort($this->configuration->getDefaultSort());
+
+    return $this->getUser()->getAttribute('grp.event.sort', null, 'admin_module');
+  }
+
+  protected function setSort(array $sort)
+  {
+    if (!is_null($sort[0]) && is_null($sort[1]))
+    {
+      $sort[1] = 'asc';
+    }
+
+    $this->getUser()->setAttribute('grp.event.sort', $sort, 'admin_module');
+  }
+
+  protected function getFilters()
+  {
+    return $this->getUser()->getAttribute('grp.event.filters', $this->configuration->getFilterDefaults(), 'admin_module');
+  }
+
+  protected function setFilters(array $filters)
+  {
+    return $this->getUser()->setAttribute('grp.event.filters', $filters, 'admin_module');
+  }
 }
