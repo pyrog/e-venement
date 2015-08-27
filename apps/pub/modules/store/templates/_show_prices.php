@@ -95,13 +95,6 @@
     <td class="quantity"></td>
     <td class="total"><?php echo format_currency(0,'€') ?></td>
   </tr>
-  <tr>
-    <td colspan="4" class="submit">
-      <form method="get" action="<?php echo url_for('cart/show') ?>" class="cart">
-        <input type="submit" name="submit" value="<?php echo __('Cart') ?>" />
-      </form>
-    </td>
-  </td>
 </tfoot>
 <thead>
   <tr>
