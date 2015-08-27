@@ -21,7 +21,7 @@ class ContactPublicForm extends ContactForm
         'YOBs_list', 'groups_list', 'emails_list', 'family_contact', 'relations_list',
         'organism_category_id', 'description', 'password', 'email_no_newsletter', 'email_npai', 'npai', 'flash_on_control',
         'last_accessor_id', 'slug', 'confirmed', 'version', 'culture', 'picture_id',
-        'shortname', 'involved_in_list',
+        'shortname', 'involved_in_list', automatic,
         'familial_quotient_id', 'type_of_resources_id', 'familial_situation_id') as $field )
       if ( isset($this->widgetSchema[$field]) )
       unset($this->widgetSchema[$field], $this->validatorSchema[$field]);
