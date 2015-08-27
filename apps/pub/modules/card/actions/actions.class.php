@@ -17,7 +17,7 @@ class cardActions extends sfActions
   }
   public function executeIndex(sfWebRequest $request)
   {
-    $this->redirectIfNotAuthenticated();
+    //$this->redirectIfNotAuthenticated();
     
     $this->member_card_types = Doctrine::getTable('MemberCardType')->createQuery('mct')
       ->leftJoin('mct.Users u')
@@ -52,7 +52,7 @@ class cardActions extends sfActions
   
   public function executeOrder(sfWebRequest $request)
   {
-    $this->redirectIfNotAuthenticated();
+    //$this->redirectIfNotAuthenticated();
     
     // empty'ing member cards from transaction
     $this->getUser()->getTransaction()->MemberCards->delete();
