@@ -108,7 +108,73 @@ class pubConfiguration extends sfApplicationConfiguration
       throw new liEvenementException('Error when adding member cards.');
     
     $transaction->MemberCards[] = $mcf->getObject();
-    return $mcf->save();
+    $mcf->save();
+    $mcf->getObject()->BoughtProducts[0]->integrated_at = NULL;
+    $mcf->getObject()->BoughtProducts[0]->save();
+    
+    // stop here if nothing automatic is needed
+    if ( !sfConfig::get('app_member_cards_auto_add_tickets', false) )
+      return;
+    
+    // adding the prices automatically as far as it is possible, if the app_member_cards_auto_add_tickets is set to true
+    $mids = array();
+    foreach ( $mcf->getObject()->MemberCardPrices as $mcp )
+    {
+      $q = Doctrine::getTable('Gauge')->createQuery('g')
+        ->leftJoin('g.Manifestation m')
+        ->leftJoin('m.Event e')
+        ->andWhere('g.online = ?', true)
+        ->andWhere('m.happens_at > ?', date('Y-m-d H:i:s', strtotime(sfConfig::get('app_tickets_close_before', '24 hours'))))
+        ->orderBy('m.happens_at ASC, g.value DESC')
+        ->leftJoin('g.Prices gp WITH gp.id = ?', $mcp->price_id)
+        ->leftJoin('m.Prices mp WITH mp.id = ?', $mcp->price_id)
+        ->andWhere('mp.id IS NOT NULL OR gp.id IS NOT NULL')
+        ->andWhereNotIn('g.manifestation_id', $mids)
+        ->andWhereIn('g.workspace_id', array_keys(sfContext::getInstance()->getUser()->getWorkspacesCredentials()))
+        ->andWhereIn('e.meta_event_id', array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials()))
+        ->leftJoin('gp.Users gpu WITH gpu.id = ?', sfContext::getInstance()->getUser()->getId())
+        ->leftJoin('mp.Users mpu WITH gpu.id = ?', sfContext::getInstance()->getUser()->getId())
+      ;
+      
+      // if the app_tickets_no_conflict is set
+      if ( $delay = sfConfig::get('app_tickets_no_conflict', false) )
+      {
+        // first pass to create the repository of gauges to remove
+        $to_remove = new Doctrine_Collection('Gauge');
+        foreach ( $gauges = $q->execute() as $i => $gauge )
+        {
+          // gauge full
+          if ( $gauge->free <= 0 )
+          {
+            unset($gauges[$i]);
+            continue;
+          }
+          
+          // possible conflict to choose a manifestation automatically
+          foreach ( $gauges as $j => $g )
+          if ( $gauge->manifestation_id != $g->manifestation_id
+            && strtotime('-'.$delay, strtotime($gauge->Manifestation->happens_at)) <= strtotime($g->Manifestation->ends_at)
+            && strtotime($delay, strtotime($gauge->Manifestation->ends_at)) >= strtotime($g->Manifestation->happens_at) )
+            $to_remove[$i] = $gauge;
+        }
+        
+        // second pass to eliminate dates w/ choices
+        foreach ( $to_remove as $i => $gauge )
+          unset($gauges[$i]);
+      }
+      
+      // then affects the tickets if only one choice is possible
+      foreach ( $gauges as $gauge )
+      {
+        $ticket = new Ticket;
+        $ticket->Gauge = $gauge;
+        $ticket->price_id = $mcp->price_id;
+        $ticket->transaction_id = $transaction->id;
+        $ticket->save();
+        $mids[] = $gauge->manifestation_id;
+        break;
+      }
+    }
   }
   
   public function recordWebOrigin(sfEvent $event)
