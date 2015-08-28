@@ -41,7 +41,8 @@ class cardActions extends sfActions
     //$this->redirectIfNotAuthenticated();
     
     // empty'ing member cards from transaction
-    $this->getUser()->getTransaction()->MemberCards->delete();
+    if ( !$request->hasAttribute('append') )
+      $this->getUser()->getTransaction()->MemberCards->delete();
     
     $order = $request->getParameter('member_card_type');
     $cpt = 0;

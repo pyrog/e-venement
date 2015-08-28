@@ -109,6 +109,10 @@
         <target>Ce produit deviendra le prix intrinsèque de ces cartes d'abo</target>
       </trans-unit>
       <trans-unit>
+        <source>Public URL that adds automatically a member card of this type into the cart</source>
+        <target>URL publique ajoutant automatiquement une carte d'abo de ce type dans le panier</target>
+      </trans-unit>
+      <trans-unit>
         <source>Global price</source>
         <target>Prix global</target>
       </trans-unit>
