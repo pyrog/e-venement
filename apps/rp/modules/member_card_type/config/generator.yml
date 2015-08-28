@@ -30,7 +30,7 @@ generator:
       filter:  ~
       form:
         display:
-          NONE: [name, description, users_list, nb_tickets_mini]
+          NONE: [name, description, users_list, nb_tickets_mini, _show_url_public]
           Money: [value, product_declination_id, price_id]
       edit:    ~
       new:     ~
