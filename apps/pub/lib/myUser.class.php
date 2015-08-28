@@ -71,9 +71,10 @@ class myUser extends pubUser
     
     // detecting if a ticket has to be affected to the current contact
     $ticket = NULL;
+    if ( $this->getTransaction()->contact_id )
     foreach ( $this->getTransaction()->Tickets as $tck )
     {
-      if ( $tck->contact_id == $this->getTransaction()->contact_id )
+      if ( intval($tck->contact_id).'' == ''.intval($this->getTransaction()->contact_id) )
       {
         $ticket = NULL;
         break;
@@ -319,10 +320,10 @@ class myUser extends pubUser
     
     return $this->getAttribute('transaction_id');
   }
-  public function getTransaction()
+  public function getTransaction($reset = false)
   {
     $tid = $this->getTransactionId();
-    if ( $this->transaction instanceof Transaction )
+    if ( !$reset && $this->transaction instanceof Transaction )
       return $this->transaction;
       
     $q = Doctrine::getTable('Transaction')->createQuery('t')

@@ -1,5 +1,10 @@
 <div id="actions">
 <?php if ( $transaction->id == $sf_user->getTransactionId() ): ?>
+<?php if ( sfConfig::get('app_member_cards_complete_your_passes', false) && $sf_user->getTransaction()->MemberCards->count() ): ?>
+<div class="actions complete_mc">
+<?php echo link_to(__('Complete your passes'),'manifestation/index?mc_pending=') ?>
+</div>
+<?php endif ?>
 <div class="actions index">
 <?php echo link_to(__('Continue shopping'),'@homepage') ?>
 </div>
@@ -7,7 +12,7 @@
 <?php echo link_to(__('Checkout'),'cart/register') ?>
 </div>
 <div class="actions empty">
-<?php echo link_to(__('Empty your basket'),'cart/empty') ?>
+<?php echo link_to(__('Empty your cart'),'cart/empty') ?>
 </div>
 <?php else: ?>
 <div class="actions register">

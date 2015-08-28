@@ -16,4 +16,16 @@ class MemberCardType extends PluginMemberCardType
   {
     return trim(trim($this->description) ? $this->description : $this->name);
   }
+  
+  public function getRealValue()
+  {
+    if ( !$this->product_declination_id )
+      return $this->value;
+    
+    $val = 0;
+    foreach ( $this->ProductDeclination->Product->PriceProducts as $pp )
+    if ( $pp->price_id == $this->price_id )
+      $val = $pp->value;
+    return $this->value + $val;
+  }
 }

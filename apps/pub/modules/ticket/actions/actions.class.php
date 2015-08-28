@@ -15,7 +15,7 @@ class ticketActions extends sfActions
     $this->dispatcher->notify(new sfEvent($this, 'pub.pre_execute', array('configuration' => $this->configuration)));
     parent::preExecute();
   }
-
+  
   public function executeGetOrphans(sfWebRequest $request)
   {
     $options = array();
@@ -59,6 +59,36 @@ class ticketActions extends sfActions
   public function executeModNamedTickets(sfWebRequest $request)
   {
     return require(dirname(__FILE__).'/mod-named-tickets.php');
+  }
+  public function executeAutoAdd(sfWebRequest $request)
+  {
+    foreach ( $request->getParameter('tickets', array()) as $ticket )
+    {
+      $q = Doctrine::getTable('Gauge')->createQuery('g')
+        ->leftJoin('g.Manifestation m')
+        ->andWhere('m.event_id = ?', $ticket['event_id'])
+        ->orderBy('m.happens_at ASC, gauge.value DESC');
+      $gauge = false;
+      foreach ( $q->execute() as $gauge )
+      if ( $gauge->free >= $ticket['quantity'] )
+        break;
+      
+      if ( !$gauge )
+        return sfView::NONE;
+      
+      $tickets = array();
+      $tickets[] = array(
+        'gauge_id' => $gauge->id,
+        'price_id' => $ticket['price_id'],
+        'action'   => 'add',
+      );
+      
+      $request->setParameter('tickets', $tickets);
+      $request->setParameter('manifestation_id', $gauge->manifestation_id);
+      $this->executeModTickets($request);
+      $this->getUser()->getTransaction(true);
+    }
+    return sfView::NONE;
   }
   
   // used only for manifestations list's inline-ticketting

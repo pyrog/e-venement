@@ -26,6 +26,9 @@ class manifestationActions extends autoManifestationActions
   
   public function executeIndex(sfWebRequest $request)
   {
+    if ( $request->hasParameter('mc_pending') )
+      $this->setFilters(array());
+    
     if ( $this->getPager()->getQuery()->count() == 1 )
     {
       $manifestation = $this->getPager()->getQuery()->select('m.id')->fetchOne();
@@ -43,8 +46,32 @@ class manifestationActions extends autoManifestationActions
       $event = Doctrine::getTable('Event')->createQuery('e')->andWhere('e.id = ?', $filters['event_id'])->fetchOne();
       sfConfig::set('pub.meta_event.slug', $event->MetaEvent->slug);
     }
-    
+
     parent::executeIndex($request);
+
+    // focusing on member card pending tickets
+    $transaction = $this->getUser()->getTransaction();
+    if ( $request->hasParameter('mc_pending') && $transaction->MemberCards->count() > 0 )
+    {
+      $events = array();
+      foreach ( $transaction->MemberCards as $mc )
+      foreach ( $mc->MemberCardPrices as $mcp )
+      {
+        $in = false;
+        foreach ( $transaction->Tickets as $ticket )
+        if ( $mcp->price_id == $ticket->price_id
+          && $mcp->event_id == $ticket->Manifestation->event_id )
+          $in = true;
+        if ( !$in )
+          $events[] = $mcp->event_id;
+      }
+      
+      $this->pager->getQuery()
+        ->andWhereIn('e.id', $events);
+      $vel = sfConfig::get('app_tickets_vel', array());
+      $vel['display_tickets_in_manifestations_list'] = true;
+      sfConfig::set('app_tickets_vel', $vel);
+    }
   }
   public function executeDel(sfWebRequest $request)
   {

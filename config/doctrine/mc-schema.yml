@@ -164,7 +164,7 @@ MemberCardPriceModel:
       type: integer
       notnull: true
     event_id: integer
-    automatic: 
+    autoadd: 
       type: boolean
       default: false
       notnull: true
