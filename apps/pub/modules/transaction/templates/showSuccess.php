@@ -84,7 +84,7 @@ $(document).ready(function(){
   <td class="manifestation"><span class="mct-<?php echo $mc->member_card_type_id ?>"><?php echo sfConfig::get('app_member_cards_show_expire_at', true) ? format_date($mc->expire_at,'P') : '' ?></span></td>
   <td class="workspace"></td>
   <td class="tickets"><span data-mct-id="<?php echo $mc->member_card_type_id ?>" class="mct-<?php echo $mc->member_card_type_id ?>"><?php echo $mc->MemberCardType ?></span></td>
-  <?php $value = $mc->MemberCardType->value; foreach ( $mc->BoughtProducts as $bp ) $value += $bp->value; ?>
+  <?php $value = $mc->MemberCardType->value; foreach ( $mc->BoughtProducts as $bp ) $value += $bp->value + $bp->shipping_fees; ?>
   <?php $total['qty']++; $total['value'] += $value ?>
   <?php if ( !sfConfig::get('app_options_synthetic_plans', false) ): ?>
   <td class="value"><?php echo format_currency($value,'€') ?></td>

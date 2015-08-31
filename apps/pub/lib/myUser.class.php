@@ -146,6 +146,8 @@ class myUser extends pubUser
       }
     }
     
+    // checks member cards / prices linked to member cards
+    
     $event['max'] = min($max);
     
     // controlling if there is any time conflict

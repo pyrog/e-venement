@@ -26,6 +26,7 @@
 <?php use_helper('Number') ?>
 <ul><?php foreach ( $manifestation->Gauges as $gauge ): ?>
   <?php
+    // max by gauge
     $gauge = Doctrine::getTable('Gauge')->find($gauge->id);
     $max = $gauge->value - $gauge->printed - $gauge->ordered - (!(isset($vel['no_online_limit_from_manifestations']) && $vel['no_online_limit_from_manifestations']) ? $manifestation->online_limit : 0) - (sfConfig::get('project_tickets_count_demands',false) ? $gauge->asked : 0);
     $max = $max > $vel['max_per_manifestation'] ? $vel['max_per_manifestation'] : $max;
@@ -64,6 +65,21 @@
       }
     ?>
     <ul><?php foreach ( $prices as $id => $price ): ?>
+      <?php
+        if ( $price->Price->member_card_linked )
+        {
+          $mc_max = 0;
+          $mcs = new Doctrine_Collection('MemberCard');
+          if ( $sf_user->getTransaction()->contact_id )
+            $mcs->merge($sf_user->getContact()->MemberCards->getRawValue());
+          $mcs->merge($sf_user->getTransaction()->MemberCards->getRawValue());
+          foreach ( $mcs as $mc )
+          foreach ( $mc->MemberCardPrices as $mcp )
+          if ( $mcp->price_id == $id && $mcp->event_id == $manifestation->event_id )
+            $mc_max++;
+        }
+        $max = $max > $mc_max ? $mc_max : $max;
+      ?>
       <?php if ( ! $price instanceof Doctrine_Record ) $price = $price->getRawValue(); ?>
       <?php if ( in_array($gauge->workspace_id, $price->Price->Workspaces->getPrimaryKeys()) ): ?>
       <?php
