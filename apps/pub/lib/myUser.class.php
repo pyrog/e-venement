@@ -169,6 +169,7 @@ class myUser extends pubUser
         $manifs[$ticket->manifestation_id] = $ticket;
       
       foreach ( $manifs as $ticket )
+      if ( $manifestation->Event->meta_event_id == $ticket->Manifestation->Event->meta_event_id )
       {
         $start = strtotime('- '.$delay, strtotime($ticket->Manifestation->happens_at));
         $stop  = strtotime('+ '.$delay, strtotime($ticket->Manifestation->ends_at));

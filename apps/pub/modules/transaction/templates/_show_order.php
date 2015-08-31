@@ -1,8 +1,9 @@
 <div id="actions">
 <?php if ( $transaction->id == $sf_user->getTransactionId() ): ?>
-<?php if ( sfConfig::get('app_member_cards_complete_your_passes', false) && $sf_user->getTransaction()->MemberCards->count() ): ?>
+<?php if ( ($txt = pubConfiguration::getText('app_member_cards_complete_your_passes', false)) && $sf_user->getTransaction()->MemberCards->count() ): ?>
+<?php if ( $txt === true ) $txt = __('Complete your passes'); ?>
 <div class="actions complete_mc">
-<?php echo link_to(__('Complete your passes'),'manifestation/index?mc_pending=') ?>
+<?php echo link_to($txt,'manifestation/index?mc_pending=') ?>
 </div>
 <?php endif ?>
 <div class="actions index">

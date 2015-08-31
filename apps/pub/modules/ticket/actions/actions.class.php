@@ -151,7 +151,7 @@ class ticketActions extends sfActions
           $cpt += $price['quantity'];
         }
         else
-          error_log($form->getErrorSchema());
+          error_log('ticket/commit: '.$form->getErrorSchema());
       }
     }
     

@@ -119,7 +119,7 @@ abstract class PluginTicket extends BaseTicket
       throw new liEvenementException('You tried to save a ticket with a price that you cannot access (user: #'.sfContext::getInstance()->getUser()->getId().', price: #'.$this->price_id.')');
     
     // the transaction's last update
-    $this->Transaction->updated_at = NULL;
+    //$this->Transaction->updated_at = NULL;
     
     // the holds: we can book a seated ticket within a hold only if its transaction is a HoldTransaction
     if ( $this->seat_id && $this->Seat instanceof Seat

@@ -197,6 +197,7 @@ class PricesPublicForm extends BaseFormDoctrine
       $ticket->price_id = $values['price_id'];
       $ticket->gauge_id = $values['gauge_id'];
       $ticket->Transaction = $this->object;
+      $this->object->Tickets[] = $ticket;
       $ticket->save();
     }
     

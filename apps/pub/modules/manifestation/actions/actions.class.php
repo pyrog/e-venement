@@ -55,16 +55,9 @@ class manifestationActions extends autoManifestationActions
     {
       $events = array();
       foreach ( $transaction->MemberCards as $mc )
-      foreach ( $mc->MemberCardPrices as $mcp )
-      {
-        $in = false;
-        foreach ( $transaction->Tickets as $ticket )
-        if ( $mcp->price_id == $ticket->price_id
-          && $mcp->event_id == $ticket->Manifestation->event_id )
-          $in = true;
-        if ( !$in )
-          $events[] = $mcp->event_id;
-      }
+      foreach ( $mc->MemberCardType->MemberCardPriceModels as $mcpm )
+      if ( !$mcpm->autoadd )
+        $events[] = $mcpm->event_id;
       
       $this->pager->getQuery()
         ->andWhereIn('e.id', $events);
@@ -76,7 +69,7 @@ class manifestationActions extends autoManifestationActions
   public function executeDel(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    $q = Doctrine::getTable('Tickets')->createQuery('tck')
+    $q = Doctrine::getTable('Ticket')->createQuery('tck')
       ->andWhere('tck.transaction_id = ?', $this->getUser()->getTransactionId())
       ->andWhere('tck.integrated_at IS NULL AND tck.printed_at IS NULL AND tck.cancelling IS NULL')
       ->andWhere('tck.gauge_id = ?', $request->getParameter('gauge_id',0))
