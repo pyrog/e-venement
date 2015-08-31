@@ -721,6 +721,10 @@
         <target>Liste des billets</target>
       </trans-unit>
       <trans-unit>
+        <source>List of pending tickets</source>
+        <target>Liste des billets en attente</target>
+      </trans-unit>
+      <trans-unit>
         <source>Associated prices still available</source>
         <target>Prix associés encore disponibles</target>
       </trans-unit>
