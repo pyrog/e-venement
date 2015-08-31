@@ -134,7 +134,7 @@ ul.no-bullet li.highlight { text-decoration: underline; }
 #command .manifestation .price_name, #command .manifestation h3, #command .manifestation h4 { display: none; }
 #command .manifestation select, #command .manifestation button, #command .manifestation input { font-size: 75%; }
 #command .manifestation .contact_firstname label, #command .manifestation .contact_name label { padding-top: 2px; }
-#command .member_cards .mod a { display: none; }
+#command .member_cards .mod a + a { display: none; }
 
 #details { padding-top: 1px; float: left; margin: 0 50px; }
 #details a, #details label { display: inline-block; }
@@ -213,8 +213,7 @@ ul.no-bullet li.highlight { text-decoration: underline; }
 .manifestation-ical img { max-width: 180px; }
 body.mod-contact.action-edit #cart-widget, body.mod-manifestation #cart-widget, body.mod-transaction.action-show #cart-widget { display: none; }
 .cart_bottom { margin-top: 1em; }
-.declination .cart { display: none; }
-.declination + .declination .cart { display: block; }
+.declinations .cart { text-align: right; padding-right: 6em; padding-top: 2em; }
 
 #event {
   font-weight: bold;
@@ -294,7 +293,7 @@ a.actions a:hover { color: #000; background: #F4F4F4; }
   background: linear-gradient(to bottom, #F4F4F4 0%,#E7E7E7 37%,#DBDBDB 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F4F4F4', endColorstr='#DBDBDB',GradientType=0 ); /* IE6-9 */
   background-image: url("../images/vel/breadcrumb.png");
-  background-origin: padding-box;
+  qsdbackground-origin: padding-box;
   background-position: right center;
   background-repeat: no-repeat;
   background-size: auto auto;
@@ -318,7 +317,7 @@ a.actions a:hover { color: #000; background: #F4F4F4; }
 .sf_admin_flashes .ui-icon { float: left; }
 .sf_admin_flashes div { padding: 5px 10px; min-width: 700px; }
 
-#translation  { display: block; height: 45px; overflow: hidden; text-align: right; }
+#translation  { display: block; /* height: 45px; */ overflow: hidden; text-align: right; }
 #translation p { display: inline-block; }
 #translation .i18n a { font-size: 0; display: inline-block; width: 16px; height: 11px; background: white url('../images/flags.png') no-repeat scroll 1px 1px; padding: 1px; border: 1px solid silver; }
 #translation .i18n .current { border: 1px solid gray; }
@@ -412,3 +411,6 @@ tfoot, thead { font-weight: bold; }
 .mod-contact.action-index .picture .webcam.small .start { display: inline; }
 .mod-contact.action-index .picture .webcam.small .live { display: none; }
 .mod-contact.action-index .picture .current img { width: calc(300px * 0.6); height: calc(200px * 0.6); }
+
+/* Member Cards */
+.mc_pending { text-align: center; }

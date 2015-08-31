@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Complete your passes</source>
+        <target>Compléter vos passes</target>
+      </trans-unit>
+      <trans-unit>
         <source>Your items were successfully removed from your cart.</source>
         <target>Vos articles ont été correctement retirés de votre panier.</target>
       </trans-unit>
@@ -765,7 +769,7 @@
         <target>Je passe commande</target>
       </trans-unit>
       <trans-unit>
-        <source>Empty your basket</source>
+        <source>Empty your cart</source>
         <target>Vider mon panier</target>
       </trans-unit>
       <trans-unit>

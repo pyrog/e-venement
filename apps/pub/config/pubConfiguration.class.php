@@ -108,7 +108,17 @@ class pubConfiguration extends sfApplicationConfiguration
       throw new liEvenementException('Error when adding member cards.');
     
     $transaction->MemberCards[] = $mcf->getObject();
-    return $mcf->save();
+    $mcf->save();
+    $mcf->getObject()->BoughtProducts[0]->integrated_at = NULL;
+    $mcf->getObject()->BoughtProducts[0]->save();
+    
+    $mcps = new Doctrine_Collection('MemberCardPriceModel');
+    foreach ( $mcf->getObject()->MemberCardType->MemberCardPriceModels as $mcpm )
+    if ( $mcpm->autoadd )
+      $mcps[] = $mcpm;
+    if ( sfContext::getInstance()->getUser()->getAttribute('pub.mc.autoadd_tickets', false) instanceof Doctrine_Collection )
+      $mcps->merge(sfContext::getInstance()->getUser()->getAttribute('pub.mc.autoadd_tickets'));
+    sfContext::getInstance()->getUser()->setAttribute('pub.mc.autoadd_tickets', $mcps);
   }
   
   public function recordWebOrigin(sfEvent $event)

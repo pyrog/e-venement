@@ -201,6 +201,7 @@
     {
       $ticket = new Ticket;
       $tickets[] = $ticket;
+      //$ticket->transaction_id = $this->getUser()->getTransactionId();
       $ticket->Transaction = $this->getUser()->getTransaction();
       $ticket->gauge_id = $tck['gauge_id'];
     }
@@ -250,6 +251,8 @@
     {
       if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
         throw $e;
+      else
+        error_log('An error occurred updating your cart, try again please... (executeModTickets) '.$e->getMessage());
       $this->json['error']['message'] = 'An error occurred updating your cart, try again please...';
       continue;
     }

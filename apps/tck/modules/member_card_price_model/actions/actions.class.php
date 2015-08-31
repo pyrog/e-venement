@@ -15,7 +15,9 @@ class member_card_price_modelActions extends autoMember_card_price_modelActions
 {
   public function executeCreate(sfWebRequest $request)
   {
-    try { parent::executeCreate($request); }
+    if ( sfConfig::get('sf_web_debug', false) )
+      parent::executeCreate($request);
+    else try { parent::executeCreate($request); }
     catch ( Doctrine_Connection_Exception $e ) {
       $this->getContext()->getConfiguration()->loadHelpers('I18N');
       $this->getUser()->setFlash('error', __('You might have tried to create a price association that was already existing. Please check the list, try some filters...'));

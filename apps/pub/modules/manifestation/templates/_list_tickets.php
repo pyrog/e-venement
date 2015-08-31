@@ -1,6 +1,20 @@
 <?php
-  // limitting the max quantity, especially for prices linked to member cards
   $vel = sfConfig::get('app_tickets_vel');
+  if (!( isset($vel['display_tickets_in_manifestations_list']) && $vel['display_tickets_in_manifestations_list'] ))
+    return;
+  
+  $limit_prices = array();
+  if ( $sf_request->hasParameter('mc_pending') )
+  {
+    foreach ( $sf_user->getTransaction()->MemberCards as $mc )
+    foreach ( $mc->MemberCardPrices as $mcp )
+    if ( $mcp->event_id == $manifestation->event_id )
+      $limit_prices[] = $mcp->price_id;
+  }
+?>
+
+<?php
+  // limitting the max quantity, especially for prices linked to member cards
   $vel['max_per_manifestation'] = isset($vel['max_per_manifestation']) ? $vel['max_per_manifestation'] : 9;
   if ( $manifestation->online_limit_per_transaction && $manifestation->online_limit_per_transaction < $vel['max_per_manifestation'] )
     $vel['max_per_manifestation'] = $manifestation->online_limit_per_transaction;
@@ -21,10 +35,12 @@
     <?php
       $prices = array();
       foreach ( $manifestation->PriceManifestations as $pm )
+      if ( !$limit_prices || in_array($pm->price_id, $limit_prices) )
       if ( $pm->Price->isAccessibleBy($sf_user->getRawValue()) )
         $prices[$pm->price_id] = $pm;
       if ( $gauge->getTable()->hasRelation('PriceGauges') )
       foreach ( $gauge->PriceGauges as $pg )
+      if ( !$limit_prices || in_array($pm->price_id, $limit_prices) )
       if ( $pg->Price->isAccessibleBy($sf_user->getRawValue()) )
         $prices[$pg->price_id] = $pg;
       
