@@ -67,7 +67,7 @@ $(document).ready(function(){
   // temporary flashes
   setTimeout(function(){
     $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  }, 7000);
+  }, 8500);
   
   // focus on registering forms
   $('.mod-cart.action-register #login, #contact-form').focusin(function(){
