@@ -69,9 +69,37 @@ class myUser extends pubUser
     if ( isset($event['direct_contact']) && $event['direct_contact'] === false )
       return;
     
-    // detecting if a ticket has to be affected to the current contact
-    $ticket = NULL;
+    // detecting if one ticket has to be affected to the current contact
     if ( $this->getTransaction()->contact_id )
+    {
+      $nocontactatall = true;
+      $manifs = array();
+      foreach ( $this->getTransaction()->Tickets as $ticket )
+      {
+        if ( !isset($manifs[$ticket->manifestation_id]) )
+          $manifs[$ticket->manifestation_id] = array();
+        $manifs[$ticket->manifestation_id][] = $ticket;
+      }
+      
+      foreach ( $manifs as $manifid => $tickets )
+      {
+        foreach ( $tickets as $ticket )
+        if ( $ticket->contact_id )
+        {
+          $nocontactatall = false;
+          break;
+        }
+        
+        if ( $nocontactatall )
+        {
+          $ticket->contact_id = $this->getTransaction()->contact_id;
+          if ( !$ticket->seat_id )
+            $ticket->Seat = NULL; // this is a hack to avoid errors after inserting a shadow seat
+          $ticket->save();
+        }
+      }
+    }
+    /*
     foreach ( $this->getTransaction()->Tickets as $tck )
     {
       if ( intval($tck->contact_id).'' == ''.intval($this->getTransaction()->contact_id) )
@@ -90,6 +118,7 @@ class myUser extends pubUser
       catch ( liOnlineSaleException $e ) {}
       $ticket->save();
     }
+    */
   }
   
   public function checkAvailability(sfEvent $event)
