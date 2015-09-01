@@ -259,7 +259,7 @@ LI.pubPictureRowspan = function()
   if ( $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row').length > 0 )
   {
     var pic = $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row .sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done)')[0];
-    $(pic).prop('rowspan', $(pic).closest('tbody').find('.sf_admin_list_td_list_picture [data-event-id="'+$(pic).find('[data-event-id]')+'"]').length);
+    $(pic).prop('rowspan',$(pic).closest('tbody').find('.sf_admin_list_td_list_picture [data-event-id="'+$(pic).find('[data-event-id]').attr('data-event-id')+'"]').length);
     $(pic).addClass('picture-done');
     $(pic).closest('tbody')
       .find('.sf_admin_list_td_list_picture:not(.picture-done) [data-event-id="'+$(pic).find('[data-event-id]').attr('data-event-id')+'"]')
