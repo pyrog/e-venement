@@ -70,7 +70,7 @@ $(document).ready(function(){
   <?php $last['gauge_id'] = $gauge->id; ?>
   <td class="mod"><?php if ( $current_transaction && $manif->IsNecessaryTo->count() == 0 ): ?>
     <?php echo link_to(__('modify'),'manifestation/show?id='.$manif->id) ?>
-    <?php echo link_to(__('delete'),'manifestation/del?gauge_id='.$gauge->id) ?>
+    <?php echo link_to(__('delete'),'manifestation/del?gauge_id='.$gauge->id.'&price_id='.$ticket->price_id) ?>
   <?php endif ?></td>
 </tr>
 <?php endforeach ?>
@@ -144,8 +144,8 @@ $(document).ready(function(){
       && $current_transaction
       && !$product->ticket_id
     ): ?>
-      <?php echo link_to(__('modify'),'store/edit?id='.$product->Declination->Product->id) ?>
-      <?php echo link_to(__('delete'),'store/del?id='.$product->Declination->Product->id) ?>
+      <?php echo link_to(__('modify'),'store/edit?id='.$product->Declination->product_id) ?>
+      <?php echo link_to(__('delete'),'store/del?id='.$product->product_declination_id) ?>
     <?php endif ?>
   </td>
 </tr>

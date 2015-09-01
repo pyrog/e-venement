@@ -74,6 +74,8 @@ class manifestationActions extends autoManifestationActions
       ->andWhere('tck.integrated_at IS NULL AND tck.printed_at IS NULL AND tck.cancelling IS NULL')
       ->andWhere('tck.gauge_id = ?', $request->getParameter('gauge_id',0))
     ;
+    if ( intval($request->getParameter('price_id',0)) > 0 )
+      $q->andWhere('tck.price_id = ?', intval($request->getParameter('price_id',0)));
     $this->forward404Unless($tickets = $q->execute());
     $tickets->delete();
     $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
