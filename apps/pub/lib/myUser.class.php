@@ -71,9 +71,10 @@ class myUser extends pubUser
     
     // detecting if a ticket has to be affected to the current contact
     $ticket = NULL;
+    if ( $this->getTransaction()->contact_id )
     foreach ( $this->getTransaction()->Tickets as $tck )
     {
-      if ( $tck->contact_id == $this->getTransaction()->contact_id )
+      if ( intval($tck->contact_id).'' == ''.intval($this->getTransaction()->contact_id) )
       {
         $ticket = NULL;
         break;
@@ -119,7 +120,7 @@ class myUser extends pubUser
     
     // controlling if there is any max_per_event_per_contact conflict
     $vel['max_per_event_per_contact'] = isset($vel['max_per_event_per_contact']) ? $vel['max_per_event_per_contact'] : false;
-    if ( $vel['max_per_event_per_contact'] > 0 && $event->getReturnValue() )
+    if ( $vel['max_per_event_per_contact'] && $vel['max_per_event_per_contact'] > 0 && $event->getReturnValue() )
     {
       $last_conflict = NULL;
       foreach ( $this->getContact()->Transactions as $transaction )
@@ -145,13 +146,22 @@ class myUser extends pubUser
       }
     }
     
+    // checks member cards / prices linked to member cards
+    
     $event['max'] = min($max);
     
     // controlling if there is any time conflict
     if ( ($delay = sfConfig::get('app_tickets_no_conflict', false)) && $event->getReturnValue() )
     {
       $manifs = array();
-      foreach ( $this->getContact()->Transactions as $transaction )
+      if ( $this->getTransaction()->contact_id )
+        $transactions = $this->getContact()->Transactions;
+      else
+      {
+        $transactions = new Doctrine_Collection('Transaction');
+        $transactions[] = $this->getTransaction();
+      }
+      foreach ( $transactions as $transaction )
       foreach ( $transaction->Tickets as $ticket )
       if (( $ticket->transaction_id == $this->getTransaction()->id || $ticket->printed_at || $ticket->integrated_at || $transaction->Order->count() > 0 )
         && !$ticket->hasBeenCancelled()
@@ -161,12 +171,12 @@ class myUser extends pubUser
         $manifs[$ticket->manifestation_id] = $ticket;
       
       foreach ( $manifs as $ticket )
+      if ( $manifestation->Event->meta_event_id == $ticket->Manifestation->Event->meta_event_id )
       {
         $start = strtotime('- '.$delay, strtotime($ticket->Manifestation->happens_at));
         $stop  = strtotime('+ '.$delay, strtotime($ticket->Manifestation->ends_at));
-        if ( strtotime($manifestation->happens_at) >= $start && strtotime($manifestation->happens_at) <= $stop
-          || strtotime($manifestation->ends_at)    >= $start && strtotime($manifestation->ends_at)    <= $stop
-          || strtotime($manifestation->happens_at) <= $start && strtotime($manifestation->ends_at)    >= $stop )
+        if ( strtotime($manifestation->happens_at) <= $stop
+          && strtotime($manifestation->ends_at) >= $start )
         {
           sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
           if ( $ticket->transaction_id == $this->getTransaction()->id )
@@ -313,10 +323,10 @@ class myUser extends pubUser
     
     return $this->getAttribute('transaction_id');
   }
-  public function getTransaction()
+  public function getTransaction($reset = false)
   {
     $tid = $this->getTransactionId();
-    if ( $this->transaction instanceof Transaction )
+    if ( !$reset && $this->transaction instanceof Transaction )
       return $this->transaction;
       
     $q = Doctrine::getTable('Transaction')->createQuery('t')

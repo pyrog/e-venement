@@ -2,7 +2,7 @@
 <?php
   $tickets = new Doctrine_Collection('Ticket');
   foreach ( $member_card->Tickets as $ticket )
-  if ( is_null($ticket->duplicating) && ($ticket->printed_at || $ticket->integrated_at || !is_null($ticket->cancelling)) )
+  if ( is_null($ticket->duplicating) && !($ticket->printed_at || $ticket->integrated_at || !is_null($ticket->cancelling)) )
     $tickets[] = $ticket;
 ?>
 <?php if ( $tickets->count() > 0 ): ?>

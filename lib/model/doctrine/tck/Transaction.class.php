@@ -209,7 +209,7 @@ class Transaction extends PluginTransaction
           && $mcp->price_id == $ticket->price_id
           && $mc->value >= $ticket->value )
         {
-          $mc->value -= $ticket->value;
+          //$mc->value -= $ticket->value;
           $price += $ticket->value;
           unset($mc->MemberCardPrices[$i]);
           break(2);
@@ -217,7 +217,7 @@ class Transaction extends PluginTransaction
       }
       else if ( $mcp->price_id == $ticket->price_id && $mc->value >= $ticket->value )
       {
-        $mc->value -= $ticket->value;
+        //$mc->value -= $ticket->value;
         $price += $ticket->value;
         unset($mc->MemberCardPrices[$i]);
         break(2);

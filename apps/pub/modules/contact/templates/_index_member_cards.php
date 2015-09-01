@@ -46,6 +46,7 @@
     <tbody>
       <?php $cpt = 0 ?>
       <?php foreach ( $member_cards as $mc ): ?>
+      <?php if ( $mc->active ): ?>
       <tr class="sf_admin_row <?php echo $cpt%2 == 0 ? '' : 'odd' ?>">
         <td class="sf_admin_text sf_admin_list_td_list_name"><?php echo $mc->MemberCardType->name ?></td>
         <td class="sf_admin_text sf_admin_list_td_list_value"><?php echo format_currency($mc->value, '€') ?></td>
@@ -88,6 +89,7 @@
         <td class="sf_admin_date sf_admin_list_td_list_transaction_id">#<?php echo link_to($mc->transaction_id, 'transaction/show?id='.$mc->transaction_id) ?></td>
       </tr>
       <?php $cpt++ ?>
+      <?php endif ?>
       <?php endforeach ?>
     </tbody>
   </table>

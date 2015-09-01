@@ -8,6 +8,7 @@ html body #content { margin-right: 0; }
 #sf_fieldset_spectators .ticket-ids { display: none; }
 #sf_fieldset_spectators tbody .transaction { text-align: right; }
 #sf_fieldset_spectators tbody .transaction .ui-icon, #sf_fieldset_tickets tbody .transaction .ui-icon { display: inline-block; margin-bottom: -4px; }
+#sf_fieldset_tickets .contact, #sf_fieldset_tickets .transaction { line-height: 25px; }
 
 #sf_fieldset_unbalanced .contact { max-width: 130px; overflow: hidden; white-space: nowrap; }
 

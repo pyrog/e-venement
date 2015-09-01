@@ -23,7 +23,7 @@
     <?php if ( $transac->MemberCards->count() > 0 || $sf_user->getGuardUser()->MemberCards->count() > 0 ): ?>
     <?php include_partial('widget_item',array(
       'objects' => $transac->MemberCards,
-      'label' => __('Member cards'),
+      'label' => pubConfiguration::getText('app_member_cards_title', __('Member cards')),
       'price' => $transac->getMemberCardPrice(true),
     )) ?>
     <?php else: ?>

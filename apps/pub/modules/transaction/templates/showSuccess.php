@@ -84,12 +84,13 @@ $(document).ready(function(){
   <td class="manifestation"><span class="mct-<?php echo $mc->member_card_type_id ?>"><?php echo sfConfig::get('app_member_cards_show_expire_at', true) ? format_date($mc->expire_at,'P') : '' ?></span></td>
   <td class="workspace"></td>
   <td class="tickets"><span data-mct-id="<?php echo $mc->member_card_type_id ?>" class="mct-<?php echo $mc->member_card_type_id ?>"><?php echo $mc->MemberCardType ?></span></td>
-  <?php $total['qty']++; $total['value'] += $mc->MemberCardType->value ?>
+  <?php $value = $mc->MemberCardType->value; foreach ( $mc->BoughtProducts as $bp ) $value += $bp->value + $bp->shipping_fees; ?>
+  <?php $total['qty']++; $total['value'] += $value ?>
   <?php if ( !sfConfig::get('app_options_synthetic_plans', false) ): ?>
-  <td class="value"><?php echo format_currency($mc->MemberCardType->value,'€') ?></td>
+  <td class="value"><?php echo format_currency($value,'€') ?></td>
   <td class="qty">1</td>
   <?php endif ?>
-  <td class="total"><?php echo format_currency($mc->MemberCardType->value,'€') ?></td>
+  <td class="total"><?php echo format_currency($value,'€') ?></td>
   <td class="extra-taxes" title="<?php echo __('Booking fees') ?>"></td>
   <?php if ( sfConfig::get('app_options_synthetic_plans', false) && $current_transaction ): ?>
   <td class="linked-stuff"></td>
@@ -101,6 +102,7 @@ $(document).ready(function(){
 </tr>
 <?php endforeach ?>
 <?php foreach ( $products as $product ): ?>
+<?php if ( !$product->member_card_id ): ?>
 <?php if ( $product->product_declination_id ) $for_links[] = $product->Declination->Product ?>
 <tr class="products">
   <td class="picture"></td>
@@ -135,12 +137,19 @@ $(document).ready(function(){
   <td class="linked-stuff"></td>
   <?php endif ?>
   <td class="mod">
-    <?php if ( $current_transaction && $product->product_declination_id && $product->Declination->Product->Category->online && $current_transaction && !$product->ticket_id ): ?>
+    <?php if ( $current_transaction
+      && $product->product_declination_id
+      && $product->Declination->Product->product_category_id
+      && $product->Declination->Product->Category->online
+      && $current_transaction
+      && !$product->ticket_id
+    ): ?>
       <?php echo link_to(__('modify'),'store/edit?id='.$product->Declination->Product->id) ?>
       <?php echo link_to(__('delete'),'store/del?id='.$product->Declination->Product->id) ?>
     <?php endif ?>
   </td>
 </tr>
+<?php endif ?>
 <?php endforeach ?>
 </tbody>
 <tfoot>

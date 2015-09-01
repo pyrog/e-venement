@@ -19,14 +19,14 @@ generator:
         happens_at: { label: Date }
         formatted_date: { label: Date }
         happens_at_time_h_r: { label: Time }
-        list_tickets: { label: Tickets }
+        list_tickets: { label: '' }
         list_picture: { label: '' }
       list:
         object_actions: []
         actions: []
         batch_actions: []
-        sort: ['happens_at, wuo.rank', '']
-        display: [_list_picture, _list_happens_at, _list_day_name, =formatted_date, happens_at_time_h_r, Event, Location, _MetaEvent<?php if ( isset($vel['display_tickets_in_manifestations_list']) && $vel['display_tickets_in_manifestations_list'] ): ?>, _list_tickets<?php endif ?>]
+        sort: ['happens_at, w.name', '']
+        display: [_list_picture, _list_happens_at, _list_day_name, =formatted_date, happens_at_time_h_r, Event, Location, _MetaEvent, _list_tickets]
         title: Dates
         table_method: retrievePublicList
         max_per_page: 250

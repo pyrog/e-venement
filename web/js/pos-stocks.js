@@ -84,7 +84,6 @@ LI.posStocks = function(){
         i++;
       });
       
-      console.error(dates);
       sales = $.jqplot('sales_chart', dates, {
         seriesDefaults: {
           showMarker: false
