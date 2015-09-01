@@ -65,9 +65,10 @@ $(document).ready(function(){
     $('.mod-manifestation.action-show .adding-tickets .gauge:not(:last) tfoot tr:last').hide();
   
   // temporary flashes
+  var time = $.trim($('.sf_admin_flashes').text()).length/18*1000;
   setTimeout(function(){
     $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  }, 8500);
+  }, time < 5000 ? 5000 : time);
   
   // focus on registering forms
   $('.mod-cart.action-register #login, #contact-form').focusin(function(){
@@ -147,11 +148,6 @@ $(document).ready(function(){
       $(this).html('');
     });
   }
-  
-  // flashes
-  setTimeout(function(){
-    $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  },4000);
   
   // if treating day as a structural data (in the manifestations list)
   if ( $('.sf_admin_list .sf_admin_list_th_happens_at_time_h_r').length > 0

@@ -49,8 +49,8 @@
         <target>Vous avez commandé %%nb%% Passes/cartes d'abo. alors que %%max%% maximum sont autorisées. Retirez-en SVP...</target>
       </trans-unit>
       <trans-unit>
-        <source>You need to book tickets at %%mc%% price for at least %%nb%% different events at least to be able to order a "%%mc%%".</source>
-        <target>Vous devez réserver des billets au tarif %%mc%% pour au moins %%nb%% événements différents au moins pour pouvoir commander une "%%mc%%".</target>
+        <source>You must book tickets at least %%nb%% different events linked to your "%%mc%%" pass to be able to order it.</source>
+        <target>Vous devez réserver des billets pour au moins %%nb%% événements différents liés à votre pass "%%mc%%" pour pouvoir le commander.</target>
       </trans-unit>
       <trans-unit>
         <source>Meta events</source>
