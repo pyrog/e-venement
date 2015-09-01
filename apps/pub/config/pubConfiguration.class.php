@@ -109,8 +109,11 @@ class pubConfiguration extends sfApplicationConfiguration
     
     $transaction->MemberCards[] = $mcf->getObject();
     $mcf->save();
-    $mcf->getObject()->BoughtProducts[0]->integrated_at = NULL;
-    $mcf->getObject()->BoughtProducts[0]->save();
+    foreach ( $mcf->getObject()->BoughtProducts as $bp )
+    {
+      $bp->integrated_at = NULL;
+      $bp->save();
+    }
     
     $mcps = new Doctrine_Collection('MemberCardPriceModel');
     foreach ( $mcf->getObject()->MemberCardType->MemberCardPriceModels as $mcpm )
