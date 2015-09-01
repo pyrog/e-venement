@@ -6,7 +6,7 @@
     <body>
       <trans-unit>
         <source>Complete your passes</source>
-        <target>Compléter vos passes</target>
+        <target>Compléter mes passes</target>
       </trans-unit>
       <trans-unit>
         <source>Your items were successfully removed from your cart.</source>
