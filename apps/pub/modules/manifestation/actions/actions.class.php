@@ -29,7 +29,7 @@ class manifestationActions extends autoManifestationActions
     if ( $request->hasParameter('mc_pending') )
       $this->setFilters(array());
     
-    if ( $this->getPager()->getQuery()->count() == 1 )
+    if ( $this->getPager()->getQuery()->count() == 1 && !$request->hasParameter('debug') )
     {
       $manifestation = $this->getPager()->getQuery()->select('m.id')->fetchOne();
       
@@ -77,7 +77,7 @@ class manifestationActions extends autoManifestationActions
     $this->forward404Unless($tickets = $q->execute());
     $tickets->delete();
     $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
-    $this->redirect('event/index');
+    $this->redirect('cart/show');
   }
 
   public function executeBatchDelete(sfWebRequest $request)

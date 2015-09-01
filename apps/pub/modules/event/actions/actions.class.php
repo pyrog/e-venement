@@ -43,7 +43,7 @@ class eventActions extends autoEventActions
     }
     
     // if there is only one event...
-    if ( $this->pager->getResults()->count() == 1 && false )
+    if ( $this->pager->getResults()->count() == 1 )
     {
       foreach ( array('success', 'notice', 'error') as $type )
       if ( $this->getUser()->getFlash($type) )

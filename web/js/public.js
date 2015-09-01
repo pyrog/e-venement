@@ -35,7 +35,7 @@ $(document).ready(function(){
     $('.mod-meta_event.action-index .sf_admin_list .sf_admin_row:last').clone()
       .toggleClass('odd').toggleClass('even')
       .insertAfter($('.mod-meta_event.action-index .sf_admin_list .sf_admin_row:last'))
-      .find('td').html('').append($('#ariane .event.with-store a.store').clone());
+      .find('td').html('').first().append($('#ariane .event.with-store a.store').clone());
   
   // auto-redirects
   if ( location.hash != '#debug' )
@@ -67,7 +67,7 @@ $(document).ready(function(){
   // temporary flashes
   setTimeout(function(){
     $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  }, 5500);
+  }, 7000);
   
   // focus on registering forms
   $('.mod-cart.action-register #login, #contact-form').focusin(function(){
@@ -259,12 +259,12 @@ LI.pubPictureRowspan = function()
   if ( $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row').length > 0 )
   {
     var pic = $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row .sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done)')[0];
-    var next = $(pic).closest('tr').next();
-    if ( $(pic).find('[data-event-id]').attr('data-event-id') == $(next).find('.sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done) [data-event-id]').attr('data-event-id') )
-    {
-      $(pic).prop('rowspan', $(pic).prop('rowspan')+1)
-      $(next).find('.sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done)').remove();
-    }
+    $(pic).prop('rowspan', $(pic).closest('tbody').find('.sf_admin_list_td_list_picture [data-event-id="'+$(pic).find('[data-event-id]')+'"]').length);
+    $(pic).addClass('picture-done');
+    $(pic).closest('tbody')
+      .find('.sf_admin_list_td_list_picture:not(.picture-done) [data-event-id="'+$(pic).find('[data-event-id]').attr('data-event-id')+'"]')
+      .closest('.sf_admin_list_td_list_picture')
+      .remove();
   }
   else
   {

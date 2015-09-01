@@ -43,7 +43,7 @@ class storeActions extends autoStoreActions
     $this->forward404Unless($bps = $q->execute());
     $bps->delete();
     $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
-    $this->redirect('store/index');
+    $this->redirect('cart/show');
   }
   
   public function executeIndex(sfWebRequest $request)
