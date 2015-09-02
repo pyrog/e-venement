@@ -3,7 +3,8 @@
 
 # default values
 all:
-  messages:
-    dashed: Second choix
-  options:
-    remove_slow_js: false
+  #messages:
+  #  dashed: Second choix
+  #options:
+  #  remove_slow_js: false
+  #  remove_gauges_on_contact: false
