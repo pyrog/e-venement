@@ -11,6 +11,7 @@
     $get_tickets = false;
 ?>
 <ul>
+  <?php if ( sfConfig::get('app_tickets_pdf_attachments', false) ): ?>
   <?php if ( $get_tickets ): ?>
   <?php if ( $transaction->Tickets->count() > 0 ): ?>
   <li class="tickets">
@@ -27,6 +28,7 @@
     <?php echo link_to('PDF', 'transaction/products?id='.$transaction->id.'&format=pdf', array('class' => 'pdf')) ?>
     <?php $sf_context->getEventDispatcher()->notify(new sfEvent($this, 'pub.products_list_formats', array('transaction' => $transaction))) ?>
   </li>
+  <?php endif ?>
   <?php endif ?>
   <?php endif ?>
 

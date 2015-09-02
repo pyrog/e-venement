@@ -115,12 +115,17 @@ class pubConfiguration extends sfApplicationConfiguration
       $bp->save();
     }
     
-    $mcps = new Doctrine_Collection('MemberCardPriceModel');
+    $mcps = sfContext::getInstance()->getUser()->getAttribute('pub.mc.autoadd_tickets', false) instanceof Doctrine_Collection
+      ? sfContext::getInstance()->getUser()->getAttribute('pub.mc.autoadd_tickets')
+      : new Doctrine_Collection('MemberCardPriceModel');
     foreach ( $mcf->getObject()->MemberCardType->MemberCardPriceModels as $mcpm )
     if ( $mcpm->autoadd )
-      $mcps[] = $mcpm;
-    if ( sfContext::getInstance()->getUser()->getAttribute('pub.mc.autoadd_tickets', false) instanceof Doctrine_Collection )
-      $mcps->merge(sfContext::getInstance()->getUser()->getAttribute('pub.mc.autoadd_tickets'));
+    {
+      if ( $i = $mcps->search($mcpm) )
+        $mcps[$i]->quantity += $mcpm->quantity;
+      else
+        $mcps[] = $mcpm;
+    }
     sfContext::getInstance()->getUser()->setAttribute('pub.mc.autoadd_tickets', $mcps);
   }
   

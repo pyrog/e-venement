@@ -76,7 +76,9 @@ class ticketActions extends sfActions
       if ( !$gauge )
         return sfView::NONE;
       
+      $nb = intval($ticket['quantity']);
       $tickets = array();
+      for ( $i = 0 ; $i < $nb ; $i++ )
       $tickets[] = array(
         'gauge_id' => $gauge->id,
         'price_id' => $ticket['price_id'],

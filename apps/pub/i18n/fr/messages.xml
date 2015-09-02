@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Add</source>
+        <target>Ajouter</target>
+      </trans-unit>
+      <trans-unit>
         <source>Complete your passes</source>
         <target>Compléter mes passes</target>
       </trans-unit>

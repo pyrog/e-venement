@@ -78,10 +78,23 @@
   foreach ( $transaction->MemberCards as $mc )
     $mc->active = true;
   
+  // contacts
   $transaction->Contact->confirmed = true;        // transaction's contact
   foreach ( $transaction->Tickets as $ticket )    // for "named" tickets
   if ( $ticket->contact_id )
     $ticket->DirectContact->confirmed = true;
+  
+  /*
+  // auto link tickets to member cards
+  foreach ( $transaction->Tickets as $ticket )
+  try {
+    $ticket->linkToMemberCard();
+  } catch ( liEvenementException $e ) {
+    error_log('cart/response: on adding member card links: '.$e->getMessage());
+  }
+  */
+  
+  // order
   $transaction->Payments[] = $payment;
   if ( $transaction->Order->count() == 0 )
     $transaction->Order[] = new Order;

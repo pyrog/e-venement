@@ -238,11 +238,21 @@
     $ticket->vat        = NULL;
     
     try {
+      // auto link tickets to member cards
+      try {
+        $ticket->linkToMemberCard();
+      } catch ( liEvenementException $e ) {
+        error_log('cart/response: on adding member card links: '.$e->getMessage());
+      }
+      
+      // save
       $ticket->save();
+      
+      // changing seat
       if ( isset($tck['seat_id']) && $tck['seat_id'] && $ticket->seat_id != $tck['seat_id'] )
       {
         $ticket->delete();
-        unset($tickets[$tickets->key()]);
+        unset($tickets[$ticket->key()]);
         $this->json['error']['message'] = 'An error occurred updating your cart, try again please...';
         continue;
       }

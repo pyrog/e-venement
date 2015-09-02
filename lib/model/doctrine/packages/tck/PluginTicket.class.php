@@ -278,37 +278,53 @@ abstract class PluginTicket extends BaseTicket
     if ( $this->price_id && is_object($this->Price) && $this->Price->member_card_linked
     && ( isset($mods['printed_at']) || isset($mods['integrated_at']) )
     && ( $this->printed_at || $this->integrated_at )
-    && !$this->member_card_id
-    && is_null($this->cancelling) && is_null($this->duplicating) && $this->Duplicatas->count() == 0 )
+    )
     {
-      $q = Doctrine::getTable('MemberCard')->createQuery('mc')
-        ->leftJoin('mc.Contact c')
-        ->leftJoin('c.Transactions t')
-        ->leftJoin('mc.MemberCardPrices mcp')
-        ->leftJoin('mcp.Event e')
-        ->leftJoin('e.Manifestations m')
-        ->andWhere('t.id = ?',$this->transaction_id)
-        ->andWhere('mc.created_at <= ?',date('Y-m-d H:i:s'))
-        ->andWhere('mc.expire_at >  ?',date('Y-m-d H:i:s'))
-        ->andWhere('mc.active = true')
-        ->andWhere('mcp.price_id = ?',$this->price_id)
-        ->andWhere('(mcp.event_id IS NULL OR m.id = ?)',$this->manifestation_id)
-        ->orderBy('mcp.event_id IS NULL');
-      $card = $q->fetchOne();
-      
-      if ( $card && $card->MemberCardPrices->count() > 0 )
-      {
-        $card->MemberCardPrices[0]->delete();
-        $this->member_card_id = $card->id;
-      }
-      else
-      {
-        $this->printed_at = NULL;
-        throw new liEvenementException("No more ticket left on the contact's member card");
-      }
+      $this->linkToMemberCard();
     }
     
     parent::preUpdate($event);
+  }
+  
+  public function linkToMemberCard()
+  {
+    if ( $this->member_card_id )
+      return $this;
+    if (!( is_null($this->cancelling) && is_null($this->duplicating) && $this->Duplicatas->count() == 0 ))
+      return $this;
+    
+    $q = Doctrine::getTable('MemberCard')->createQuery('mc')
+      ->select('mc.*, mcp.*')
+      ->leftJoin('mc.Contact c')
+      ->leftJoin('c.Transactions t')
+      ->andWhere('mc.contact_id IS NOT NULL AND t.id = ? OR mc.transaction_id = ?',array($this->transaction_id, $this->transaction_id))
+      ->leftJoin('mc.MemberCardPrices mcp')
+      ->leftJoin('mcp.Event e')
+      ->leftJoin('e.Manifestations m')
+      ->andWhere('mc.created_at <= ?',date('Y-m-d H:i:s'))
+      ->andWhere('mc.expire_at >  ?',date('Y-m-d H:i:s'))
+      ->andWhere('mc.active = ? OR mc.transaction_id = ?', array(true, $this->transaction_id))
+      ->andWhere('mcp.price_id = ?',$this->price_id)
+      ->orderBy('mcp.event_id IS NULL, mc.expire_at');
+    if ( $this->manifestation_id )
+      $q->andWhere('(mcp.event_id IS NULL OR m.id = ?)',$this->manifestation_id);
+    elseif ( $this->gauge_id )
+      $q->leftJoin('m.Gauges g')
+        ->andWhere('(mcp.event_id IS NULL OR g.id = ?)',$this->gauge_id);
+    $card = $q->fetchOne();
+    
+    if ( $card && $card->MemberCardPrices->count() > 0 )
+    {
+      $card->MemberCardPrices[0]->delete();
+      $this->member_card_id = $card->id;
+    }
+    else
+    {
+      $this->printed_at = NULL;
+      throw new liEvenementException("No more ticket left on the contact's member card");
+    }
+    
+    return $this;
   }
   
   public function getNumerotation()

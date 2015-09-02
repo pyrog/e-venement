@@ -2,7 +2,7 @@
 <?php if ( $transaction->id == $sf_user->getTransactionId() ): ?>
 <?php if ( ($txt = pubConfiguration::getText('app_member_cards_complete_your_passes', false)) && $sf_user->getTransaction()->MemberCards->count() ): ?>
 <?php if ( $txt === true ) $txt = __('Complete your passes'); ?>
-<div class="actions complete_mc">
+<div class="actions mc_pending">
 <?php echo link_to($txt,'manifestation/index?mc_pending=') ?>
 </div>
 <?php endif ?>

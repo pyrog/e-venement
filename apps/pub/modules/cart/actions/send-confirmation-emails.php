@@ -168,6 +168,7 @@
     $email->field_from = sfConfig::get('app_informations_email','contact@libre-informatique.fr');
     $email->content = nl2br(str_replace(array_keys($replace),$replace,pubConfiguration::getText('app_texts_email_confirmation')));
     $email->content .= nl2br("\n\n".pubConfiguration::getText('app_texts_email_footer',<<<EOF
+<div id="li-credits">
 --
 <a href="http://www.e-venement.net/">e-venement</a> est le système de billetterie informatisée développé par <a href="http://www.libre-informatique.fr/">Libre Informatique</a>. 
 Ces logiciels sont distribués sous <a href="http://fr.wikipedia.org/wiki/Licences_libres">licences libres</a>
@@ -178,6 +179,7 @@ Libre Informatique
 <style type="text/css" media="all">
   .cmd-ticket { page-break-before: always; }
 </style>
+</div>
 EOF
     ));
     
