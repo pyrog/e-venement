@@ -183,7 +183,7 @@ fi
 # final data modifications
 echo ""
 read -p "Do you want to copy MetaEvent's english translations (default i18n after a migration from v2.7) into french ? [Y/n] " reset
-[ "$reset" != 'n' ] && ./symfony e-venement:copy-i18n MetaEvent en fr
+[ "$reset" != 'n' ] && ./symfony e-venement:copy-i18n MetaEvent en fr ' '
 echo ""
 read -p "Do you want to update the Postalcodes data (can take a while)? [y/N] " reset
 [ "$reset" = 'y' ] && echo 'DELETE FROM postalcode;' | psql && ./symfony doctrine:data-load --append data/fixtures/20-postalcodes.yml

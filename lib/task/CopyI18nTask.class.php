@@ -30,6 +30,7 @@ class CopyI18nTask extends sfBaseTask
       new sfCommandArgument('model', sfCommandArgument::REQUIRED, 'The model to process (ex: Price)'),
       new sfCommandArgument('from', sfCommandArgument::REQUIRED, 'The i18n translation to copy (ex: fr)'),
       new sfCommandArgument('to', sfCommandArgument::REQUIRED, 'The i18n destination (ex: en)'),
+      new sfCommandArgument('extra-ending-chars', sfCommandArgument::OPTIONAL, 'Extra ending chars to add on the new translation'),
     ));
     $this->addOptions(array(
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environement', 'dev'),
@@ -60,7 +61,7 @@ class CopyI18nTask extends sfBaseTask
       if ( !$table->isIdentifier($fieldname) )
       {
         $fields[] = $fieldname;
-        $model->Translation[$arguments['to']]->$fieldname = $model->Translation[$arguments['from']]->$fieldname;
+        $model->Translation[$arguments['to']]->$fieldname = $model->Translation[$arguments['from']]->$fieldname.$arguments['extra-ending-chars'];
       }
       
       if ( $model->trySave() )
