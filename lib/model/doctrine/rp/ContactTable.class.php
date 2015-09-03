@@ -10,7 +10,8 @@ class ContactTable extends PluginContactTable
   public function retreiveList()
   {
     return $this->createQuery('c')
-      ->leftJoin('o.Phonenumbers oph');
+      ->leftJoin('o.Phonenumbers oph')
+    ;
   }
   public function createQueryByEmailId($id)
   {
@@ -64,7 +65,7 @@ class ContactTable extends PluginContactTable
       //->leftJoin("$gc.User $gcu")
       ->leftJoin("$alias.Phonenumbers $pn")
       ->leftJoin("$alias.YOBs $y")
-      ->andWhere("$alias.confirmed = TRUE");
+      ->andWhere("$alias.confirmed = ?", true);
     
     return $query;
   }
