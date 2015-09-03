@@ -31,21 +31,37 @@
   $prepare = array('?');
   $seated_plans_gauges = new Doctrine_Collection('Gauge');
   foreach ( $seated_plans as $sp )
+  if ( !$sp->Workspaces[0]->isNew() && !$sp->Workspaces[0]->Gauges[0]->isNew() )
   {
     $prepare[] = '?';
-    $seated_plans_gauges[$sp->id] = !$sp->Workspaces[0]->isNew() && !$sp->Workspaces[0]->Gauges[0]->isNew()
-      ? $sp->Workspaces[0]->Gauges[0]
-      : NULL;
+    $seated_plans_gauges[$sp->id] = $sp->Workspaces[0]->Gauges[0];
   }
   
   // optimized Seats fetching
   //$seat_records = new Doctrine_Collection('Seat');
   //foreach ( $seated_plans as $seated_plan )
   //  $seat_records->merge($seated_plan->Seats);
-  $q = Doctrine::getTable('Seat')->createQuery('s')
-    ->leftJoin('s.Holds h WITH h.manifestation_id IN (SELECT m.id FROM Manifestation m LEFT JOIN m.Gauges g WHERE g.id IN ('.implode(',',$seated_plans_gauges->getPrimaryKeys()).'))')
-    ->leftJoin('s.SeatedPlan sp WITH sp.id IN ('.implode(',', $prepare).')', array_merge(array(0),$seated_plans_gauges->getKeys()))
-  ;
+  if ( $seated_plans_gauges->count() == 0 )
+  {
+    $prepare = array('?');
+    $spids = array(0);
+    foreach ( $seated_plans as $sp )
+    {
+      $prepare[] = '?';
+      $spids[] = $sp->id;
+    }
+    $q = Doctrine::getTable('Seat')->createQuery('s')
+      ->leftJoin('s.Holds h WITH h.id = 0')
+      ->leftJoin('s.SeatedPlan sp WITH sp.id IN ('.implode(',', $prepare).')', $spids);
+    ;
+  }
+  else
+  {
+    $q = Doctrine::getTable('Seat')->createQuery('s')
+      ->leftJoin('s.Holds h WITH h.manifestation_id IN (SELECT m.id FROM Manifestation m LEFT JOIN m.Gauges g WHERE g.id IN ('.implode(',',$prepare).'))', array_merge(array(0), $seated_plans_gauges->getPrimaryKeys()))
+      ->leftJoin('s.SeatedPlan sp WITH sp.id IN ('.implode(',', $prepare).')', array_merge(array(0),$seated_plans_gauges->getKeys()))
+    ;
+  }
   if ( $sf_request->getParameter('transaction_id', false) )
     $q->leftJoin('h.HoldTransactions ht WITH ht.transaction_id = ?', $sf_request->getParameter('transaction_id'))
       ->andWhere('sp.id IS NOT NULL OR ht.id IS NOT NULL');
