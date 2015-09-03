@@ -121,10 +121,10 @@ class pubConfiguration extends sfApplicationConfiguration
     foreach ( $mcf->getObject()->MemberCardType->MemberCardPriceModels as $mcpm )
     if ( $mcpm->autoadd )
     {
-      if ( $i = $mcps->search($mcpm) )
+      if ( isset($mcps[$i = $mcpm->event_id.' '.$mcpm->price_id]) )
         $mcps[$i]->quantity += $mcpm->quantity;
       else
-        $mcps[] = $mcpm;
+        $mcps[$i] = $mcpm;
     }
     sfContext::getInstance()->getUser()->setAttribute('pub.mc.autoadd_tickets', $mcps);
   }
