@@ -25,6 +25,7 @@
   });
 <?php endforeach ?>
   $.get(url, { tickets: tickets }, function(){ location.reload(); });
+  $('body').html('Loading...');
 <?php $sf_user->setAttribute('pub.mc.autoadd_tickets', false) ?>
 <?php endif ?>
 --></script>
