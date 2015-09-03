@@ -32,4 +32,11 @@
   title="<?php echo __('Abandon') ?>"
   id="abandon"
 ><span class="ui-icon ui-icon-circle-close"></span></a>
+<a
+  class="ui-widget-content ui-state-default ui-corner-all ui-widget fg-button"
+  href="<?php echo cross_app_url_for('pub','transaction/sendEmail?id='.$transaction->id.'&token='.md5($transaction->id.'|*|*|'.sfConfig::get('project_eticketting_salt', 'e-venement'))) ?>"
+  title="<?php echo __('Resend confirmation email') ?>"
+  id="resend-email"
+  target="_blank"
+><span class="ui-icon ui-icon-mail-closed"></span></a>
 </form>

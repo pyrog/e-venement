@@ -26,7 +26,8 @@
     if ( !sfConfig::has('app_texts_email_confirmation') )
       throw new liOnlineSaleException('You need to configure app_texts_email_confirmation in your apps/pub/config/app.yml file');
     
-    if ( !sfConfig::get('sf_web_debug', false) // if we are not working in a development environment
+    if ( !sfConfig::get('sf_web_debug', false) // if we are not working under a development environement
+      && !$tokened                              // the token is not valid
       && $transaction->id != $action->getUser()->getTransactionId() // and it's not the current transaction
       && !( $transaction->contact_id && $action->getUser()->getTransaction()->contact_id && $transaction->contact_id == $action->getUser()->getTransaction()->contact_id ) // and it's not a current user's transaction
     )

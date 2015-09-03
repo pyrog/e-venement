@@ -228,7 +228,7 @@ class cartActions extends sfActions
     $this->sendConfirmationEmails($this->getUser()->getTransaction(), $this);
     return sfView::NONE;
   }
-  public static function sendConfirmationEmails(Transaction $transaction, sfAction $action)
+  public static function sendConfirmationEmails(Transaction $transaction, sfAction $action, $tokened = false)
   {
     return require(dirname(__FILE__).'/send-confirmation-emails.php');
   }
