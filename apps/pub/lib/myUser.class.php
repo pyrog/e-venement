@@ -332,12 +332,20 @@ class myUser extends pubUser
       ->leftJoin('c.Transactions tr')
       ->leftJoin('c.MemberCards cmc WITH (cmc.active = ? AND cmc.expire_at > NOW() OR cmc.transaction_id = t.id)', true)
       //->leftJoin('cmc.MemberCardPrices cmcp') // <- can be very very long if member cards are componed by a lot of prices, and this can be found back automatically w/ doctrine w/o any side-effect
-      ->andWhere('t.id = ?',$tid);
+      ->andWhere('t.id = ?',$tid)
+    ;
     
+    if ( sfConfig::get('sf_web_debug', false) )
+    {
+      if ( ($this->transaction = $q->fetchOne())
+        && $this->transaction->Order->count() == 0 )
+        return $this->transaction;
+    }
+    else
     if ( $this->transaction = $q->fetchOne() )
       return $this->transaction;
     
-    $this->logout();
+    $this->resetTransaction();
     return $this->getTransaction();
   }
   public function setTransaction(Transaction $transaction)
@@ -349,6 +357,7 @@ class myUser extends pubUser
   public function resetTransaction()
   {
     $contact = false;
+    if ( $this->transaction )
     try { $contact = $this->getContact(); }
     catch ( liOnlineSaleException $e ) { error_log('Trying to reset the transaction #'.$this->transaction->id.', but: '.$e->getMessage()); }
     
