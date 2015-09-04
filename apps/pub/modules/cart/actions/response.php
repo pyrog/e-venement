@@ -77,7 +77,8 @@
   // activate member cards linked to this transaction
   foreach ( $transaction->MemberCards as $mc )
   {
-    $mc->BoughtProduct->integrated_at = date('Y-m-d H:i:s');
+    foreach ( $mc->BoughtProducts as $bp )
+      $bp->integrated_at = date('Y-m-d H:i:s');
     $mc->active = true;
   }
   
