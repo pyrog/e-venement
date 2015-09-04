@@ -35,6 +35,7 @@
     'adresse2',
     'cp',
     'ville',
+    'pays',
     'groupe',
     'telephone',
     'mail',
@@ -65,6 +66,7 @@
         $org->address = $entry['adresse1'].($entry['adresse2'] ? "\n".$entry['adresse2'] : '');
       $org->postalcode = $entry['cp'];
       $org->city = $entry['ville'];
+      $org->country = $entry['pays'];
       
       // organism_category
       if ( $entry['groupe'] )
@@ -101,6 +103,9 @@
         $pro->Contact = $contact;
         $pro->Organism = $org;
         $pro->description = $entry['id'];
+        $pro->contact_email = $entry['mail'];
+        if ( !$pro->Organism->email )
+          $pro->email = $entry['email'];
         if ( $entry['telephone'] )
           $pro->contact_number = $entry['telephone'];
         $pro->save();
@@ -121,6 +126,7 @@
           $contact->address = $entry['adresse1']."\n".$entry['adresse2'];
         $contact->postalcode = $entry['cp'];
         $contact->city = $entry['ville'];
+        $contact->country = $entry['country'];
         $contact->email = $entry['mail'];
         
         // personal group
@@ -140,12 +146,17 @@
         $this->logs['Contact'][] = str_pad($entry['id'], 4, '0', STR_PAD_LEFT)." $contact";
       }
     }
-    elseif ( $org && $entry['telephone'] )
+    elseif ( $org )
     {
-      $tel = new OrganismPhonenumber;
-      $tel->name = 'Standard';
-      $tel->number = $entry['telephone'];
-      $org->Phonenumbers[] = $tel;
+      if ( $entry['telephone'] )
+      {
+        $tel = new OrganismPhonenumber;
+        $tel->name = 'Standard';
+        $tel->number = $entry['telephone'];
+        $org->Phonenumbers[] = $tel;
+      }
+      if ( $entry['email'] )
+        $org->email = $entry['email'];
       $org->save();
     }
   } catch ( Exception $e ) {
