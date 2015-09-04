@@ -105,7 +105,7 @@
         $pro->description = $entry['id'];
         $pro->contact_email = $entry['mail'];
         if ( !$pro->Organism->email )
-          $pro->email = $entry['email'];
+          $pro->Organism->email = $entry['email'];
         if ( $entry['telephone'] )
           $pro->contact_number = $entry['telephone'];
         $pro->save();
