@@ -105,7 +105,7 @@
         $pro->description = $entry['id'];
         $pro->contact_email = $entry['mail'];
         if ( !$pro->Organism->email )
-          $pro->Organism->email = $entry['email'];
+          $pro->Organism->email = $entry['mail'];
         if ( $entry['telephone'] )
           $pro->contact_number = $entry['telephone'];
         $pro->save();
@@ -155,8 +155,8 @@
         $tel->number = $entry['telephone'];
         $org->Phonenumbers[] = $tel;
       }
-      if ( $entry['email'] )
-        $org->email = $entry['email'];
+      if ( $entry['mail'] )
+        $org->email = $entry['mail'];
       $org->save();
     }
   } catch ( Exception $e ) {
