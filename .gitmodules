@@ -25,3 +25,6 @@
 [submodule "lib/vendor/externals/symfony1"]
 	path = lib/vendor/externals/symfony1
 	url = https://github.com/betaglop/symfony
+[submodule "plugins/liOnlinePaymentPayplugPlugin/lib/externals/payplug_php"]
+	path = plugins/liOnlinePaymentPayplugPlugin/lib/externals/payplug_php
+	url = https://bitbucket.org/payplug/payplug_php
