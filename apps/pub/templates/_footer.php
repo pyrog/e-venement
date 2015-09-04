@@ -11,3 +11,21 @@
 <a href="http://www.symfony-project.org/">Symfony</a>,
 <a href="http://www.php.net/">PHP</a>,
 <a href="http://www.postgresql.org/">PostgreSQL</a>
+
+<?php // auto adding tickets linked to member cards ?>
+<script type="text/javascript"><!--
+  var url = '<?php echo url_for('ticket/autoAdd') ?>';
+  var tickets = [];
+<?php if ( $sf_user->getAttribute('pub.mc.autoadd_tickets',false) ): ?>
+<?php foreach ( $mcps = $sf_user->getAttribute('pub.mc.autoadd_tickets') as $mcp ): ?>
+  tickets.push({
+    price_id: <?php echo $mcp->price_id ?>,
+    event_id: <?php echo $mcp->event_id ?>,
+    quantity: <?php echo $mcp->quantity ?>
+  });
+<?php endforeach ?>
+  $.get(url, { tickets: tickets }, function(){ location.reload(); });
+  $('body').html('Loading...');
+<?php $sf_user->setAttribute('pub.mc.autoadd_tickets', false) ?>
+<?php endif ?>
+--></script>

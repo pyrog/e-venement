@@ -201,6 +201,7 @@
     {
       $ticket = new Ticket;
       $tickets[] = $ticket;
+      //$ticket->transaction_id = $this->getUser()->getTransactionId();
       $ticket->Transaction = $this->getUser()->getTransaction();
       $ticket->gauge_id = $tck['gauge_id'];
     }
@@ -237,11 +238,21 @@
     $ticket->vat        = NULL;
     
     try {
+      // auto link tickets to member cards
+      try {
+        $ticket->linkToMemberCard();
+      } catch ( liEvenementException $e ) {
+        error_log('cart/response: on adding member card links: '.$e->getMessage());
+      }
+      
+      // save
       $ticket->save();
+      
+      // changing seat
       if ( isset($tck['seat_id']) && $tck['seat_id'] && $ticket->seat_id != $tck['seat_id'] )
       {
         $ticket->delete();
-        unset($tickets[$tickets->key()]);
+        unset($tickets[$ticket->key()]);
         $this->json['error']['message'] = 'An error occurred updating your cart, try again please...';
         continue;
       }
@@ -250,6 +261,8 @@
     {
       if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
         throw $e;
+      else
+        error_log('An error occurred updating your cart, try again please... (executeModTickets) '.$e->getMessage());
       $this->json['error']['message'] = 'An error occurred updating your cart, try again please...';
       continue;
     }

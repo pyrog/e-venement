@@ -10,6 +10,14 @@
         <target></target>
       </trans-unit>
       <trans-unit>
+        <source>Added automatically</source>
+        <target>Ajouté automatiquement</target>
+      </trans-unit>
+      <trans-unit>
+        <source>On the creation of a member card (online)</source>
+        <target>À la création d'une carte d'abo (en ligne)</target>
+      </trans-unit>
+      <trans-unit>
         <source>Return to period</source>
         <target>Retour à la période</target>
       </trans-unit>

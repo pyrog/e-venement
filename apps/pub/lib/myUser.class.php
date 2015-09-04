@@ -69,25 +69,35 @@ class myUser extends pubUser
     if ( isset($event['direct_contact']) && $event['direct_contact'] === false )
       return;
     
-    // detecting if a ticket has to be affected to the current contact
-    $ticket = NULL;
-    foreach ( $this->getTransaction()->Tickets as $tck )
+    // detecting if one ticket has to be affected to the current contact
+    if ( $this->getTransaction()->contact_id )
     {
-      if ( $tck->contact_id == $this->getTransaction()->contact_id )
+      $nocontactatall = true;
+      $manifs = array();
+      foreach ( $this->getTransaction()->Tickets as $ticket )
       {
-        $ticket = NULL;
-        break;
+        if ( !isset($manifs[$ticket->manifestation_id]) )
+          $manifs[$ticket->manifestation_id] = array();
+        $manifs[$ticket->manifestation_id][] = $ticket;
       }
-      if ( is_null($tck->contact_id) )
-        $ticket = $tck;
-    }
-    
-    // adding the transaction's contact on the first coming ticket if needed
-    if ( $ticket instanceof Ticket )
-    {
-      try { $ticket->DirectContact = $this->getContact(); }
-      catch ( liOnlineSaleException $e ) {}
-      $ticket->save();
+      
+      foreach ( $manifs as $manifid => $tickets )
+      {
+        foreach ( $tickets as $ticket )
+        if ( $ticket->contact_id )
+        {
+          $nocontactatall = false;
+          break;
+        }
+        
+        if ( $nocontactatall )
+        {
+          $ticket->contact_id = $this->getTransaction()->contact_id;
+          if ( !$ticket->seat_id )
+            $ticket->Seat = NULL; // this is a hack to avoid errors after inserting a shadow seat
+          $ticket->save();
+        }
+      }
     }
   }
   
@@ -145,6 +155,8 @@ class myUser extends pubUser
       }
     }
     
+    // checks member cards / prices linked to member cards
+    
     $event['max'] = min($max);
     
     // controlling if there is any time conflict
@@ -168,6 +180,7 @@ class myUser extends pubUser
         $manifs[$ticket->manifestation_id] = $ticket;
       
       foreach ( $manifs as $ticket )
+      if ( $manifestation->Event->meta_event_id == $ticket->Manifestation->Event->meta_event_id )
       {
         $start = strtotime('- '.$delay, strtotime($ticket->Manifestation->happens_at));
         $stop  = strtotime('+ '.$delay, strtotime($ticket->Manifestation->ends_at));
@@ -319,10 +332,10 @@ class myUser extends pubUser
     
     return $this->getAttribute('transaction_id');
   }
-  public function getTransaction()
+  public function getTransaction($reset = false)
   {
     $tid = $this->getTransactionId();
-    if ( $this->transaction instanceof Transaction )
+    if ( !$reset && $this->transaction instanceof Transaction )
       return $this->transaction;
       
     $q = Doctrine::getTable('Transaction')->createQuery('t')
@@ -332,12 +345,20 @@ class myUser extends pubUser
       ->leftJoin('c.Transactions tr')
       ->leftJoin('c.MemberCards cmc WITH (cmc.active = ? AND cmc.expire_at > NOW() OR cmc.transaction_id = t.id)', true)
       //->leftJoin('cmc.MemberCardPrices cmcp') // <- can be very very long if member cards are componed by a lot of prices, and this can be found back automatically w/ doctrine w/o any side-effect
-      ->andWhere('t.id = ?',$tid);
+      ->andWhere('t.id = ?',$tid)
+    ;
     
+    if ( sfConfig::get('sf_web_debug', false) )
+    {
+      if ( ($this->transaction = $q->fetchOne())
+        && $this->transaction->Order->count() == 0 )
+        return $this->transaction;
+    }
+    else
     if ( $this->transaction = $q->fetchOne() )
       return $this->transaction;
     
-    $this->logout();
+    $this->resetTransaction();
     return $this->getTransaction();
   }
   public function setTransaction(Transaction $transaction)
@@ -349,6 +370,7 @@ class myUser extends pubUser
   public function resetTransaction()
   {
     $contact = false;
+    if ( $this->transaction )
     try { $contact = $this->getContact(); }
     catch ( liOnlineSaleException $e ) { error_log('Trying to reset the transaction #'.$this->transaction->id.', but: '.$e->getMessage()); }
     

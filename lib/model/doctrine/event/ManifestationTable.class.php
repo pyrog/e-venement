@@ -35,7 +35,7 @@ class ManifestationTable extends PluginManifestationTable
       return Doctrine_Core::getTable('Manifestation');
   }
   
-  public function retrieveList($q, $museum = false)
+  public function retrieveList($q = NULL, $museum = false)
   {
     if ( !$q )
       $q = $this->createQuery('m');

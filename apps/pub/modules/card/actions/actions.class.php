@@ -52,11 +52,24 @@ class cardActions extends sfActions
   
   public function executeOrder(sfWebRequest $request)
   {
+    $transaction = $this->getUser()->getTransaction();
     //$this->redirectIfNotAuthenticated();
     
     // empty'ing member cards from transaction
     if ( !$request->hasAttribute('append') )
-      $this->getUser()->getTransaction()->MemberCards->delete();
+    {
+      foreach ( $transaction->MemberCards as $mc )
+      foreach ( $mc->MemberCardPrice as $mcp )
+      foreach ( $transaction->Tickets as $i => $ticket )
+      if ( $ticket->price_id = $mcp->price_id
+        && $ticket->Manifestation->event_id == $mcp->event_id )
+      {
+        unset($transaction->Tickets[$i]);
+        $ticket->delete();
+        break;
+      }
+      $transaction->MemberCards->delete();
+    }
     
     $order = $request->getParameter('member_card_type');
     $cpt = 0;
@@ -66,7 +79,7 @@ class cardActions extends sfActions
       $cpt += intval($qty);
       if ( $cpt <= sfConfig::get('app_member_cards_max_per_transaction', 3) )
       for ( $i = 0 ; $i < intval($qty) ; $i++ )
-        $this->getContext()->getConfiguration()->addMemberCard($this->getUser()->getTransaction(), $id);
+        $this->getContext()->getConfiguration()->addMemberCard($transaction, $id);
     }
     
     $this->redirect('cart/show');

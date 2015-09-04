@@ -41,9 +41,12 @@ class storeActions extends autoStoreActions
       ->andWhere('bp.product_declination_id = ?', $request->getParameter('id',0))
     ;
     $this->forward404Unless($bps = $q->execute());
-    $bps->delete();
-    $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
-    $this->redirect('store/index');
+    if ( $bps->count() > 0 )
+    {
+      $bps->delete();
+      $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
+    }
+    $this->redirect('cart/show');
   }
   
   public function executeIndex(sfWebRequest $request)

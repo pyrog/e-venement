@@ -36,14 +36,17 @@ class eventActions extends autoEventActions
     // focusing on one meta event
     if ( $request->getParameter('meta-event', false) )
     {
+      if ( is_array($request->getParameter('meta-event')) )
+        $this->pager->getQuery()
+          ->andWhereIn('me.slug', $request->getParameter('meta-event'));
+      else
       $this->pager->getQuery()
-        ->andWhere('me.slug = ?', $request->getParameter('meta-event'))
-      ;
+        ->andWhere('me.slug = ?', $request->getParameter('meta-event'));
       sfConfig::set('pub.meta_event.slug', $request->getParameter('meta-event'));
     }
     
     // if there is only one event...
-    if ( $this->pager->getResults()->count() == 1 && false )
+    if ( $this->pager->getResults()->count() == 1 )
     {
       foreach ( array('success', 'notice', 'error') as $type )
       if ( $this->getUser()->getFlash($type) )

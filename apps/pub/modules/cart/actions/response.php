@@ -76,12 +76,18 @@
   
   // activate member cards linked to this transaction
   foreach ( $transaction->MemberCards as $mc )
+  {
+    $mc->BoughtProduct->integrated_at = date('Y-m-d H:i:s');
     $mc->active = true;
+  }
   
+  // contacts
   $transaction->Contact->confirmed = true;        // transaction's contact
   foreach ( $transaction->Tickets as $ticket )    // for "named" tickets
   if ( $ticket->contact_id )
     $ticket->DirectContact->confirmed = true;
+  
+  // order
   $transaction->Payments[] = $payment;
   if ( $transaction->Order->count() == 0 )
     $transaction->Order[] = new Order;

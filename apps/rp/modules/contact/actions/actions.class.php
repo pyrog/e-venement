@@ -415,8 +415,9 @@ class contactActions extends autoContactActions
     $this->pager->setPage($request->getParameter('page') ? $request->getParameter('page') : 1);
     $q = new Doctrine_RawSql();
     $q->from('Contact c')
-      ->leftJoin('(select lower(name) as name, lower(firstname) as firstname, count(*) AS nb from contact group by lower(name), lower(firstname) order by lower(name), lower(firstname)) AS c2 ON c2.firstname ILIKE c.firstname AND c2.name ILIKE c.name')
+      ->leftJoin('(SELECT lower(name) as name, lower(firstname) as firstname, count(*) AS nb FROM contact WHERE confirmed = true GROUP BY lower(name), lower(firstname) ORDER BY lower(name), lower(firstname)) AS c2 ON c2.firstname ILIKE c.firstname AND c2.name ILIKE c.name')
       ->where('c2.nb > 1')
+      ->andWhere('c.confirmed = ?', true)
       ->orderBy('lower(c.name), lower(c.firstname), c.id')
       ->addComponent('c','Contact')
       ->addComponent('c2','Contact');

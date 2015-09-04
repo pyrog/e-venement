@@ -5,6 +5,14 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Add</source>
+        <target>Ajouter</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Complete your passes</source>
+        <target>Compléter mes passes</target>
+      </trans-unit>
+      <trans-unit>
         <source>Your items were successfully removed from your cart.</source>
         <target>Vos articles ont été correctement retirés de votre panier.</target>
       </trans-unit>
@@ -45,8 +53,8 @@
         <target>Vous avez commandé %%nb%% Passes/cartes d'abo. alors que %%max%% maximum sont autorisées. Retirez-en SVP...</target>
       </trans-unit>
       <trans-unit>
-        <source>You need to book tickets for %%nb%% different events at least to be able to order a "%%mc%%" pass.</source>
-        <target>Vous devez réserver des billets pour %%nb%% événements différents au moins pour pouvoir commander un Pass "%%mc%%".</target>
+        <source>You must book tickets at least %%nb%% different events linked to your "%%mc%%" pass to be able to order it.</source>
+        <target>Vous devez réserver des billets pour au moins %%nb%% événements différents liés à votre pass "%%mc%%" pour pouvoir le commander.</target>
       </trans-unit>
       <trans-unit>
         <source>Meta events</source>
@@ -765,7 +773,7 @@
         <target>Je passe commande</target>
       </trans-unit>
       <trans-unit>
-        <source>Empty your basket</source>
+        <source>Empty your cart</source>
         <target>Vider mon panier</target>
       </trans-unit>
       <trans-unit>

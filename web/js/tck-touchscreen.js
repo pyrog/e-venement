@@ -342,6 +342,8 @@ $(document).ready(function(){
   
   // reset the current transaction
   $('#abandon').appendTo($('#sf_admin_container .ui-widget-header h1'));
+  // resend the confirmation email
+  $('#resend-email').appendTo($('#sf_admin_container .ui-widget-header h1'));
 });
 
 // check gauges for overbooking

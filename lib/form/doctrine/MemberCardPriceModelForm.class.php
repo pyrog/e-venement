@@ -40,7 +40,8 @@ class MemberCardPriceModelForm extends BaseMemberCardPriceModelForm
     if (null === $con)
       $con = $this->getConnection();
     
-    if ( is_array($this->values['event_id']) )
+    if ( !is_array($this->values['event_id']) )
+      $this->values['event_id'] = array($this->values['event_id']);
     foreach ( $this->values['event_id'] as $event_id )
     {
       $last = $this->object;

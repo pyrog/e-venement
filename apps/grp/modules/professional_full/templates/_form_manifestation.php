@@ -34,7 +34,9 @@
           </a><a class="sf_admin_action_export fg-button-mini fg-button ui-state-default fg-button-icon-left" href="<?php echo url_for('event/export?manifestation_id='.$me->id.'&id='.$me->Manifestation->Event->id) ?>">
             <?php echo __('Export accepted') ?>
           </a>
+          <?php if ( !sfConfig::get('app_options_remove_gauges_on_contact', false) ): ?>
           <div class="count" data-manifestation-id="<?php echo $me->id ?>"></div>
+          <?php endif ?>
           <!--
           <a class="fg-button-mini fg-button ui-state-default fg-button-icon-left" href="<?php echo url_for('manifestation_entry/del?id='.$me->id) ?>" onclick="javascript: return confirm('<?php echo __('Are you sure?','','sf_admin') ?>">
             <span class="ui-icon ui-icon-trash"></span>

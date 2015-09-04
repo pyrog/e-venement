@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>List of linked products</source>
+        <target>Liste des produits liés</target>
+      </trans-unit>
+      <trans-unit>
         <source>##EXPIRATION## is replaced by the expiration date</source>
         <target>##EXPIRATION## est remplacé par la date d'expiration</target>
       </trans-unit>
@@ -723,6 +727,10 @@
       <trans-unit>
         <source>List of tickets</source>
         <target>Liste des billets</target>
+      </trans-unit>
+      <trans-unit>
+        <source>List of pending tickets</source>
+        <target>Liste des billets en attente</target>
       </trans-unit>
       <trans-unit>
         <source>Associated prices still available</source>

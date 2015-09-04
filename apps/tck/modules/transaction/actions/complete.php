@@ -229,6 +229,7 @@
           foreach ( Doctrine::getTable('MemberCard')->createQuery('mc')
             ->andWhere('mc.contact_id = ?', $this->transaction->contact_id)
             ->andWhere('mc.expire_at > NOW()')
+            ->andWhere('(SELECT SUM(pp.value) FROM Payment pp WHERE mc.id = pp.member_card_id) < 0')
             ->orderBy('(SELECT SUM(p.value) FROM Payment p WHERE mc.id = p.member_card_id) DESC, mc.id')
             ->execute() as $mc )
             $this->json['success']['success_fields'][$field]['data']['content'][]

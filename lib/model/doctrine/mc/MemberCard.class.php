@@ -72,12 +72,27 @@ class MemberCard extends PluginMemberCard
   
   public function delete(Doctrine_Connection $con = NULL)
   {
-    if ( $this->Payments->count() == 0 && $this->Tickets->count() == 0 )
-      return parent::delete($con);
+    if ( $this->Payments->count() == 0 )
+    {
+      if ( $this->Tickets->count() == 0 )
+        return parent::delete($con);
+      $go = true;
+      foreach ( $this->Tickets as $ticket )
+      if ( $ticket->printed_at || $ticket->integrated_at || $ticket->cancelling || $ticket->duplicating )
+      {
+        $go = false;
+        break;
+      }
+      if ( $go )
+      {
+        $this->Tickets->delete();
+        return parent::delete($con);
+      }
+    }
     
     $payments = $tickets = 0;
     foreach ( $this->Tickets as $ticket )
-    if ( $ticket->Duplicatas->count() == 0 )
+    if ( $ticket->Duplicatas->count() == 0 && ($ticket->integrated_at || $ticket->printed_at) )
       $tickets += is_null($ticket->cancelling)*2-1;
     foreach ( $this->Payments as $payment )
       $payments += $payment->value;

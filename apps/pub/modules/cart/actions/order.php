@@ -223,7 +223,7 @@
             error_log('events: '.count($events).' required: '.$nb[$mc->MemberCardType->name]);
           
           $this->getContext()->getConfiguration()->loadHelpers('I18N');
-          $this->getUser()->setFlash('error', $str = __('You need to book tickets for %%nb%% different events at least to be able to order a "%%mc%%" pass.', array('%%nb%%' => $nb[$mc->MemberCardType->name], '%%mc%%' => $mc->MemberCardType->description_name)));
+          $this->getUser()->setFlash('error', $str = __('You must book tickets at least %%nb%% different events linked to your "%%mc%%" pass to be able to order it.', array('%%nb%%' => $nb[$mc->MemberCardType->name], '%%mc%%' => $mc->MemberCardType->description_name)));
           error_log('Transaction #'.$this->getUser()->getTransactionId().': '.$str);
           $this->redirect('transaction/show?id='.$this->getUser()->getTransactionId());
         }

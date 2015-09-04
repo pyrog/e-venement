@@ -42,11 +42,11 @@
       $request->setParameter('id',$params['contact_id']);
     $this->executeShow($request);
     
-    $this->member_card_types = Doctrine::getTable('MemberCardType')->createQuery('mct')
+    $q = Doctrine::getTable('MemberCardType')->createQuery('mct')
       ->leftJoin('mct.Users u')
       ->andWhere('u.id = ?',$this->getUser()->getId())
-      ->orderBy('name')
-      ->execute();
+      ->orderBy('name');
+    $this->member_card_types = $q->execute();
     
     $this->card = new MemberCardForm();
     $params['active'] = true;
@@ -59,7 +59,7 @@
       {
         $this->transaction = new Transaction;
         $this->transaction->MemberCards[] = $this->card->getObject();
-        $this->card->save();
+        $this->transaction->save();
         $this->card = $this->card->getObject();
         
         if ( $this->card->MemberCardType->value > 0 )
@@ -99,7 +99,6 @@
         // for multiple cards
         for ( $i = 1 ; $i < $request->getParameter('qty', 1) ; $i++ )
         {
-          error_log('new card copy');
           $this->card = $this->card->copy();
           if ( isset($payment) )
             $this->card->Payments[] = $payment->copy();
@@ -121,7 +120,13 @@
         if ( !$card )
           return 'Params';
         
-        $this->transaction = $card->Transaction;
+        // for the special case where no transaction is linked to this member card...
+        if (!( $this->transaction = $card->Transaction ))
+        {
+          $this->transaction = new Transaction;
+          $this->transaction->MemberCards[] = $card;
+        }
+        
         // some kind of a hack
         $this->card = $card; // replacing MemberCardForm by MemberCard...
         $this->card->updated_at = NULL;

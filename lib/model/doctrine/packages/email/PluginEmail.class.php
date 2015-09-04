@@ -157,26 +157,29 @@ abstract class PluginEmail extends BaseEmail
     }
     
     // treats links
-    preg_match_all('!<a\s(.*)href="(http.*)"(.*)>!U', $post_treated_content, $links, PREG_SET_ORDER);
-    foreach ( $links as $link )
+    if ( $this->id )
     {
-      $el = new EmailExternalLink;
-      $el->original_url = $link[2];
-      $el->encrypted_uri = md5($link[2].'|'.sfConfig::get('app_salt','').'|'.microtime());
-      $el->email_id = $this->id;
-      $el->save();
+      preg_match_all('!<a\s(.*)href="(http.*)"(.*)>!U', $post_treated_content, $links, PREG_SET_ORDER);
+      foreach ( $links as $link )
+      {
+        $el = new EmailExternalLink;
+        $el->original_url = $link[2];
+        $el->encrypted_uri = md5($link[2].'|'.sfConfig::get('app_salt','').'|'.microtime());
+        $el->email_id = $this->id;
+        $el->save();
+        
+        $post_treated_content = str_replace(
+          $link[0],
+          '<a '.$link[1].'href="'.str_replace('https','http',cross_app_url_for('email','link/follow?u='.$el->encrypted_uri,true)).'&e=%%EMAILADDRESS%%"'.$link[3].'>',
+          $post_treated_content
+        );
+      }
       
-      $post_treated_content = str_replace(
-        $link[0],
-        '<a '.$link[1].'href="'.str_replace('https','http',cross_app_url_for('email','link/follow?u='.$el->encrypted_uri,true)).'&e=%%EMAILADDRESS%%"'.$link[3].'>',
-        $post_treated_content
-      );
+      // adds a tracking external image
+      $post_treated_content .= '<img src="'.str_replace('https','http',cross_app_url_for('email','track/index?i='.$this->id.'&s='.md5(sfConfig::get('app_salt','').'|'.microtime()),true)).'&e=%%EMAILADDRESS%%" alt=" " width="1" height="1" />';
     }
     
-    // adds a tracking external image
-    $post_treated_content .= '<img src="'.str_replace('https','http',cross_app_url_for('email','track/index?i='.$this->id.'&s='.md5(sfConfig::get('app_salt','').'|'.microtime()),true)).'&e=%%EMAILADDRESS%%" alt=" " width="1" height="1" />';
-    
-    $content = 
+    $content =
       '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.
       '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">'.
       '<head>'.

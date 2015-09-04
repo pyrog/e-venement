@@ -85,17 +85,26 @@ class transactionActions extends sfActions
       throw new liOnlineSaleException('Trying to access something without prerequisites.');
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
     
+    $tokened = md5($request->getParameter('id').'|*|*|'.sfConfig::get('project_eticketting_salt', 'e-venement')) == $request->getParameter('token','');
+    
     $this->transaction = Doctrine::getTable('Transaction')->find(intval($request->getParameter('id')));
     if ( !sfConfig::get('sf_web_debug', false)
-      && $this->transaction->Order->count() == 0 || $this->transaction->contact_id != $this->getUser()->getTransaction()->contact_id )
+      && $this->transaction->Order->count() == 0 || !$tokened && $this->transaction->contact_id != $this->getUser()->getTransaction()->contact_id )
     {
       $this->getUser()->setFlash('error', __('The state of your order does not allow this action. Please contact us if necessary.'));
       $this->redirect('transaction/show?id='.$this->transaction->id);
     }
     
-    cartActions::sendConfirmationEmails($this->transaction, $this);
+    cartActions::sendConfirmationEmails($this->transaction, $this, $tokened);
     $this->getUser()->setFlash('success', __('Action successful'));
-    $this->redirect('transaction/show?id='.$this->transaction->id);
+    
+    if ( $tokened )
+      $this->redirect('transaction/closeWindow');
+    else
+      $this->redirect('transaction/show?id='.$this->transaction->id);
+  }
+  public function executeCloseWindow(sfWebRequest $request)
+  {
   }
   
   public function executeShow(sfWebRequest $request)

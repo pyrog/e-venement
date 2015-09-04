@@ -26,7 +26,10 @@ class manifestationActions extends autoManifestationActions
   
   public function executeIndex(sfWebRequest $request)
   {
-    if ( $this->getPager()->getQuery()->count() == 1 )
+    if ( $request->hasParameter('mc_pending') )
+      $this->setFilters(array());
+    
+    if ( $this->getPager()->getQuery()->count() == 1 && !$request->hasParameter('debug') )
     {
       $manifestation = $this->getPager()->getQuery()->select('m.id')->fetchOne();
       
@@ -43,21 +46,40 @@ class manifestationActions extends autoManifestationActions
       $event = Doctrine::getTable('Event')->createQuery('e')->andWhere('e.id = ?', $filters['event_id'])->fetchOne();
       sfConfig::set('pub.meta_event.slug', $event->MetaEvent->slug);
     }
-    
+
     parent::executeIndex($request);
+
+    // focusing on member card pending tickets
+    $transaction = $this->getUser()->getTransaction();
+    if ( $request->hasParameter('mc_pending') && $transaction->MemberCards->count() > 0 )
+    {
+      $events = array();
+      foreach ( $transaction->MemberCards as $mc )
+      foreach ( $mc->MemberCardType->MemberCardPriceModels as $mcpm )
+      if ( !$mcpm->autoadd )
+        $events[] = $mcpm->event_id;
+      
+      $this->pager->getQuery()
+        ->andWhereIn('e.id', $events);
+      $vel = sfConfig::get('app_tickets_vel', array());
+      $vel['display_tickets_in_manifestations_list'] = true;
+      sfConfig::set('app_tickets_vel', $vel);
+    }
   }
   public function executeDel(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    $q = Doctrine::getTable('Tickets')->createQuery('tck')
+    $q = Doctrine::getTable('Ticket')->createQuery('tck')
       ->andWhere('tck.transaction_id = ?', $this->getUser()->getTransactionId())
       ->andWhere('tck.integrated_at IS NULL AND tck.printed_at IS NULL AND tck.cancelling IS NULL')
       ->andWhere('tck.gauge_id = ?', $request->getParameter('gauge_id',0))
     ;
+    if ( intval($request->getParameter('price_id',0)) > 0 )
+      $q->andWhere('tck.price_id = ?', intval($request->getParameter('price_id',0)));
     $this->forward404Unless($tickets = $q->execute());
     $tickets->delete();
     $this->getUser()->setFlash('success', __('Your items were successfully removed from your cart.'));
-    $this->redirect('event/index');
+    $this->redirect('cart/show');
   }
 
   public function executeBatchDelete(sfWebRequest $request)

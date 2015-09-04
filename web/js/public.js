@@ -35,7 +35,7 @@ $(document).ready(function(){
     $('.mod-meta_event.action-index .sf_admin_list .sf_admin_row:last').clone()
       .toggleClass('odd').toggleClass('even')
       .insertAfter($('.mod-meta_event.action-index .sf_admin_list .sf_admin_row:last'))
-      .find('td').html('').append($('#ariane .event.with-store a.store').clone());
+      .find('td').html('').first().append($('#ariane .event.with-store a.store').clone());
   
   // auto-redirects
   if ( location.hash != '#debug' )
@@ -65,9 +65,10 @@ $(document).ready(function(){
     $('.mod-manifestation.action-show .adding-tickets .gauge:not(:last) tfoot tr:last').hide();
   
   // temporary flashes
+  var time = $.trim($('.sf_admin_flashes').text()).length/18*1000;
   setTimeout(function(){
     $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  }, 5500);
+  }, time < 5000 ? 5000 : time);
   
   // focus on registering forms
   $('.mod-cart.action-register #login, #contact-form').focusin(function(){
@@ -148,11 +149,6 @@ $(document).ready(function(){
     });
   }
   
-  // flashes
-  setTimeout(function(){
-    $('.sf_admin_flashes > *').fadeOut(function(){ $(this).remove(); });
-  },4000);
-  
   // if treating day as a structural data (in the manifestations list)
   if ( $('.sf_admin_list .sf_admin_list_th_happens_at_time_h_r').length > 0
     && $('.sf_admin_list .sf_admin_list_th_happens_at_time_h_r').css('display') != 'none' )
@@ -208,7 +204,10 @@ $(document).ready(function(){
   LI.manifCalculateTotal();
   $('.sf_admin_list_td_list_tickets form').submit(function(){
     if ( location.hash == '#debug' )
+    {
+      $(this).prop('target', '_blank');
       return true;
+    }
     
     $.ajax({
       type: $(this).prop('method'),
@@ -256,12 +255,12 @@ LI.pubPictureRowspan = function()
   if ( $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row').length > 0 )
   {
     var pic = $('.mod-manifestation.action-index .sf_admin_list tr.sf_admin_row .sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done)')[0];
-    var next = $(pic).closest('tr').next();
-    if ( $(pic).find('[data-event-id]').attr('data-event-id') == $(next).find('.sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done) [data-event-id]').attr('data-event-id') )
-    {
-      $(pic).prop('rowspan', $(pic).prop('rowspan')+1)
-      $(next).find('.sf_admin_list_td_list_picture:not([rowspan]):not(.picture-done)').remove();
-    }
+    $(pic).prop('rowspan',$(pic).closest('tbody').find('.sf_admin_list_td_list_picture [data-event-id="'+$(pic).find('[data-event-id]').attr('data-event-id')+'"]').length);
+    $(pic).addClass('picture-done');
+    $(pic).closest('tbody')
+      .find('.sf_admin_list_td_list_picture:not(.picture-done) [data-event-id="'+$(pic).find('[data-event-id]').attr('data-event-id')+'"]')
+      .closest('.sf_admin_list_td_list_picture')
+      .remove();
   }
   else
   {

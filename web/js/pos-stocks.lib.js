@@ -32,6 +32,7 @@ LI.posRenderStocks = function(data, jObj)
     cpt++;
   });
   
+  if ( cpt > 0 )
   $.jqplot(
     jObj.prop('id'), fdata, {
       series: [

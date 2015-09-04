@@ -164,6 +164,10 @@ MemberCardPriceModel:
       type: integer
       notnull: true
     event_id: integer
+    autoadd: 
+      type: boolean
+      default: false
+      notnull: true
   relations:
     Price:
       foreignAlias: MemberCardPriceModels

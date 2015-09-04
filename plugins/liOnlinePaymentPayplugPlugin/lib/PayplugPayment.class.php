@@ -23,6 +23,8 @@
 ?>
 <?php
 
+require __DIR__.'/payplug_php/Payplug.php';
+
 class PayplugPayment extends OnlinePayment
 {
   const name = 'payplug';

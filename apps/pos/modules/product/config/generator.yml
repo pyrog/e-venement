@@ -14,7 +14,7 @@ generator:
     config:
       actions: ~
       fields:
-        product_category_id: { label: Category }
+        product_category_id: { label: Category, help: Needed for online sales }
         prices_list: { help: Choose what price will be displaid }
         prices: { help: then set up their values }
         accounting_account: { label: Account, help: A facilitator for accounting }
