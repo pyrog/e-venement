@@ -42,11 +42,11 @@
       $request->setParameter('id',$params['contact_id']);
     $this->executeShow($request);
     
-    $this->member_card_types = Doctrine::getTable('MemberCardType')->createQuery('mct')
+    $q = Doctrine::getTable('MemberCardType')->createQuery('mct')
       ->leftJoin('mct.Users u')
       ->andWhere('u.id = ?',$this->getUser()->getId())
-      ->orderBy('name')
-      ->execute();
+      ->orderBy('name');
+    $this->member_card_types = $q->execute();
     
     $this->card = new MemberCardForm();
     $params['active'] = true;
