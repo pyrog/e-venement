@@ -5,9 +5,12 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Resend confirmation email</source>
+        <target>Renvoyer l'email de confirmation</target>
+      </trans-unit>
+      <trans-unit>
         <source>[1]One product cannot be delivered, its stock is empty.|(1,+Inf]%%nb%% products cannot be delivered, their stocks are empty.</source>
         <target>[1]Un produit ne peut être délivré, son stock est vide.|(1,+Inf]%%nb%% produits ne peuvent être délivrés, leurs stocks sont vides.</target>
-        <target></target>
       </trans-unit>
       <trans-unit>
         <source>Added automatically</source>
