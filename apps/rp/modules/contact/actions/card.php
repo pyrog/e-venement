@@ -59,7 +59,7 @@
       {
         $this->transaction = new Transaction;
         $this->transaction->MemberCards[] = $this->card->getObject();
-        $this->card->save();
+        $this->transaction->save();
         $this->card = $this->card->getObject();
         
         if ( $this->card->MemberCardType->value > 0 )
@@ -121,7 +121,13 @@
         if ( !$card )
           return 'Params';
         
-        $this->transaction = $card->Transaction;
+        // for the special case where no transaction is linked to this member card...
+        if (!( $this->transaction = $card->Transaction ))
+        {
+          $this->transaction = new Transaction;
+          $this->transaction->MemberCards[] = $card;
+        }
+        
         // some kind of a hack
         $this->card = $card; // replacing MemberCardForm by MemberCard...
         $this->card->updated_at = NULL;
