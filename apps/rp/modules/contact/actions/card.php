@@ -58,8 +58,10 @@
       if ( !$request->hasParameter('duplicate') )
       {
         $this->transaction = new Transaction;
-        $this->transaction->MemberCards[] = $this->card->getObject();
         $this->transaction->save();
+        $this->transaction->MemberCards[] = $this->card->getObject();
+        $this->card->getObject()->Transaction = $this->transaction;
+        $this->card->save();
         $this->card = $this->card->getObject();
         
         if ( $this->card->MemberCardType->value > 0 )
