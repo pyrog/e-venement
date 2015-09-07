@@ -6,7 +6,7 @@
     <title>e-venement, Billet</title>
     <link rel="shortcut icon" href="/images/logo-evenement.png" />
   </head>
-  <body class="pdf">
+  <body class="pdf app-<?php echo $sf_context->getConfiguration()->getApplication() ?>">
     <div id="content">
       <?php include_partial('global/get_tickets',array('tickets_html' => $tickets_html)) ?>
     </div>

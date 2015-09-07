@@ -27,7 +27,6 @@ class liGrpPluginConfiguration extends sfPluginConfiguration
 {
   public function setup()
   {
-    error_log('plugin setup');
     $this->dispatcher->connect('tck.ticket_post_cancelling', array($this, 'listenToPostCancelling'));
   }
   
