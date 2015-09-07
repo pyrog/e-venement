@@ -159,6 +159,7 @@ abstract class PluginEmail extends BaseEmail
     // treats links
     if ( $this->id )
     {
+      sfContext::getInstance()->getConfiguration()->loadHelpers('CrossAppLink');
       preg_match_all('!<a\s(.*)href="(http.*)"(.*)>!U', $post_treated_content, $links, PREG_SET_ORDER);
       foreach ( $links as $link )
       {

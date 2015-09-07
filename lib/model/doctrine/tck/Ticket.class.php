@@ -155,6 +155,7 @@ class Ticket extends PluginTicket
   <div class="cmd-element ticket">
   <table><tr>
     <td class="desc">
+      <div class="meta-event"><table><tbody><tr><td><span>%s:</span> <span>%s</span></td></tr></tbody></table></div>
       <div class="event"><table><tbody><tr><td><span>%s:</span> <span>%s</span></td></tr></tbody></table></div>
       <p class="event-2nd"><span>%s</span> <span>%s</span></p>
       <p class="description"><span>%s</span> <span>%s</span></p>
@@ -174,6 +175,7 @@ class Ticket extends PluginTicket
   <img class="background" src="data:image/png;base64,%s" alt="" />
   </div>
 EOF
+      , __('Meta-event', null, 'li_tickets_email'), $this->Manifestation->Event->MetaEvent
       , __('Event', null, 'li_tickets_email'), nl2br($this->Manifestation->Event)
       , '', $this->Manifestation->Event->subtitle
       , '', $this->Manifestation->Event->description
@@ -183,7 +185,7 @@ EOF
       , __('Category', null, 'li_tickets_email'), $this->category
       , __('Date', null, 'li_tickets_email'), $this->Manifestation->getFormattedDate()
       , __('Price', null, 'li_tickets_email'), $this->price_name, format_currency($this->value,'€')
-      , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : ($this->Manifestation->voucherized ? __('Voucher', null, 'li_ticket_email') : ''), $this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : '')
+      , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : ($this->Manifestation->voucherized ? __('Voucher', null, 'li_ticket_email') : ''), $this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : __('Free seating', null, 'li_tickets_email'))
       , $this->comment ? $this->comment : sfConfig::get('project_eticketting_default_comment', __('This is your ticket', null, 'li_tickets_email'))
       , $this->transaction_id, $this->id
       , $this->contact_id

@@ -25,6 +25,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 .cmd-element .desc p span:first-child, .cmd-element .desc div span:first-child { display: none; }
 .cmd-element table table { top: auto; left: auto; position: static; }
 
+.cmd-element .meta-event { display: block; top: 66mm; height: 18mm; }
 .cmd-element .desc .event { white-space: normal; top: 66mm; height: 26mm; font-size: 19pt; }
 .cmd-element .event table { margin-top: -2mm; }
 .cmd-element .event td { vertical-align: bottom; height: 26mm; padding: 0 3mm; text-align: center; }
@@ -36,7 +37,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 .cmd-element .contact { top: 198mm; }
 .cmd-element .gauge { top: 215.5mm; font-size: 11pt; margin: 0; }
 .cmd-element .seat { top: 220.5mm; font-size: 19pt; }
-.cmd-element .desc .comment, .cmd-element.product .contact { top: 257.5mm; white-space: normal; padding-left: 38mm; }
+.cmd-element .desc .comment, .cmd-element.product .contact { top: 257.5mm; white-space: normal; }
 .cmd-element .desc .comment { font-size: 10pt; }
 .cmd-element .comment table, .cmd-element.product .contact table { width: 63mm; }
 .cmd-element .comment td, .cmd-element.product .contact td { vertical-align: middle; height: 13.5mm; width: 63mm; }
@@ -53,6 +54,8 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 
 .cmd-element .duplicate { font-size: 4pt; border: 0mm solid red; margin: 0 0 0 0; top: 253mm; }
 
+.cmd-element .desc .meta-event table, .cmd-element .desc .comment, .cmd-element.product .contact { text-align: center; width: 100%; }
+
 
 /* products */
 .cmd-element.product .image { top: 105mm; font-size: 8pt; }
@@ -68,7 +71,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 /* for pdf rendering */
 .pdf .cmd-element * { line-height: 0.9; }
 .pdf .cmd-element .event table { margin-top: -3mm; }
-.pdf .cmd-element .bc span, .pdf .cmd-element .bc a { margin-top: 2.5mm; margin-left: -16.2mm; margin-top: -26mm; padding: 20mm; }
+.cmd-element .desc .comment table { text-align: center; width: 100%; }
 .pdf .cmd-element .gauge { margin-top: -1mm; }
 .pdf .cmd-element .seat { padding-top: 1mm; }
 .pdf .cmd-element .location { margin-top: 2.5mm; }
@@ -76,14 +79,15 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 .pdf .cmd-element .comment { margin-left: -1mm; margin-top: -1mm; }
 
 /* for debug purposes, remove "debug" */
-dgb.cmd-element { border: 1px solid purple; }
-dgb.cmd-element .bc span { border: 1px solid green; }
+dbg#content { border: 1px solid yellow; height: 95%; }
+dbg.cmd-element { border: 1px solid purple; }
+dbg.cmd-element .bc span { border: 1px solid green; }
 dbg.cmd-element .desc p,
 dbg.cmd-element .desc div { border: 1px solid red; }
 dbg.cmd-element .event { border: 1px solid green; }
-dgb.cmd-element .ids span { border: 1px solid magenta; }
-dgb.cmd-element .price span { border: 1px solid orange; }
+dbg.cmd-element .ids span { border: 1px solid magenta; }
+dbg.cmd-element .price span { border: 1px solid orange; }
 dbg.cmd-element .comment td { border: 1px solid blue; }
-dgb.cmd-element .comment td div { border: 1px solid lightblue; }
+dbg.cmd-element .comment td div { border: 1px solid lightblue; }
 
 /** fonts **/
