@@ -82,6 +82,7 @@ float: left;
 .metaevt { font-size: 8pt; margin-top: 9mm; height: 10pt; clear: both; }
 .lieuprix, .dateheure { font-size: 11pt; height: 13pt; }
 .datetime { margin-top: 1.5mm; }
+.date_time { display: none; }
 .placeprice { margin-top: 0.5mm; }
 .placeprice .address { display: none; }
 .price_vat { display: none; }

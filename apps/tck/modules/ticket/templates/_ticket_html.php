@@ -1,4 +1,4 @@
-<?php use_helper('Date','Number') ?>
+<?php use_helper('Date','Number', 'SuperNumber') ?>
 <?php
 	$maxsize = sfConfig::get('app_tickets_max_size');
   $maxsize['event_name'] = isset($maxsize['event_name']) && intval($maxsize['event_name']) != 0 ? intval($maxsize['event_name']) : 30;
@@ -15,14 +15,19 @@
     <p class="info <?php echo $ticket->Transaction->type ?> <?php echo $duplicate ? 'duplicate' : '' ?>"><span class="subtype"><?php echo __($ticket->Transaction->type) ?></span><span class="subtype"><?php echo $duplicate ? __('Duplicata') : '' ?></span></p>
     <p class="metaevt"><?php echo $ticket->Manifestation->Event->MetaEvent ?></p>
     <p class="datetime"><?php echo format_date($ticket->Manifestation->happens_at,'dddd dd MMMM yyyy HH:mm') ?></p>
+    <p class="date_time" data-datetime="<?php echo str_replace(' ', 'T', $ticket->Manifestation->happens_at) ?>">
+      <span class="date"><?php echo format_date($ticket->Manifestation->happens_at,'dddd dd MMM yyyy') ?></span>
+      <span class="happens_at"><?php echo format_date($ticket->Manifestation->happens_at,'HH:mm') ?></span>
+      <span class="ends_at"><?php echo format_date($ticket->Manifestation->ends_at,'HH:mm') ?></span>
+    </p>
     <p class="placeprice">
       <span class="place"><?php echo $ticket->Manifestation->Location ?></span>
       <span class="address"><?php echo $ticket->Manifestation->Location->address.' - '.$ticket->Manifestation->Location->city ?></span>
       /
-      <span class="price"><?php echo format_currency($ticket->value,'€') ?></span>
+      <span class="price"><?php echo format_normal_currency($ticket->value,'€') ?></span>
     </p>
-    <p class="price_name"><span class="description"><?php echo $ticket->Price->description ?></span><span class="name"><?php echo $ticket->price_name ?></span> <span class="price"><?php echo format_currency($ticket->value,'€') ?></span></p>
-    <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span> - <span class="value"><?php echo format_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
+    <p class="price_name"><span class="description"><?php echo $ticket->Price->description ?></span><span class="name"><?php echo $ticket->price_name ?></span> <span class="price"><?php echo format_normal_currency($ticket->value,'€') ?></span></p>
+    <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span> - <span class="value"><?php echo format_normal_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
     <p class="event"><?php echo mb_strlen($buf = (string)$ticket->Manifestation->Event) > $maxsize['event_name'] ? mb_substr(nl2br($buf),0,$maxsize['event_name']).'...' : nl2br($buf) ?></p>
     <p class="event-short"><?php echo mb_strlen($buf = $ticket->Manifestation->Event->short_name) > $maxsize['event_shortname'] ? mb_substr($buf,0,$maxsize['event_shortname']).'...' : $buf ?></p>
     <p class="cie"><?php $creators = array(); $cpt = 0; foreach ( $ticket->Manifestation->Event->Companies as $company ) { if ( $cpt++ > 1 ) break; $creators[] .= $company->name; } echo implode(', ',$creators); ?></p>
@@ -74,13 +79,18 @@
     <p class="info <?php echo $ticket->Transaction->type ?> <?php echo $duplicate ? 'duplicate' : '' ?>"><span class="subtype"><?php echo __($ticket->Transaction->type) ?></span><span class="subtype"><?php echo $duplicate ? __('Duplicata') : '' ?></span></p>
     <p class="metaevt"><?php echo $ticket->Manifestation->Event->MetaEvent ?></p>
     <p class="datetime"><?php echo format_date($ticket->Manifestation->happens_at,'dd/MM/yyyy HH:mm') ?></p>
+    <p class="date_time" data-datetime="<?php echo str_replace(' ', 'T', $ticket->Manifestation->happens_at) ?>">
+      <span class="date"><?php echo format_date($ticket->Manifestation->happens_at,'dddd dd MMM yyyy') ?></span>
+      <span class="happens_at"><?php echo format_date($ticket->Manifestation->happens_at,'HH:mm') ?></span>
+      <span class="ends_at"><?php echo format_date($ticket->Manifestation->ends_at,'HH:mm') ?></span>
+    </p>
     <p class="placeprice">
       <span class="place"><?php echo mb_strlen($buf = $ticket->Manifestation->Location) > ($max = $maxsize['place'] ? $maxsize['place'] : 15) ? mb_substr($buf,0,$max-3).'...' : $buf ?></span>
       /
-      <span class="price"><?php echo format_currency($ticket->value,'€') ?></span>
+      <span class="price"><?php echo format_normal_currency($ticket->value,'€') ?></span>
     </p>
-    <p class="price_name"><span class="name"><?php echo $ticket->price_name ?></span> <span class="price"><?php echo format_currency($ticket->value,'€') ?></span></p>
-    <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span><span class="value"><?php echo format_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
+    <p class="price_name"><span class="name"><?php echo $ticket->price_name ?></span> <span class="price"><?php echo format_normal_currency($ticket->value,'€') ?></span></p>
+    <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span><span class="value"><?php echo format_normal_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
     <p class="spectator"><?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?></p>
     <p class="event"><?php echo mb_strlen($buf = (string)$ticket->getRaw('Manifestation')->Event) > $maxsize['event_name_right'] ? mb_substr($buf,0,$maxsize['event_name_right']-3).'...' : $buf ?></p>
     <p class="cie"><?php echo mb_strlen($buf = implode(', ',$creators)) > 20 ? mb_substr($buf,0,17).'...' : $buf; ?></p>
