@@ -27,6 +27,7 @@ abstract class PluginMemberCard extends BaseMemberCard
       $bp->Declination = $this->MemberCardType->ProductDeclination;
       $bp->Price = $this->MemberCardType->Price;
       $bp->Transaction = $this->Transaction;
+      $bp->Transaction->contact_id = $this->contact_id;
       $bp->integrated_at = date('Y-m-d H:i:s');
       $this->BoughtProducts[] = $bp;
     }
