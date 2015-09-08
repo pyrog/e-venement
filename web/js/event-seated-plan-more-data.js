@@ -38,7 +38,6 @@ LI.seatedPlanMoreDataInitialization = function(url, show, root)
       switch(obj.type) {
       case 'controls':
         $(root).find('.picture.seated-plan > .seat').remove();
-        console.error(obj.occupied);
       break;
         
       case 'shortname':
@@ -67,7 +66,6 @@ LI.seatedPlanMoreDataInitialization = function(url, show, root)
       break;
       
       case 'link':
-        console.error('link');
         elt
           .addClass('link')
           .prop('title', obj.names[0]+' - '+obj.names[1])
@@ -77,6 +75,10 @@ LI.seatedPlanMoreDataInitialization = function(url, show, root)
           .css('left', obj.position[0][0])
           .css('top',  obj.position[0][1])
           .css('width', obj.length)
+          .mouseup(function(event){
+            event.stopPropagation();
+            return false;
+          })
           .dblclick(function(){
             // DELETE A LINK USING THE GUI/WYSIWYG
             $('#sf_fieldset_neighbors [name="auto_links[exceptions_to_remove]"]').val(
