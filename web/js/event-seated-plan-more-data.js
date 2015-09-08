@@ -79,6 +79,10 @@ LI.seatedPlanMoreDataInitialization = function(url, show, root)
             event.stopPropagation();
             return false;
           })
+          .mousedown(function(event){
+            event.stopPropagation();
+            return false;
+          })
           .dblclick(function(){
             // DELETE A LINK USING THE GUI/WYSIWYG
             $('#sf_fieldset_neighbors [name="auto_links[exceptions_to_remove]"]').val(
