@@ -27,7 +27,7 @@ generator:
           _edit: ~
           _delete: ~
       filter:
-        display: [member_card_type_id, price_id, quantity, autoadd, event_id, updated_at]
+        display: [member_card_type_id, price_id, quantity, autoadd, event_id, meta_events_list, updated_at]
       form:
         display: [member_card_type_id, price_id, quantity, autoadd, _form_meta_event_id, event_id]
       edit:    ~

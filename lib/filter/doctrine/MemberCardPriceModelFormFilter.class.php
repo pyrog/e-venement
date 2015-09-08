@@ -25,5 +25,29 @@ class MemberCardPriceModelFormFilter extends BaseMemberCardPriceModelFormFilter
       ->andWhereIn('e.meta_event_id', array_keys($this->user->getMetaEventsCredentials()))
     );
     $this->validatorSchema['event_id']->setOption('query', $this->widgetSchema['event_id']->getOption('query'));
+    
+    $this->widgetSchema   ['meta_events_list'] = new sfWidgetFormDoctrineChoice(array(
+      'multiple' => true,
+      'model'    => 'MetaEvent',
+      'order_by' => array('name',''),
+    ));
+    $this->validatorSchema['meta_events_list'] = new sfValidatorDoctrineChoice(array(
+      'multiple' => true,
+      'model'    => 'MetaEvent',
+    ));
+  }
+  
+  public function addMetaEventsListColumnQuery(Doctrine_Query $q, $field, $value)
+  {
+    if ( !$value )
+      return $q;
+    if ( !is_array($value) )
+      $value = array($value);
+    
+    $a = $q->getRootAlias();
+    $q->leftJoin("$a.Event e")
+      ->andWhereIn('e.meta_event_id', $value);
+    
+    return $q;
   }
 }
