@@ -233,7 +233,7 @@ class ticketActions extends sfActions
     if ( $request->getParameter('invoice_id',false) && $request->getParameter('order_id',false) )
       throw new sfError404Exception();
     
-    $accounting = new RawAccounting();
+    $accounting = new RawAccounting;
     
     if ( $request->getParameter('invoice_id',false) )
     {
@@ -251,7 +251,6 @@ class ticketActions extends sfActions
     $accounting->content = $request->getParameter('content');
     
     $accounting->save();
-    throw new sfException('here');
     return sfView::NONE;
   }
   // invoice
