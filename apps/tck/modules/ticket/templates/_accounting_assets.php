@@ -26,8 +26,8 @@ $(document).ready(function(){
         {
           $.post($('form.inline-modifications').attr('action'), {
             content: $('html').html(),
-            invoice_id: $('#ids .invoice_id').html(),
-            order_id: $('#ids .order_id').html()
+            invoice_id: $('#ids .invoice_id').text(),
+            order_id: $('#ids .order_id').text()
           });
         }
       }

@@ -81,5 +81,5 @@
     $pdf = new sfDomPDFPlugin();
     $pdf->setInput($content = $this->getPartial('order_pdf', $this->data));
     $this->getResponse()->setContentType('application/pdf');
-    $this->getResponse()->setHttpHeader('Content-Disposition', 'attachment; filename="order.pdf"');
+    $this->getResponse()->setHttpHeader('Content-Disposition', 'attachment; filename="order-'.$this->order->id.'.pdf"');
     return $this->renderText($pdf->execute());
