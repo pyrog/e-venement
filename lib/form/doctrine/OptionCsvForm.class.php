@@ -41,7 +41,10 @@ class OptionCsvForm extends BaseOptionCsvForm
         'phonename' => 'Phonetype',
         'phonenumber' => 'Phonenumber',
         '__YOBs__year'   => 'Birthdays',
-        '__Groups__name' => 'Groups',
+        '__Groups__name' => array(
+          'label' => 'Groups',
+          'helper' => 'Increases badly the extraction time'
+        ),
       ),
       'organism' => array(
         'organism_category' => 'Organism category',
@@ -56,7 +59,10 @@ class OptionCsvForm extends BaseOptionCsvForm
         'organism_description' => 'Description',
         'organism_phonename' => 'Phonetype',
         'organism_phonenumber' => 'Phonenumber',
-        '__Professionals__Organism__Groups__name' => "Organism's groups",
+        '__Professionals__Organism__Groups__name' => array(
+          'label' => "Organism's groups",
+          'helper' => 'Increases badly the extraction time',
+        ),
       ),
       'professional' => array(
         'professional_number' => 'Professional phonenumber',
@@ -64,7 +70,10 @@ class OptionCsvForm extends BaseOptionCsvForm
         'professional_type_name' => 'Professional type',
         'professional_name' => 'Professional',
         'professional_department' => 'Department',
-        '__Professionals__Groups__name' => 'Professional groups',
+        '__Professionals__Groups__name' => array(
+          'label' => 'Professional groups',
+          'helper' => 'Increases badly the extraction time',
+        ),
         'professional_important' => 'Close contact / Important organism',
       ),
       'extra' => array(
@@ -83,6 +92,9 @@ class OptionCsvForm extends BaseOptionCsvForm
     foreach ( $this->widgets as $fieldset )
     foreach ( $fieldset as $name => $value )
     {
+      if ( is_array($value) && isset($value['label']) )
+        $value = $value['label'];
+      
       $this->widgetSchema[$name]    = new sfWidgetFormInputCheckbox(array(
           'value_attribute_value' => $value,
           'label'                 => $value,

@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Increases badly the extraction time</source>
+        <target>Augmente dangereusement le temps d'extraction</target>
+      </trans-unit>
+      <trans-unit>
         <source>List of linked products</source>
         <target>Liste des produits liés</target>
       </trans-unit>

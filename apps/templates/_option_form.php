@@ -21,7 +21,7 @@
         <?php if ( is_array($value) && isset($value['helper']) && $value['helper'] ): ?>
         <div class="help">
           <span class="ui-icon ui-icon-help floatleft"></span>
-          <?php echo $value['helper'] ?>
+          <?php echo __($value['helper']) ?>
         </div>
         <?php endif ?>
         <div style="clear: both"></div>
