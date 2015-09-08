@@ -75,7 +75,7 @@
         success: LI.statsCompleteFillingData,
         error: function(){ LI.alert('An error occurred', 'error'); $('#transition .close').click(); }
       });
-      $('#sf_fieldset_statistics .filling-complete thead th a').click(function(){
+      $('#sf_fieldset_statistics .tab-print a').click(function(){
         // force refresh
         $('#transition').show();
         $.ajax({
