@@ -360,7 +360,8 @@ tfoot, thead { font-weight: bold; }
 #login .submit { margin-left: 0; }
 #login .submit input { margin-left: 5px; }
 .event-fields { display: none; }
-.event-fields h2 { margin: 0 0 10px 0; }
+.mod-manifestation .event-fields h2 { display: none; }
+.mod-manifestation.action-index .event-fields h2 { margin: 0 0 10px 0; display: block; }
 .prices tfoot .extra-taxes, .prices tfoot .total { border-top: 1px solid black; }
 .mod-login h1 { display: none; }
 

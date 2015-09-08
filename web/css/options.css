@@ -34,7 +34,7 @@ body #content { width: 600px; }
 #content .sf_admin_form fieldset textarea {
   width: 280px;
   height: 150px;
-  text-align:left;
+  text-align: left;
   margin-right: -30px;
 }
 
@@ -45,3 +45,5 @@ fieldset.professional.check { clear: left; }
 .templates { margin: 5px; padding: 5px; }
 
 .li-form-header { padding: 10px; }
+
+.sf_admin_form_row input { float: left; margin-right: 1em; }
