@@ -417,6 +417,14 @@
         <target>Non valide ou impossible à ajouter car déjà membre de ce groupe.</target>
       </trans-unit>
       <trans-unit>
+        <source>Add to a group</source>
+        <target>Ajouter à un groupe</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Press &lt;SPACE&gt; to see all groups</source>
+        <target>Presser sur &lt;ESPACE&gt; pour voir tous les groupes</target>
+      </trans-unit>
+      <trans-unit>
         <source>Refresh</source>
         <target>Rafraîchir</target>
       </trans-unit>
