@@ -31,10 +31,11 @@ class ContactTable extends PluginContactTable
   
   public function createQueryByGroupId($id)
   {
+    $id = intval($id);
     $q = $this->createQuery();
     $a = $q->getRootAlias();
-    $q->leftJoin("$a.ContactGroups gc ON $a.id = gc.contact_id AND gc.group_id = ?",$id)
-      ->leftJoin("p.ProfessionalGroups gp ON p.id = gp.professional_id AND gp.group_id = ?",$id)
+    $q->leftJoin("$a.ContactGroups gc ON $a.id = gc.contact_id AND gc.group_id = $id")
+      ->leftJoin("p.ProfessionalGroups gp ON p.id = gp.professional_id AND gp.group_id = $id")
       ->andWhere('(gc.group_id = ? OR gp.group_id = ?)',array($id,$id))
       ->orderby('name','firstname');
     return $q;
