@@ -58,7 +58,9 @@
       if ( !$request->hasParameter('duplicate') )
       {
         $this->transaction = new Transaction;
+        $this->transaction->save();
         $this->transaction->MemberCards[] = $this->card->getObject();
+        $this->card->getObject()->Transaction = $this->transaction;
         $this->card->save();
         $this->card = $this->card->getObject();
         
@@ -121,7 +123,13 @@
         if ( !$card )
           return 'Params';
         
-        $this->transaction = $card->Transaction;
+        // for the special case where no transaction is linked to this member card...
+        if (!( $this->transaction = $card->Transaction ))
+        {
+          $this->transaction = new Transaction;
+          $this->transaction->MemberCards[] = $card;
+        }
+        
         // some kind of a hack
         $this->card = $card; // replacing MemberCardForm by MemberCard...
         $this->card->updated_at = NULL;
