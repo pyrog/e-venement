@@ -44,6 +44,8 @@
               var groups = <?php echo $cpt == 1 ? "$('.groups-object')" : "$('.groups-subobject-".$obj->id."')" ?>;
               var input = object.find(tmp = '.tdp-groups_list .open_list .open_list_source');
               groups.find('select').replaceWith(input);
+              groups.find('.ac_input').prop('placeholder', '<?php echo __('Add to a group') ?>');
+              groups.find('.ac_input').prop('title', '<?php echo __('Press <SPACE> to see all groups') ?>');
               
               if ( location.hash == '#debug' )
                 console.error('Groups autocompletion of '+$.trim(object.find('h1 a').text())+' - input:'+input.length+' list:'+groups.length);
