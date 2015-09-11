@@ -34,11 +34,12 @@
           // sorting by manifestation's date
           foreach ( $events as $key => $metaevt )
             array_multisort($sort[$key],$events[$key]);
-          $events = array_reverse($events);
+          $events = array_reverse($events, true);
         ?>
         <?php foreach ( $events as $id => $meta_event ): ?>
         <!-- METAEVT -->
-        <li class="metaevent <?php echo in_array($id, array_keys($sf_user->getMetaEventsCredentials()->getRawValue())) ? 'hidden' : '' ?>">
+        <!-- <?php echo $id ?> -->
+        <li class="metaevent <?php echo !in_array($id, array_keys($sf_user->getMetaEventsCredentials()->getRawValue())) ? 'hidden' : '' ?>">
         <?php foreach ( $meta_event as $id => $event ): ?>
         <?php if ( $id === 'name' ): ?>
           <?php if ( method_exists($object->getRawValue(), 'getStatsSeatRank') ): ?>
