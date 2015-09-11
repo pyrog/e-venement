@@ -28,6 +28,7 @@ class EventForm extends BaseEventForm
         'force_br_newlines' => false,
         'force_p_newlines'  => false,
         'forced_root_block' => '',
+        'fontsize_formats' => '4pt 5pt 6pt 8pt 10pt 12pt 14pt 18pt 24pt 36pt',
       ),
     );
     
