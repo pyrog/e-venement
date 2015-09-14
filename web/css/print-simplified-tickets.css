@@ -35,6 +35,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 .cmd-element .location { top: 154.5mm; font-size: 16pt; }
 .cmd-element .address { top: 166.5mm; font-size: 9pt; }
 .cmd-element .contact { top: 198mm; }
+#content .cmd-element .contact .guest { display: inline; }
 .cmd-element .gauge { top: 215.5mm; font-size: 11pt; margin: 0; }
 .cmd-element .seat { top: 220.5mm; font-size: 19pt; }
 .cmd-element .desc .comment, .cmd-element.product .contact { top: 257.5mm; white-space: normal; }
