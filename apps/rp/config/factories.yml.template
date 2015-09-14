@@ -53,7 +53,7 @@ all:
       charset:           %SF_CHARSET%
       delivery_strategy: spool
       delivery_address:  admin@libre-informatique.fr
-      spool_class:       Swift_DoctrineSpool
+      spool_class:       liSpool
       spool_arguments:   [ EmailSpool, message, getSpooledMessages ]
       transport:
         class: Swift_SmtpTransport
