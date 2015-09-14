@@ -242,7 +242,7 @@
       try {
         $ticket->linkToMemberCard();
       } catch ( liEvenementException $e ) {
-        error_log('cart/response: on adding member card links: '.$e->getMessage());
+        error_log('ticket/modTickets: on adding member card links: '.$e->getMessage());
       }
       
       // save
