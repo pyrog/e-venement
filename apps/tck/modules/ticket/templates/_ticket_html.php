@@ -1,6 +1,9 @@
 <?php use_helper('Date','Number', 'SuperNumber') ?>
 <?php
-	$maxsize = sfConfig::get('app_tickets_max_size');
+  $mentions = sfConfig::get('app_tickets_mentions', array());
+  $all_infos = isset($mentions['all_infos']) && $mentions['all_infos'];
+  
+ 	$maxsize = sfConfig::get('app_tickets_max_size');
   $maxsize['event_name'] = isset($maxsize['event_name']) && intval($maxsize['event_name']) != 0 ? intval($maxsize['event_name']) : 30;
   $maxsize['event_shortname'] = isset($maxsize['event_shortname']) && intval($maxsize['event_shortname']) != 0 ? intval($maxsize['event_shortname']) : 40;
   $maxsize['event_name_right'] = isset($maxsize['event_name_right']) && intval($maxsize['event_name_right']) != 0 ? intval($maxsize['event_name_right']) : 21;
@@ -71,6 +74,12 @@
     <p class="nb"><?php echo __('%%nb%% places',array('%%nb%%' => $nb)) ?></p>
     <?php endif ?>
     <p class="comment"><?php echo $ticket->comment ?></p>
+    <?php if ( $all_infos ): ?>
+    <div class="all-infos">
+      <div class="extradesc"><?php echo $ticket->Manifestation->Event->getRawValue()->extradesc ?></div>
+      <div class="extraspec"><?php echo $ticket->Manifestation->Event->getRawValue()->extraspec ?></div>
+    </div>
+    <?php endif ?>
   </div>
   <div class="right">
     <p class="manifid">
