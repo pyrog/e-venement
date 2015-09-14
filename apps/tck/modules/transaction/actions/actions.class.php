@@ -372,7 +372,7 @@ class transactionActions extends autoTransactionActions
         ->andWhere('mc.contact_id = ?', $this->transaction->contact_id),
       'required' => false,
     ));
-    $ws['value'] = new sfWidgetFormInput(array(), array('pattern' => '\d+[,\.]{0,1}\d{0,2}'));
+    $ws['value'] = new sfWidgetFormInput(array(), array('pattern' => '-{0,1}\d+[,\.]{0,1}\d{0,2}'));
     $vs['value'] = new sfValidatorNumber(array('required' => false));
     $ws['detail'] = new sfWidgetFormInput;
     $vs['detail'] = new sfValidatorString(array('required' => false));
