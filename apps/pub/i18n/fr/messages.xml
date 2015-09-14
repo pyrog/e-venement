@@ -485,8 +485,14 @@
         <target>Liste des billets</target>
       </trans-unit>
       <trans-unit>
-        <source>The recovery code to reset your password is %%code%%. Copy it into the password recovery form where you just have been redirected or follow this link:</source>
-        <target>Le code de récupération pour définir un nouveau mot de passe est %%code%%. Copiez le dans le formulaire de récupération de mot de passe où vous venez d'être redirigé ou bien suivez ce lien :</target>
+        <source>The recovery code to reset your password is &lt;strong&gt;%%code%%&lt;/strong&gt;.&lt;br/&gt;
+&lt;strong&gt;Copy it&lt;/strong&gt; into the password recovery form where you just have been redirected&lt;br/&gt;
+or follow this link:&lt;br/&gt;
+&lt;a href="%%link%%"&gt;%%link%%&lt;/a&gt;</source>
+        <target>Le code de récupération pour définir un nouveau mot de passe est &lt;strong&gt;%%%%code%%&lt;/strong&gt;.&lt;br/&gt;
+&lt;strong&gt;Copiez le&lt;/strong&gt; dans le formulaire de récupération de mot de passe où vous venez d'être redirigé&lt;br/&gt;
+ou bien suivez ce lien&nbsp;:&lt;br/&gt;
+&lt;a href="%%link%%"&gt;%%link%%&lt;/a&gt;</target>
       </trans-unit>
       <trans-unit>
         <source>Now, fill your new password twice.</source>
