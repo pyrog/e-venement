@@ -81,11 +81,8 @@ abstract class PluginTicket extends BaseTicket
       
       if ( is_null($this->price_id) )
         $q
-          ->leftJoin('pm.Price pmp')
-          ->leftJoin('pmp.Translation pmpt WITH pmpt.name = ?',$this->price_name)
-          ->leftJoin('pg.Price pgp')
-          ->leftJoin('pgp.Translation pgpt WITH pgpt.name = ?',$this->price_name)
-          ->andWhere('(pmpt.id IS NOT NULL OR pgpt.id IS NOT NULL)')
+          ->andWhere('pt.name = ?', $this->price_name)
+          ->andWhere('pm.id IS NOT NULL OR pg.id IS NOT NULL')
         ;
       else
         $q
@@ -289,6 +286,8 @@ abstract class PluginTicket extends BaseTicket
   public function linkToMemberCard()
   {
     if ( $this->member_card_id )
+      return $this;
+    if ( !$this->Price->member_card_linked )
       return $this;
     if (!( is_null($this->cancelling) && is_null($this->duplicating) && $this->Duplicatas->count() == 0 ))
       return $this;

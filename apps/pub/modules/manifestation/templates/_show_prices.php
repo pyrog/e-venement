@@ -130,13 +130,13 @@
     foreach ( $gauge->Manifestation->DependsOn->Gauges as $dogauge )
     if ( $dogauge->workspace_id == $gauge->workspace_id )
     {
-      if ( $pm instanceof PriceGauge )
+      if ( $pm->getRawValue() instanceof PriceGauge )
       {
         foreach ( $gauge->Manifestation->DependsOn->Gauges as $dogauge )
         if ( $dogauge->workspace_id == $gauge->workspace_id )
           $dopms = $dogauge->PriceGauges;
       }
-      elseif ( $pm instanceof PriceManifestation )
+      elseif ( $pm->getRawValue() instanceof PriceManifestation )
         $dopms = $gauge->Manifestation->DependsOn->PriceManifestations;
       
       foreach ( $dopms as $dopm )

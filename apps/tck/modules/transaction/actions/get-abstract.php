@@ -272,7 +272,9 @@
             ->andWhere('m.id = ?',$id)
           ;
           if ( $gid = $request->getParameter('gauge_id', false) )
-            $q->andWhere('g.id = ?', $gid);
+            $q->leftJoin('m.IsNecessaryTo int')
+              ->leftJoin('int.Gauges intg')
+              ->andWhere('g.id = ? OR intg.id = ?', array($gid, $gid));
           $product = $q->fetchOne();
           
           $this->json[$product->id] = array(
