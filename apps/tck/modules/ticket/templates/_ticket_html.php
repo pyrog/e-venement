@@ -102,6 +102,7 @@
     <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span><span class="value"><?php echo format_normal_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
     <p class="spectator"><?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?></p>
     <p class="event"><?php echo mb_strlen($buf = (string)$ticket->getRaw('Manifestation')->Event) > $maxsize['event_name_right'] ? mb_substr($buf,0,$maxsize['event_name_right']-3).'...' : $buf ?></p>
+    <p class="event-short"><?php echo mb_strlen($buf = $ticket->Manifestation->Event->short_name) > $maxsize['event_shortname'] ? mb_substr($buf,0,$maxsize['event_shortname']).'...' : $buf ?></p>
     <p class="cie"><?php echo mb_strlen($buf = implode(', ',$creators)) > 20 ? mb_substr($buf,0,17).'...' : $buf; ?></p>
     <p class="org">
       <span class="orgas"><?php echo isset($orgas[0]) ? $orgas[0] : '' ?></span>
