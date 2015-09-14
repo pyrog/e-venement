@@ -8,5 +8,4 @@
   <p class="submit">
     <label></label>
     <input type="submit" value="<?php echo __('Send') ?>" name="submit" />
-    <a href="<?php echo url_for('login/forgot') ?>" class="forgot"><?php echo __('You forgot your password?') ?></a>
   </p>

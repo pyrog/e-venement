@@ -58,8 +58,14 @@ class loginActions extends sfActions
       $this->email->field_from = sfConfig::get('app_informations_email','web@libre-informatique.fr');
       $this->email->to = $this->getRecoveryEmail();
       $this->email->field_subject = __('Reset your password for %%name%%', array('%%name%%' => sfConfig::get('app_informations_title','')));
-      $this->email->content = __('The recovery code to reset your password is %%code%%. Copy it into the password recovery form where you just have been redirected or follow this link:', array('%%code%%' => $code));
-      $this->email->content .= "\n".url_for('login/recover?code='.$code, true);
+      $link = url_for('login/recover?code='.$code, true);
+      $this->email->content = __(<<<EOF
+The recovery code to reset your password is <strong>%%code%%</strong>.<br/>
+<strong>Copy it</strong> into the password recovery form where you just have been redirected<br/>
+or follow this link:<br/>
+<a href="%%link%%">%%link%%</a>
+EOF
+      , array('%%code%%' => $code, '%%link%%' => $link));
       $this->email->setMailer($this->getMailer());
       $this->email->save();
       if ( !$this->email->sent )
