@@ -122,9 +122,13 @@ class pubConfiguration extends sfApplicationConfiguration
     if ( $mcpm->autoadd )
     {
       if ( isset($mcps[$i = $mcpm->event_id.' '.$mcpm->price_id]) )
-        $mcps[$i]->quantity += $mcpm->quantity;
+      {
+        error_log('before auto add '.$mcpm->event_id.' '.$mcps[$i]->quantity);
+        $mcps[$i]->quantity = $mcps[$i]->quantity + $mcpm->quantity;
+        error_log('auto add '.$mcpm->event_id.' '.$mcps[$i]->quantity);
+      }
       else
-        $mcps[$i] = $mcpm;
+        $mcps[$i] = $mcpm->copy();
     }
     sfContext::getInstance()->getUser()->setAttribute('pub.mc.autoadd_tickets', $mcps);
   }
