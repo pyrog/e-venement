@@ -54,7 +54,7 @@
         foreach ( $this->form->getValidatorSchema()->getFields() as $fieldname => $validator )
         if ( Doctrine::getTable('Contact')->hasColumn($fieldname) )
           $data[$fieldname] = $this->getUser()->getTransaction()->Contact->$fieldname;
-      
+        
         $ws = $this->form->getWidgetSchema();
         $vs = $this->form->getValidatorSchema();
         unset($ws['special_groups_list'], $vs['special_groups_list']);
