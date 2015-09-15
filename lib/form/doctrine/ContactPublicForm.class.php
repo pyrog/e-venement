@@ -107,13 +107,16 @@ class ContactPublicForm extends ContactForm
       foreach ( array('address', 'postalcode', 'city', 'country') as $field )
         unset($this->widgetSchema[$field], $this->validatorSchema[$field]);
       
-      $this->widgetSchema->setPositions($arr = array(
+      $fields = array(
         'id',
         'title','name','firstname',
         'pro_organism', 'pro_address',
         'pro_email','pro_phone_number',
         'password','password_again',
-      ));
+      );
+      if ( sfConfig::get('app_contact_newsletter', true) )
+        $fields[] = 'newsletter';
+      $this->widgetSchema->setPositions($fields);
     
       if ( sfConfig::get('app_contact_modify_coordinates_first', false) )
       {
