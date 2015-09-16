@@ -204,9 +204,10 @@
               error_log('Adding ticket #'.$ticket->id.' with price '.$ticket->price_name.' for event #'.$ticket->Manifestation->event_id);
             
             if ( !isset($events[$ticket->Manifestation->event_id]) )
-              $events[$ticket->Manifestation->event_id] = 0;
-            $events[$ticket->Manifestation->event_id]++;
-            unset($tickets[$tid]); // using this trick, a ticket cannot be "used" twice
+            {
+              $events[$ticket->Manifestation->event_id] = 1;
+              unset($tickets[$tid]); // using this trick, a ticket cannot be "used" twice
+            }
             
             // decreasing the quantity of tickets available for a price, an event and a MemberCardType
             if ( !$ticket->member_card_id )
