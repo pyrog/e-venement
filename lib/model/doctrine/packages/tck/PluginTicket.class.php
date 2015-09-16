@@ -333,9 +333,20 @@ abstract class PluginTicket extends BaseTicket
   
   public function preDelete($event)
   {
+    // if linked to a member card...
+    if ( $this->member_card_id )
+    {
+      $mcp = new MemberCardPrice;
+      $mcp->member_card_id = $this->member_card_id;
+      $mcp->price_id = $this->price_id;
+      $mcp->event_id = $this->Manifestation->event_id;
+      $mcp->save();
+    }
+    
+    // depends_on tickets ONLY
     if ( !$this->Manifestation->depends_on )
       return parent::preDelete($event);
-    
+      
     foreach ( $this->Transaction->Tickets as $i => $ticket )
     if ( !$ticket->printed_at
       && $ticket->price_id == $this->price_id
