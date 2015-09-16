@@ -23,7 +23,7 @@ select[disabled] { color: #444; }
 .sf_admin_form_field_prices_list .ajax .sf_admin_list_td_price_description { width: 250px; }
 .sf_admin_form_field_prices_list .ajax { width: 580px; }
 
-#sf_fieldset_spectators table, #sf_fieldset_tickets table { margin-bottom: 10px; }
+#sf_fieldset_spectators table, #sf_fieldset_tickets table { margin-bottom: 10px; width: 100%; }
 #sf_fieldset_spectators table thead td, #sf_fieldset_tickets table thead td { border-bottom: 1px solid gray; }
 #sf_fieldset_spectators table tfoot td, #sf_fieldset_tickets table tfoot td { border-top: 1px solid gray; }
 #sf_fieldset_spectators table table td.name, #sf_fieldset_tickets table td.name { font-weight: bold; }

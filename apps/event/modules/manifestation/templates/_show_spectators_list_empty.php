@@ -51,6 +51,22 @@
       $(this).find('tr .workspace').hide();
     });
     
+    /*
+    // optimize the table width
+    $('#sf_fieldset_tickets, #sf_fieldset_spectators').each(function(){
+      var maxw = [];
+      var fieldset = this;
+      $(fieldset).find('> table thead td').each(function(){
+        maxw[$(this).index()] = maxw[$(this).index()] > $(this).width()
+          ? maxw[$(this).index()]
+          : $(this).width();
+      });
+      $(maxw).each(function(id, value){
+        $(fieldset).find(str='> table td:nth-child('+(id+1)+')').width(value);
+      });
+    });
+    */
+    
     <?php include_partial('show_print_part_js',array('tab' => 'spectators', 'jsFunction' => 'LI.manifShowSpectators')) ?>
   });
 </script>
