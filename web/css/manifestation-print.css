@@ -9,7 +9,7 @@ body.sf_fieldset_spectators #more, body.sf_fieldset_tickets #more
 @media print {
 
 #sf_admin_form_tab_menu .ui-tabs-panel.ui-widget-content { border-width: 0; }
-#content .sf_admin_form table { line-height: auto; }
+#content .sf_admin_form table td { line-height: normal; }
 
 form.control, .ticket-ids, .tab-export, .tab-print, .ui-tabs-vertical .ui-tabs-nav { display: none; }
 #sfWebDebug, body #jappix_mini { display: none !important; }
