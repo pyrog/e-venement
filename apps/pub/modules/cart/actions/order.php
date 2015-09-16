@@ -118,9 +118,10 @@
       }
       
       foreach ( $this->getUser()->getTransaction()->Tickets as $ticket )
-      if ( $ticket->Price->member_card_linked )
+      if ( $ticket->Price->member_card_linked && !$ticket->member_card_id )
       {
-        if ( isset($mcs[$ticket->price_id][$ticket->Manifestation->event_id]) && $mcs[$ticket->price_id][$ticket->Manifestation->event_id] > 0 )
+        if ( isset($mcs[$ticket->price_id][$ticket->Manifestation->event_id])
+          && $mcs[$ticket->price_id][$ticket->Manifestation->event_id] > 0 )
           $mcs[$ticket->price_id][$ticket->Manifestation->event_id]--;
         else
           $mcs[$ticket->price_id]['']--;
@@ -128,10 +129,11 @@
       
       $go = true;
       foreach ( $mcs as $price )
-      if ( $price[''] < 0 )
+      foreach ( $price as $event_id => $nb )
+      if ( $nb < 0 )
       {
         $go = false;
-        break;
+        break(2);
       }
       
       if ( !$go )
@@ -195,6 +197,7 @@
             || isset($match[$ticket->price_id][''])
             && isset($match[$ticket->price_id][''][$mc->MemberCardType->name])
             && $match[$ticket->price_id][''][$mc->MemberCardType->name] > 0
+            || $ticket->member_card_id
           )
           {
             if ( sfConfig::get('sf_web_debug', false) )
@@ -206,6 +209,7 @@
             unset($tickets[$tid]); // using this trick, a ticket cannot be "used" twice
             
             // decreasing the quantity of tickets available for a price, an event and a MemberCardType
+            if ( !$ticket->member_card_id )
             $match[$ticket->price_id][
               isset($match[$ticket->price_id][$ticket->Manifestation->event_id]) ? $ticket->Manifestation->event_id : ''
             ][$mc->MemberCardType->name]--;

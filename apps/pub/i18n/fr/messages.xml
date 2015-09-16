@@ -30,7 +30,7 @@
       </trans-unit>
       <trans-unit>
         <source>You have booked more tickets linked to a member card than you can...</source>
-        <target>Vous avez choisi plus de billets liés à une carte d'abo que vous le pouviez...</target>
+        <target>Vous avez choisi plus de billets liés à une carte d'abo que vous ne le pouviez...</target>
       </trans-unit>
       <trans-unit>
         <source>In order to buy a ticket with price %%price%%, you need a pass...</source>
