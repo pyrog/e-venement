@@ -89,6 +89,8 @@ class sfGuardUserActions extends autoSfGuardUserActions
       $user->Groups[] = $group;
     foreach ( $this->getRoute()->getObject()->AuthForGroups as $group )
       $user->AuthForGroups[] = $group;
+    foreach ( $this->getRoute()->getObject()->AutoGroups as $group )
+      $user->AutoGroups[] = $group;
     
     // ticketting elements
     foreach ( $this->getRoute()->getObject()->MetaEvents as $me )
@@ -99,6 +101,15 @@ class sfGuardUserActions extends autoSfGuardUserActions
       $user->Prices[] = $price;
     
     $user->save();
+    
+    // mandatory RP fields
+    $q = Doctrine::getTable('OptionMandatoryField')->createQuery('mf')->andWhere('mf.sf_guard_user_id = ?',$this->getRoute()->getObject()->id);
+    foreach ( $q->execute() as $mf )
+    {
+      $mf = $mf->copy();
+      $mf->sf_guard_user_id = $user->id;
+      $mf->save();
+    }
     
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
     $this->getUser()->setFlash('notice',__("The chosen user has been correctly duplicated, please verify its username and its email address"));
