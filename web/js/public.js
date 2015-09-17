@@ -6,7 +6,28 @@ LI.pub_month_classes = ['.sf_admin_list_td_dates', '.sf_admin_list_td_list_locat
 if ( LI.pubCartReady == undefined )
   LI.pubCartReady = [];
 
+LI.safari = function(href){
+  var w = window.open(window.location,'safari','top=100, left=100, width=1, height=1, menubar=no, scrollbars=no');
+  w.blur();
+  window.focus();
+  w.onload = function(){
+    w.close();
+    window.location = href;
+  }
+}
+
 $(document).ready(function(){
+  // safari + iframe workaround
+  if ( /^((?!chrome).)*safari/i.test(navigator.userAgent) && window.top != window && !Cookie.get('pub.safari.not_first_time') )
+  {
+    $('a').click(function(){
+      LI.safari($(this).prop('href'));
+      LI.safari = function(){};
+      Cookie.set('pub.safari.not_first_time', true);
+      return false;
+    });
+  }
+  
   // the cart widget
   $.get($('#cart-widget-url').prop('href'),function(data){
     $('body').prepend($($.parseHTML(data)).find('#cart-widget'));
