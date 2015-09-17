@@ -44,6 +44,7 @@ class pubConfiguration extends sfApplicationConfiguration
     if (!( sfContext::hasInstance() && get_class(sfContext::getInstance()->getConfiguration()) != get_class($this) ))
       $this->enableSecondWavePlugins(sfConfig::get('app_options_plugins', array()));
     ProjectConfiguration::initialize();
+    sfConfig::set('app_options_session', sfConfig::get('app_options_session','pub'));
   }
   
   public function shut()

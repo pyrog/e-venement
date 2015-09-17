@@ -101,8 +101,8 @@
         <target>Je vérifie mes coordonnées</target>
       </trans-unit>
       <trans-unit>
-        <source>I already have an account</source>
-        <target>J'ai déjà un compte</target>
+        <source>I already have an account or already bought tickets to %%organization%%</source>
+        <target>J'ai déjà un compte ou acheté des billets auprès de %%organization%%</target>
       </trans-unit>
       <trans-unit>
         <source>I am new in this store</source>

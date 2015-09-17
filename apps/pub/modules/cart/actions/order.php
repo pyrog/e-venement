@@ -66,13 +66,15 @@
         $this->form->bind($data);
       }
       else
-         $this->form->bind($request->getParameter('contact'));
+         $this->form->bind($data = $request->getParameter('contact'));
       
       try
       {
         if ( !$this->form->isValid() || sfConfig::get('app_texts_terms_conditions') && !$request->hasParameter('terms_conditions') )
         {
           error_log('An error occurred registering a contact ('.$this->form->getErrorSchema().')');
+          $this->login = new LoginForm;
+          $this->login->setDefault('email', $data['email']);
           $this->setTemplate('register');
           return;
         }

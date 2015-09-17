@@ -5,13 +5,14 @@
 <?php //include_partial('global/form_errors',array('form' => $form)) ?>
 <?php if ( !$sf_user->getTransaction()->contact_id && isset($login) ): ?>
 <?php echo $login->renderFormTag(url_for('login/validate'), array('autocomplete' => 'on', 'id' => 'login', )) ?>
-  <h2><?php echo __('I already have an account') ?></h2>
+  <?php $client = sfConfig::get('project_about_client',array()) ?>
+  <h2><?php echo __('I already have an account or already bought tickets to %%organization%%', array('%%organization%%' => sfConfig::get('app_informations_title',$client['name']))) ?></h2>
   <?php include_partial('login/login', array('form' => $login, 'buttons' => false,)) ?>
   <input type="submit" value="<?php echo __('Login') ?>" name="submit" class="submit" />
   <input type="hidden" name="register" value="true" />
 </form>
 <?php endif ?>
-<?php echo $form->renderFormTag(url_for('cart/order'.($specific_transaction ? '?transaction_id='.$specific_transaction->id : '')), array('id' => 'contact-form', 'autocomplete' => 'on')) ?>
+<?php echo $form->renderFormTag(url_for('cart/order'.(isset($specific_transaction) && $specific_transaction ? '?transaction_id='.$specific_transaction->id : '')), array('id' => 'contact-form', 'autocomplete' => 'on')) ?>
   <h2>
     <?php if ( !$sf_user->getTransaction()->contact_id ): ?>
       <?php echo __('I am new in this store') ?>
