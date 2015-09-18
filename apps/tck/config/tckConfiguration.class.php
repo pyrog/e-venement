@@ -98,129 +98,25 @@ class tckConfiguration extends sfApplicationConfiguration
   
   public function sendEmailOnPrintingTickets(sfEvent $event)
   { try {
-    $cpt = 0;
-    foreach ( $event['tickets'] as $ticket )
-    if ( strtotime($ticket->Manifestation->happens_at) > time() )
-      $cpt++;
-    if ( $cpt == 0 )
-      return false;
-    
-    $with = array('barcode' => 'png');
-    if ( $event['tickets'] )
-      $with['only'] = $event['tickets'];
-    
-    $email = $this->genericSendEmailOn(
-      $event,
-      $event['transaction']->renderSimplifiedTickets($with),
-      'tickets'
-    );
-    $this->dispatcher->notify(new sfEvent($this, 'email.before_sending_transaction_part', $email->getDispatcherParameters() + array('email' => $email)));
-    $this->dispatcher->notify(new sfEvent($this, 'email.before_sending_tickets', $email->getDispatcherParameters() + array('email' => $email)));
-    $email->save();
+    // a trick using the "pub" application to send the email
+    sfContext::getInstance()->getConfiguration()->loadHelpers('CrossAppLink');
+    file_get_contents($url = str_replace('https://','http://',cross_app_url_for(
+      'pub',
+      'transaction/sendEmail?id='.$event['transaction']->id.'&token='.md5($event['transaction']->id.'|*|*|'.sfConfig::get('project_eticketting_salt', 'e-venement')),
+      true
+    )));
   } catch ( Exception $e ) { return $this->catchError($e); } }
 
   public function sendEmailOnIntegratingProducts(sfEvent $event)
   { try {
-    $go = true;
-    $conf = sfConfig::get('app_transaction_email', array());
-    if ( isset($conf['products']) && $conf['products'] === 'e-product' )
-    {
-      $go = false;
-      foreach ( $event['products'] as $prod )
-      if ( $prod->description_for_buyers )
-      {
-        $go = true;
-        break;
-      }
-    }
-    if ( !$go )
-      return;
-    
-    $email = $this->genericSendEmailOn(
-      $event,
-      $event['transaction']->renderSimplifiedProducts(),
-      'tickets'
-    );
-    $this->dispatcher->notify(new sfEvent($this, 'email.before_sending_transaction_part', $email->getDispatcherParameters() + array('email' => $email)));
-    $this->dispatcher->notify(new sfEvent($this, 'email.before_sending_products', $email->getDispatcherParameters() + array('email' => $email)));
-    $email->save();
+    // a trick using the "pub" application to send the email
+    sfContext::getInstance()->getConfiguration()->loadHelpers('CrossAppLink');
+    file_get_contents(str_replace('https://','http://',cross_app_url_for(
+      'pub',
+      'transaction/sendEmail?id='.$event['transaction']->id.'&token='.md5($event['transaction']->id.'|*|*|'.sfConfig::get('project_eticketting_salt', 'e-venement')),
+      true
+    )));
   } catch ( Exception $e ) { return $this->catchError($e); } }
-  
-  protected function genericSendEmailOn(sfEvent $event, $content, $type = 'content')
-  {
-    $conf = sfConfig::get('app_transaction_email', array());
-    $transaction = $event['transaction'];
-    
-    if ( !$transaction->send_an_email
-      || !(isset($conf['always_send_confirmation']) && $conf['always_send_confirmation'])
-      || !($transaction->professional_id && $transaction->Professional->contact_email) && !($transaction->contact_id && $transaction->Contact->email)
-    )
-      throw new liEvenementException('You have tried to send an email without the ability for (no contact_id, no professional_id, no "send_an_email" field set to "true")...');
-    
-    $client   = sfConfig::get('project_about_client');
-    $firm     = sfConfig::get('project_about_firm');
-    $software = sfConfig::get('project_about_software', array('name' => 'e-venement', 'url' => 'http://www.e-venement.net/',));
-    
-    $email = new Email;
-    $email->setType('Order')->addDispatcherParameter('transaction', $transaction);
-    
-    if ( $transaction->professional_id )
-      $email->Professionals[] = $transaction->Professional;
-    else
-      $email->Contacts[] = $transaction->Contact;
-    
-    $email->field_subject = $client['name'].': '.__('your order #%%transaction_id%% has been updated',array('%%transaction_id%%' => $transaction->id));
-    $email->content = nl2br($content);
-    $email->content .= nl2br(sprintf(<<<EOF
--- 
-<a href="%s">%s</a>
-%s
-
-%s
-%s
-EOF
-    , $client['url'], $client['name']
-    , $client['address']
-    , __('By %%firm%%', array('%%firm%%' => '<a href="'.$firm['url'].'">'.$firm['name'].'</a>'))
-    , __('Empowered by %%software%%', array('%%software%%' => '<a href="'.$software['url'].'">'.$software['name'].'</a>'))
-    ));
-    
-    $sr = array('http://' => '', 'www.' => '',);
-    $email->field_from = $event['user']->getGuardUser()->email_address ? $event['user']->getGuardUser()->email_address : 'noreply@'.str_replace(array_keys($sr), array_values($sr), $client['url']);
-    $email->field_bcc = $email->field_from;
-    
-    // Bcc:
-    try
-    {
-      $conf = sfConfig::get('app_transaction_email', array());
-      $valid = new liValidatorEmail;
-      if ( isset($conf['send_bcc_to']) && $valid->clean($conf['send_bcc_to']) )
-        $email->field_bcc = $conf['send_bcc_to'];
-      else
-        $email->field_bcc = $email->field_from;
-    }
-    catch ( sfValidatorError $e )
-    {
-      error_log('Cannot send a Bcc: of this transaction, bad configuration parameter: '.$conf['send_bcc_to']);
-      $email->field_bcc = $email->field_from;
-    }
-    
-    // attachments, tickets in PDF
-    $pdf = new sfDomPDFPlugin();
-    $pdf->setInput($event->getSubject()->getPartial('global/get_tickets_pdf', array('tickets_html' => $content)));
-    $pdf = $pdf->render();
-    file_put_contents(sfConfig::get('sf_upload_dir').'/'.($filename = $type.'-'.$transaction->id.'-'.date('YmdHis').'.pdf'), $pdf);
-    $attachment = new Attachment;
-    $attachment->filename = $filename;
-    $attachment->original_name = $filename;
-    $email->Attachments[] = $attachment;
-    $attachment->save();
-    
-    $email->isATest(false);
-    $email->setNoSpool();
-    
-    return $email;
-  }
   
   public function logAuthentication(sfEvent $event)
   {
