@@ -83,8 +83,6 @@ class tckConfiguration extends sfApplicationConfiguration
     if (!( $pdt instanceof Ticket && $pdt->needsSeating() ))
     if (!( $pdt instanceof Ticket && is_null($pdt->price_id) ))
     {
-      error_log('pdt_id: '.$pdt->id);
-      error_log($pdt->value.' '.$pdt->Transaction->Order->count().' '.$pdt->updated_at);
       $pdt->integrated_at = date('Y-m-d H:i:s'); // integrate
       $cpt++;
     }
@@ -302,6 +300,7 @@ EOF
           'user'        => NULL,
         )));
         if ( $transaction->isModified(true) )
+        try
         {
           $transaction->save();
           if ( $event->getReturnValue() > 0 )
@@ -310,6 +309,8 @@ EOF
             $this->stdout($section, $event->getReturnValue().' itemables integrated for transaction #'.$transaction->id, 'DEBUG');
           }
         }
+        catch ( Exception $e )
+        { $this->stdout($section, '[KO] the transaction #'.$transaction->id.' cannot be auto-integrated: '.$e->getMessage(), 'ERROR'); }
       }
       $this->stdout($section, "[OK] globally, $cpt itemables were integrated", 'INFO');
     });

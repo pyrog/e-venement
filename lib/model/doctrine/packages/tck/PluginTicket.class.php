@@ -320,7 +320,7 @@ abstract class PluginTicket extends BaseTicket
     else
     {
       $this->printed_at = NULL;
-      throw new liEvenementException("No more ticket left on the contact's member card");
+      throw new liMemberCardException("No more ticket left on the contact's member card");
     }
     
     return $this;
