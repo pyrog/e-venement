@@ -167,7 +167,7 @@ class Ticket extends PluginTicket
       <p class="seat"><span>%s</span><span>%s</span></p>
       <div class="comment"><table><tbody><tr><td><div>%s</div></td></tr></tbody></table></div>
       <p class="ids"><span class="transaction">#%s</span> <span class="id">#%s</span></p>
-      <p class="contact">%s</p>
+      <p class="contact"><span class="guest">%s</span> <span class="title">%s</span> <span class="contact">%s</span> <span class="organism">%s</span></p>
       <p class="duplicate">%s</p>
     </td>
     <td class="bc">%s</td>
@@ -188,9 +188,7 @@ EOF
       , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : ($this->Manifestation->voucherized ? __('Voucher', null, 'li_ticket_email') : ''), $this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : __('Free seating', null, 'li_tickets_email'))
       , $this->comment ? $this->comment : sfConfig::get('project_eticketting_default_comment', __('This is your ticket', null, 'li_tickets_email'))
       , $this->transaction_id, $this->id
-      , $this->contact_id
-        ? $this->DirectContact->name_with_title
-        : ($this->Transaction->contact_id ? __('<span class="guest">Guest of </span>%%contact%%', array('%%contact%%' => $this->Transaction->professional_id ? $this->Transaction->Professional->getFullName() : $this->Transaction->Contact->name_with_title), 'li_tickets_email') : '')
+      , $this->contact_id ? '' : $this->Transaction->contact_id ? __('Guest of') : '', $this->contact_id ? $this->Contact->title : $this->Transaction->Contact->title, $this->contact_id ? $this->Contact : $this->Transaction->Contact, $this->Transaction->professional_id ? $this->Transaction->Professional->Organism : ''
       , !$this->duplicating ? '' : __('This ticket is a duplicate of #%%tid%%, it replaces and cancels any previous version of this ticket you might have recieved', array('%%tid%%' => $this->transaction_id.'-'.$this->duplicating), 'li_tickets_email')
       , $barcode
       , base64_encode(file_get_contents(
