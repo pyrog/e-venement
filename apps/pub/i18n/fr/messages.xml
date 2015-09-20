@@ -30,7 +30,7 @@
       </trans-unit>
       <trans-unit>
         <source>You have booked more tickets linked to a member card than you can...</source>
-        <target>Vous avez choisi plus de billets liés à une carte d'abo que vous le pouviez...</target>
+        <target>Vous avez choisi plus de billets liés à une carte d'abo que vous ne le pouviez...</target>
       </trans-unit>
       <trans-unit>
         <source>In order to buy a ticket with price %%price%%, you need a pass...</source>
@@ -117,8 +117,8 @@
         <target>Je vérifie mes coordonnées</target>
       </trans-unit>
       <trans-unit>
-        <source>I already have an account</source>
-        <target>J'ai déjà un compte</target>
+        <source>I already have an account or already bought tickets to %%organization%%</source>
+        <target>J'ai déjà un compte ou acheté des billets auprès de %%organization%%</target>
       </trans-unit>
       <trans-unit>
         <source>I am new in this store</source>
@@ -505,7 +505,7 @@
 &lt;strong&gt;Copy it&lt;/strong&gt; into the password recovery form where you just have been redirected&lt;br/&gt;
 or follow this link:&lt;br/&gt;
 &lt;a href="%%link%%"&gt;%%link%%&lt;/a&gt;</source>
-        <target>Le code de récupération pour définir un nouveau mot de passe est &lt;strong&gt;%%%%code%%&lt;/strong&gt;.&lt;br/&gt;
+        <target>Le code de récupération pour définir un nouveau mot de passe est &lt;strong&gt;%%code%%&lt;/strong&gt;.&lt;br/&gt;
 &lt;strong&gt;Copiez le&lt;/strong&gt; dans le formulaire de récupération de mot de passe où vous venez d'être redirigé&lt;br/&gt;
 ou bien suivez ce lien&nbsp;:&lt;br/&gt;
 &lt;a href="%%link%%"&gt;%%link%%&lt;/a&gt;</target>

@@ -89,6 +89,7 @@ dbg.cmd-element .event { border: 1px solid green; }
 dbg.cmd-element .ids span { border: 1px solid magenta; }
 dbg.cmd-element .price span { border: 1px solid orange; }
 dbg.cmd-element .comment td { border: 1px solid blue; }
+dbg.cmd-element .comment { border: 1px solid blue; }
 dbg.cmd-element .comment td div { border: 1px solid lightblue; }
 
 /** fonts **/

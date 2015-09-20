@@ -17,8 +17,8 @@
         <target>Contremarque à échanger</target>
       </trans-unit>
       <trans-unit>
-        <source>&lt;span class="guest"&gt;Guest of &lt;/span&gt;%%contact%%</source>
-        <target>&lt;span class="guest"&gt;Invité de &lt;/span&gt;%%contact%%</target>
+        <source>Guest of</source>
+        <target>Invité de</target>
       </trans-unit>
       <trans-unit>
         <source>This is your ticket</source>

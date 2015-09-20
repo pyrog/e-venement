@@ -54,7 +54,7 @@
         foreach ( $this->form->getValidatorSchema()->getFields() as $fieldname => $validator )
         if ( Doctrine::getTable('Contact')->hasColumn($fieldname) )
           $data[$fieldname] = $this->getUser()->getTransaction()->Contact->$fieldname;
-      
+        
         $ws = $this->form->getWidgetSchema();
         $vs = $this->form->getValidatorSchema();
         unset($ws['special_groups_list'], $vs['special_groups_list']);
@@ -66,13 +66,15 @@
         $this->form->bind($data);
       }
       else
-         $this->form->bind($request->getParameter('contact'));
+         $this->form->bind($data = $request->getParameter('contact'));
       
       try
       {
         if ( !$this->form->isValid() || sfConfig::get('app_texts_terms_conditions') && !$request->hasParameter('terms_conditions') )
         {
           error_log('An error occurred registering a contact ('.$this->form->getErrorSchema().')');
+          $this->login = new LoginForm;
+          $this->login->setDefault('email', $data['email']);
           $this->setTemplate('register');
           return;
         }
@@ -118,9 +120,10 @@
       }
       
       foreach ( $this->getUser()->getTransaction()->Tickets as $ticket )
-      if ( $ticket->Price->member_card_linked )
+      if ( $ticket->Price->member_card_linked && !$ticket->member_card_id )
       {
-        if ( isset($mcs[$ticket->price_id][$ticket->Manifestation->event_id]) && $mcs[$ticket->price_id][$ticket->Manifestation->event_id] > 0 )
+        if ( isset($mcs[$ticket->price_id][$ticket->Manifestation->event_id])
+          && $mcs[$ticket->price_id][$ticket->Manifestation->event_id] > 0 )
           $mcs[$ticket->price_id][$ticket->Manifestation->event_id]--;
         else
           $mcs[$ticket->price_id]['']--;
@@ -128,10 +131,11 @@
       
       $go = true;
       foreach ( $mcs as $price )
-      if ( $price[''] < 0 )
+      foreach ( $price as $event_id => $nb )
+      if ( $nb < 0 )
       {
         $go = false;
-        break;
+        break(2);
       }
       
       if ( !$go )
@@ -195,17 +199,20 @@
             || isset($match[$ticket->price_id][''])
             && isset($match[$ticket->price_id][''][$mc->MemberCardType->name])
             && $match[$ticket->price_id][''][$mc->MemberCardType->name] > 0
+            || $ticket->member_card_id
           )
           {
             if ( sfConfig::get('sf_web_debug', false) )
               error_log('Adding ticket #'.$ticket->id.' with price '.$ticket->price_name.' for event #'.$ticket->Manifestation->event_id);
             
             if ( !isset($events[$ticket->Manifestation->event_id]) )
-              $events[$ticket->Manifestation->event_id] = 0;
-            $events[$ticket->Manifestation->event_id]++;
-            unset($tickets[$tid]); // using this trick, a ticket cannot be "used" twice
+            {
+              $events[$ticket->Manifestation->event_id] = 1;
+              unset($tickets[$tid]); // using this trick, a ticket cannot be "used" twice
+            }
             
             // decreasing the quantity of tickets available for a price, an event and a MemberCardType
+            if ( !$ticket->member_card_id )
             $match[$ticket->price_id][
               isset($match[$ticket->price_id][$ticket->Manifestation->event_id]) ? $ticket->Manifestation->event_id : ''
             ][$mc->MemberCardType->name]--;

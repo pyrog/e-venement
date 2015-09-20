@@ -16,8 +16,8 @@
 <script type="text/javascript"><!--
   var url = '<?php echo url_for('ticket/autoAdd') ?>';
   var tickets = [];
-<?php if ( $sf_user->getAttribute('pub.mc.autoadd_tickets',false) ): ?>
-<?php foreach ( $mcps = $sf_user->getAttribute('pub.mc.autoadd_tickets') as $mcp ): ?>
+<?php if ( ($mcps = $sf_user->getAttribute('pub.mc.autoadd_tickets',false)) && $mcps->count() > 0 ): ?>
+<?php foreach ( $mcps as $mcp ): ?>
   tickets.push({
     price_id: <?php echo $mcp->price_id ?>,
     event_id: <?php echo $mcp->event_id ?>,
