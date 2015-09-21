@@ -79,7 +79,7 @@ class Ticket extends PluginTicket
   public function renderBarcode($file = NULL) // PNG output directly to stdout
   {
     $bc = new liBarcode($this->qrcode);
-    $bc->render($file);
+    echo $bc;
     return $this;
   }
   
