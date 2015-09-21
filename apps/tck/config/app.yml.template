@@ -78,7 +78,7 @@ all:
     other: 
     invoice_prefix: FB
     salt: sqnao@é 98Fdnquèç&
-    #invoice_footer: A footer...
+    #invoice_footer: A footer...      # parameters: %%transaction_id%%, %%order_id%%, %%invoice_id%%
 
 dev:
   tickets:
