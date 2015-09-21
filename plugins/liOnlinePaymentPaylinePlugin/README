@@ -1,0 +1,15 @@
+INSTALLATION:
+
+activate the module adding it in the list of extra plugins to use :
+0. the plugin is already present in your [sf_plugins_dir] & check if you have
+   php_curl, php_http, php_openssl, php_soap installed in your PHP engine
+1. download le PHP kit (v4 subversion only) in the
+   [sf_plugins_dir]/liOnlinePaymentPaylinePlugin/lib/vendor directory, foundable at
+   http://www.Payline.fr/module-paiement-securise/php/ and make the
+   [sf_plugins_dir]/liOnlinePaymentPaylinePlugin/lib/vendor/logs directory writable
+   for the web server user.
+2. configure your e-voucher v2 application "pub" in [sf_app_dir]/pub/config/app.yml, 
+   you'll find further information in the sample file
+   [sf_plugins_dir]/liOnlinePaymentPaylinePlugin/config/pub-app.yml.template
+3. test it
+4. done
