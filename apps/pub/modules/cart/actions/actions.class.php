@@ -97,6 +97,11 @@ class cartActions extends sfActions
   }
   public function executeDone(sfWebRequest $request)
   {
+    $this->dispatcher->notify(new sfEvent($this, 'pub.cart.done', array(
+      'request' => $request,
+      'action' => $this,
+    )));
+    
     try { $this->transaction = $this->getUser()->getTransaction(); }
     catch ( liOnlineSaleException $e )
     {
