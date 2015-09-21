@@ -88,13 +88,17 @@ class transactionActions extends sfActions
     $tokened = md5($request->getParameter('id').'|*|*|'.sfConfig::get('project_eticketting_salt', 'e-venement')) == $request->getParameter('token','');
     
     $this->transaction = Doctrine::getTable('Transaction')->find(intval($request->getParameter('id')));
-    if ( !sfConfig::get('sf_web_debug', false)
-      && $this->transaction->Order->count() == 0 || !$tokened && $this->transaction->contact_id != $this->getUser()->getTransaction()->contact_id )
+    if (!( sfConfig::get('sf_web_debug', false)
+      || $tokened
+      || ( $this->transaction->Order->count() > 0 && $this->transaction->contact_id == $this->getUser()->getTransaction()->contact_id )
+    ))
     {
-      $this->getUser()->setFlash('error', __('The state of your order does not allow this action. Please contact us if necessary.'));
+      $this->getUser()->setFlash('error', __($err = 'The state of your order does not allow this action. Please contact us if necessary.'));
+      error_log('An error occurred trying to send an email: '.$err);
       $this->redirect('transaction/show?id='.$this->transaction->id);
     }
     
+    error_log('here');
     cartActions::sendConfirmationEmails($this->transaction, $this, $tokened);
     $this->getUser()->setFlash('success', __('Action successful'));
     

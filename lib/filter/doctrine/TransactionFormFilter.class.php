@@ -75,7 +75,7 @@ class TransactionFormFilter extends BaseTransactionFormFilter
       ),
     ));
     $this->validatorSchema['state'] = new sfValidatorChoice(array(
-      'choices' => $choices,
+      'choices' => array_keys($choices),
       'required' => false,
     ));
     
