@@ -1,0 +1,21 @@
+# sample
+# this content has to be added into your apps/pub/config/app.yml or equivalent
+
+all:
+  # ...
+  options:
+    plugins: [liOnlinePaymentPaylinePlugin]
+  payment:
+    type: payline
+    autofollow: true
+    id: "10000000000001"        # this is a string, not an integer, do not ommit the ""
+    key: "abCdefghiklMn0pqrSTu"
+    contract: '0000000'         # this is a string, not an integer, do not ommit the ""
+    mode: pro # can be "test" or "prod"
+    currency: 978
+    url:
+      normal: cart/done
+      cancel: cart/cancel
+      automatic: cart/response
+    # DO NOT FORGET TO CONFIGURE YOUR PAYLINE ACCOUNT:
+    # . synchronous notification before screening the client ticket
