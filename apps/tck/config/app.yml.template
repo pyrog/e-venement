@@ -78,6 +78,7 @@ all:
     other: 
     invoice_prefix: FB
     salt: sqnao@é 98Fdnquèç&
+    #invoice_footer: A footer...
 
 dev:
   tickets:
