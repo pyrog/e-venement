@@ -204,17 +204,17 @@ $(document).ready(function(){
     <td class="product"><?php echo __('Product') ?></td>
     <td class="declination"><?php echo __('Declination') ?></td>
     <td class="space"><?php if ( $nb_ws > 0 ) echo __('Space') ?></td>
-    <td><?php echo __('Price') ?></td>
+    <td class="tickets"><?php echo __('Price') ?></td>
     <?php if ( !sfConfig::get('app_options_synthetic_plans', false) ): ?>
-    <td><?php echo __('Unit price') ?></td>
+    <td class="value"><?php echo __('Unit price') ?></td>
     <td class="qty"><?php echo __('Qty') ?></td>
     <?php endif ?>
-    <td><?php echo sfConfig::get('app_options_synthetic_plans', false) ? '' : __('Total') ?></td>
+    <td class="total"><?php echo sfConfig::get('app_options_synthetic_plans', false) ? '' : __('Total') ?></td>
     <td class="extra-taxes" title="<?php echo __('Booking fees') ?>"><?php echo __('Fees') ?>*</td>
     <?php if ( sfConfig::get('app_options_synthetic_plans', false) && $current_transaction ): ?>
     <td class="linked-stuff"><?php echo __('Options') ?></td>
     <?php endif ?>
-    <td></td>
+    <td class="mod"></td>
   </tr>
 </thead>
 </table>
