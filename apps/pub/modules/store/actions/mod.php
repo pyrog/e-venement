@@ -63,16 +63,16 @@ $pp = Doctrine::getTable('PriceProduct')->createQuery('pp')
   ->andWhere('d.id = ?',$store['declination_id'])
   ->select('pp.id, pp.value')
 ;
-$free_price = is_null($pp->fetchOne()->value)
-  ? floatval(
+$free_price = !is_null($pp->fetchOne()->value)
+  ? NULL
+  : floatval(
     floatval($store['free-price']) <= 0
     ? sfConfig::get('project_tickets_free_price_default', 1)
     : $store['free-price']
-  )
-  : NULL;
+  );
 $qty = !is_null($free_price) ? $store['qty'] * 2 - 1 : $store['qty'] - $count;
 
-if ( $qty == 0 || $free_price && $qty > 0 )
+if ( $qty == 0 )
 {
   $this->json['success']['qty'] = $q->andWhere('bp.integrated_at IS NULL OR bp.member_card_id IS NOT NULL')->count();
   $this->json['success']['message'] = ' ';
@@ -109,7 +109,6 @@ elseif ( $qty > 0 )
     }
   }
   $this->json['success']['qty'] = $q->copy()->andWhere('bp.integrated_at IS NULL')->count();
-  error_log($this->json['success']['qty']);
 }
 
 if (!( $request->hasParameter('debug') && sfConfig::get('sf_web_debug', false) ))

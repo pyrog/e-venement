@@ -1,6 +1,6 @@
   $(document).ready(function(){
     var currency = LI.get_currency($('.prices [data-price-id] .total:first').text());
-    var fr_style = LI.currency_style($('.prices [data-price-id] .value:first').text()) == 'fr';
+    var fr_style = LI.currency_style($('.prices [data-price-id] .total:first').text()) == 'fr';
     if ( location.hash == '#debug' )
       console.error(currency+' '+$('.prices .value:first').text()+' '+fr_style);
   

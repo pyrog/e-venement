@@ -22,6 +22,11 @@ $(document).ready(function(){
   
   $('.product .declination .text').niceScroll();
   
+  // when changing the price of a free-price product
+  $('[data-price-id] .value [name="store[free-price]"]').change(function(){
+    $(this).closest('[data-price-id]').find('.quantity [name="store[free-price]"]').val($(this).val());
+  }).change();
+  
   // the form submission for adding products to the cart
   $('.product .declination .prices form.price_qty').each(function(){
     var orig = $(this).find('select').val();
@@ -29,14 +34,12 @@ $(document).ready(function(){
       if ( orig == $(this).val() )
         return;
       
-      // for free prices
-      if ( $(this).closest('.free-price').length == 0 )
+      var free = $(this).closest('[data-price-id]').find('.value [name="store[free-price]"]');
+      if ( free.length > 0 && (isNaN(parseFloat(free.val())) || parseFloat(free.val()) <= 0) && $(this).val() > 0 )
       {
-        var free_price_selector = '[name="store[free-price]"]';
-        $(this).closest('form').find(free_price_selector).val(
-          $(this).closest('[data-price-id]')
-            .find('.value '+free_price_selector).val()
-        );
+        $(this).val(0);
+        free.focus();
+        return false;
       }
       
       $(this).closest('form').submit();
@@ -59,10 +62,7 @@ $(document).ready(function(){
           console.log('fail: '+orig);
         },
         success: function(json){
-          if ( $(form).closest('.free-price').length > 0 )
-            $(form).closest('.free-price').remove();
-          else
-            orig = $(form).find('select').val();
+          orig = $(form).find('select').val();
           $(form).closest('[data-price-id]').find('.value [name="store[free-price]"]').prop('readonly', orig > 0);
           if ( $.trim(json.success.message) )
             LI.alert(json.success.message, 'success');
