@@ -55,7 +55,7 @@ all:
     cultures:
       fr: Français
       en: English
-      bzh: Breizhoneg
+      br: Breizhoneg
     plugins: []
 
   eticketting:
