@@ -185,7 +185,7 @@
       <button name="continue" data-url="<?php echo url_for('homepage') ?>" onclick="javascript: $(this).closest('form').prop('action', $(this).attr('data-url'));"><?php echo __('Continue shopping') ?></button>
       <input type="submit" name="submit" value="<?php echo __('Cart') ?>" />
     </td>
-  </td>
+  </tr>
 </tfoot>
 <thead>
   <tr>
