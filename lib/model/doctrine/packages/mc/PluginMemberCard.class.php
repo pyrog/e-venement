@@ -32,6 +32,16 @@ abstract class PluginMemberCard extends BaseMemberCard
       $this->BoughtProducts[] = $bp;
     }
     
+    if ( !$this->expire_at )
+    {
+      $this->expire_at = sfConfig::has('project_cards_expiration_delay')
+        ? date('Y-m-d H:i:s',strtotime(sfConfig::get('project_cards_expiration_delay')))
+        : (strtotime(date('Y').'-'.sfConfig::get('project_cards_expiration_date')) > strtotime('now')
+          ? date('Y').'-'.sfConfig::get('project_cards_expiration_date')
+          : (date('Y')+1).'-'.sfConfig::get('project_cards_expiration_date')
+        );
+    }
+    
     parent::preSave($event);
   }
   
