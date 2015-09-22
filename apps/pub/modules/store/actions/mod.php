@@ -72,10 +72,10 @@ $free_price = is_null($pp->fetchOne()->value)
   : NULL;
 $qty = !is_null($free_price) ? $store['qty'] * 2 - 1 : $store['qty'] - $count;
 
-if ( $qty == 0 || !$free_price && $qty > 0 )
+if ( $qty == 0 || $free_price && $qty > 0 )
 {
   $this->json['success']['qty'] = $q->andWhere('bp.integrated_at IS NULL OR bp.member_card_id IS NOT NULL')->count();
-  $this->json['success']['message'] = 'Nothing to declare...';
+  $this->json['success']['message'] = ' ';
 }
 elseif ( $qty < 0 )
 {

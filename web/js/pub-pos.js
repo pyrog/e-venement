@@ -64,9 +64,9 @@ $(document).ready(function(){
           else
             orig = $(form).find('select').val();
           $(form).closest('[data-price-id]').find('.value [name="store[free-price]"]').prop('readonly', orig > 0);
-          if ( json.success.message )
+          if ( $.trim(json.success.message) )
             LI.alert(json.success.message, 'success');
-          if ( json.error.message )
+          if ( $.trim(json.error.message) )
           LI.alert(json.error.message, 'error');
           $('[data-declination-id='+json.success.declination_id+'] [data-price-id='+json.success.price_id+'] [name="store[qty]"]')
             .val(json.success.qty).change();
