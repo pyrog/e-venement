@@ -152,7 +152,8 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
   public function postInsert($event)
   {
     $add_prices = false;
-    if ( sfContext::hasInstance()
+    if ( sfConfig::get('project_manifestations_auto_add_price_manifestation', true)
+      && sfContext::hasInstance()
       && sfContext::getInstance()->getUser()->hasCredential(array('tck-transaction', 'event-admin-price',), false) )
       $add_prices = true;
     
@@ -160,7 +161,7 @@ abstract class PluginManifestation extends BaseManifestation implements liMetaEv
       ->andWhere('p.hide = ?', false)
     ;
     
-    if ( $this->PriceManifestations->count() == 0 && $add_prices )
+    if ( $add_prices && $this->PriceManifestations->count() == 0 )
     foreach ( $q->execute() as $price )
     {
       $pm = PriceManifestation::createPrice($price);
