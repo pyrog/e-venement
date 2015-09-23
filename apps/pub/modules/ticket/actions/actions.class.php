@@ -62,6 +62,7 @@ class ticketActions extends sfActions
   }
   public function executeAutoAdd(sfWebRequest $request)
   {
+<<<<<<< HEAD
     foreach ( $request->getParameter('tickets', array()) as $ticket )
     {
       $q = Doctrine::getTable('Gauge')->createQuery('g')
@@ -97,6 +98,10 @@ class ticketActions extends sfActions
   public function executeCommit(sfWebRequest $request)
   {
     return require(dirname(__FILE__).'/commit.php');
+=======
+    $r = require(__DIR__.'/commit.php');
+    return $r ? $r : 'Success';
+>>>>>>> 34537bf... (pub) improving the login process when using the option app_contact_modify_coordinates_first
   }
   
   protected function checkForOrphansInJson(array $options)

@@ -22,7 +22,7 @@
 ***********************************************************************************/
 ?>
 <?php include_partial('global/ariane',array('active' => 0)) ?>
-<h1><?php echo __('New account') ?></h1>
+<h1><?php echo !$sf_user->hasContact() ? __('New account') : __('My account') ?></h1>
 <?php include_partial('edit_header') ?>
 <?php if ( $form->getErrorSchema()->count() > 0 ): ?>
 <ul class="errors">
