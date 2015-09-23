@@ -208,7 +208,12 @@ $(document).ready(function(){
   LI.manifCalculateTotal();
   $('.sf_admin_list_td_list_tickets form').submit(function(){
     if ( location.hash == '#debug' )
+    {
+      $(this).prop('target', '_blank');
       return true;
+    }
+    else
+      $(this).prop('target', '');
     
     $.ajax({
       type: $(this).prop('method'),
