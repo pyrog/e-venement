@@ -165,7 +165,8 @@
       }
       // set another price_id (if not getting back a transaction already paid)
       if ( !$request->getParameter('transaction_id')
-        && $data[$ticket->id]['price_id'] != $ticket->price_id )
+        && $data[$ticket->id]['price_id'] != $ticket->price_id
+        && in_array($ticket->price_id, $ticket->Gauge->Workspace->Prices->getPrimaryKeys()) )
       {
         $ticket->value    = NULL;
         $ticket->price_id = $data[$ticket->id]['price_id'];
@@ -179,13 +180,13 @@
     if ( sfConfig::get('app_options_synthetic_plans', false) )
     {
       foreach ( $ticket->Manifestation->PriceManifestations as $pm )
-      if ( $pm->Price->isAccessibleBy($this->getUser()) )
+      if ( $pm->Price->isAccessibleBy($this->getUser()) && in_array($ticket->Gauge->workspace_id, $pm->Price->Workspaces->getPrimaryKeys()) )
       {
         $order[$pm->price_id] = $pm->value;
         $tmp[$pm->price_id] = ($pm->Price->description ? $pm->Price->description : (string)$pm->Price).' ('.format_currency($pm->value,'€').')';
       }
       foreach ( $ticket->Gauge->PriceGauges as $pg )
-      if ( $pg->Price->isAccessibleBy($this->getUser()) )
+      if ( $pg->Price->isAccessibleBy($this->getUser()) && in_array($ticket->Gauge->workspace_id, $pg->Price->Workspaces->getPrimaryKeys()) )
       {
         $order[$pg->price_id] = $pg->value;
         $tmp[$pg->price_id] = ($pg->Price->description ? $pg->Price->description : (string)$pg->Price).' ('.format_currency($pg->value,'€').')';
