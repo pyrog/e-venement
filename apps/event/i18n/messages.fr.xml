@@ -1935,6 +1935,10 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Valeur du pas entre les rangées</target>
       </trans-unit>
       <trans-unit>
+        <source>If checked, A3 is between A2 &amp; A4. If not, A3 is between A1 &amp; A5...</source>
+        <target>Si coché, A3 est entre A2 et A4. Si non, A3 est entre A1 et A5...</target>
+      </trans-unit>
+      <trans-unit>
         <source>Contiguous?</source>
         <target>Places contiguës</target>
       </trans-unit>
