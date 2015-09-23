@@ -179,13 +179,13 @@
     if ( sfConfig::get('app_options_synthetic_plans', false) )
     {
       foreach ( $ticket->Manifestation->PriceManifestations as $pm )
-      if ( $pm->Price->isAccessibleBy($this->getUser()) )
+      if ( $pm->Price->isAccessibleBy($this->getUser()) && in_array($ticket->Gauge->workspace_id, $pm->Price->Workspaces->getPrimaryKeys()) )
       {
         $order[$pm->price_id] = $pm->value;
         $tmp[$pm->price_id] = ($pm->Price->description ? $pm->Price->description : (string)$pm->Price).' ('.format_currency($pm->value,'€').')';
       }
       foreach ( $ticket->Gauge->PriceGauges as $pg )
-      if ( $pg->Price->isAccessibleBy($this->getUser()) )
+      if ( $pg->Price->isAccessibleBy($this->getUser()) && in_array($ticket->Gauge->workspace_id, $pg->Price->Workspaces->getPrimaryKeys()) )
       {
         $order[$pg->price_id] = $pg->value;
         $tmp[$pg->price_id] = ($pg->Price->description ? $pg->Price->description : (string)$pg->Price).' ('.format_currency($pg->value,'€').')';
