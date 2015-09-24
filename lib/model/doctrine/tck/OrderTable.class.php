@@ -26,7 +26,6 @@ class OrderTable extends PluginOrderTable
       $o = $q->getRootAlias();
       $q->leftJoin("$o.User u")
         ->leftJoin("$o.Transaction t")
-        ->andWhere('NOT t.closed')
         
         ->leftJoin('t.Tickets tck')
         ->leftJoin('tck.Manifestation m')

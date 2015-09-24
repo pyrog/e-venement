@@ -46,6 +46,14 @@ class OrderFormFilter extends BaseOrderFormFilter
       'required' => false,
     ));
     
+    $this->widgetSchema   ['closed'] = new sfWidgetFormChoice(array(
+      'choices' => $choices = array('' => __('yes or no',null,'sf_admin'), 'yes' => __('yes',null,'sf_admin'), 'no' => __('no',null,'sf_admin')),
+    ));
+    $this->validatorSchema['closed'] = new sfValidatorChoice(array(
+      'choices' => array_keys($choices),
+      'required' => false,
+    ));
+    
     $this->widgetSchema   ['event_name'] = new sfWidgetFormInput;
     $this->validatorSchema['event_name'] = new sfValidatorString(array('required' => false));
     
@@ -100,6 +108,7 @@ class OrderFormFilter extends BaseOrderFormFilter
   {
     $fields = parent::getFields();
     $fields['has_confirmed_ticket']     = 'HasConfirmedTicket';
+    $fields['closed']     = 'Closed';
     $fields['event_name']               = 'EventName';
     $fields['contact_id']               = 'ContactId';
     $fields['organism_id']              = 'OrganismId';
@@ -109,6 +118,15 @@ class OrderFormFilter extends BaseOrderFormFilter
     return $fields;
   }
   
+  public function addClosedColumnQuery(Doctrine_Query $q, $field, $value)
+  {
+    if ( !$value )
+      return $q;
+    
+    $o = $q->getRootAlias();
+    $q->andWhere('t.closed = ?', $value == 'no' ? false : true);
+    return $q;
+  }
   public function addHasConfirmedTicketColumnQuery(Doctrine_Query $q, $field, $values)
   {
     if ( !$values )

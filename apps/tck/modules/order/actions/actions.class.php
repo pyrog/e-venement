@@ -28,4 +28,15 @@ class orderActions extends autoOrderActions
     
     $this->redirect('@order');
   }
+  
+  protected function getFilters()
+  {
+    $filters = parent::getFilters();
+    if ( !isset($filters['closed']) )
+    {
+      $filters['closed'] = 'no';
+      $this->setFilters($filters);
+    }
+    return parent::getFilters();
+  }
 }
