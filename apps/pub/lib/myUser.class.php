@@ -369,11 +369,13 @@ class myUser extends pubUser
   
   public function resetTransaction()
   {
-    $contact = false;
-    if ( $this->transaction )
-    try { $contact = $this->getContact(); }
-    catch ( liOnlineSaleException $e ) { error_log('Trying to reset the transaction #'.$this->transaction->id.', but: '.$e->getMessage()); }
+    if (!( $this->getAttribute('transaction_id',false) && $this->hasContact() ))
+    {
+      $this->getTransaction();
+      return $this;
+    }
     
+    $contact = $this->getContact();
     $this->getAttributeHolder()->remove('transaction_id');
     $this->transaction = NULL;
     $this->getTransaction();
