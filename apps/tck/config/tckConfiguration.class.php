@@ -83,8 +83,6 @@ class tckConfiguration extends sfApplicationConfiguration
     if (!( $pdt instanceof Ticket && $pdt->needsSeating() ))
     if (!( $pdt instanceof Ticket && is_null($pdt->price_id) ))
     {
-      error_log('pdt_id: '.$pdt->id);
-      error_log($pdt->value.' '.$pdt->Transaction->Order->count().' '.$pdt->updated_at);
       $pdt->integrated_at = date('Y-m-d H:i:s'); // integrate
       $cpt++;
     }
@@ -154,7 +152,7 @@ class tckConfiguration extends sfApplicationConfiguration
     $transaction = $event['transaction'];
     
     if ( !$transaction->send_an_email )
-      return;
+      throw new liEvenementException('The auto-sending emails feature is disabled');
     if ( !(isset($conf['always_send_confirmation']) && $conf['always_send_confirmation'])
       || !($transaction->professional_id && $transaction->Professional->contact_email) && !($transaction->contact_id && $transaction->Contact->email)
     )
