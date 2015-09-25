@@ -153,11 +153,12 @@ class tckConfiguration extends sfApplicationConfiguration
     $conf = sfConfig::get('app_transaction_email', array());
     $transaction = $event['transaction'];
     
-    if ( !$transaction->send_an_email
-      || !(isset($conf['always_send_confirmation']) && $conf['always_send_confirmation'])
+    if ( !$transaction->send_an_email )
+      return;
+    if ( !(isset($conf['always_send_confirmation']) && $conf['always_send_confirmation'])
       || !($transaction->professional_id && $transaction->Professional->contact_email) && !($transaction->contact_id && $transaction->Contact->email)
     )
-      throw new liEvenementException('You have tried to send an email without the ability for (no contact_id, no professional_id, no "send_an_email" field set to "true")...');
+      throw new liEvenementException('You have tried to send an email without the ability for it (no contact_id, no professional_id)...');
     
     $client   = sfConfig::get('project_about_client');
     $firm     = sfConfig::get('project_about_firm');
