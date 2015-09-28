@@ -204,11 +204,11 @@ class tckConfiguration extends sfApplicationConfiguration
           $semaphore['products'] = false;
           break;
         }
-        if ( $semaphore['products'] && ($semaphore['amount'] = $this->transaction->getPaid() - $this->transaction->getPrice(true,true)) == 0 )
+        if ( $semaphore['products'] && ($semaphore['amount'] = $transaction->getPaid() - $transaction->getPrice(true,true)) == 0 )
         {
-          $this->transaction->closed = true;
+          $transaction->closed = true;
           $closed++;
-          $this->stdout($section, 'Transaction #'.$this->transaction->id.' closed by garbage collector.', 'INFO');
+          $this->stdout($section, 'Transaction #'.$transaction->id.' closed by garbage collector.', 'INFO');
         }
         
         if ( $transaction->isModified(true) )
