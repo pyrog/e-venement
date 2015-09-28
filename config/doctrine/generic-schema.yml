@@ -203,7 +203,7 @@ Option:
       notblank: true
       notnull: true
     value:
-      type: string(255)
+      type: string
       notnull: true
   relations:
     sfGuardUser:
