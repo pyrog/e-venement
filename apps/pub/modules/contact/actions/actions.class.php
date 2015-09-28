@@ -65,7 +65,10 @@ class contactActions extends sfActions
       catch ( liEvenementException $e )
       { $this->getUser()->setContact($this->form->getObject()); }
       
-      $this->redirect('contact/index');
+      if ( sfConfig::get('app_contact_modify_coordinates_first', false) )
+        $this->redirect(sfConfig::get('app_options_home', 'event'));
+      else
+        $this->redirect('contact/index');
     }
     
     $this->setTemplate('edit');

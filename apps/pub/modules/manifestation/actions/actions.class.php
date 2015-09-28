@@ -101,16 +101,11 @@ class manifestationActions extends autoManifestationActions
   }
   public function executeEdit(sfWebRequest $request)
   {
-    $this->manifestation = $this->getRoute()->getObject();
-    $this->redirect('manifestation/show?id='.$this->manifestation->id);
+    $this->redirect('manifestation/show?id='.$request->getParameter('id'));
   }
   public function executeShow(sfWebRequest $request)
   {
     $vel = sfConfig::get('app_tickets_vel', array());
-    if ( $this->getPager()->getQuery()->count() != 1
-      && isset($vel['display_tickets_in_manifestations_list']) && $vel['display_tickets_in_manifestations_list'] )
-      $this->redirect('manifestation/index');
-    
     $q = Doctrine::getTable('Gauge')->createQuery('g')
       ->addSelect('gtck.*, m.*, mpm.*, mp.*, tck.*, e.*, l.*, ws.*, sp.*, op.*')
       ->andWhere('g.online = ?', true)

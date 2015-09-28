@@ -92,7 +92,7 @@
    *               tickets' numerotation
    **/
 
-    $this->getContext()->getConfiguration()->loadHelpers('Slug');
+    $this->getContext()->getConfiguration()->loadHelpers(array('Slug', 'I18N'));
     
     $fct = 'createQueryFor'.ucfirst($type);
     //if ( $type == 'museum' ) $type = 'manifestations'; // a trick to avoid many code, becaude museum & manifestations are treated exactly the same way
@@ -501,11 +501,22 @@
           'item-details' => in_array($this->json[$product->id]['declinations_name'], array('gauges')), // the link to a specific place to detail the items
           'id' => $item->price_id ? $item->price_id : slugify($item->price_name),
         ) + $items_model;
-      $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->id;
-      if ( in_array($this->json[$product->id]['declinations_name'], array('gauges')) )
-      {
+      switch ( $this->json[$product->id]['declinations_name'] ) {
+      case 'gauges':
+        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->id;
         $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids_url'][] = cross_app_url_for('tck', 'ticket/show?id='.$item->id, true);
         $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = $item->numerotation;
+        break;
+      case 'declinations':
+        if ( !$item->member_card_id )
+        {
+          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->id;
+          break;
+        }
+        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->member_card_id;
+        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids_url'][] = cross_app_url_for('rp', 'member_card/show?id='.$item->member_card_id, true);
+        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = '#'.$item->id;
+        break;
       }
       
       // by group of tickets

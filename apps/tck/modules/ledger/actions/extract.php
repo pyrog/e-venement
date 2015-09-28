@@ -88,7 +88,8 @@
         $this->lines[$key]['tep'] += $tmp = round(($ticket->value+$ticket->taxes) / (1+$ticket->vat),2);
         $this->lines[$key]['vat'] += $ticket->value + $ticket->taxes - $tmp;
       }
-      else {
+      else
+      {
         $infos = $manif->getInfosTickets($sf_data->getRaw('options'));
         if ( !isset($this->lines[$key = 'e'.$event->id.'m'.$manif->id]) )
           $this->lines[$key] = array(
@@ -139,7 +140,6 @@
       $this->getContext()->getConfiguration()->loadHelpers('Number');
       foreach ( $this->lines as $key => $line )
       foreach ( array('pit', 'vat', 'extra-taxes', 'tep') as $field )
-        //$this->lines[$key][$field] = number_format(floatval($line[$field]),2,$decimal);
         $this->lines[$key][$field] = $numberFormat->format($line[$field], '#.00');
       return 'Sales';
       break;
@@ -174,6 +174,9 @@
           'account'         => $method->account,
         );
       
+      foreach ( $this->lines as $key => $line )
+      foreach ( array('value',) as $field )
+        $this->lines[$key][$field] = $numberFormat->format($line[$field], '#.00');
       return 'Cash';
       break;
     }

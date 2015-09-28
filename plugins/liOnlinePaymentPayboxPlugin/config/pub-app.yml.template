@@ -7,7 +7,7 @@ all:
     plugins: [liOnlinePaymentPayboxPlugin]
   payment:
     type: paybox
-    autosubmit: false
+    autosubmit: true
     id: "1"
     rank: "32"
     site: "1999888"

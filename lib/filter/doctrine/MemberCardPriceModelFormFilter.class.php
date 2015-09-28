@@ -32,6 +32,7 @@ class MemberCardPriceModelFormFilter extends BaseMemberCardPriceModelFormFilter
       'order_by' => array('name',''),
     ));
     $this->validatorSchema['meta_events_list'] = new sfValidatorDoctrineChoice(array(
+      'required' => false,
       'multiple' => true,
       'model'    => 'MetaEvent',
     ));

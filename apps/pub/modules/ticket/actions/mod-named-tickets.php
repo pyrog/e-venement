@@ -165,7 +165,8 @@
       }
       // set another price_id (if not getting back a transaction already paid)
       if ( !$request->getParameter('transaction_id')
-        && $data[$ticket->id]['price_id'] != $ticket->price_id )
+        && $data[$ticket->id]['price_id'] != $ticket->price_id
+        && in_array($ticket->price_id, $ticket->Gauge->Workspace->Prices->getPrimaryKeys()) )
       {
         $ticket->value    = NULL;
         $ticket->price_id = $data[$ticket->id]['price_id'];

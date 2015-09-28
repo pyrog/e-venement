@@ -12,6 +12,7 @@
 /web/uploads/*
 /data/sql/*
 
+/apps/pos/config/app.yml
 /apps/default/config/app.yml
 /apps/event/config/app.yml
 /apps/event/config/factories.yml

@@ -63,6 +63,9 @@
         $this->card->getObject()->Transaction = $this->transaction;
         $this->card->save();
         $this->card = $this->card->getObject();
+        $this->dispatcher->notify(new sfEvent($this, 'mc.member_card.created', array(
+          'member_card' => $this->card,
+        )));
         
         if ( $this->card->MemberCardType->value > 0 )
         try
@@ -106,6 +109,9 @@
             $this->card->Payments[] = $payment->copy();
           $this->transaction->MemberCards[] = $this->card;
           $this->card->save();
+          $this->dispatcher->notify(new sfEvent($this, 'mc.member_card.created', array(
+            'member_card' => $this->card,
+          )));
         }
       }
       else
@@ -134,6 +140,9 @@
         $this->card->updated_at = NULL;
         //$this->card->name = $params['name'];
         $this->card->save();
+        $this->dispatcher->notify(new sfEvent($this, 'mc.member_card.created', array(
+          'member_card' => $this->card,
+        )));
       }
       
       $this->setLayout('nude');

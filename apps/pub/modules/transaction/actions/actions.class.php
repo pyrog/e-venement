@@ -98,7 +98,6 @@ class transactionActions extends sfActions
       $this->redirect('transaction/show?id='.$this->transaction->id);
     }
     
-    error_log('here');
     cartActions::sendConfirmationEmails($this->transaction, $this, $tokened);
     $this->getUser()->setFlash('success', __('Action successful'));
     

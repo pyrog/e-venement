@@ -33,7 +33,7 @@ SFUSER="$1"
 [ -n "$5" ] && export PGPORT="$5"
 
 
-echo "Usage: bin/pre-mirate-to-v28.sh SFUSER [DB [USER [HOST [PORT]]]]"
+echo "Usage: bin/migration-to-v29.sh SFUSER [DB [USER [HOST [PORT]]]]"
 echo "Are you sure you want to continue with those parameters :"
 echo "The e-venement's DB user: $SFUSER"
 echo "Database: $PGDATABASE"
@@ -60,6 +60,14 @@ then for elt in `echo "SELECT count(*) FROM ticket WHERE (printed_at IS NOT NULL
 fi
 i=0; for elt in `echo 'SELECT count(*) FROM transaction;' | psql 2> /dev/null`
 do let "i++";  [ $i -eq 3 ] && NBTR=$elt; done
+
+read -p "Do you want to pull all your git submodules ? [Y/n] " subm
+if [ "$subm" != "n" ]; then
+  for elt in lib/vendor/externals/*; do
+    (cd $elt; git pull origin master)
+  done
+fi
+
 
 read -p "Do you want to reset your dump & patch your database for e-venement v2.8 ? [Y/n] " dump
 if [ "$dump" != "n" ]; then

@@ -229,6 +229,8 @@ $(document).ready(function(){
       $(this).prop('target', '_blank');
       return true;
     }
+    else
+      $(this).prop('target', '');
     
     $.ajax({
       type: $(this).prop('method'),

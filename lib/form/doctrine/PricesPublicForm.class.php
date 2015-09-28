@@ -226,6 +226,7 @@ class PricesPublicForm extends BaseFormDoctrine
     if ( sfConfig::get('sf_web_debug', false) )
     foreach ( $this->object->Tickets as $ticket )
     if ( $ticket->isModified() || $ticket->isNew() )
+    if ( $ticket->seat_id )
       error_log('In transaction #'.$this->object->id.', Seat '.$ticket->Seat.' for gauge '.$ticket->gauge_id.' and price '.$ticket->price_id);
     
     return $this->object->save($con);
