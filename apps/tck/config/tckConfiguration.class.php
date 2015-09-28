@@ -177,7 +177,7 @@ class tckConfiguration extends sfApplicationConfiguration
     // try to auto-integrate tickets if setted up
     if ( sfConfig::get('app_tickets_auto_integrate', false) )
     $this->addGarbageCollector('auto-integrate', function(){
-      $section = 'Asked itemables';
+      $section = 'Auto-integration';
       $this->stdout($section, 'Integrating what we can...', 'COMMAND');
       $timeout = sfConfig::get('app_tickets_timeout', array());
       
