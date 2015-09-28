@@ -188,13 +188,29 @@ class tckConfiguration extends sfApplicationConfiguration
         ->andWhere('t.closed = ?', false)
         ->orderBy('t.id')
       ;
-      $cpt = 0;
+      $cpt = $closed = 0;
       foreach ( $q->execute() as $transaction )
       {
         $this->dispatcher->notify($event = new sfEvent($this, 'tck.before_trying_to_close_transaction', array(
           'transaction' => $transaction,
           'user'        => NULL,
         )));
+        
+        
+        $semaphore = array('products' => true, 'amount' => 0);
+        foreach ( $items as $pdt )
+        if ( !$pdt->isSold() )
+        {
+          $semaphore['products'] = false;
+          break;
+        }
+        if ( $semaphore['products'] && ($semaphore['amount'] = $this->transaction->getPaid() - $this->transaction->getPrice(true,true)) == 0 )
+        {
+          $this->transaction->closed = true;
+          $closed++;
+          $this->stdout($section, 'Transaction #'.$this->transaction->id.' closed by garbage collector.', 'INFO');
+        }
+        
         if ( $transaction->isModified(true) )
         try
         {
@@ -208,7 +224,7 @@ class tckConfiguration extends sfApplicationConfiguration
         catch ( Exception $e )
         { $this->stdout($section, '[KO] the transaction #'.$transaction->id.' cannot be auto-integrated: '.$e->getMessage(), 'ERROR'); }
       }
-      $this->stdout($section, "[OK] globally, $cpt itemables were integrated", 'INFO');
+      $this->stdout($section, "[OK] globally, $cpt itemables were integrated (and $closed transactions closed)", 'INFO');
     });
     
     // Asked tickets collector
