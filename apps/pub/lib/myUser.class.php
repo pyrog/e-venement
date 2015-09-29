@@ -127,12 +127,26 @@ class myUser extends pubUser
       $event->setReturnValue(false);
     }
     
+    $q = Doctrine::getTable('Transaction')->createQuery('t')
+      ->andWhere('t.contact_id = ?',$this->getContact()->id)
+      ->leftJoin('m.Event e')
+      ->andWhereIn('e.meta_event_id', array_keys($this->getMetaEventsCredentials()))
+      ->leftJoin('m.Gauge g')
+      ->andWhereIn('g.workspace_id', array_keys($this->getWorkspacesCredentials()))
+      ->leftJoin('t.Order o')
+    ;
+    if (!( $transactions = $q->execute() ))
+    {
+      $transactions = new Doctrine_Collection('Transaction');
+      $transactions[] = $this->getTransaction();
+    }
+    
     // controlling if there is any max_per_event_per_contact conflict
     $vel['max_per_event_per_contact'] = isset($vel['max_per_event_per_contact']) ? $vel['max_per_event_per_contact'] : false;
     if ( $vel['max_per_event_per_contact'] && $vel['max_per_event_per_contact'] > 0 && $event->getReturnValue() )
     {
       $last_conflict = NULL;
-      foreach ( $this->getContact()->Transactions as $transaction )
+      foreach ( $transactions as $transaction )
       foreach ( $transaction->Tickets as $ticket )
       if (( $ticket->printed_at || $ticket->integrated_at || $transaction->Order->count() > 0 || $ticket->transaction_id == $this->getTransaction()->id )
         && !$ticket->hasBeenCancelled()
@@ -163,13 +177,6 @@ class myUser extends pubUser
     if ( ($delay = sfConfig::get('app_tickets_no_conflict', false)) && $event->getReturnValue() )
     {
       $manifs = array();
-      if ( $this->getTransaction()->contact_id )
-        $transactions = $this->getContact()->Transactions;
-      else
-      {
-        $transactions = new Doctrine_Collection('Transaction');
-        $transactions[] = $this->getTransaction();
-      }
       foreach ( $transactions as $transaction )
       foreach ( $transaction->Tickets as $ticket )
       if (( $ticket->transaction_id == $this->getTransaction()->id || $ticket->printed_at || $ticket->integrated_at || $transaction->Order->count() > 0 )
@@ -223,9 +230,9 @@ class myUser extends pubUser
       if ( !sfConfig::get('app_user_must_authenticate', false) )
         return;
       
-      if ( $this->getTransaction()->contact_id )
+      if ( $this->hasContact() )
         return;
-    
+      
       // for plateforms that require authenticated visitors
       $sf_action->forward('login','index');
     }
@@ -342,7 +349,6 @@ class myUser extends pubUser
       ->leftJoin('t.Order o')
       ->leftJoin('t.Contact c')
       ->leftJoin('c.Professionals p WITH p.id = t.professional_id')
-      ->leftJoin('c.Transactions tr')
       ->leftJoin('c.MemberCards cmc WITH (cmc.active = ? AND cmc.expire_at > NOW() OR cmc.transaction_id = t.id)', true)
       //->leftJoin('cmc.MemberCardPrices cmcp') // <- can be very very long if member cards are componed by a lot of prices, and this can be found back automatically w/ doctrine w/o any side-effect
       ->andWhere('t.id = ?',$tid)
