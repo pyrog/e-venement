@@ -19,7 +19,7 @@ generator:
         event_name: { label: Name }
         manifestation_happens_at: { label: Date }
       list:
-        display: [_id,_transaction_id,_closed,_cancel,_contact,_manifestations,created_at,User]
+        display: [_id,_transaction_id,_closed,_cancel,_contact,_manifestations,_comment,created_at,User]
         table_method: doSelectIndex
         sort: [id, DESC]
       filter:

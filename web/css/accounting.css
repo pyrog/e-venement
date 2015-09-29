@@ -16,6 +16,10 @@
   text-decoration: underline;
 }
 
+@media screen and (max-width: 1500px) {
+  .sf_admin_list .sf_admin_list_td_comment, .sf_admin_list .sf_admin_list_th_comment { display: none; }
+}
+
 .dates span { display: block; }
 
 .sf_admin_list_td_debt span {
