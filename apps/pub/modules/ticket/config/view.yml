@@ -2,3 +2,7 @@ default:
   has_layout: false
   http_metas:
     content-type: application/json
+commitSuccess:
+  has_layout: true
+  http_metas:
+    content-type: text/html

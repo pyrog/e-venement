@@ -88,7 +88,7 @@
     {
       if ( sfConfig::get('sf_web_debug', false) && !$request->hasParameter('debug') )
         sfConfig::set('sf_web_debug', false);
-      return 'Json';
+      return sfConfig::get('sf_web_debug', false) ? 'Success' : 'Json';
     }
     $this->redirect('cart/show');
     return 'Success';
