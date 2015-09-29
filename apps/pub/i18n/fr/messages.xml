@@ -349,8 +349,8 @@
         <target>Générer une facture</target>
       </trans-unit>
       <trans-unit>
-        <source>Your order has been closed because you reached the maximum time of execution. We are really sorry, this is a needed "anti-squatters" measure.</source>
-        <target>Votre commande a été clôturée car vous avez atteint le temps d'exécution maximum. Nous sommes vraiment désolés, c'est une mesure "anti-squatters" nécessaire.</target>
+        <source>Delay expired. Your order has been abandonned.</source>
+        <target>Vous avez été trop long. Votre commande a été abandonnée.</target>
       </trans-unit>
       <trans-unit>
         <source>To remove a booked seat, click it on the plan</source>
@@ -923,11 +923,15 @@ ou bien suivez ce lien&nbsp;:&lt;br/&gt;
         <target>Questions</target>
       </trans-unit>
       <trans-unit>
-	<source>You cannot book a ticket on this date because you already have a ticket booked for %%manif%%</source>
+	      <source>at</source>
+        <target>le</target>
+      </trans-unit>
+      <trans-unit>
+	      <source>You cannot book a ticket on this date because you already have a ticket booked for %%manif%%</source>
         <target>Vous ne pouvez pas réserver de billet pour cette date car vous avez déjà un billet de réservé pour %%manif%%</target>
       </trans-unit>
       <trans-unit>
-	<source>You cannot book a ticket on this date because you already have a ticket booked for %%manif%% (in an other transaction #%%transaction%%)</source>
+	      <source>You cannot book a ticket on this date because you already have a ticket booked for %%manif%% (in an other transaction #%%transaction%%)</source>
         <target>Vous ne pouvez pas réserver de billet pour cette date car vous avez déjà un billet de réservé pour %%manif%% (dans une autre opération #%%transaction%%)</target>
       </trans-unit>
       <trans-unit>
