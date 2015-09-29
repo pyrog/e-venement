@@ -171,7 +171,7 @@ abstract class PluginEmail extends BaseEmail
         
         $post_treated_content = str_replace(
           $link[0],
-          '<a '.$link[1].'href="'.str_replace('https','http',cross_app_url_for('email','link/follow?u='.$el->encrypted_uri,true)).'&e=%%EMAILADDRESS%%"'.$link[3].'>',
+          '<a '.$link[1].'href="'.str_replace('https','http',cross_app_url_for('email', 'link/follow', true)).'?u='.$el->encrypted_uri.'&e=%%EMAILADDRESS%%"'.$link[3].'>',
           $post_treated_content
         );
       }

@@ -12,7 +12,7 @@ class linkActions extends sfActions
 {
   public function executeFollow(sfWebRequest $request)
   {
-    $q = Doctrine::getTable('EmailLink')->createQuery('el')
+    $q = Doctrine::getTable('EmailExternalLink')->createQuery('el')
       ->andWhere('el.encrypted_uri = ?',$request->getParameter('u',false));
     $this->forward404Unless($this->link = $q->fetchOne());
     
