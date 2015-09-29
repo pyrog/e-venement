@@ -31,6 +31,7 @@
   href="<?php echo url_for('ticket/reset?id='.$transaction->id) ?>"
   title="<?php echo __('Abandon') ?>"
   id="abandon"
+  onclick="javascript: if ( !confirm('<?php echo __('Are you sure?') ?>') ) { setTimeout(function(){ $('#transition .close').click(); },200); return false; }"
 ><span class="ui-icon ui-icon-circle-close"></span></a>
 <a
   class="ui-widget-content ui-state-default ui-corner-all ui-widget fg-button"
