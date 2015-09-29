@@ -189,7 +189,7 @@ class pubConfiguration extends sfApplicationConfiguration
     if ( time() > $end )
     {
       $sf_action->getUser()->resetTransaction();
-      $sf_action->getUser()->setFlash('notice', __('Your order has been closed because you reached the maximum time of execution. We are really sorry, this is a needed "anti-squatters" measure.'));
+      $sf_action->getUser()->setFlash('notice', __('Delay expired. Your order has been abandonned.'));
       $sf_action->redirect('@homepage');
     }
     

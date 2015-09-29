@@ -83,7 +83,7 @@
       }
     }
     
-    $this->getUser()->setFlash('notice',__('%%nb%% ticket(s) added to your cart',array('%%nb%%' => $cpt)));
+    //$this->getUser()->setFlash('notice',__('%%nb%% ticket(s) added to your cart',array('%%nb%%' => $cpt)));
     if ( $request->getParameter('no_redirect') )
     {
       if ( sfConfig::get('sf_web_debug', false) && !$request->hasParameter('debug') )
