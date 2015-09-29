@@ -117,15 +117,21 @@ class myUser extends pubUser
       $event->setReturnValue(false);
     }
     
-    $q = Doctrine::getTable('Transaction')->createQuery('t')
-      ->andWhere('t.contact_id = ?',$this->getContact()->id)
-      ->leftJoin('m.Event e')
-      ->andWhereIn('e.meta_event_id', array_keys($this->getMetaEventsCredentials()))
-      ->leftJoin('m.Gauge g')
-      ->andWhereIn('g.workspace_id', array_keys($this->getWorkspacesCredentials()))
-      ->leftJoin('t.Order o')
-    ;
-    if (!( $transactions = $q->execute() ))
+    if ( !$this->hasContact() )
+      $transactions = false;
+    else
+    {
+      $q = Doctrine::getTable('Transaction')->createQuery('t')
+        ->andWhere('t.contact_id = ?',$this->getContact()->id)
+        ->leftJoin('m.Event e')
+        ->andWhereIn('e.meta_event_id', array_keys($this->getMetaEventsCredentials()))
+        ->leftJoin('m.Gauge g')
+        ->andWhereIn('g.workspace_id', array_keys($this->getWorkspacesCredentials()))
+        ->leftJoin('t.Order o')
+      ;
+      $transactions = $q->execute();
+    }
+    if ( $transactions )
     {
       $transactions = new Doctrine_Collection('Transaction');
       $transactions[] = $this->getTransaction();
