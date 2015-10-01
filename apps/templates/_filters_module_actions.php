@@ -21,8 +21,8 @@
 *
 ***********************************************************************************/
 ?>
-<?php use_javascript('filter-record') ?>
-<?php use_stylesheet('filter-record') ?>
+<?php use_javascript('filters-record') ?>
+<?php use_stylesheet('filters-record') ?>
 
 <?php $savefilters = new FilterForm; ?>
 <?php echo $savefilters->renderFormTag(cross_app_url_for('default', '@filter'), array('target' => '_blank', 'id' => 'sf_admin_filter_save')) ?><p>

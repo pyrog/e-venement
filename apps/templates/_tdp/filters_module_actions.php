@@ -35,4 +35,4 @@
       <button name="s" alt="<?php echo __("Filter's name", null, 'sf_admin') ?>" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
         <span class="ui-button-text"><?php echo __('Record',null,'sf_admin') ?></span>
       </button>
-</p></form><?php use_javascript('filter-record') ?><?php use_stylesheet('filter-record') ?><?php endif ?>
+</p></form><?php use_javascript('filters-record') ?><?php use_stylesheet('filter-record') ?><?php endif ?>

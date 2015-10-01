@@ -26,7 +26,12 @@
 )) ?>
 </div>
 <div class="sf_admin_bar ui-helper-hidden" style="display:none">
-  <?php if ( !$object ) include_partial('global/tdp/top_widget_filters_ajax') ?>
+  <?php if ( !$object ) include_partial('global/tdp/top_widget_filters_ajax', array(
+    'object' => $object,
+    'hasFilters' => $hasFilters,
+    'filters' => $filters,
+    'configuration' => $configuration,
+  )) ?>
   <?php //if ( !$object ) include_partial($sf_context->getModuleName().'/filters', array('form' => $filters, 'configuration' => $configuration)) ?>
 </div>
 

@@ -1,4 +1,7 @@
-function filter_record_init()
+if ( LI == undefined )
+  var LI = {};
+
+LI.filters_record_init = function()
 {
   $('#sf_admin_filter_save').submit(function(){
     if (!( name = prompt($(this).find('[name=s]').attr('alt')) ))
@@ -74,4 +77,4 @@ function filter_record_init()
   });
 }
 
-$(document).ready(function(){ filter_record_init(); });
+$(document).ready(function(){ LI.filters_record_init(); });
