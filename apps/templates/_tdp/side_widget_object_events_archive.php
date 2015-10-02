@@ -4,6 +4,7 @@
     $objects = array();
     if ( $object->hasRelation('EventArchives') )
       $objects[] = $object;
+    $cpt = 0;
   ?>
   <ul class="events">
     <?php foreach ( $objects as $obj ): ?>
@@ -27,5 +28,6 @@
       </ul>
     </li>
     <?php endif ?>
+    <?php $cpt++ ?>
     <?php endforeach ?>
   </ul>

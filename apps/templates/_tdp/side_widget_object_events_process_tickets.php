@@ -48,10 +48,8 @@ if ( $ticket->printed_at || $ticket->integrated_at || $transaction->Order->count
   $events[$ticket->Manifestation->Event->meta_event_id][$ticket->Manifestation->Event->id]['value'] += $ticket->value;
   $events[$ticket->Manifestation->Event->meta_event_id][$ticket->Manifestation->Event->id]['transaction_links'][(($p = $ticket->printed_at || $ticket->integrated_at || $ticket->cancelling) ? 'p' : 'r').$ticket->transaction_id]
     = '#'.cross_app_link_to($ticket->transaction_id, 'tck', 'ticket/sell?id='.$ticket->transaction_id, false, null, false, $p ? 'title="'.__('All printed').'"' : 'class="not-printed" title="'.__('Ordered').'"');
-  if ( in_array($ticket->Manifestation->Event->meta_event_id, array_keys($sf_user->getMetaEventsCredentials()->getRawValue())) )
-  {
-    $total['value'] += $ticket->value;
-    $total['ids'][$ticket->id] = $ticket->id;
-  }
+  
+  $total['value'] += $ticket->value;
+  $total['ids'][$ticket->id] = $ticket->id;
 }
 
