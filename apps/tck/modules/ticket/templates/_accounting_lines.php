@@ -41,15 +41,18 @@
         if ( isset($nocancel) && !$nocancel || $tickets[$i]->Cancelling->count() == 0 )
         {
           $qty++;
+          $local_vat = $tickets[$i]->printed_at || $tickets[$i]->integrated_at || $tickets[$i]->cancelling
+            ? $tickets[$i]->vat
+            : $tickets[$i]->Manifestation->Vat->value;
           if ( $tickets[$i]->numerotation )
             $nums[] = $tickets[$i]->numerotation;
           $total['taxes'] += $tickets[$i]->taxes;
           $total['tip']   += $val = $tickets[$i]->value + $tickets[$i]->taxes;
-          $total['pet']   += $pet = round($val/(1+$tickets[$i]->vat), 2);
+          $total['pet']   += $pet = round($val/(1+$local_vat), 2);
           $total['vat']   += $vat = $val - $pet;
-          if ( !isset($totals['vat'][$tickets[$i]->vat]) )
-            $totals['vat'][$tickets[$i]->vat] = 0;
-          $totals['vat'][$tickets[$i]->vat] += $vat;
+          if ( !isset($totals['vat'][$local_vat]) )
+            $totals['vat'][$local_vat] = 0;
+          $totals['vat'][$local_vat] += $vat;
         }
         $i++;
       }
@@ -61,7 +64,7 @@
     <td class="pit"><?php echo format_currency($total['tip'],'€'); $totals['tip'] += $total['tip']; ?></td>
     <td class="vat">
       <span class="value"><?php echo $total['vat'] > 0 ? format_currency($total['vat'],'€') : '-' ?></span>
-      <span class="percent"><?php echo $ticket->vat * 100 ?></span>
+      <span class="percent"><?php echo $local_vat * 100 ?></span>
     </td>
     <td class="tep"><?php echo format_currency($total['pet'],'€'); $totals['pet'] += $total['pet'] ?></td>
   </tr>

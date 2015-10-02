@@ -1701,6 +1701,10 @@
         <target>Total TTC:</target>
       </trans-unit>
       <trans-unit>
+        <source>The VAT shown here has to be considered as an orientation... The final rate will be fixed after printing tickets or delivering products.</source>
+        <target>La TVA indiquée ici doit être considérée comme une orientation... Le taux final sera fixé après l'impression des billets ou la délivrance des produits.</target>
+      </trans-unit>
+      <trans-unit>
         <source>Prices</source>
         <target>Tarifs</target>
       </trans-unit>
