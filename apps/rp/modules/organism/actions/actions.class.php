@@ -180,12 +180,8 @@ class organismActions extends autoOrganismActions
 
   public function executeShow(sfWebRequest $request)
   {
-    $q = Doctrine::getTable('Organism')->createQuery();
-    $q->where('id = ?',$request->getParameter('id'))
-      ->orderBy('c.name, c.firstname, pt.name, p.name');
-    $this->organism = $q->fetchOne();
-    
-    $this->forward404Unless($this->organism);
+    $this->organism = Doctrine::getTable('Organism')->findWithTickets($request->getParameter('id'));
+    $this->forward404Unless($this->organism instanceof Organism);
     $this->form = $this->configuration->getForm($this->organism);
   }
   public function executeEdit(sfWebRequest $request)
