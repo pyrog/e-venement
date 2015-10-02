@@ -53,11 +53,14 @@
     {
       $this->totals['tip'] += $tmp = $ticket->value + $ticket->taxes;
       
-      if ( !isset($this->totals['vat'][$ticket->vat]) )
-        $this->totals['vat'][$ticket->vat] = array($ticket->manifestation_id => 0);
-      if ( !isset($this->totals['vat'][$ticket->vat][$ticket->manifestation_id]) )
-        $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] = 0;
-      $this->totals['vat'][$ticket->vat][$ticket->manifestation_id] += $tmp = round($tmp - $tmp/(1+$ticket->vat), 2);
+      $local_vat = $ticket->printed_at || $ticket->integrated_at || $ticket->cancelling
+        ? $ticket->vat
+        : $ticket->Manifestation->Vat->value;
+      if ( !isset($this->totals['vat'][$local_vat]) )
+        $this->totals['vat'][$local_vat] = array($ticket->manifestation_id => 0);
+      if ( !isset($this->totals['vat'][$local_vat][$ticket->manifestation_id]) )
+        $this->totals['vat'][$local_vat][$ticket->manifestation_id] = 0;
+      $this->totals['vat'][$local_vat][$ticket->manifestation_id] += $tmp = round($tmp - $tmp/(1+$local_vat), 2);
       $this->totals['vat']['total'] += $tmp;
     }
     
