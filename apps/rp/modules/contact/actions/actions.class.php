@@ -363,6 +363,10 @@ class contactActions extends autoContactActions
       && !$this->getUser()->hasCredential('pr-contact-edit') )
       $this->setTemplate('show');
   }
+  public function executeEvents(sfWebRequest $request)
+  {
+    return require(__DIR__.'/events.php');
+  }
   
   public function executeNew(sfWebRequest $request)
   {

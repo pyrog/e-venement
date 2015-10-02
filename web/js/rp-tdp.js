@@ -21,7 +21,33 @@ $(document).ready(function(){
   },200); });
   
   // METAEVENTS
-  $('#tdp-side-ticketting .metaevent .name').click(function(){ $(this).closest('.metaevent').find('.events, .seat-rank').slideToggle(); });
+  $('#tdp-side-ticketting .metaevent:not(.hidden) .name').click(function(){ $(this).closest('.metaevent').find('.events, .seat-rank').slideUp(); });
+  $('#tdp-side-ticketting .metaevent.hidden .name').click(function(){
+    var elt = $(this);
+    if ( $(this).prop('href') == '#' )
+    {
+      $('#transition .close').click();
+      return false;
+    }
+    
+    $.get($(this).prop('href'), function(data){
+      // stop transition
+      $('#transition .close').click();
+      
+      // process data
+      data = $.parseHTML(data);
+      var melt;
+      $(elt).closest('.metaevent').replaceWith(
+        melt = $(data).find('.metaevent[data-meta-event-id="'+$(elt).closest('[data-meta-event-id]').attr('data-meta-event-id')+'"]'
+      ))
+      
+      // display stuff
+      $(melt).closest('.metaevent').find('.events, .seat-rank').slideDown();
+    });
+    
+    $(elt).prop('href', '#');
+    return false;
+  });
   $('#tdp-side-ticketting .metaevent .seat-rank').click(function(){ $(this).fadeOut(); });
   
   // LINK TO RELATIONSHIPS
