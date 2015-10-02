@@ -15,14 +15,15 @@
     <?php
       $meta_events = array();
       $q = Doctrine::getTable('MetaEvent')->createQuery('me')
-        ->select('me.*')
+        ->select('me.*, met.*')
+        ->leftJoin('me.Translation met WITH met.lang = ?', $sf_user->getCulture())
         ->leftJoin('me.Events e')
         ->leftJoin('e.Manifestations m')
         ->leftJoin('m.Tickets tck')
         ->leftJoin('tck.Transaction t')
         ->andWhereNotIn('me.id', array_keys($sf_user->getRawValue()->getMetaEventsCredentials()))
         ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL OR (SELECT count(oo.id) FROM order oo WHERE oo.transaction_id = t.id) > 0')
-        ->orderBy('m.happens_at DESC, me.name')
+        ->orderBy('m.happens_at DESC, met.name')
       ;
       if ( $obj->getRawValue() instanceof Contact )
         $q->andWhere('tck.contact_id = ? OR t.contact_id = ?', array($obj->id, $obj->id))
