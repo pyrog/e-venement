@@ -97,18 +97,26 @@ class tckConfiguration extends sfApplicationConfiguration
   } catch ( Exception $e ) { return $this->catchError($e); } }
   
   public function sendEmailOnPrintingTickets(sfEvent $event)
-  { try {
-    // a trick using the "pub" application to send the email
-    sfContext::getInstance()->getConfiguration()->loadHelpers('CrossAppLink');
-    file_get_contents($url = str_replace('https://','http://',cross_app_url_for(
-      'pub',
-      'transaction/sendEmail?id='.$event['transaction']->id.'&token='.md5($event['transaction']->id.'|*|*|'.sfConfig::get('project_eticketting_salt', 'e-venement')),
-      true
-    )));
-  } catch ( Exception $e ) { return $this->catchError($e); } }
+  {
+    $this->genericSendEmailOn($event);
+  }
 
   public function sendEmailOnIntegratingProducts(sfEvent $event)
+  {
+    $this->genericSendEmailOn($event);
+  }
+  
+  public function genericSendEmailOn(sfEvent $event)
   { try {
+    $conf = sfConfig::get('app_transaction_email', array());
+    $transaction = $event['transaction'];
+    
+    if ( !$transaction->send_an_email
+      || !(isset($conf['always_send_confirmation']) && $conf['always_send_confirmation'])
+      || !($transaction->professional_id && $transaction->Professional->contact_email) && !($transaction->contact_id && $transaction->Contact->email)
+    )
+      throw new liEvenementException('You have tried to send an email without the ability for (no contact_id, no professional_id, no "send_an_email" field set to "true")...');
+    
     // a trick using the "pub" application to send the email
     sfContext::getInstance()->getConfiguration()->loadHelpers('CrossAppLink');
     file_get_contents(str_replace('https://','http://',cross_app_url_for(
