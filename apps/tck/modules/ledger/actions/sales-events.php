@@ -106,7 +106,7 @@
     // total initialization / including taxes
     $this->total = array('qty' => 0, 'vat' => array(), 'value' => 0, 'taxes' => 0);
     $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-    $q = 'SELECT DISTINCT vat FROM ticket WHERE vat != 0';
+    $q = 'SELECT DISTINCT vat FROM ticket';
     $stmt = $pdo->prepare($q);
     $stmt->execute();
     foreach ( $arr = $stmt->fetchAll() as $vat )
