@@ -268,11 +268,13 @@ class ContactPublicForm extends ContactForm
       ->andWhere('u.id = ?', sfContext::getInstance()->getUser()->getId());
     $groups = $q->execute();
     
+    sfContext::getInstance()->getUser()->addCredential('pr-group-common');
     $possible = $groups->getPrimaryKeys();
     $values = $this
       ->correctGroupsListWithCredentials('special_groups_list', $object)
       ->getValue('special_groups_list')
     ;
+    sfContext::getInstance()->getUser()->removeCredential('pr-group-common');
     
     if (!is_array($values))
       $values = array();
@@ -290,6 +292,10 @@ class ContactPublicForm extends ContactForm
         $object->Groups[] = $group;
       }
     }
+    
+    if ( sfConfig::get('app_contact_professional', false) )
+    foreach ( sfContext::getInstance()->getUser()->getGuardUser()->AutoGroups as $group )
+      $object->Groups[] = $group;
   }
   
   public function removePassword()
