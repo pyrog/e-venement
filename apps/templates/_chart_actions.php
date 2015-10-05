@@ -1,5 +1,5 @@
 <?php $ofc = isset($ofc) ? $ofc : true ?>
-<?php $dl = !isset($dl) ? $sf_user->hasCredential('stats-csv') : $dl == 'from-csv' ? true : $dl ?>
+<?php $dl = isset($dl) ? $dl : ($sf_user->hasCredential('stats-csv') ? $sf_context->getModuleName().'/csv' : false) ?>
 <span class="arrow"></span>
 <a
   href="#<?php echo isset($anchor) ? $anchor : '' ?>"
