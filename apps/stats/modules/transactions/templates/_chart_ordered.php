@@ -5,6 +5,6 @@
   </div>
   <div class="chart">
     <?php echo liWidgetOfc::createChart(400, 250, $sf_context->getModuleName().'/data?id=ordered',true); ?>
-    <div class="actions"><?php include_partial('global/chart_actions',array('anchor' => 'chart-ordered', 'id' => 'ordered')) ?></div>
+    <div class="actions"><?php include_partial('global/chart_actions',array('anchor' => 'chart-ordered', 'id' => 'ordered', 'dl' => 'prices/csv?id=ordered')) ?></div>
   </div>
 </div>

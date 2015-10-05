@@ -5,7 +5,7 @@
   </div>
   <div class="chart">
     <?php echo liWidgetOfc::createChart(550, 370, $sf_context->getModuleName().'/data?which='.$target,true); ?>
-    <div class="actions"><?php include_partial('global/chart_actions',array('anchor' => 'chart-'.$target, 'id' => $target, 'get_param' => 'which')) ?></div>
+    <div class="actions"><?php include_partial('global/chart_actions',array('anchor' => 'chart-'.$target, 'id' => $target, 'get_param' => 'which', 'dl' => 'web_origin/csv?which='.$target)) ?></div>
   </div>
 </div>
 

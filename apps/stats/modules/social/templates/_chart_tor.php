@@ -5,6 +5,6 @@
   </div>
   <div class="chart">
     <?php echo liWidgetOfc::createChart(400, 250, $sf_context->getModuleName().'/data?id=tor',true); ?>
-    <div class="actions"><?php include_partial('global/chart_actions',array('anchor' => 'chart-tor', 'id' => 'tor')) ?></div>
+    <div class="actions"><?php include_partial('global/chart_actions',array('anchor' => 'chart-tor', 'id' => 'tor', 'dl' => 'social/csv?id=tor')) ?></div>
   </div>
 </div>
