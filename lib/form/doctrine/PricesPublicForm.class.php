@@ -169,7 +169,11 @@ class PricesPublicForm extends BaseFormDoctrine
     
     $count = count($tickets);
     for ( $i = 0 ; $i < $count - $values['quantity'] ; $i++ )
-      array_pop($tickets)->delete();
+    {
+      $ticket = array_pop($tickets);
+      unset($this->object->Tickets[$this->object->Tickets->search($ticket)]);
+      $ticket->delete();
+    }
     
     if ( $vel['full_seating_by_customer'] )
     {
