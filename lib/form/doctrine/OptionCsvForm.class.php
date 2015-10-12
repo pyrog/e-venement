@@ -70,6 +70,7 @@ class OptionCsvForm extends BaseOptionCsvForm
         'professional_type_name' => 'Professional type',
         'professional_name' => 'Professional',
         'professional_department' => 'Department',
+        'professional_description' => 'Professional memo',
         '__Professionals__Groups__name' => array(
           'label' => 'Professional groups',
           'helper' => 'Increases badly the extraction time',
@@ -133,6 +134,7 @@ class OptionCsvForm extends BaseOptionCsvForm
     	'professional_email'  => 'Professional email',
 	    'professional_type_name' => 'Type of function',
   	  'professional_name'   => 'Function',
+  	  'professional_description' => 'Professional memo',
   	  '__Professionals__Groups__name' => "Professionals groups",
   	  'professional_important' => 'Close contact / Important organism',
     	'organism_address'    => 'Address',
