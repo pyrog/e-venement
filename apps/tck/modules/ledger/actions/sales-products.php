@@ -91,7 +91,7 @@
     foreach ( array('vat', 'shipping_fees_vat') as $field )
     {
       $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-      $q = 'SELECT DISTINCT '.$field.' AS vat FROM bought_product WHERE '.$field.' != 0';
+      $q = 'SELECT DISTINCT '.$field.' AS vat FROM bought_product'; // WHERE '.$field.' != 0';
       $stmt = $pdo->prepare($q);
       $stmt->execute();
       foreach ( $arr = $stmt->fetchAll() as $vat )
