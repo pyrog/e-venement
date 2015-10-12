@@ -1201,6 +1201,10 @@
         <target>Meta-événement</target>
       </trans-unit>
       <trans-unit>
+        <source>Meta events list</source>
+        <target>Liste des meta-événements</target>
+      </trans-unit>
+      <trans-unit>
         <source>Event</source>
         <target>Événement</target>
       </trans-unit>
