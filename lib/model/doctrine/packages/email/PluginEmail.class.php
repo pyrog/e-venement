@@ -133,7 +133,7 @@ abstract class PluginEmail extends BaseEmail
   
   public function getFormattedContent()
   {
-    // treats inline images
+    // process inline images
     $post_treated_content = $this->content;
     preg_match_all('!<img\s(.*)src="data:(image/\w+);base64,(.*)"(.*)/>!U', $post_treated_content, $imgs, PREG_SET_ORDER);
     foreach ( $imgs as $i => $img )
@@ -149,19 +149,20 @@ abstract class PluginEmail extends BaseEmail
       // embedding the image
       $post_treated_content = str_replace(
         $img[0],
-        '<img '.$img[1].' '.$img[4].' src="'.$this->message->embed($att).'" />',
+        '<img '.$img[1].' '.$img[4].' src="'.$this->message->embed($att).'" />(.*)</a>',
         $post_treated_content
       );
       
       $this->embedded_images++;
     }
     
-    // treats links
+    // process links
     if ( $this->id )
     {
       sfContext::getInstance()->getConfiguration()->loadHelpers('CrossAppLink');
-      preg_match_all('!<a\s(.*)href="(http.*)"(.*)>!U', $post_treated_content, $links, PREG_SET_ORDER);
+      preg_match_all('!<a\s(.*)href="(http.*)"(.*)>(.*)</a>!U', $post_treated_content, $links, PREG_SET_ORDER);
       foreach ( $links as $link )
+      if ( !preg_match('!\w{3,}\.\w{2,}$!', $link[4]) ) // avoid links having the a single URL in their text, which is considered as spam
       {
         $el = new EmailExternalLink;
         $el->original_url = $link[2];
@@ -171,7 +172,7 @@ abstract class PluginEmail extends BaseEmail
         
         $post_treated_content = str_replace(
           $link[0],
-          '<a '.$link[1].'href="'.str_replace('https','http',cross_app_url_for('email', 'link/follow', true)).'?u='.$el->encrypted_uri.'&e=%%EMAILADDRESS%%"'.$link[3].'>',
+          '<a '.$link[1].'href="'.str_replace('https','http',cross_app_url_for('email', 'link/follow', true)).'?u='.$el->encrypted_uri.'&e=%%EMAILADDRESS%%"'.$link[3].'>'.$link[4].'</a>',
           $post_treated_content
         );
       }
