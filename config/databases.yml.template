@@ -2,9 +2,9 @@ all:
   doctrine:
     class: sfDoctrineDatabase
     param:
-      dsn: 'pgsql:host=localhost;dbname=evenement'
-      username: evenement
-      password: v2
+      dsn: 'pgsql:host=localhost;dbname=beauxarts'
+      username: beauxarts
+      password: q3A,nçav15wnbçwGBQZ.QP
 task:
   doctrine:
     class: sfDoctrineDatabase

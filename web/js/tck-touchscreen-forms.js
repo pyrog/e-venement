@@ -70,6 +70,7 @@ LI.formSubmit = function(){
           break;
         case 'store':
         case 'manifestations':
+        case 'museum':
           LI.completeContent(value.data.content, value.data.type, false);
           break;
         
