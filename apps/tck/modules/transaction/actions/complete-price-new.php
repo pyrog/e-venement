@@ -31,7 +31,7 @@ $matches = array(
     'data-attr' => 'declination-id',
   ),
   'gauge'       => array(
-    'model' => 'BoughtProduct',
+    'model' => 'Ticket',
     'field' => 'gauge_id',
     'url'   => 'transaction/getManifestations?id='.$request->getParameter('id').'&state=%s&gauge_id='.$params[$field]['declination_id'].'&price_id='.$params[$field]['price_id'],
     'type'  => 'manifestations',
