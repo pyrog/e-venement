@@ -1,5 +1,5 @@
 .clear { clear: both; }
-#content > .ui-widget-content { min-height: 375px; }
+/*#content > .ui-widget-content { min-height: 375px; }*/
 table {
   padding: 5px 0;
   margin: 5px;

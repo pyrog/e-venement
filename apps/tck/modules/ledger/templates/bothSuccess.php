@@ -19,7 +19,7 @@
         <?php echo format_number_choice('[1]Manifestation ledger|(1,+Inf]Manifestations ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
         <?php endif ?>
       <?php else: ?>
-      <?php echo __('Ticketting Detailed Ledger') ?>
+      <?php echo __('Detailed Ledger') ?>
       (<?php echo __('from %%from%% to %%to%%',array(
         '%%from%%' => format_date(strtotime($options['dates'][0])),
         '%%to%%' => format_date(strtotime($options['dates'][1])),
@@ -46,10 +46,6 @@
 
 <?php if ( $users ): ?>
 <?php include_partial('users',array('users' => $users)) ?>
-<?php endif ?>
-
-<?php if ( $workspaces ): ?>
-<?php include_partial('workspaces',array('workspaces' => $workspaces, 'options' => $options)) ?>
 <?php endif ?>
 
 <div class="ledger-both">
