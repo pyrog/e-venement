@@ -20,7 +20,7 @@
         ->leftJoin('e.Manifestations m')
         ->leftJoin('m.Tickets tck')
         ->leftJoin('tck.Transaction t')
-        ->andWhereNotIn('me.id', array_keys($sf_user->getRawValue()->getMetaEventsCredentials()))
+        ->andWhereIn('me.id', array(0) + array_keys($sf_user->getRawValue()->getMetaEventsCredentials()))
         ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL OR (SELECT count(oo.id) FROM order oo WHERE oo.transaction_id = t.id) > 0')
         ->orderBy('m.happens_at DESC, me.name')
       ;
