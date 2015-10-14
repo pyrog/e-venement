@@ -43,7 +43,8 @@ class liMemberCardPluginConfiguration extends sfPluginConfiguration
       
       foreach ( $bp->Declination->MemberCardTypes as $mct )
       foreach ( $bp->Transaction->MemberCards as $mc )
-      if ( $mct->id == $mc->member_card_type_id )
+      if ( $mct->id == $mc->member_card_type_id
+        && Doctrine::getTable('BoughtProduct')->createQuery('bp')->andWhere('bp.member_card_id = ?', $mc->id)->count() == 0 )
       {
         $bp->member_card_id = $mc->id;
         $bp->save();
