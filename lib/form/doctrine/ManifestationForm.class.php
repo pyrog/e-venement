@@ -41,10 +41,16 @@ class ManifestationForm extends BaseManifestationForm
     $this->configureEvent($this->object->Event);
     
     $this->widgetSchema['location_id']
-      ->setOption('add_empty',true)
       ->setOption('order_by',array('rank, name',''))
       ->setOption('query', $q = Doctrine::getTable('Location')->retrievePlaces());
     $this->validatorSchema['location_id']->setOption('query', $q);
+    if ( !$this->object->isNew() && Doctrine::getTable('Ticket')->createQuery('tck')
+      ->andWhere('tck.manifestation_id = ?', $this->object->id)
+      ->andWhere('tck.seat_id IS NOT NULL')
+      ->count() > 0 )
+      $q->andWhere('l.id = ?', $this->object->location_id);
+    if ( $this->object->isNew() )
+      $this->widgetSchema['location_id']->setOption('add_empty',true);
     
     // duration stuff
     $this->widgetSchema['ends_at'] = new liWidgetFormDateTime(array(
