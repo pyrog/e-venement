@@ -120,7 +120,7 @@ class contactActions extends autoContactActions
   {
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
     
-    $limit = 250;
+    $limit = 500;
     $q = $this->buildQuery()
       ->limit($limit)
       ->offset($offset = $request->getParameter('offset',0));
@@ -157,7 +157,7 @@ class contactActions extends autoContactActions
     if ( count($errors) > 0 )
       $this->getUser()->setFlash('error', implode(', ', $errors));
     
-    if ( $this->buildQuery()->count() > $limit )
+    if ( $this->buildQuery()->count() > $offset+$limit )
       $this->redirect('contact/sendPasswords?offset='.($offset+$limit));
     else
     {
