@@ -25,7 +25,7 @@
 
 class Seater
 {
-  protected $seats, $query, $kept, $done, $hold, $gauge_id = 0;
+  protected $seats, $query, $kept, $done, $hold, $gauge_id = 0, $location_id;
   
   public function __construct($gauge_id = NULL, Hold $hold = NULL)
   {
@@ -36,6 +36,15 @@ class Seater
     $this->done = new Doctrine_Collection('Seat');
     $this->gauge_id = $gauge_id;
     $this->hold = $hold;
+    
+    $q = Doctrine::getTable('Manifestation')->createQuery('m')
+      ->select('m.*');
+    if ( $this->gauge_id )
+      $q->andWhere('g.id = ?', $this->gauge_id);
+    if ( $this->hold )
+      $q->andWhere('m.id = ?', $this->hold->manifestation_id);
+    $this->location_id = $q->fetchOne()->location_id;
+    
     $this->seats = $this->createQuery()->execute();
   }
   
@@ -43,7 +52,7 @@ class Seater
   {
     $q = Doctrine::getTable('Seat')->createQuery($alias)
       ->select("$alias.*, n.*")
-      ->leftJoin("$alias.SeatedPlan sp")
+      ->leftJoin("$alias.SeatedPlan sp WITH sp.location_id = ?", $this->location_id)
       ->leftJoin('sp.Workspaces spw')
       ->leftJoin('spw.Gauge g')
       ->leftJoin('g.Manifestation m')
@@ -68,9 +77,11 @@ class Seater
     
     // Gauge
     if ( $this->gauge_id )
-      $q->andWhere('g.id = ?', $this->gauge_id);
+      $q->andWhere('g.id = ?', $this->gauge_id)
+      ;
     else
-      $q->andWhere('g.manifestation_id = h.manifestation_id');
+      $q->andWhere('g.manifestation_id = h.manifestation_id')
+      ;
     
     return $q;
   }
