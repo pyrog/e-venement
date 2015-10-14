@@ -30,6 +30,11 @@ $(document).ready(function(){
         if ( json.success && json.success.message )
           LI.alert(json.success.message, 'success');
         LI.pubNamedTicketsInitialization();
+      },
+      error: function(){
+        $('[data-tab="#plans"]').click();
+        $('[data-tab="#categories"]').hide();
+        $('#categories').hide();
       }
     });
     return false;
