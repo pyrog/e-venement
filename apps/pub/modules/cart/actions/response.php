@@ -101,7 +101,16 @@
   }
   
   // sending emails to contact and organizators
-  $this->sendConfirmationEmails($transaction, $this);
-  
+  try {
+    $this->sendConfirmationEmails($transaction, $this);
+  } catch ( Exception $e ) {
+    if ( !sfConfig::get('sf_web_debug', false) )
+    {
+      error_log('pub: cart/response, email not sent!!');
+      error_log($e->getMessage());
+    }
+    else
+      throw $e;
+  }
   return sfView::NONE;
 
