@@ -21,7 +21,7 @@ $(document).ready(function(){
   },200); });
   
   // METAEVENTS
-  $('#tdp-side-ticketting .metaevent:not(.hidden) .name').click(function(){ $(this).closest('.metaevent').find('.events, .seat-rank').slideUp(); });
+  $('#tdp-side-ticketting .metaevent:not(.hidden) .name').click(function(){ $(this).closest('.metaevent').find('.events, .seat-rank').slideToggle(); });
   $('#tdp-side-ticketting .metaevent.hidden .name').click(function(){
     var elt = $(this);
     if ( $(this).prop('href') == '#' )
