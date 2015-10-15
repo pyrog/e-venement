@@ -320,9 +320,7 @@
     foreach ( $this->transactions as $transaction )
       $this->content .= $transaction->renderSimplifiedTickets(array('only' => $this->tickets));
     if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
-    {
       $this->setLayout(false);
-    }
     else
     {
       sfConfig::set('sf_web_debug', false);
