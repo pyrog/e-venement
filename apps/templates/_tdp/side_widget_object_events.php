@@ -21,7 +21,7 @@
         ->leftJoin('e.Manifestations m')
         ->leftJoin('m.Tickets tck')
         ->leftJoin('tck.Transaction t')
-        ->andWhereIn('me.id', array(0) + array_keys($sf_user->getRawValue()->getMetaEventsCredentials()))
+        ->andWhereNotIn('me.id', array_merge(array(0), array_keys($sf_user->getRawValue()->getMetaEventsCredentials())))
         ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL OR (SELECT count(oo.id) FROM order oo WHERE oo.transaction_id = t.id) > 0')
         ->orderBy('m.happens_at DESC, met.name')
       ;
@@ -76,7 +76,11 @@
               <span class="std-dev"><?php echo __('Std deviation: %%sd%%', array('%%sd%%' => format_number(number_format($stats['std-dev'],1)))) ?></span>
             </span>
           <?php endif ?>
-          <<?php if ( count($meta_event) > 1 ): ?>span<?php else: ?>a href="<?php echo url_for('contact/events?id='.$obj->id.'&type='.strtolower(get_class($obj->getRawValue())).'&meid='.$meid) ?>"<?php endif ?> class="name"><?php echo $event ?></<?php echo count($meta_event) > 1 ? 'span' : 'a' ?>>
+          <<?php if ( count($meta_event) > 1 ): ?>span<?php else: ?>a href="<?php echo url_for('contact/events?id='.$obj->id.'&type='.strtolower(get_class($obj->getRawValue())).'&meid='.$meid) ?>"<?php endif ?>
+            class="name"
+            title="<?php echo trim($event) ?>">
+            <?php echo $event ?>
+          </<?php echo count($meta_event) > 1 ? 'span' : 'a' ?>>
           <ul class="events">
         <?php else: ?>
           <!-- EVENT -->
