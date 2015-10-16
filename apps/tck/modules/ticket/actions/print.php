@@ -111,7 +111,7 @@
               $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->grouping_fingerprint = $fingerprint;
               $newticket->Duplicated = $ticket;
-              $newticket->getBarcodePng();
+              $newticket->qrcode();
               $newticket->save();
               if ( $newticket->seat_id )
                 $ticket->save();
@@ -191,7 +191,7 @@
               $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->integrated_at = NULL;
               $newticket->Duplicated = $ticket;
-              $newticket->getBarcodePng();
+              $newticket->qrcode;
               $newticket->save();
               if ( $newticket->seat_id )
                 $ticket->save();
@@ -220,7 +220,7 @@
                   $cpt += 2; // because member cards treatments take a loong time
                   $ticket->integrated_at = date('Y-m-d H:i:s');
                   $ticket->vat = $ticket->Manifestation->Vat->value;
-                  $ticket->getBarcodePng();
+                  $ticket->qrcode;
                   $ticket->save();
                   $cpt += 2; // because member cards treatments take a loong time
                 }
@@ -235,7 +235,7 @@
                   $cpt += 2; // because member cards treatments take a loong time
                   $ticket->printed_at = date('Y-m-d H:i:s');
                   $ticket->vat = $ticket->Manifestation->Vat->value;
-                  $ticket->getBarcodePng();
+                  $ticket->qrcode;
                   $ticket->save();
                   $cpt += 2; // because member cards treatments take a loong time
                 }
