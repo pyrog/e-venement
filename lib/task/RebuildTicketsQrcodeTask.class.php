@@ -61,6 +61,7 @@ class RebuildTicketsQrcodeTask extends sfBaseTask
         continue;
       
       $ticket->barcode = NULL;
+      $ticket->qrcode;
       $r = $ticket->trySave();
       
       if ( $arguments['debug'] !== false )
