@@ -139,7 +139,7 @@ $(document).ready(function(){
         $(this).prop('checked', orig.prop('checked'));
       })
       .appendTo(
-        $('#tdp-content .tdp-subobject [name="professional[id]"][value="'+$(this).val()+'"]')
+        $('#tdp-content .tdp-subobject [data-id="'+$(this).val()+'"]')
           .closest('.tdp-subobject').find('h1')
       );
   });
