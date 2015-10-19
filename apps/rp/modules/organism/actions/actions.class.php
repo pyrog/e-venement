@@ -311,6 +311,10 @@ class organismActions extends autoOrganismActions
     $this->setTemplate('index');
   }
   
+  public function executeBatchRemoveFromFilters(sfWebRequest $request)
+  {
+    require(dirname(__FILE__).'/batch-remove-from-filters.php');
+  }
   public function executeCsv(sfWebRequest $request)
   {
     require(dirname(__FILE__).'/csv.php');

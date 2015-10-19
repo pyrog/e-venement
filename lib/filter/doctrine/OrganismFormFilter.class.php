@@ -65,6 +65,12 @@ class OrganismFormFilter extends BaseOrganismFormFilter
     ));
     $this->validatorSchema['not_groups_list'] = $this->validatorSchema['groups_list'];
     
+    $this->validatorSchema['not_organisms_list'] = new sfValidatorDoctrineChoice(array(
+      'model' => 'Organism',
+      'required' => false,
+      'multiple' => true,
+    ));
+    
     $this->widgetSchema   ['has_close_contact'] = new sfWidgetFormChoice(array(
       'choices' => $arr = array('' => 'yes or no', 1 => 'yes', 2 => 'no'),
     ));
@@ -114,6 +120,7 @@ class OrganismFormFilter extends BaseOrganismFormFilter
     $fields['not_groups_list']      = 'NotGroupsList';
     $fields['region']               = 'RegionId';
     $fields['email_newsletter']     = 'EmailNewsletter';
+    $fields['not_organisms_list']   = 'NotOrganismsList';
 
     return $fields;
   }
@@ -235,6 +242,23 @@ class OrganismFormFilter extends BaseOrganismFormFilter
         ->andWhereIn('gotmp.group_id',$value);
       
       $q->andWhere("$a.id NOT IN (".$q1.")",$value); // hack for inserting $value
+    }
+    
+    return $q;
+  }
+  
+  public function addNotOrganismsListColumnQuery(Doctrine_Query $q, $field, $value)
+  {
+    $a = $q->getRootAlias();
+    
+    if ( is_array($value) )
+    {
+      $q1 = new Doctrine_Query();
+      $q1->select('gotmp.organism_id')
+        ->from('GroupOrganism gotmp')
+        ->andWhereIn('gotmp.group_id',$value);
+      
+      $q->andWhereNotIn("$a.id",$value);
     }
     
     return $q;
