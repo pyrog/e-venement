@@ -120,7 +120,7 @@
         
         // interval calculation
         $interval = 0;
-        foreach ( array('days', 'weeks', 'month', 'years') as $fieldname )
+        foreach ( array('hours', 'days', 'weeks', 'month', 'years') as $fieldname )
         if ( intval($periodicity['repeat'][$fieldname]) > 0 )
           $interval = strtotime('+'.intval($periodicity['repeat'][$fieldname]).' '.$fieldname,$interval);
         
