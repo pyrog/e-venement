@@ -185,6 +185,10 @@
         <target>Depuis votre localité</target>
       </trans-unit>
       <trans-unit>
+        <source>Your metropolis</source>
+        <target>Votre métropole</target>
+      </trans-unit>
+      <trans-unit>
         <source>By postalcode</source>
         <target>Par code postal</target>
       </trans-unit>
@@ -203,6 +207,10 @@
       <trans-unit>
         <source>others</source>
         <target>autres</target>
+      </trans-unit>
+      <trans-unit>
+        <source>metropolis</source>
+        <target>métropole</target>
       </trans-unit>
       <trans-unit>
         <source>department</source>
