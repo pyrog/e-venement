@@ -63,18 +63,6 @@ class TicketsIntegrationForm extends BaseFormDoctrine
       $this->validatorSchema['translation_workspaces_category_ref'.$i] = new sfValidatorString(array(
         'required'  => false,
       ));
-      $this->widgetSchema   ['translation_workspaces_dest'.$i] = new sfWidgetFormDoctrineChoice(array(
-        'model' => 'Workspace',
-        'query' => $q = Doctrine::getTable('Workspace')->createQuery('ws')->leftJoin('ws.Gauges g')->andWhere('g.manifestation_id = ?',$this->manifestation->id),
-        'label' => '',
-        'order_by' => array('name',''),
-        'add_empty' => true,
-      ));
-      $this->validatorSchema['translation_workspaces_dest'.$i] = new sfValidatorDoctrineChoice(array(
-        'required'  => false,
-        'model' => 'Workspace',
-        'query' => $q,
-      ));
       $this->widgetSchema   ['translation_workspaces_zone_ref'.$i] = new sfWidgetFormInput(array(
         'label' => 'Translation for workspaces',
       ));
