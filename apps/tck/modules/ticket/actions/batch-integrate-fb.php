@@ -88,7 +88,7 @@ for ( $i = 0 ; $line = fgetcsv($fp, 0, $separator) ; $i++ )
     $ticket['cancel']     = $line[1] == 'V' ? false : true;
     $ticket['price_name'] = $tarifs[$line[5]].'/'.$clients[$line[6]];
     $ticket['price_id']   = isset($this->translation['prices'][$ticket['price_name']]) ? $this->translation['prices'][$ticket['price_name']]['id'] : NULL;
-    $ticket['workspace_id']=isset($this->translation['workspaces'][$workspaces[$line[8]]]) ? $this->translation['workspaces'][$workspaces[$line[8].$glue.$line[5]]] : NULL;
+    $ticket['workspace_id']=isset($this->translation['workspaces'][$workspaces[$line[8]].$glue.$tarifs[$line[5]]]) ? $this->translation['workspaces'][$workspaces[$line[8]].$glue.$tarifs[$line[5]]] : NULL;
     $ticket['value']      = isset($this->translation['prices'][$ticket['price_name']]) ? $this->translation['prices'][$ticket['price_name']]['value'] : $line[23];
     $ticket['id']         = $line[15];
     $ticket['type']       = 'fb';
