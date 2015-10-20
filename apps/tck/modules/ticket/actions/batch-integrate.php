@@ -24,6 +24,7 @@
 <?php
   $this->getContext()->getConfiguration()->loadHelpers(array('I18N','CrossAppLink'));
   $notices = array();
+  $glue = ' |~| ';
   
   // get back the manifestation
   $mid = $request->getParameter('manifestation_id');
@@ -53,9 +54,9 @@
         ->fetchOne()->id;
       
       $this->translation = array('prices','workspaces');
-      for ( $i = 0 ; isset($integrate['translation_workspaces_ref'.$i]) && isset($integrate['translation_workspaces_dest'.$i]) ; $i++ )
-      if ( $integrate['translation_workspaces_ref'.$i] && $integrate['translation_workspaces_dest'.$i] )
-        $this->translation['workspaces'][$integrate['translation_workspaces_ref'.$i]] = $integrate['translation_workspaces_dest'.$i];
+      for ( $i = 0 ; isset($integrate['translation_workspaces_category_ref'.$i]) && isset($integrate['translation_workspaces_zone_ref'.$i]) && isset($integrate['translation_workspaces_dest'.$i]) ; $i++ )
+      if ( $integrate['translation_workspaces_ref'.$i] && $integrate['translation_workspaces_zone_ref'.$i] && $integrate['translation_workspaces_dest'.$i] )
+        $this->translation['workspaces'][$integrate['translation_workspaces_zone_ref'.$i].$glue.$integrate['translation_workspaces_category_ref'.$i]] = $integrate['translation_workspaces_dest'.$i];
       for ( $i = 0 ; isset($integrate['translation_prices_ref'.$i]) && isset($integrate['translation_prices_dest'.$i]) ; $i++ )
       if ( $integrate['translation_prices_ref'.$i] && $integrate['translation_prices_dest'.$i] )
       {
