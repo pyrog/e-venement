@@ -12,9 +12,29 @@
   ?>
   <ul class="events">
     <?php foreach ( $objects as $obj ): ?>
+    <?php
+      $meta_events = array();
+      $q = Doctrine::getTable('MetaEvent')->createQuery('me')
+        ->select('me.*')
+        ->leftJoin('me.Events e')
+        ->leftJoin('e.Manifestations m')
+        ->leftJoin('m.Tickets tck')
+        ->leftJoin('tck.Transaction t')
+        ->andWhereIn('me.id', array(0) + array_keys($sf_user->getRawValue()->getMetaEventsCredentials()))
+        ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL OR (SELECT count(oo.id) FROM order oo WHERE oo.transaction_id = t.id) > 0')
+        ->orderBy('m.happens_at DESC, me.name')
+      ;
+      if ( $obj->getRawValue() instanceof Contact )
+        $q->andWhere('tck.contact_id = ? OR t.contact_id = ?', array($obj->id, $obj->id))
+          ->andWhere('t.professional_id IS NULL');
+      else
+        $q->andWhere('t.professional_id = ?', $obj->id);
+      foreach ( $q->execute() as $me )
+        $meta_events[$me->id] = array('name' => (string)$me);
+    ?>
     <?php $total = array('ids' => array(), 'value' => 0); ?>
     <?php $cpt++ ?>
-    <?php if ( $obj->Transactions->count() > 0 || $obj->hasRelation('DirectTickets') && $obj->DirectTickets->count() > 0 ): ?>
+    <?php if ( $obj->Transactions->count() > 0 || $obj->hasRelation('DirectTickets') && $obj->DirectTickets->count() > 0 || count($meta_events) > 0 ): ?>
     <li class="events-<?php echo $cpt == 1 ? 'object' : 'subobject-'.$obj->id ?>">
       <?php if ( count($objects) > 1 ): ?>
       <h3><?php echo $obj ?></h3>
@@ -28,6 +48,7 @@
             require(dirname(__FILE__).'/side_widget_object_events_process_tickets.php');
           
           if ( $obj->hasRelation('DirectTickets') )
+          if ( false )
           foreach ( $obj->DirectTickets as $ticket )
             require(dirname(__FILE__).'/side_widget_object_events_process_tickets.php');
           
@@ -35,22 +56,26 @@
           foreach ( $events as $key => $metaevt )
             array_multisort($sort[$key],$events[$key]);
           $events = array_reverse($events, true);
+          
+          foreach ( $meta_events as $id => $data )
+          if ( !isset($events[$id]) )
+            $events[$id] = $data;
         ?>
-        <?php foreach ( $events as $id => $meta_event ): ?>
+        <?php foreach ( $events as $meid => $meta_event ): ?>
         <!-- METAEVT -->
-        <!-- <?php echo $id ?> -->
-        <li class="metaevent <?php echo !in_array($id, array_keys($sf_user->getMetaEventsCredentials()->getRawValue())) ? 'hidden' : '' ?>">
+        <!-- <?php echo $meid ?> -->
+        <li class="metaevent <?php echo !in_array($meid, array_keys($sf_user->getMetaEventsCredentials()->getRawValue())) ? 'hidden' : '' ?>" data-meta-event-id="<?php echo $meid ?>">
         <?php foreach ( $meta_event as $id => $event ): ?>
         <?php if ( $id === 'name' ): ?>
-          <?php if ( method_exists($object->getRawValue(), 'getStatsSeatRank') ): ?>
-            <?php $stats = $object->getStatsSeatRank($id); ?>
+          <?php if ( method_exists($obj->getRawValue(), 'getStatsSeatRank') ): ?>
+            <?php $stats = $obj->getStatsSeatRank($meid); ?>
             <span class="seat-rank">
               <span class="qty"><?php echo __('Qty: %%qty%%', array('%%qty%%' => $stats['qty'])) ?></span>
               <span class="avg"><?php echo __('Avg: %%avg%%', array('%%avg%%' => format_number(number_format($stats['avg'],1)))) ?></span>
               <span class="std-dev"><?php echo __('Std deviation: %%sd%%', array('%%sd%%' => format_number(number_format($stats['std-dev'],1)))) ?></span>
             </span>
           <?php endif ?>
-          <span class="name"><?php echo $event ?></span>
+          <<?php if ( count($meta_event) > 1 ): ?>span<?php else: ?>a href="<?php echo url_for('contact/events?id='.$obj->id.'&type='.strtolower(get_class($obj->getRawValue())).'&meid='.$meid) ?>"<?php endif ?> class="name"><?php echo $event ?></<?php echo count($meta_event) > 1 ? 'span' : 'a' ?>>
           <ul class="events">
         <?php else: ?>
           <!-- EVENT -->

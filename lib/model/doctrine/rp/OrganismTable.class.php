@@ -7,6 +7,27 @@
  */
 class OrganismTable extends PluginOrganismTable
 {
+  public function findWithTickets($id)
+  {
+    $q = $this->createQuery('o')
+      ->andWhere('o.id = ?',$id)
+    ;
+    
+    if ( !sfContext::hasInstance() )
+      $q->leftJoin('p.Transactions ptr');
+    else
+    {
+      $sf_user = sfContext::getInstance()->getUser();
+      $ws = array_keys($sf_user->getWorkspacesCredentials());
+      $me = array_keys($sf_user->getMetaEventsCredentials());
+      $q->leftJoin('p.Transactions ptr WITH ptr.id IN (SELECT ttck3.transaction_id FROM Ticket ttck3 LEFT JOIN ttck3.Manifestation mm3 LEFT JOIN mm3.Event ee3 LEFT JOIN mm3.Gauges gg3 WHERE gg3.workspace_id IN ('.implode(',',$ws).') AND ee3.meta_event_id IN ('.implode(',',$me).'))');
+    }
+    $q->leftJoin('ptr.Payments payment')
+      ->orderBy('c.name, c.firstname, pt.name, p.name');
+    $organism = $q->fetchOne();
+    return $organism;
+  }
+
   public function createQueryByGroupId($id)
   {
     $q = $this->createQuery();

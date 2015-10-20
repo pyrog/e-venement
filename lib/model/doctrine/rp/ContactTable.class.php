@@ -73,16 +73,27 @@ class ContactTable extends PluginContactTable
   public function findWithTickets($id)
   {
     $q = $this->createQuery('c')
-      ->leftJoin("c.Transactions transac")
-      ->leftJoin('transac.Payments payment')
       ->leftJoin('c.EventArchives ea')
-      /*
-      ->leftJoin('transac.Tickets tck ON transaction.id = tck.transaction_id AND tck.id NOT IN (SELECT tck2.cancelling FROM ticket tck2 WHERE tck2.cancelling IS NOT NULL) AND tck.duplicate IS NULL')
-      ->leftJoin('tck.Manifestation manifestation')
-      ->leftJoin('manifestation.Event event')
-      */
       ->andWhere('c.id = ?',$id)
-      ->orderBy('ea.happens_at DESC');
+      ->orderBy('ea.happens_at DESC')
+    ;
+    
+    if ( !sfContext::hasInstance() )
+      $q->leftJoin('c.Transactions transac WITH transac.professional_id IS NULL')
+        ->leftJoin('p.Transactions ptr')
+        ->leftJoin('c.DirectTickets dc')
+      ;
+    else
+    {
+      $sf_user = sfContext::getInstance()->getUser();
+      $ws = array_keys($sf_user->getWorkspacesCredentials());
+      $me = array_keys($sf_user->getMetaEventsCredentials());
+      $q->leftJoin('c.Transactions transac WITH transac.professional_id IS NULL AND transac.id IN (SELECT ttck.transaction_id FROM Ticket ttck LEFT JOIN ttck.Manifestation mm LEFT JOIN mm.Event ee LEFT JOIN mm.Gauges gg WHERE gg.workspace_id IN ('.implode(',',$ws).') AND ee.meta_event_id IN ('.implode(',',$me).'))')
+        ->leftJoin('c.DirectTickets dc WITH dc.id IN (SELECT ttck2.transaction_id FROM Ticket ttck2 LEFT JOIN ttck2.Manifestation mm2 LEFT JOIN mm2.Event ee2 LEFT JOIN mm2.Gauges gg2 WHERE gg2.workspace_id IN ('.implode(',',$ws).') AND ee2.meta_event_id IN ('.implode(',',$me).'))')
+        ->leftJoin('p.Transactions ptr WITH ptr.id IN (SELECT ttck3.transaction_id FROM Ticket ttck3 LEFT JOIN ttck3.Manifestation mm3 LEFT JOIN mm3.Event ee3 LEFT JOIN mm3.Gauges gg3 WHERE gg3.workspace_id IN ('.implode(',',$ws).') AND ee3.meta_event_id IN ('.implode(',',$me).'))')
+      ;
+    }
+    $q->leftJoin('transac.Payments payment');
     $contact = $q->fetchOne();
     return $contact;
   }
