@@ -51,10 +51,16 @@
       break;
     }
     ?></p>
-    <p class="spectator"><?php if ( sfConfig::get('app_tickets_spectator_display_all', false) ): ?>
-             <span class="organism"><?php echo $ticket->Transaction->Professional->Organism ?></span>
-             <span class="contact"><?php echo $ticket->Transaction->Contact ?></span>
-         <?php else: ?><?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?><?php endif ?></p>
+    <p class="spectator">
+      <?php if ( $ticket->contact_id ): ?>
+        <?php echo $ticket->DirectContact ?>
+      <?php elseif ( sfConfig::get('app_tickets_spectator_display_all', false) ): ?>
+        <span class="organism"><?php echo $ticket->Transaction->Professional->Organism ?></span>
+        <span class="contact"><?php echo $ticket->Transaction->Contact ?></span>
+      <?php else: ?>
+        <?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?>
+      <?php endif ?>
+    </p>
     <p class="mentions">
       <?php if ( trim($ticket->Manifestation->Location->licenses) ): ?>
       <span class="licenses"><?php echo trim($ticket->Manifestation->Location->licenses) ?></span>
@@ -100,7 +106,13 @@
     </p>
     <p class="price_name"><span class="name"><?php echo $ticket->price_name ?></span> <span class="price"><?php echo format_normal_currency($ticket->value,'€') ?></span></p>
     <p class="price_vat"><span class="description"><?php echo $ticket->Manifestation->Vat->value*100 ?>&nbsp;%</span><span class="value"><?php echo format_normal_currency($ticket->value*$ticket->Manifestation->Vat->value,'€') ?></span></p>
-    <p class="spectator"><?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?></p>
+    <p class="spectator">
+      <?php if ( $ticket->contact_id ): ?>
+        <?php echo $ticket->DirectContact ?>
+      <?php else: ?>
+        <?php echo $ticket->Transaction->professional_id > 0 ? $ticket->Transaction->Professional->Organism : $ticket->Transaction->Contact ?>
+      <?php endif ?>
+    </p>
     <p class="event"><?php echo mb_strlen($buf = (string)$ticket->getRaw('Manifestation')->Event) > $maxsize['event_name_right'] ? mb_substr($buf,0,$maxsize['event_name_right']-3).'...' : $buf ?></p>
     <p class="event-short"><?php echo mb_strlen($buf = $ticket->Manifestation->Event->short_name) > $maxsize['event_shortname'] ? mb_substr($buf,0,$maxsize['event_shortname']).'...' : $buf ?></p>
     <p class="cie"><?php echo mb_strlen($buf = implode(', ',$creators)) > 20 ? mb_substr($buf,0,17).'...' : $buf; ?></p>
