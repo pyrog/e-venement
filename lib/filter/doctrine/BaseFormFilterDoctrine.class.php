@@ -14,7 +14,7 @@ abstract class BaseFormFilterDoctrine extends sfFormFilterDoctrine
   
   public function setup()
   {
-    sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url','CrossAppLink'));
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url','CrossAppLink', 'I18N'));
     
     // I18N
     try
@@ -50,6 +50,10 @@ abstract class BaseFormFilterDoctrine extends sfFormFilterDoctrine
       'multiple' => 'true',
       'required' => false,
     ));
+    
+    foreach ( array('created_at', 'updated_at', 'happens_at', 'expire_at') as $field )
+    if ( isset($this->widgetSchema[$field]) )
+      $this->widgetSchema   [$field]->setOption('template', '<span class="dates"><span>'.__('from %from_date%',null,'sf_admin').'</span><br/><span>'.__('to %to_date%',null,'sf_admin').'</span></span>');
     
     // TIMESTAMPABLE
     $this->resetDates();

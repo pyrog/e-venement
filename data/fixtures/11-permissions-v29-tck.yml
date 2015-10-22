@@ -1,0 +1,18 @@
+sfGuardGroup:
+  sfGuardGroup_59:
+    name: tck-museum
+    description: "Ability to sell tickets for museums"
+    created_at: '2015-10-13 11:50:00'
+    updated_at: '2015-10-13 11:50:00' 
+sfGuardGroupPermission:
+  sfGuardGroupPermission_59_148:
+    Group: sfGuardGroup_59
+    Permission: sfGuardPermission_148
+    created_at: '2015-10-13 11:50:00'
+    updated_at: '2015-10-13 11:50:00' 
+sfGuardPermission:
+  sfGuardPermission_148:
+    name: tck-museum
+    description: 'Possibility to sell tickets for museums'
+    created_at: '2015-10-13 11:50:00'
+    updated_at: '2015-10-13 11:50:00' 

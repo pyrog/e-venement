@@ -156,6 +156,8 @@ class pricesActions extends sfActions
       if ( $asked )
         $q->andWhere('t.transaction_id NOT IN (SELECT oo.transaction_id FROM Order oo)');
     }
+    elseif ( !sfConfig::get('project_count_demands',false) )
+      $q->andWhere('t.printed_at IS NOT NULL OR t.integrated_at IS NOT NULL OR t.transaction_id IN (SELECT oo.transaction_id FROM Order oo)');
     
     return $type == 'array' ? $q->fetchArray() : $q->execute();
   }

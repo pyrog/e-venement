@@ -9,6 +9,10 @@
 <?php include_partial('show_criterias') ?>
 <?php include_partial('show_header') ?>
 <?php include_partial('chart', array('title' => __('From your localization'), 'type' => 'ego')) ?>
+<?php $client = sfConfig::get('app_about_client', array()) ?>
+<?php if ( isset($client['postalcode']) && is_array($client['postalcode']) ): ?>
+<?php include_partial('chart', array('title' => __('Your metropolis'), 'type' => 'metropolis-in')) ?>
+<?php endif ?>
 <?php include_partial('chart', array('title' => __('By postalcode'), 'type' => 'postalcodes')) ?>
 <?php include_partial('chart', array('title' => __('By department'), 'type' => 'departments')) ?>
 <?php include_partial('chart', array('title' => __('By region'), 'type' => 'regions')) ?>

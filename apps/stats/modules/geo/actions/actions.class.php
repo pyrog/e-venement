@@ -212,14 +212,24 @@ class geoActions extends sfActions
     $others = $total = array('nb' => 0, 'tickets' => 0, 'value' => 0);
     switch ( $type ) {
     
+    case 'metropolis-in':
+      $client = sfConfig::get('app_about_client', array());
+      $metro = $this->buildQuery()
+        ->andWhere('(TRUE')
+        ->andWhereIn('o.postalcode', $client['postalcode'])
+        ->orWhereIn('c.postalcode', $client['postalcode'])
+        ->andWhere('TRUE)')
+      ;
     case 'postalcodes':
-      foreach ( $arr = $this->buildQuery()
+      $q = isset($metro) ? $metro : $this->buildQuery();
+      $q
         ->select('c.id')
         ->addSelect('(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END) AS postalcode')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
-        ->fetchArray() as $pc )
+      ;
+      foreach ( $arr = $q->fetchArray() as $pc )
       {
         foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         {
@@ -447,14 +457,23 @@ class geoActions extends sfActions
     break;
     
     default:
-      $client = sfConfig::get('app_about_client',array());
+      if ( !isset($client) )
+        $client = sfConfig::get('app_about_client',array());
+      if ( !isset($client['postalcode']) )
+        $client['postalcode'] = array(0);
+      if ( !is_array($client['postalcode']) )
+        $client['postalcode'] = array($client['postalcode']);
+      $qs = array();
+      foreach ( $client['postalcode'] as $pc )
+        $qs[] = '?';
       
+      // exact
       $q = $this->buildQuery()
         ->select('c.id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
-        ->andWhere('(pro.id IS NULL AND c.postalcode = ? OR pro.id IS NOT NULL AND o.postalcode = ?)', array($client['postalcode'], $client['postalcode']))
+        ->andWhere('(pro.id IS NULL AND c.postalcode = ? OR pro.id IS NOT NULL AND o.postalcode = ?)', array($client['postalcode'][0], $client['postalcode'][0]))
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['exact'] = 0;
@@ -466,12 +485,38 @@ class geoActions extends sfActions
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
+      // metropolis
+      if ( count($client['postalcode']) > 1 )
+      {
+        $buf = $client['postalcode'][0];
+        unset($qs[0], $client['postalcode'][0]);
+        $q = $this->buildQuery()
+          ->select('c.id')
+          ->addSelect('count(DISTINCT tck.id) AS qty')
+          ->addSelect('sum(tck.value) AS sum')
+          ->groupBy('c.id')
+          ->andWhere('(pro.id IS NULL AND c.postalcode IN ('.implode(',',$qs).') OR pro.id IS NOT NULL AND o.postalcode IN ('.implode(',',$qs).'))', array_merge($client['postalcode'], $client['postalcode']))
+          ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
+        foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+          $res[$approach]['metropolis'] = 0;
+        $arr = $q->fetchArray();
+        foreach ( $arr as $c )
+        foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        {
+          $res[$approach]['metropolis'] += is_int($field) ? $field : $c[$field];
+          $total[$approach] += is_int($field) ? $field : $c[$field];
+        }
+        $client['postalcode'][0] = $buf;
+        $qs[0] = '?';
+      }
+      
+      // department
       $q = $this->buildQuery()
         ->select('c.id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
-        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) = substring(?, 1, 2)', $client['postalcode'])
+        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) = substring(?, 1, 2)', $client['postalcode'][0])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['department'] = -$res[$approach]['exact'];
@@ -483,12 +528,13 @@ class geoActions extends sfActions
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
+      // region
       $q = $this->buildQuery()
         ->select('c.id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
         ->groupBy('c.id')
-        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) IN (SELECT gd.num FROM GeoFrRegion gr LEFT JOIN gr.Departments gd LEFT JOIN gr.Departments gdc WHERE gdc.num = substring(?, 1, 2))', $client['postalcode'])
+        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) IN (SELECT gd.num FROM GeoFrRegion gr LEFT JOIN gr.Departments gd LEFT JOIN gr.Departments gdc WHERE gdc.num = substring(?, 1, 2))', $client['postalcode'][0])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['region'] = -$res[$approach]['exact'] -$res[$approach]['department'];
@@ -500,6 +546,7 @@ class geoActions extends sfActions
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
+      // country
       $q = $this->buildQuery()
         ->select('c.id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
@@ -516,6 +563,7 @@ class geoActions extends sfActions
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
+      // others
       $q = $this->buildQuery()
         ->select('c.id')
         ->addSelect('count(DISTINCT tck.id) AS qty')

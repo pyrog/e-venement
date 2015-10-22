@@ -48,8 +48,10 @@
       if ( !isset($tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id]) ) $tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id] = array();
       if ( !isset($tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id][$ticket->Manifestation->id]) ) $tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id][$ticket->Manifestation->id] = array();
       
-      $tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id]['event'] = $ticket->Manifestation->Event;
-      $tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id][$ticket->Manifestation->id]['manif'] = $ticket->Manifestation;
+      if ( !isset($tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id]['event']) )
+        $tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id]['event'] = $ticket->Manifestation->Event;
+      if ( !isset($tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id][$ticket->Manifestation->id]['manif']) )
+        $tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id][$ticket->Manifestation->id]['manif'] = $ticket->Manifestation;
       if ( !isset($tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id][$ticket->Manifestation->id][$ticket->price_id]) )
         $tickets[$ticket->Manifestation->happens_at.' -- '.$ticket->Manifestation->event_id][$ticket->Manifestation->id][$ticket->price_id] = array(
           'qty' => 0,

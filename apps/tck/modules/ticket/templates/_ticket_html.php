@@ -43,7 +43,7 @@
     </p>
     <p class="ticket-bc"><?php
     switch ( sfConfig::get('app_tickets_id') ) {
-    case 'qrcode':
+    case 'barcode':
       echo '<img src="'.url_for('ticket/barcode?id='.$ticket->id).'" />';
       break;
     default:
