@@ -31,7 +31,7 @@ $matches = array(
     'data-attr' => 'declination-id',
   ),
   'gauge'       => array(
-    'model' => 'BoughtProduct',
+    'model' => 'Ticket',
     'field' => 'gauge_id',
     'url'   => 'transaction/getManifestations?id='.$request->getParameter('id').'&state=%s&gauge_id='.$params[$field]['declination_id'].'&price_id='.$params[$field]['price_id'],
     'type'  => 'manifestations',
@@ -48,6 +48,18 @@ case 'gauge':
     ->andWhere('a.transaction_id = ?', $request->getParameter('id'))
     ->orderBy('a.integrated_at IS NULL DESC, a.integrated_at, a.seat_id IS NULL DESC, a.value ASC, a.id DESC')
   ;
+  
+  if ( Doctrine_Query::create()->from('Gauge g')
+    ->andWhere('g.id = ?', $params[$field]['declination_id'])
+    ->leftJoin('g.Manifestation m')
+    ->leftJoin('m.Event e')
+    ->andWhere('e.museum = ?', true)
+    ->count() > 0 )
+  {
+    $matches['gauge']['url'] = str_replace('getManifestations', 'getPeriods', $matches['gauge']['url']);
+    $matches['gauge']['type'] = 'museum';
+  }
+  
   $wips = $q->copy();
   break;
 case 'declination':

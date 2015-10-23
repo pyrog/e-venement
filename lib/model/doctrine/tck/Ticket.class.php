@@ -66,7 +66,7 @@ class Ticket extends PluginTicket
     if ( !$this->id )
       return false;
     
-    $salt = $salt
+    $salt = $salt && !is_bool($salt)
       ? $salt
       : sfConfig::get('project_eticketting_salt', '');
     

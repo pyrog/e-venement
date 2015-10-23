@@ -14,6 +14,11 @@ all:
           attributes:
             onclick: "javascript: return false;"
             target: _blank
+        batchRemoveFromFilters:
+          credential: pr-contact
+          label: Remove through filters
+          attributes:
+            onclick: "javascript: var form = $('#tdp-content').clone(true); form.find('[name=batch_action]').remove(); var sep=$(this).attr('href').indexOf('?')>-1?'&':'?'; $(this).attr('href',$(this).attr('href')+sep+form.serialize());"
         csv:
           credential: pr-contact-csv
           label: Extract

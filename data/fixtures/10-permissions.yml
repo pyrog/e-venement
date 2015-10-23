@@ -1,4 +1,9 @@
 sfGuardPermission:
+  sfGuardPermission_148:
+    name: tck-museum
+    description: 'Possibility to sell tickets for museums'
+    created_at: '2015-10-13 11:50:00'
+    updated_at: '2015-10-13 11:50:00' 
   sfGuardPermission_147:
     name: pos-product-stats
     description: 'Permission to access the statistics of products'
@@ -686,6 +691,11 @@ sfGuardPermission:
     updated_at: '2014-05-28 09:20:41'
 
 sfGuardGroupPermission:
+  sfGuardGroupPermission_59_148:
+    Group: sfGuardGroup_59
+    Permission: sfGuardPermission_148
+    created_at: '2015-10-13 11:50:00'
+    updated_at: '2015-10-13 11:50:00' 
   sfGuardGroupPermission_58_147:
     Group: sfGuardGroup_58
     Permission: sfGuardPermission_147
@@ -1758,6 +1768,11 @@ sfGuardGroupPermission:
     updated_at: '2014-05-28 09:20:00'
 
 sfGuardGroup:
+  sfGuardGroup_59:
+    name: tck-museum
+    description: "Ability to sell tickets for museums"
+    created_at: '2015-10-13 11:50:00'
+    updated_at: '2015-10-13 11:50:00' 
   sfGuardGroup_58:
     name: pos-stats
     description: 'Ability to access the statistics of products'

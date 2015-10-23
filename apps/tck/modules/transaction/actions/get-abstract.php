@@ -276,7 +276,8 @@
               ->leftJoin('int.Gauges intg')
               ->andWhere('g.id = ? OR intg.id = ?', array($gid, $gid));
           $product = $q->fetchOne();
-          
+
+          if ( $product )
           $this->json[$product->id] = array(
             'id'            => $product->id,
             'name'          => NULL,

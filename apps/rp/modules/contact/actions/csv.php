@@ -34,7 +34,7 @@
       ->leftJoin('o.Category oc')
       ->addSelect("oc.name AS organism_category, o.name AS organism_name")
       ->addSelect('p.department AS professional_department, p.contact_number AS professional_number, p.contact_email AS professional_email')
-      ->addSelect('pt.name AS professional_type_name, p.name AS professional_name, (p.id = o.professional_id) AS professional_important')
+      ->addSelect('pt.name AS professional_type_name, p.name AS professional_name, p.description AS professional_description, (p.id = o.professional_id) AS professional_important')
       ->addSelect("o.address AS organism_address, o.postalcode AS organism_postalcode, o.city AS organism_city, o.country AS organism_country, o.email AS organism_email, o.url AS organism_url, o.npai AS organism_npai, o.description AS organism_description")
       ->orderBy("$a.name, $a.firstname")
     ;
@@ -106,12 +106,13 @@
         $line['organism_url']         = $line['Professionals'][0]['Organism']['organism_url'];
         $line['organism_npai']        = $line['Professionals'][0]['Organism']['organism_npai'];
         $line['organism_description'] = $line['Professionals'][0]['Organism']['organism_description'];
-        $line['organism_category']       = $line['Professionals'][0]['Organism']['Category']['organism_category'];
-        $line['professional_department'] = $line['Professionals'][0]['professional_department'];
+        $line['organism_category']        = $line['Professionals'][0]['Organism']['Category']['organism_category'];
+        $line['professional_department']  = $line['Professionals'][0]['professional_department'];
         $line['professional_number']  = $line['Professionals'][0]['professional_number'];
         $line['professional_email']   = $line['Professionals'][0]['professional_email'];
         $line['professional_name']    = $line['Professionals'][0]['professional_name'];
-        $line['professional_type_name']  = $line['Professionals'][0]['Professional']['ProfessionalType'];
+        $line['professional_type_name']   = $line['Professionals'][0]['Professional']['ProfessionalType'];
+        $line['professional_description'] = $line['Professionals'][0]['professional_description'];
         
         array_splice($this->lines, $key+1, 0, array($line));
       }

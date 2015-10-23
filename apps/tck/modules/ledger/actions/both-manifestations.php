@@ -24,7 +24,7 @@
 <?php
     // get all selected manifestations
     $this->manifestations = false;
-    if ( count($criterias['manifestations']) > 0 )
+    if ( isset($criterias['manifestations']) && count($criterias['manifestations']) > 0 )
     {
       $q = Doctrine::getTable('Manifestation')->createQuery('m')
         ->andWhereIn('m.id',$criterias['manifestations']);

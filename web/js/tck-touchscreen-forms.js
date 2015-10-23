@@ -49,6 +49,7 @@ LI.formSubmit = function(){
         if ( value.data && value.data.type )
         switch ( value.data.type ) {
         case 'manifestations_price':
+        case 'museum_price':
         case 'store_price':
           $('#li_transaction_field_price_new [name="transaction[price_new][qty]"]').val('');
           if ( !value.data.reset )
@@ -64,12 +65,13 @@ LI.formSubmit = function(){
           {
             elt.find('.qty input').val(value.data.content.qty).select();
             elt.find('.money').html(LI.format_currency(0));
-            setTimeout(function(){ if ( parseInt(elt.find('.qty input').val(),10) == 0 ) elt.remove(); },5000);
+            setTimeout(function(){ if ( parseInt(elt.find('.qty input').val(),10) == 0 ) elt.remove(); },3500);
           }
           
           break;
         case 'store':
         case 'manifestations':
+        case 'museum':
           LI.completeContent(value.data.content, value.data.type, false);
           break;
         
@@ -99,6 +101,7 @@ LI.formSubmit = function(){
         if ( value.remote_content && value.remote_content.load )
         switch ( value.remote_content.load.type ) {
         case 'manifestations_price':
+        case 'museum_price':
         case 'store_price':
           var reset = value.remote_content.load.reset;
           $.ajax({

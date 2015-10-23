@@ -206,6 +206,8 @@ then
   ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-pos.yml
   echo "Permissions & groups for the grp module"
   ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-grp.yml
+  echo "Permissions & groups for the tck module (museums)"
+  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-tck.yml
 fi
 
 echo ""

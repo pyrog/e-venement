@@ -45,6 +45,7 @@
     'professional_email'  => __('Professional email'),
     'professional_type_name' => __('Type of function'),
     'professional_name'   => __('Function'),
+    'professional_description'=> __('Professional memo'),
     '__Professionals__events' => __('Events'),
     'organism_address'    => __('Address'),
     'organism_postalcode' => __('Postalcode'),

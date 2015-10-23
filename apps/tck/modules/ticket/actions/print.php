@@ -111,6 +111,7 @@
               $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->grouping_fingerprint = $fingerprint;
               $newticket->Duplicated = $ticket;
+              $newticket->qrcode();
               $newticket->save();
               if ( $newticket->seat_id )
                 $ticket->save();
@@ -190,6 +191,7 @@
               $newticket->printed_at = date('Y-m-d H:i:s');
               $newticket->integrated_at = NULL;
               $newticket->Duplicated = $ticket;
+              $newticket->qrcode;
               $newticket->save();
               if ( $newticket->seat_id )
                 $ticket->save();
@@ -218,6 +220,7 @@
                   $cpt += 2; // because member cards treatments take a loong time
                   $ticket->integrated_at = date('Y-m-d H:i:s');
                   $ticket->vat = $ticket->Manifestation->Vat->value;
+                  $ticket->qrcode;
                   $ticket->save();
                   $cpt += 2; // because member cards treatments take a loong time
                 }
@@ -232,6 +235,7 @@
                   $cpt += 2; // because member cards treatments take a loong time
                   $ticket->printed_at = date('Y-m-d H:i:s');
                   $ticket->vat = $ticket->Manifestation->Vat->value;
+                  $ticket->qrcode;
                   $ticket->save();
                   $cpt += 2; // because member cards treatments take a loong time
                 }
@@ -259,7 +263,9 @@
         ->set('t.updated_at','NOW()')
         ->set('t.vat', '(SELECT v.value FROM Manifestation m LEFT JOIN Vat v ON v.id = m .vat_id WHERE m.id = manifestation_id)')
         ->set('t.sf_guard_user_id',$this->getUser()->getId())
-        ->set('t.version','t.version + 1');
+        ->set('t.version','t.version + 1')
+        ->set('t.barcode',"md5('#'||id||'-".sfConfig::get('project_eticketting_salt', '')."')") // cf. Ticket::getBarcodePng()
+      ;
       
       // bulk update for grouped tickets
       if ( sfConfig::has('app_tickets_authorize_grouped_tickets')
@@ -320,9 +326,7 @@
     foreach ( $this->transactions as $transaction )
       $this->content .= $transaction->renderSimplifiedTickets(array('only' => $this->tickets));
     if ( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') )
-    {
       $this->setLayout(false);
-    }
     else
     {
       sfConfig::set('sf_web_debug', false);

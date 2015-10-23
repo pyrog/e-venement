@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Ability to sell tickets for museums</source>
+        <target>Possibilité de vendre des billets pour les lieux/musées</target>
+      </trans-unit>
+      <trans-unit>
         <source>Ability to add different manifestations into a single entry</source>
         <target>Possibilité d'administrer les listes d'attente des retenues</target>
       </trans-unit>

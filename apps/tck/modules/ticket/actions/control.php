@@ -118,7 +118,7 @@
           foreach ( $params['ticket_id'] as $tid )
             $this->tickets[] = $tid;
         }
-        elseif ( $checkpoint->type == 'legal' )
+        elseif ( $checkpoint->type == 'entrance' )
         {
           $q = Doctrine::getTable('Control')->createQuery('c')
             ->select('c.*')
