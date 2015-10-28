@@ -71,7 +71,7 @@
 </tbody>
 <thead>
   <tr>
-    <td class="name"><?php echo __('Ticketting synthesis') ?></td>
+    <td class="name"><?php echo __('Sales synthesis') ?></td>
     <td class="value"><?php echo __('Value') ?></td>
     <td class="rating"><?php echo __('Rating') ?></td>
   </tr>

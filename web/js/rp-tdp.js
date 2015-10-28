@@ -21,7 +21,7 @@ $(document).ready(function(){
   },200); });
   
   // METAEVENTS
-  $('#tdp-side-ticketting .metaevent:not(.hidden) .name').click(function(){ $(this).closest('.metaevent').find('.events, .seat-rank').slideUp(); });
+  $('#tdp-side-ticketting .metaevent:not(.hidden) .name').click(function(){ $(this).closest('.metaevent').find('.events, .seat-rank').slideToggle(); });
   $('#tdp-side-ticketting .metaevent.hidden .name').click(function(){
     var elt = $(this);
     if ( $(this).prop('href') == '#' )
@@ -139,7 +139,7 @@ $(document).ready(function(){
         $(this).prop('checked', orig.prop('checked'));
       })
       .appendTo(
-        $('#tdp-content .tdp-subobject [name="professional[id]"][value="'+$(this).val()+'"]')
+        $('#tdp-content .tdp-subobject [data-id="'+$(this).val()+'"]')
           .closest('.tdp-subobject').find('h1')
       );
   });

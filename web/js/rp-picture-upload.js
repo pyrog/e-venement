@@ -59,7 +59,8 @@
         var fread = new FileReader();
         if ( $(this).prop('files')[0].type.match('image.*') )
         {
-          fread.onloadend = function(){ LI.rpFileUpload(fread.result, this); }
+          var input = this;
+          fread.onloadend = function(){ LI.rpFileUpload(fread.result, input); }
           fread.readAsDataURL($(this).prop('files')[0]);
         }
         $(this).val('');

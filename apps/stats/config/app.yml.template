@@ -5,7 +5,7 @@
 #    hide_demands: true      
 #  about:
 #    client:
-#      postalcode: 38400
+#      postalcode: 38400 # if the client has more than one postalcode, please use an array "[]" with the first value as the center of the "metropole"
 #      country: france
 #  geo_limits: # +1 w/ "others" / only 5 colors by default, be careful of color proximity depending on your choice
 #    postalcodes: 8

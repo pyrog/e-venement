@@ -338,6 +338,14 @@
         <target><![CDATA[du %from_date%<br />au %to_date%]]></target>
       </trans-unit>
       <trans-unit>
+        <source>from %from_date%</source>
+        <target>entre %from_date%</target>
+      </trans-unit>
+      <trans-unit>
+        <source>to %to_date%</source>
+        <target>et %to_date%</target>
+      </trans-unit>
+      <trans-unit>
         <source>Filters</source>
         <target>Filtres</target>
       </trans-unit>
