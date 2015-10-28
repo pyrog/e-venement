@@ -25,7 +25,7 @@
   <table>
     <caption class="fg-toolbar ui-widget-header ui-corner-top">
       <?php $title = $sf_context->getConfiguration()->getApplication() == 'museum'
-        ? __("Exhibition's Periods List")
+        ? __("Visit's Periods List")
         : __("Event's Manifestations List")
       ; ?>
       <h2><span class="ui-icon ui-icon-triangle-1-s"></span> <?php echo $title ?></h2>

@@ -14,9 +14,9 @@
             $museum = false;
         ?>
         <?php if ( $museum ): ?>
-        <?php echo format_number_choice('[1]Exhibition period ledger|(1,+Inf]Exhibition periods ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
+          <?php echo format_number_choice('[1]Visit period ledger|(1,+Inf]Visit periods ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
         <?php else: ?>
-        <?php echo format_number_choice('[1]Manifestation ledger|(1,+Inf]Manifestations ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
+          <?php echo format_number_choice('[1]Manifestation ledger|(1,+Inf]Manifestations ledger',null,$workspaces ? 2 : $manifestations->count()) ?>
         <?php endif ?>
       <?php else: ?>
       <?php echo __('Detailed Ledger') ?>

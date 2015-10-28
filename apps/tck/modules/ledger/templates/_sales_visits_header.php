@@ -1,4 +1,4 @@
-    <td class="event"><?php echo __('Exhibition') ?></td>
+    <td class="event"><?php echo __('Visit') ?></td>
     <td class="see-more"></td>
     <td class="id-qty"><?php echo __('Qty') ?></td>
     <td class="value" title="<?php echo __('PIT').' = '.__('TEP').' + '.__('Tot.VAT') ?>"><?php echo __('PIT') ?></td>

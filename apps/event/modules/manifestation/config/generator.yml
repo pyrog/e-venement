@@ -15,13 +15,13 @@ generator:
     config:
       actions: ~
       fields:
-        list_event: { label: <?php echo $museum ? 'Exhibition' : 'Event' ?> }
+        list_event: { label: <?php echo $museum ? 'Visit' : 'Event' ?> }
         list_location: { label: Location }
         list_description: { label: Memo }
         list_dates: { label: Date }
         happens_at: { label: Date }
         ends_at: { type: Date }
-        id: { label: <?php echo $museum ? 'ID Exhibition' : 'ID Manif' ?> }
+        id: { label: <?php echo $museum ? 'ID Visit' : 'ID Manif' ?> }
         online_limit: { label: Online limit }
         description: { label: Memo }
         no_print: { label: Preprinted ticketting }
@@ -33,7 +33,7 @@ generator:
         reservation_description: { label: Comment }
         contact_id: { label: Applicant, credentials: event-reservation-change-contact }
         list_contact: { label: Applicant }
-        event_id: { label: <?php echo $museum ? 'Exhibition' : 'Event' ?> }
+        event_id: { label: <?php echo $museum ? 'Visit' : 'Event' ?> }
         organism_id: { label: Applied by organism }
         booking_list: { label: Extra locations }
         list_booking_list: { label: Extra locations }

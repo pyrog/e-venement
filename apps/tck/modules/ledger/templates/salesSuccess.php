@@ -51,7 +51,7 @@
   </tr></thead>
 </table>
 
-<table class="ui-widget-content ui-corner-all" id="ledger-exhibitions">
+<table class="ui-widget-content ui-corner-all" id="ledger-visits">
   <?php
     $vat = array();
     $total = $sf_data->getRaw('total');
@@ -84,7 +84,7 @@
     <?php include_partial('sales_total', array('total' => $total,)) ?>
   </tr></tfoot>
   <thead><tr>
-    <?php include_partial('sales_exhibitions_header', array('total' => $total)) ?>
+    <?php include_partial('sales_visits_header', array('total' => $total)) ?>
   </tr></thead>
 </table>
 
