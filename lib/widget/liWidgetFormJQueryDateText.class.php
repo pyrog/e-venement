@@ -85,7 +85,8 @@ class liWidgetFormJQueryDateText extends liWidgetFormDateText
       maxDate:    new Date(%s, 12 - 1, 31),
       beforeShow: wfd_%s_read_linked,
       onSelect:   wfd_%s_update_linked,
-      showOn:     "button"
+      showOn:     "button",
+      onClose:    function(){ jQuery("#%s, #%s, #%s").change(); }
       %s
     }, jQuery.datepicker.regional["%s"], %s, {dateFormat: "yy-mm-dd"}));
   });
@@ -106,7 +107,9 @@ EOF
       $id,
       $this->getOption('change') ? 'true' : 'false', $this->getOption('change') ? 'true' : 'false',
       min($this->getOption('years')), max($this->getOption('years')),
-      $prefix, $prefix, $image, $this->getOption('culture'), $this->getOption('config'),
+      $prefix, $prefix,
+      $this->generateId($name.'[day]'), $this->generateId($name.'[month]'), $this->generateId($name.'[year]'),
+      $image, $this->getOption('culture'), $this->getOption('config'),
       $this->generateId($name.'[day]'), $this->generateId($name.'[month]'), $this->generateId($name.'[year]'),
       $prefix
     );
