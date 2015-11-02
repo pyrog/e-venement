@@ -230,7 +230,7 @@ LI.completeContent = function(data, type, replaceAll = true)
           var ids = [];
           $.each(price.ids, function(index, value){
             var elt = price.ids_url && price.ids_url[index]
-              ? $('<span></span>').text($.inArray(type, ['manifestations', 'museum']) && price.numerotation[index] ? ' '+price.numerotation[index] : '')
+              ? $('<span></span>').text($.inArray(type, ['manifestations', 'museum']) != -1 && price.numerotation[index] ? ' '+price.numerotation[index] : '')
                 .prepend($('<a></a>').prop('href', price.ids_url[index]).prop('target', '_blank').text(value))
               : $('<span></span>').text(value+( $.inArray(type, ['manifestations', 'museum']) && price.numerotation[index] ? ' '+price.numerotation[index] : '' ));
             ids.push($('<div></div>').append(elt.prepend('#').attr('data-id', value)).html());
