@@ -37,11 +37,27 @@
       <?php echo __("Enter here the id of the transaction where to delete tickets that you're going to integrate. This is not required.") ?>
     </div>
     <div class="sf_admin_form_row sf_admin_text sf_admin_form_field_translation_workspaces ui-widget-content ui-corner-all">
-      <?php echo $form['translation_workspaces_ref1']->renderLabel() ?>
+      <?php echo $form['translation_workspaces_zone_ref1']->renderLabel() ?>
       <p><?php echo __('Please have a look into the file you want to import to get the proper name, as given by your partnair.') ?></p>
-      <?php for ( $i = 0; isset($form['translation_workspaces_ref'.$i]) ; $i++ ): ?>
+      <div class="sample ui-corner-all">
+        <p><?php echo __('e.g.') ?>:</p>
+        <p class="tkn">
+          <input type="text" name="sample" value="PAR" readonly="" />
+          <input type="text" name="sample" value="01" readonly="" />
+          &rarr;
+          <select name="sample"><option>Parterre Fauteuils</option></select>
+        </p>
+        <p class="fb">
+          <input type="text" name="sample" value="PARTERRE" readonly="" />
+          <input type="text" name="sample" value="Catégorie 1" readonly="" />
+          &rarr;
+          <select name="sample"><option>Parterre Fauteuils</option></select>
+        </p>
+      </div>
+      <?php for ( $i = 0; isset($form['translation_workspaces_zone_ref'.$i]) ; $i++ ): ?>
         <p>
-        <?php echo $form['translation_workspaces_ref'.$i] ?>
+        <?php echo $form['translation_workspaces_zone_ref'.$i] ?>
+        <?php echo $form['translation_workspaces_category_ref'.$i] ?>
         &rarr;
         <?php echo $form['translation_workspaces_dest'.$i] ?>
         </p>
@@ -50,6 +66,20 @@
     <div class="sf_admin_form_row sf_admin_text sf_admin_form_field_translation_prices ui-widget-content ui-corner-all">
       <?php echo $form['translation_prices_ref1']->renderLabel() ?>
       <p><?php echo __('Please have a look into the file you want to import to get the proper name, as given by your partnair.') ?></p>
+      <div class="sample ui-corner-all">
+        <p><?php echo __('e.g.') ?>:</p>
+        <p class="tkn">
+          <input type="text" name="sample" value="01TN" readonly="" />
+          &rarr;
+          <select name="sample"><option>TKNA</option></select>
+        </p>
+        <p class="fb">
+          <input type="text" name="sample" value="Catégorie 1" readonly="" />
+          <input type="text" name="sample" value="Normal" readonly="" />
+          &rarr;
+          <select name="sample"><option>FBA</option></select>
+        </p>
+      </div>
       <?php for ( $i = 0; isset($form['translation_prices_ref'.$i]) ; $i++ ): ?>
         <p>
         <?php echo $form['translation_prices_ref'.$i]->render(array('title' => __($form['translation_prices_ref'.$i]->getWidget()->getLabel()))) ?>

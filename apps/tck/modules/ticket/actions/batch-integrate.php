@@ -24,6 +24,7 @@
 <?php
   $this->getContext()->getConfiguration()->loadHelpers(array('I18N','CrossAppLink'));
   $notices = array();
+  $glue = ' |~| ';
   
   // get back the manifestation
   $mid = $request->getParameter('manifestation_id');
@@ -52,10 +53,10 @@
         ->andWhere('pt.name = ?',sfConfig::get('app_tickets_foreign_price', 'PART'))
         ->fetchOne()->id;
       
-      $this->translation = array('prices','workspaces');
-      for ( $i = 0 ; isset($integrate['translation_workspaces_ref'.$i]) && isset($integrate['translation_workspaces_dest'.$i]) ; $i++ )
-      if ( $integrate['translation_workspaces_ref'.$i] && $integrate['translation_workspaces_dest'.$i] )
-        $this->translation['workspaces'][$integrate['translation_workspaces_ref'.$i]] = $integrate['translation_workspaces_dest'.$i];
+      $this->translation = array('prices' => array(), 'workspaces' => array());
+      for ( $i = 0 ; isset($integrate['translation_workspaces_category_ref'.$i]) && isset($integrate['translation_workspaces_zone_ref'.$i]) && isset($integrate['translation_workspaces_dest'.$i]) ; $i++ )
+      if ( $integrate['translation_workspaces_category_ref'.$i] && $integrate['translation_workspaces_zone_ref'.$i] && $integrate['translation_workspaces_dest'.$i] )
+        $this->translation['workspaces'][$integrate['translation_workspaces_zone_ref'.$i].$glue.$integrate['translation_workspaces_category_ref'.$i]] = $integrate['translation_workspaces_dest'.$i];
       for ( $i = 0 ; isset($integrate['translation_prices_ref'.$i]) && isset($integrate['translation_prices_dest'.$i]) ; $i++ )
       if ( $integrate['translation_prices_ref'.$i] && $integrate['translation_prices_dest'.$i] )
       {
@@ -174,7 +175,7 @@
           // seated integration...
           if ( isset($ticket['seat']) && $ticket['seat'] )
           {
-            $seat = Doctrine::getTable('Seat')->createQuery('s')
+            $q = Doctrine::getTable('Seat')->createQuery('s')
               ->leftJoin('s.SeatedPlan sp')
               ->leftJoin('sp.Workspaces ws')
               ->leftJoin('ws.Gauges g')
@@ -182,13 +183,12 @@
               ->leftJoin('sp.Location l')
               ->leftJoin('l.Manifestations m')
               ->andWhere('m.id = ?', $tck->manifestation_id)
-              ->leftJoin('s.Tickets tck')
+              ->leftJoin('s.Tickets tck WITH tck.manifestation_id = ?', $tck->manifestation_id)
               ->andWhere('tck.id IS NULL')
               ->andWhere('lower(s.name) = ?', strtolower($ticket['seat']))
               ->leftJoin('s.Holds h WITH h.manifestation_id = m.id')
-              ->fetchOne()
             ;
-            if ( $seat )
+            if ( $seat = $q->fetchOne() )
             {
               // creates a HoldTransaction if required
               if ( $seat->Holds->count() > 0 )

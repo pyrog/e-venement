@@ -29,7 +29,7 @@ class TicketsIntegrationForm extends BaseFormDoctrine
     
     $filetypes = array(
       'fb' => 'FranceBillet',
-      'tkn' => 'Ticketnet',
+      'tkn' => 'TicketMaster',
     );
     $this->widgetSchema   ['filetype'] = new sfWidgetFormChoice(array(
       'choices' => $filetypes,
@@ -57,10 +57,16 @@ class TicketsIntegrationForm extends BaseFormDoctrine
     for ( $i = 0 ; $i < intval(sfConfig::has('app_tickets_foreign_max_items') ? sfConfig::get('app_tickets_foreign_max_items') : 4) ; $i++ )
     {
       // workspaces
-      $this->widgetSchema   ['translation_workspaces_ref'.$i] = new sfWidgetFormInput(array(
+      $this->widgetSchema   ['translation_workspaces_category_ref'.$i] = new sfWidgetFormInput(array(
         'label' => 'Translation for workspaces',
       ));
-      $this->validatorSchema['translation_workspaces_ref'.$i] = new sfValidatorString(array(
+      $this->validatorSchema['translation_workspaces_category_ref'.$i] = new sfValidatorString(array(
+        'required'  => false,
+      ));
+      $this->widgetSchema   ['translation_workspaces_zone_ref'.$i] = new sfWidgetFormInput(array(
+        'label' => 'Translation for workspaces',
+      ));
+      $this->validatorSchema['translation_workspaces_zone_ref'.$i] = new sfValidatorString(array(
         'required'  => false,
       ));
       $this->widgetSchema   ['translation_workspaces_dest'.$i] = new sfWidgetFormDoctrineChoice(array(
