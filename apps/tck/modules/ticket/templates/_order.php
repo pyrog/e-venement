@@ -8,5 +8,5 @@
 <?php include_partial('accounting_lines',array('transaction' => $transaction, 'tickets' => $tickets, 'products' => $products, 'nocancel' => $nocancel)) ?>
 <?php include_partial('accounting_totals',array('totals' => $totals)) ?>
 <?php include_partial('order_infos') ?>
-<?php include_partial('accounting_footer', array('type' => 'order')) ?>
+<?php include_partial('accounting_footer', array('type' => 'order', 'transaction' => $transaction)) ?>
 
