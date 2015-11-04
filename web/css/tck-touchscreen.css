@@ -130,7 +130,7 @@
 #li_transaction_field_price_new .ui-icon-left { font-size: 0; }
 #sf_admin_content #li_transaction_field_price_new.cancelling { border: 3px solid orange; margin: 8px 5px 10px 3px; }
 #li_transaction_field_price_new .cancel { display: inline-block; }
-#li_transaction_field_price_new input[type=text] { width: 4em; text-align: center; }
+#li_transaction_field_price_new input[type=number] { width: 4em; text-align: center; }
 #li_fieldset_payments #li_transaction_field_price_new > .seats-first { float: right; margin-left: 1em; display: none; }
 #li_fieldset_payments #li_transaction_field_price_new > .seats-first.usefull,
 #li_fieldset_payments #li_transaction_field_price_new .dispatch { display: block; margin-top: 1em; }
@@ -191,4 +191,4 @@
 /* OTHERS */
 .sf_admin_flashes { position: absolute; width: 94%; z-index: 2; margin-left: 5px; margin-top: -2.85em; }
 #li_fieldset_hidden { display: none; }
-h1 #resend-email, h1 #abandon { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }
+h1 #simplified-gui, h1 #resend-email, h1 #abandon { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }

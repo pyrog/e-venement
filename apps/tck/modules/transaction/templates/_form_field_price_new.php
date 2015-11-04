@@ -6,7 +6,7 @@
   'class' => 'prices'
 )) ?><p>
   <?php echo $form->renderHiddenFields() ?>
-  <?php echo $form['qty']->render(array('pattern' => '-{0,1}\d+', 'title' => __('Positive or negative numbers only'), 'maxlength' => 4)) ?>
+  <?php echo $form['qty']->render(array('title' => __('Positive or negative numbers only'))) ?>
   <a href="<?php echo url_for('ticket/cancelPartial') ?>"
      class="ui-icon-left cancel"
      target="_blank"

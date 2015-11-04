@@ -2,6 +2,8 @@
 all:
   transaction:
     display:
+      simplified:
+        simplified: ~
       intro:
         contact_id:
           class: board-alpha highlight

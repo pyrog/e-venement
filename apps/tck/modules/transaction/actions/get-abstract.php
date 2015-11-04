@@ -157,6 +157,22 @@
       
       // retrictive parameters
       $pid = array();
+      if ( !$request->getParameter('manifestation_id',false) && !$request->getParameter('gauge_id', false) && $request->hasParameter('simplified') )
+      {
+        // here we add the next manifestations if nothing is asked and the GUI is "simplified"
+        $conf = sfConfig::get('app_transaction_manifestations', array());
+        if (!( isset($conf['max_display']) && is_int($conf['max_display']) ))
+          $conf['max_display'] = 20;
+        
+        $q2 = Doctrine::getTable('Manifestation')->createQuery('m')
+          ->select('m.id')
+          ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW()")
+          ->limit($conf['max_display']);
+        $pid = array();
+        foreach ( $q2->execute() as $manif )
+          $pid[] = $manif->id;
+        $request->setParameter('manifestation_id', $pid);
+      }
       if ( $request->getParameter('manifestation_id',false) )
       {
         $pid = is_array($request->getParameter('manifestation_id'))
@@ -170,7 +186,7 @@
       }
       if ( $gid = $request->getParameter('gauge_id', false) )
         $q->andWhere('(g.id = ? OR ng.id = ? AND g.workspace_id = ng.workspace_id)',array($gid, $gid));
-    
+      
     break;
     case 'store':
       $subobj = 'BoughtProduct';

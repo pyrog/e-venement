@@ -1,7 +1,6 @@
 LI.completeContentTriggers = [];
 LI.completeContent = function(data, type, replaceAll = true)
 {
-  console.log('populating '+type);
   if ( typeof data != 'object' )
   {
     LI.alert('An error occured. Please try again.','error');
@@ -26,7 +25,6 @@ LI.completeContent = function(data, type, replaceAll = true)
     content.find('tr:not([data-payment-id])').hide();
     var total = 0;
 
-    console.error(data);
     $.each(data, function(index, value){
       var tr = template.clone(true)
         .removeClass('template')
@@ -59,8 +57,7 @@ LI.completeContent = function(data, type, replaceAll = true)
     });
     
     LI.sumPayments();
-    return true;
-  
+    break;
   
   // MANIFESTATIONS & PRODUCTS & MUSEUM
   case 'store':
@@ -79,7 +76,6 @@ LI.completeContent = function(data, type, replaceAll = true)
     
     // manifestations / products
     $.each(data, function(id, pdt){
-      
       var wpdt = $('#li_transaction_'+type+' .families.sample .family:not(.total)').clone(true);
       var add = true;
       if ( $('#li_transaction_'+type+' #'+wpdt.prop('id')+pdt.id).length > 0 )
@@ -104,7 +100,7 @@ LI.completeContent = function(data, type, replaceAll = true)
       {
         var happens_at = new Date(pdt.happens_at.replace(' ','T'));
         var ends_at = pdt.ends_at ? new Date(pdt.ends_at.replace(' ','T')) : undefined;
-        wpdt.find('h3 .happens_at').text(happens_at.toLocaleString().replace(/:\d\d \w+$/,'')).prop('href',pdt.product_url).prop('title', ends_at ? ends_at.toLocaleString().replace(/:\d\d \w+$/,'') : '');
+        wpdt.find('h3 .happens_at').text(happens_at.toLocaleString().replace(/:\d\d( \w+){0,1}$/,'')).prop('href',pdt.product_url).prop('title', ends_at ? ends_at.toLocaleString().replace(/:\d\d \w+$/,'') : '');
       }
       else
         wpdt.find('h3 .happens_at').text(pdt.name).prop('href',pdt.product_url);
@@ -252,12 +248,20 @@ LI.completeContent = function(data, type, replaceAll = true)
       });
     }
     
-    return true;
+    break;
   
   default:
     console.log(type+' not implemented');
-    return true;
+    break;
   }
+  
+  // hook for external plugins
+  if ( LI.touchscreenSimplifiedContentLoad != undefined )
+  $.each(LI.touchscreenSimplifiedContentLoad, function(i, fct){
+    fct(data, type);
+  });
+  
+  return true;
 }
 
 LI.sumPayments = function()

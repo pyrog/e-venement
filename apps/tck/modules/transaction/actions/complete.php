@@ -164,6 +164,14 @@
         $q = Doctrine_Query::create();
         $model = NULL;
         switch ( $params[$field]['type'] ) {
+        case 'declination':
+          $model = 'ProductDeclination';
+          $q->from($model.' d')
+            ->leftJoin('d.Product p')
+            ->andWhereIn('p.meta_event_id IS NULL OR p.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
+          ;
+          break;
+        //default:
         case 'gauge':
           $model = 'Gauge';
           $q->from($model.' g')
@@ -171,13 +179,6 @@
             ->leftJoin('m.Event e')
             ->andWhereIn('e.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
             ->andWhereIn('g.workspace_id', array_keys($this->getUser()->getWorkspacesCredentials()))
-          ;
-          break;
-        case 'declination':
-          $model = 'ProductDeclination';
-          $q->from($model.' d')
-            ->leftJoin('d.Product p')
-            ->andWhereIn('p.meta_event_id IS NULL OR p.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
           ;
           break;
         }

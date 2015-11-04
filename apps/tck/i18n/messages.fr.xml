@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Switch to simplified GUI / back from ...</source>
+        <target>Basculter vers l'interface simplifiée / Revenir de ...</target>
+      </trans-unit>
+      <trans-unit>
         <source>Resend confirmation email</source>
         <target>Renvoyer l'email de confirmation</target>
       </trans-unit>

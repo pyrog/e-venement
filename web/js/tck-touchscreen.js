@@ -157,7 +157,7 @@ $(document).ready(function(){
     $('#li_transaction_field_content .item .data .gauge.raw').html(''); // cleaning cached raw gauge
     $('#li_transaction_field_content .item .data .gauge.seated.picture').remove(); // cleaning cached seated plan
   });
-  
+    
   // CONTACT CHANGE & INIT
   $.each([
     '#li_transaction_field_contact_id',
@@ -340,10 +340,8 @@ $(document).ready(function(){
   });
   $('#li_transaction_field_payment_new .submit').hide();
   
-  // reset the current transaction
-  $('#abandon').appendTo($('#sf_admin_container .ui-widget-header h1'));
-  // resend the confirmation email
-  $('#resend-email').appendTo($('#sf_admin_container .ui-widget-header h1'));
+  // reset the current transaction + resend the confirmation email + access to the simplified gui
+  $('#abandon, #resend-email, #simplified-gui').appendTo($('#sf_admin_container .ui-widget-header h1'));
 });
 
 // check gauges for overbooking

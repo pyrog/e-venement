@@ -40,4 +40,10 @@
   id="resend-email"
   target="_blank"
 ><span class="ui-icon ui-icon-mail-closed"></span></a>
+<a
+  class="ui-widget-content ui-state-default ui-corner-all ui-widget fg-button"
+  href="#"
+  title="<?php echo __('Switch to simplified GUI / back from ...') ?>"
+  id="simplified-gui"
+><span class="ui-icon ui-icon-document-b"></span></a>
 </form>
