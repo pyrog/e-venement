@@ -12,7 +12,7 @@
     <div class="contact ui-widget-content ui-corner-all">Contact</div>
   </div>
   <div class="content simplified-top-block">
-    <ul class="bunch manifestations ui-widget-content ui-corner-all" data-bunch-id="manifestations" data-declination-type="gauge">
+    <ul class="bunch manifestations ui-widget-content ui-corner-all" data-bunch-id="manifestations">
     </ul>
     <ul class="prices ui-widget-content ui-corner-all">
     </ul>

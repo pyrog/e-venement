@@ -24,7 +24,11 @@ if ( LI == undefined )
   var LI = {};
 if ( LI.touchscreenOnNewFamilyLoad == undefined )
   LI.touchscreenOnNewFamilyLoad = [];
-LI.touchscreenSimplifiedCookieName = 'tck.touchscreen.simplified-gui';
+LI.touchscreenSimplifiedCookie = {
+  name: 'tck.touchscreen.simplified-gui',
+  maxAge: 30*24*60*60 // 30 days expiration
+};
+  
 
 $(document).ready(function(){
   // SWITCH BACK FROM / TO SIMPLIFIED GUI
@@ -32,31 +36,39 @@ $(document).ready(function(){
     $('#li_fieldset_simplified').fadeToggle(function(){
       if ( !$(this).is(':visible') )
       {
-        Cookie.set(LI.touchscreenSimplifiedCookieName, false, { maxAge: 30*24*60*60 }); // 30 days expiration
+        Cookie.set(LI.touchscreenSimplifiedCookie.name, 'hide', { maxAge: LI.touchscreenSimplifiedCookie.maxAge }); // 30 days expiration
         return;
       }
-      Cookie.set(LI.touchscreenSimplifiedCookieName, true, { maxAge: 30*24*60*60 });    // 30 days expiration
+      Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', { maxAge: LI.touchscreenSimplifiedCookie.maxAge });    // 30 days expiration
       
-      // loading data
-      $('#li_fieldset_simplified .products-types [data-bunch-id]').click(function(){
-        if ( $(this).is('.selected') )
-          return false;
-        
-        $('#li_fieldset_simplified .products-types .selected').removeClass('selected');
-        $(this).addClass('selected');
-        
-        LI.touchscreenSimplifiedLoadData();
-        return false;
-      }).first().click();
+      // click on the last (or the first) tab...
+      if ( !Cookie.get(LI.touchscreenSimplifiedCookie.bunch) )
+        Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $('#li_fieldset_simplified .products-types [data-bunch-id]').first().attr('data-bunch-id'), { maxAge: LI.touchscreenSimplifiedCookie.maxAge });
+      $('#li_fieldset_simplified .products-types [data-bunch-id="'+Cookie.get(LI.touchscreenSimplifiedCookie.bunch)+'"]').click();
     });
     return false;
   });
   
-  if ( Cookie.get(LI.touchscreenSimplifiedCookieName) )
-  {
-    console.error('cookie');
+  // loading data
+  $('#li_fieldset_simplified .products-types [data-bunch-id]').unbind('click').click(function(){
+    if ( $(this).is('.selected') )
+      return false;
+    
+    // remember the last chosen tab
+    Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $(this).attr('data-bunch-id'), { maxAge: LI.touchscreenSimplifiedCookie.maxAge });
+    
+    $('#li_fieldset_simplified .products-types .selected').removeClass('selected');
+    $(this).addClass('selected');
+    
+    $('#li_fieldset_simplified .bunch')
+      .attr('data-bunch-id', $(this).attr('data-bunch-id'));
+    
+    LI.touchscreenSimplifiedLoadData();
+    return false;
+  });
+
+  if ( Cookie.get(LI.touchscreenSimplifiedCookie.name) == 'show' )
     $('#simplified-gui').click();
-  }
   
   // INIT PAYMENT METHODS FROM A COPY OF STANDARD GUI
   LI.touchscreenSimplifiedLoadPaymentMethods();
@@ -119,17 +131,33 @@ LI.touchscreenSimplifiedLoadData = function(){
       $.each(LI.touchscreenSimplifiedData[type], function(id, manif){
         if ( window.location.hash == '#debug' )
           console.error('Simplified GUI: Loading an item (#'+id+') from the '+type);
+        
+        var pdt;
+        switch ( type ) {
+        case 'museum':
+        case 'manifestations':
+          pdt = new Date(manif.happens_at.replace(' ','T')).toLocaleString().replace(/:\d\d( \w+){0,1}$/,'');
+          break;
+        
+        case 'store':
+          pdt = manif.name;
+          break;
+        
+        default:
+          pdt = '';
+          break;
+        }
+        
         var gauges = $('<ul></ul>');
-        var happens_at = new Date(manif.happens_at.replace(' ','T'));
         $('<li></li>')
-          .append('<span><span class="category">'+manif.category+'</span> <span class="happens_at">'+happens_at.toLocaleString().replace(/:\d\d( \w+){0,1}$/,'')+'</span></span>')
+          .append('<span><span class="category">'+manif.category+'</span> <span class="product">'+pdt+'</span></span>')
           .append(gauges)
           .attr('data-family-id', manif.id)
-          .appendTo($('#li_fieldset_simplified .bunch.'+type))
+          .appendTo($('#li_fieldset_simplified .bunch[data-bunch-id="'+type+'"]'))
         ;
-        $.each(manif.gauges, function(i, gauge){
+        $.each(manif[manif.declinations_name], function(i, gauge){
           var li = $('<li></li>')
-            .attr('data-gauge-id', gauge.id)
+            .attr('data-'+gauge.type+'-id', gauge.id)
             .appendTo(gauges);
           $('<input type="radio" />')
             .val(gauge.id)
@@ -152,7 +180,7 @@ LI.touchscreenSimplifiedLoadData = function(){
 
 LI.touchscreenSimplifiedBehavior = function(type){
   // opens gauges for manifestation or equivalent
-  $('#li_fieldset_simplified .bunch.'+type+' > li > :not(ul)').click(function(){
+  $('#li_fieldset_simplified .bunch[data-bunch-id="'+type+'"] > li > :not(ul)').click(function(){
     $('#li_fieldset_simplified .prices > *').remove();
     var ul = $(this).closest('li').find('ul').slideToggle('fast');
     ul
@@ -165,7 +193,7 @@ LI.touchscreenSimplifiedBehavior = function(type){
   });
   
   // activating a particular gauge or equivalent
-  $('#li_fieldset_simplified .bunch.'+type+' > li > ul > li').click(function(){
+  $('#li_fieldset_simplified .bunch[data-bunch-id="'+type+'"] > li > ul > li').click(function(){
     var type = $(this).closest('.bunch').attr('data-bunch-id');
     
     // cleansing
@@ -184,7 +212,8 @@ LI.touchscreenSimplifiedBehavior = function(type){
 LI.touchscreenSimplifiedPrices = function(gauge, data){
   var target = $('#li_fieldset_simplified .prices');
   target.find('> li').remove();
-  var prices = data[$(gauge).closest('[data-family-id]').attr('data-family-id')].gauges[$(gauge).attr('data-gauge-id')].available_prices;
+  var declinations_name = data[$(gauge).closest('[data-family-id]').attr('data-family-id')].declinations_name;
+  var prices = data[$(gauge).closest('[data-family-id]').attr('data-family-id')][declinations_name][$(gauge).attr('data-'+declinations_name.slice(0,-1)+'-id')].available_prices;
   if ( prices == undefined )
   {
     console.error('Simplified GUI: no price found for manifestation #'+$(gauge).closest('[data-family-id]').attr('data-family-id')+' and gauge #'+$(gauge).attr('data-gauge-id'));
@@ -210,7 +239,7 @@ LI.touchscreenSimplifiedPrices = function(gauge, data){
     var form = $('#li_transaction_field_price_new form.prices');
     $(form).find('[name="transaction[price_new][price_id]"]').val($(this).val());
     $(form).find('[name="transaction[price_new][declination_id]"]').val($('#li_fieldset_simplified .bunch :checked').val());
-    $(form).find('[name="transaction[price_new][type]"]').val($('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-declination-type'));
+    $(form).find('[name="transaction[price_new][type]"]').val($('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-bunch-id'));
     $(form).submit();
     return false;
   });
@@ -251,7 +280,8 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
     LI.touchscreenSimplifiedTotal();
     
     break;
-    
+  
+  case 'museum':  
   case 'manifestations':
     $.each(data, function(id, pdt){
       $.each(pdt.gauges, function(id, declination){
