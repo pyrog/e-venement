@@ -674,7 +674,7 @@ class manifestationActions extends autoManifestationActions
     $con = Doctrine_Manager::getInstance()->connection();
     $st = $con->execute(
       //"SELECT DISTINCT t.*, tl.id AS translinked,
-      "SELECT DISTINCT t.*,
+      $q = "SELECT DISTINCT t.*,
               (SELECT sum(ttt.value) + sum(CASE WHEN ttt.taxes IS NULL THEN 0 ELSE ttt.taxes END)
                FROM Ticket ttt
                WHERE ttt.transaction_id = t.id
@@ -692,7 +692,7 @@ class manifestationActions extends autoManifestationActions
        LEFT JOIN transaction tl ON tl.transaction_id = t.id
        WHERE t.id IN (SELECT DISTINCT tt.transaction_id FROM Ticket tt WHERE tt.manifestation_id = ".intval($this->manifestation->id).")
          AND (SELECT sum(tt2.value) + sum(CASE WHEN tt2.taxes IS NULL THEN 0 ELSE tt2.taxes END) FROM Ticket tt2 WHERE tt2.transaction_id = t.id AND (tt2.printed_at IS NOT NULL OR tt2.integrated_at IS NOT NULL OR tt2.cancelling IS NOT NULL) AND tt2.duplicating IS NULL)
-          +  (SELECT sum(bp2.value) + sum(CASE WHEN bp2.shipping_fees IS NULL THEN 0 ELSE bp2.shipping_fees END) FROM bought_product bp2 WHERE bp2.transaction_id = t.id AND bp2.integrated_at IS NOT NULL)
+          +  (SELECT CASE WHEN count(bp2.id) = 0 THEN 0 ELSE sum(bp2.value) + sum(CASE WHEN bp2.shipping_fees IS NULL THEN 0 ELSE bp2.shipping_fees END) END FROM bought_product bp2 WHERE bp2.transaction_id = t.id AND bp2.integrated_at IS NOT NULL)
           != (SELECT CASE WHEN sum(pp.value) IS NULL THEN 0 ELSE sum(pp.value) END FROM Payment pp WHERE pp.transaction_id = t.id)
        ORDER BY t.id ASC");
     $transactions = $st->fetchAll();
