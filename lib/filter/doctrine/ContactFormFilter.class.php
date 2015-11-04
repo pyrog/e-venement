@@ -216,7 +216,7 @@ class ContactFormFilter extends BaseContactFormFilter
     ));
     $this->widgetSchema   ['workspaces_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Workspace',
-      'query' => Doctrine::getTable('Workspace')->createQuery('ws')
+      'query' => $q = Doctrine::getTable('Workspace')->createQuery('ws')
         ->andWhereIn('ws.id', array_keys(sfContext::getInstance()->getUser()->getWorkspacesCredentials())),
       'order_by' => array('name',''),
       'multiple' => true,
@@ -224,9 +224,7 @@ class ContactFormFilter extends BaseContactFormFilter
     $this->validatorSchema['workspaces_list'] = new sfValidatorDoctrineChoice(array(
       'required' => false,
       'model'    => 'Workspace',
-      'query' => Doctrine::getTable('Workspace')->createQuery('ws')
-        ->leftJoin('ws.Users u')
-        ->andWhere('ws.id = ?',sfContext::getInstance()->getUser()->getId()),
+      'query'    => $q,
       'multiple' => true,
     ));
     
