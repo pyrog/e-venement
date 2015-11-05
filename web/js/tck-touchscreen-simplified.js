@@ -46,6 +46,10 @@ $(document).ready(function(){
         Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $('#li_fieldset_simplified .products-types [data-bunch-id]').first().attr('data-bunch-id'), { maxAge: LI.touchscreenSimplifiedCookie.maxAge });
       $('#li_fieldset_simplified .products-types [data-bunch-id="'+Cookie.get(LI.touchscreenSimplifiedCookie.bunch)+'"]').click();
     });
+    
+    // THE CONTACT LINK...
+    $('#li_transaction_field_contact_id').toggleClass('simplified');
+    
     return false;
   });
   
@@ -72,6 +76,9 @@ $(document).ready(function(){
   
   // INIT PAYMENT METHODS FROM A COPY OF STANDARD GUI
   LI.touchscreenSimplifiedLoadPaymentMethods();
+  
+  // AVOID HEAVY SCROLL BARS
+  $('#li_fieldset_simplified .simplified-top-block.content > ul').niceScroll();
 });
 
 LI.touchscreenSimplifiedLoadPaymentMethods = function(){
@@ -236,10 +243,15 @@ LI.touchscreenSimplifiedPrices = function(gauge, data){
   
   // click on a price button
   $(target).find('button').click(function(){
+    var declname;
+    $.each(LI.touchscreenSimplifiedData[$('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-bunch-id')], function(id, pdt){
+      declname = pdt.declinations_name.slice(0,-1); // remove the last char "s"
+    });
+    
     var form = $('#li_transaction_field_price_new form.prices');
     $(form).find('[name="transaction[price_new][price_id]"]').val($(this).val());
     $(form).find('[name="transaction[price_new][declination_id]"]').val($('#li_fieldset_simplified .bunch :checked').val());
-    $(form).find('[name="transaction[price_new][type]"]').val($('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-bunch-id'));
+    $(form).find('[name="transaction[price_new][type]"]').val(declname);
     $(form).submit();
     return false;
   });
@@ -281,12 +293,14 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
     
     break;
   
-  case 'museum':  
+  case 'museum':
   case 'manifestations':
+  case 'store':
     $.each(data, function(id, pdt){
-      $.each(pdt.gauges, function(id, declination){
+      $.each(pdt[pdt.declinations_name], function(id, declination){
         $.each(declination.prices, function(id, price){
-          console.error('Simplified GUI: loading a product...');
+          if ( window.location.hash == '#debug' )
+            console.error('Simplified GUI: loading item #'+pdt.id+' sold/to sell of type '+type+'...');
           
           // clear data & recalculate totals
           $('#li_fieldset_simplified .cart .item.'+type+'[data-product-id="'+pdt.id+'"][data-declination-id="'+declination.id+'"][data-price-id="'+price.id+'"]')
@@ -297,10 +311,21 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
           if ( price.qty <= 0 )
             return;
           
+          if ( window.location.hash == '#debug' )
+            console.error('Simplified GUI: rendering item #'+pdt.id+' sold/to sell of type '+type+'...');
           // if something needs to be displaid, display it one by one
           for ( var i = 0 ; i < price.qty ; i++ )
           {
-            var happens_at = new Date(pdt.happens_at.replace(' ','T'));
+            var name; switch ( type ) {
+            case 'store':
+              name = pdt.name;
+              declname = 'declination';
+              break;
+            default:
+              name = new Date(pdt.happens_at.replace(' ','T')).toLocaleString().replace(/:\d\d( \w+){0,1}$/,'');
+              declname = 'gauge';
+              break;
+            }
             var left = $('<div></div>').addClass('left');
             var right = $('<div></div>').addClass('right');
             $('<li></li>')
@@ -318,7 +343,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               .dblclick(function(){
                 if ( $(this).is('.sold') )
                   return;
-                $('#li_transaction_field_content .bunch[data-bunch-id="'+type+'"] [data-family-id="'+pdt.id+'"] [data-gauge-id="'+declination.id+'"] [data-price-id="'+price.id+'"] .qty.nb .ui-icon-minus')
+                $(str = '#li_transaction_field_content .bunch[data-bunch-id="'+type+'"] [data-family-id="'+pdt.id+'"] [data-'+declname+'-id="'+declination.id+'"] [data-price-id="'+price.id+'"] .qty.nb .ui-icon-minus')
                   .click();
                 $(this).remove();
                 LI.touchscreenSimplifiedTotal();
@@ -328,7 +353,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
             left
               .append($('<a></a>').prop('href', pdt.category_url).text(pdt.category).addClass('category').prop('title', pdt.category))
               .append(' ')
-              .append($('<a></a>').prop('href', pdt.product_url).text(happens_at.toLocaleString().replace(/:\d\d( \w+){0,1}$/,'')).addClass('product'))
+              .append($('<a></a>').prop('href', pdt.product_url).text(name).addClass('product'))
               .append(' ')
               .append($('<span></span>').text(price.name).addClass('price'))
               .append(' ')

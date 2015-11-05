@@ -1,5 +1,6 @@
 <?php use_stylesheet('tck-touchscreen-simplified') ?>
 <?php use_javascript('tck-touchscreen-simplified') ?>
+<?php use_javascript('jquery.nicescroll.min.js') ?>
 <?php use_helper('Number') ?>
 
 <form action="#" method="get">
@@ -9,7 +10,7 @@
       ><li data-bunch-id="museum"><?php echo __('Museum') ?></li
       ><li data-bunch-id="store"><?php echo __('Store', null, 'menu') ?></li>
     </ul>
-    <div class="contact ui-widget-content ui-corner-all">Contact</div>
+    <div class="contact ui-widget-content ui-corner-all"></div>
   </div>
   <div class="content simplified-top-block">
     <ul class="bunch manifestations ui-widget-content ui-corner-all" data-bunch-id="manifestations">
