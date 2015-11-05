@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Print and deliver</source>
+        <target>Imprimer et délivrer</target>
+      </trans-unit>
+      <trans-unit>
         <source>Switch to simplified GUI / back from ...</source>
         <target>Basculter vers l'interface simplifiée / Revenir de ...</target>
       </trans-unit>

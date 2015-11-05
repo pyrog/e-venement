@@ -79,6 +79,12 @@ $(document).ready(function(){
   
   // AVOID HEAVY SCROLL BARS
   $('#li_fieldset_simplified .simplified-top-block.content > ul').niceScroll();
+  
+  // USING THE NORMAL "PRINT" BUTTON IF CLICKING ON THE SIMPLIFIED ONE
+  $('#li_fieldset_simplified .cart .print').click(function(){
+    $('#li_fieldset_content .bunch').find('.print, .store-print').submit();
+    setTimeout(function(){ $('#transition .close').click(); },1000);
+  });
 });
 
 LI.touchscreenSimplifiedLoadPaymentMethods = function(){
@@ -339,7 +345,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               .attr('data-value', price.pit + price['extra-taxes'])
               .append(left)
               .append(right)
-              .insertBefore($('#li_fieldset_simplified .cart .total'))
+              .insertAfter($('#li_fieldset_simplified .cart .topay'))
               .dblclick(function(){
                 if ( $(this).is('.sold') )
                   return;
@@ -351,9 +357,15 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               })
             ;
             left
+              /*
               .append($('<a></a>').prop('href', pdt.category_url).text(pdt.category).addClass('category').prop('title', pdt.category))
               .append(' ')
               .append($('<a></a>').prop('href', pdt.product_url).text(name).addClass('product'))
+              .append(' ')
+              */
+              .append($('<span></span>').text(pdt.category).addClass('category').prop('title', pdt.category))
+              .append(' ')
+              .append($('<span></span>').text(name).addClass('product'))
               .append(' ')
               .append($('<span></span>').text(price.name).addClass('price'))
               .append(' ')

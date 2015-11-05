@@ -21,6 +21,12 @@
       <li class="value"><input type="number" name="simplified[payment_value]" value="" placeholder="<?php echo __('Value') ?>" /></li>
     </ul>
     <ul class="cart ui-widget-content ui-corner-all">
+      <li class="print end">
+        <button name="s" class="ui-widget-content ui-state-default ui-corner-all ui-widget fg-button fg-button-icon-left">
+          <?php echo __('Print and deliver') ?>
+          <span class="ui-icon ui-icon-print"></span>
+        </button>
+       </li>
       <li class="total end">
         <div class="left">
           <span class="category"><?php echo __('To pay') ?></span>

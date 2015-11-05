@@ -34,7 +34,7 @@
 #li_fieldset_simplified .cart li:not(.end):not(.sold):hover { background-color: rgba(255,237,189,0.6); }
 #li_fieldset_simplified .cart li.sold { background-color: #E8E8E8; }
 #li_fieldset_simplified .cart .category { font-weight: bold; display: block; }
-#li_fieldset_simplified .cart a { display: block; text-decoration: none; }
+#li_fieldset_simplified .cart .item a, #li_fieldset_simplified .cart .item span { display: block; text-decoration: none; }
 #li_fieldset_simplified .cart .qty, #li_fieldset_simplified .cart .product, #li_fieldset_simplified .cart .price, #li_fieldset_simplified .cart .value { font-size: 90%; }
 #li_fieldset_simplified .cart .declination, #li_fieldset_simplified .cart .extra-taxes { font-size: 60%; }
 #li_fieldset_simplified .cart .extra-taxes { display: block; }
@@ -48,6 +48,7 @@
 #li_fieldset_simplified .cart .paid .payment form a { font-size: 0; display: block; width: 18px; height: 18px; margin-bottom: -2px; }
 #li_fieldset_simplified .cart .paid .payment:hover { background-color: rgba(255,237,189,0.6); border-radius: 3px; }
 #li_fieldset_simplified .cart .total .qty { display: none; }
+#li_fieldset_simplified .cart .print button { width: 100%; min-height: 3em; font-size: 85%; }
 
 #sf_admin_content .li_fieldset #li_transaction_field_contact_id.simplified { position: absolute; z-index: 11; left: 493px; top: 1px; width: 466px; height: 44px; border-bottom: 1px solid rgb(166, 201, 226); border-radius: 5px; font-size: 150%; padding-top: 12px; }
 #li_fieldset_simplified .header .contact { display: none; }
