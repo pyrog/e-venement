@@ -8,10 +8,10 @@
   <th class="postalcode"><span><?php echo __('Postal code', null, 'li_accounting') ?></span></th>
   <th class="city"><span><?php echo __('City', null, 'li_accounting') ?></span></th>
   <th class="price"><span><?php echo __('Price', null, 'li_accounting') ?></span></th>
-  <th class="up"><span><?php echo __('UP Net', null, 'li_accounting') ?></span></th>
+  <th class="up"><span class="inline-modifiable"><?php echo __('UP Net', null, 'li_accounting') ?></span></th>
   <th class="qty"><span><?php echo __('Qty', null, 'li_accounting') ?></span></th>
   <th class="seats"><span><?php echo __('Seats', null, 'li_accounting') ?></span></th>
-  <th class="extra-taxes"><span><?php echo __('Taxes', null, 'li_accounting') ?></span></th>
+  <th class="extra-taxes"><span class="inline-modifiable"><?php echo __('Taxes', null, 'li_accounting') ?></span></th>
   <th class="pit"><span><?php echo __('TIP', null, 'li_accounting') ?></span></th>
   <th class="vat"><span><?php echo __('VAT', null, 'li_accounting') ?></span></th>
   <th class="tep"><span><?php echo __('PET', null, 'li_accounting') ?></span></th>

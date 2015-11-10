@@ -4,7 +4,8 @@
 
 <form action="<?php echo url_for('ticket/print?id='.$transaction->id) ?>"
       method="get"
-      target="_blank" class="print noajax board-alpha"
+      target="_blank"
+      class="print noajax board-alpha"
       onsubmit="javascript: return LI.printTickets(this,<?php echo sfConfig::get('app_transaction_force_payment_before_printing',false) ? 'true' : 'false' ?>);"
       autocomplete="off">
   <p>

@@ -122,3 +122,5 @@ body .sf_admin_td_actions li { display: inline-block; float: none; }
     display: block;
     margin-top: -20px;
 }
+
+.app-default .sf_admin_form_row { clear: both; }

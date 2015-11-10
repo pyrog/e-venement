@@ -30,7 +30,7 @@
       <li class="menu-event">
         <ul class="second">
           <?php if ( $sf_user->hasCredential('event-event') ): ?>
-          <li><a href="<?php echo cross_app_url_for('museum','event') ?>"><?php echo __('Exhibitions',array(),'menu') ?></a></li>
+          <li><a href="<?php echo cross_app_url_for('museum','event') ?>"><?php echo __('Visits',array(),'menu') ?></a></li>
           <?php endif ?>
           <?php /*
           <?php if ( $sf_user->hasCredential('event-calendar-gui') ): ?>

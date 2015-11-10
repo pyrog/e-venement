@@ -1379,16 +1379,16 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Nouvel événement</target>
       </trans-unit>
       <trans-unit>
-        <source>New exhibition</source>
-        <target>Nouvelle exposition</target>
+        <source>New visit</source>
+        <target>Nouvelle visite</target>
       </trans-unit>
       <trans-unit>
-        <source>Exhibition</source>
-        <target>Exposition</target>
+        <source>Visit</source>
+        <target>Visite</target>
       </trans-unit>
       <trans-unit>
-        <source>Meta exhibition</source>
-        <target>Méta-exposition</target>
+        <source>Meta visit</source>
+        <target>Méta-visite</target>
       </trans-unit>
       <trans-unit>
         <source>New Event category</source>
@@ -1635,8 +1635,8 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Fiche du lieu</target>
       </trans-unit>
       <trans-unit>
-        <source>List of exhibitions</source>
-        <target>Liste des expositions</target>
+        <source>List of visits</source>
+        <target>Liste des visites</target>
       </trans-unit>
       <trans-unit>
         <source>List of events</source>
@@ -1735,8 +1735,8 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Enregistre votre événement avant d'ouvrir une nouvelle manifestation</target>
       </trans-unit>
       <trans-unit>
-        <source>Records your exhibition before it opens a new period screen</source>
-        <target>Enregistre votre exposition avant d'ouvrir une nouvelle période</target>
+        <source>Records your visit before it opens a new period screen</source>
+        <target>Enregistre votre visite avant d'ouvrir une nouvelle période</target>
       </trans-unit>
       <trans-unit id="102">
         <source>New manifestation</source>
@@ -1827,8 +1827,8 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Pas d'organisateur enregistré</target>
       </trans-unit>
       <trans-unit>
-        <source>Exhibition's Periods List</source>
-        <target>Liste des périodes de l'exposition</target>
+        <source>Visit's Periods List</source>
+        <target>Liste des périodes de visite</target>
       </trans-unit>
       <trans-unit id="124">
         <source>Event's Manifestations List</source>

@@ -20,6 +20,9 @@
 *
 ***********************************************************************************/
 
+  if ( LI == undefined )
+    var LI = {};
+  
   $(document).ready(function(){
     $('#li_transaction_field_content .new-family select').focusout(function(){
       LI.addFamilies(this);
@@ -50,6 +53,11 @@
             data: { with_colors: true, q: $(elt).val(), except: except, max: select.attr('data-content-qty'), 'keep-order': true },
             method: 'get',
             success: function(data){
+              if ( LI.touchscreenOnNewFamilyLoad != undefined )
+              $.each(LI.touchscreenOnNewFamilyLoad, function(i, fct){
+                fct(data, $(select).closest('form'));
+              });
+              
               select.html('');
               $.each(data, function(id, manif){
                 $('<option></option>').val(manif.id)

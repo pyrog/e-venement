@@ -157,6 +157,22 @@
       
       // retrictive parameters
       $pid = array();
+      if ( !$request->getParameter('manifestation_id',false) && !$request->getParameter('gauge_id', false) && $request->hasParameter('simplified') )
+      {
+        // here we add the next manifestations if nothing is asked and the GUI is "simplified"
+        $conf = sfConfig::get('app_transaction_manifestations', array());
+        if (!( isset($conf['max_display']) && is_int($conf['max_display']) ))
+          $conf['max_display'] = 20;
+        
+        $q2 = Doctrine::getTable('Manifestation')->createQuery('m')
+          ->select('m.id')
+          ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW()")
+          ->limit($conf['max_display']);
+        $ids = array();
+        foreach ( $q2->execute() as $manif )
+          $ids[] = $manif->id;
+        $request->setParameter('manifestation_id', $ids);
+      }
       if ( $request->getParameter('manifestation_id',false) )
       {
         $pid = is_array($request->getParameter('manifestation_id'))
@@ -170,12 +186,29 @@
       }
       if ( $gid = $request->getParameter('gauge_id', false) )
         $q->andWhere('(g.id = ? OR ng.id = ? AND g.workspace_id = ng.workspace_id)',array($gid, $gid));
-    
+      
     break;
     case 'store':
       $subobj = 'BoughtProduct';
       $product_id = 'Declination->product_id';
       
+      if ( !$request->getParameter('id',false) && $request->hasParameter('simplified') )
+      {
+        // here we add the next manifestations if nothing is asked and the GUI is "simplified"
+        $conf = sfConfig::get('app_transaction_store', array());
+        if (!( isset($conf['max_display']) && is_int($conf['max_display']) ))
+          $conf['max_display'] = 20;
+        
+        $q2 = Doctrine::getTable('ProductDeclination')->createQuery('pd')
+          ->select('pd.id')
+          ->orderBy("(SELECT count(bp.id) FROM BoughtProduct bp WHERE bp.product_declination_id = pd.id AND bp.integrated_at > NOW() - '2 weeks'::interval) DESC, pd.created_at DESC")
+          ->limit($conf['max_display'])
+        ;
+        $ids = array();
+        foreach ( $q2->execute() as $pd )
+          $ids[] = $pd->id;
+        $request->setParameter('product_id', $ids);
+      }
       if ( $request->getParameter('id',false) )
       {
         $q->andWhereIn('pdt.meta_event_id IS NULL OR pdt.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()));
@@ -197,7 +230,14 @@
         }
       }
       else
+      {
         $q = Doctrine::getTable('Product')->createQuery('pdt');
+        if ( $pid = $request->getParameter('product_id', array()) )
+        {
+          $pid = is_array($pid) ? $pid : array($pid);
+          $q->andWhereIn('pdt.id', $pid);
+        }
+      }
       
       // retrictive parameters
       $pid = array();

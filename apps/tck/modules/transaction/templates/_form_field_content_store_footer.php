@@ -4,6 +4,7 @@
   'method' => 'get',
   'target' => '_blank',
   'autocomplete' => 'off',
+  'class' => 'store-print',
 )) ?>
   <?php echo $form['store']->integrate ?>
   <input class="ui-widget-content ui-state-default ui-corner-all ui-widget fg-button" type="submit" value="<?php echo __('Products delivered') ?>" name="integrate"></input>

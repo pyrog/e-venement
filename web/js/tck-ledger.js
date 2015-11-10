@@ -48,7 +48,7 @@ $(document).ready(function(){
   }).click().html('+');
   
   // sales ledger / manifs
-  $('#ledger-products .declination .see-more a, #ledger-events .manif .see-more a, #ledger-exhibitions .manif .see-more a').unbind().click(function(){
+  $('#ledger-products .declination .see-more a, #ledger-events .manif .see-more a, #ledger-visits .manif .see-more a').unbind().click(function(){
     var line = /#(\w[\w-]+-\w+)$/.exec($(this).attr('href'))[1];
     if ( $(this).html() == '+' )
       $(this).closest('table').find('.'+line).fadeIn();
@@ -58,7 +58,7 @@ $(document).ready(function(){
   });
   
   // sales ledger / events
-  var links = $('#ledger-products .product .see-more a, #ledger-events .event .see-more a, #ledger-exhibitions .event .see-more a').unbind().click(function(){
+  var links = $('#ledger-products .product .see-more a, #ledger-events .event .see-more a, #ledger-visits .event .see-more a').unbind().click(function(){
     var line = /#([\w-]+)$/.exec($(this).prop('href'));
     if ( !line )
       return;
@@ -82,10 +82,10 @@ $(document).ready(function(){
   }).click();
   
   // hover on rows
-  $('#ledger-events tbody tr, #ledger-products tbody tr, #ledger-exhibitions tbody tr').mouseenter(function(){
+  $('#ledger-events tbody tr, #ledger-products tbody tr, #ledger-visits tbody tr').mouseenter(function(){
     $(this).addClass('ui-state-hover');
   });
-  $('#ledger-events tbody tr, #ledger-products tbody tr, #ledger-exhibitions tbody tr').mouseleave(function(){
+  $('#ledger-events tbody tr, #ledger-products tbody tr, #ledger-visits tbody tr').mouseleave(function(){
     $(this).removeClass('ui-state-hover');
   });
   

@@ -31,7 +31,7 @@ generator:
       filter:
         display:
           Price: [name, description, value, online, hide, member_card_linked]
-          Links: [manifestations_list, gauges_list, member_cards_list, products_list, linked_products_list, taxes_list]
+          Links: [manifestations_list, member_cards_list, products_list, linked_products_list, taxes_list]
           Permissions: [users_list, workspaces_list]
       form:
         display:

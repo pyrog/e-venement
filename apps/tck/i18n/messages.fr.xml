@@ -5,6 +5,14 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Print and deliver</source>
+        <target>Imprimer et délivrer</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Switch to simplified GUI / back from ...</source>
+        <target>Basculter vers l'interface simplifiée / Revenir de ...</target>
+      </trans-unit>
+      <trans-unit>
         <source>Resend confirmation email</source>
         <target>Renvoyer l'email de confirmation</target>
       </trans-unit>
@@ -25,8 +33,8 @@
         <target>Retour à la période</target>
       </trans-unit>
       <trans-unit>
-        <source>Exhibition</source>
-        <target>Exposition</target>
+        <source>Visit</source>
+        <target>Visite</target>
       </trans-unit>
       <trans-unit>
         <source>State</source>
@@ -1001,8 +1009,8 @@
         <target>[1]Bordereau de manifestation|(1,+Inf]Bordereau de manifestations</target>
       </trans-unit>
       <trans-unit>
-        <source>[1]Exhibition period ledger|(1,+Inf]Exhibition period ledger</source>
-        <target>[1]Bordereau de période d'exposition|(1,+Inf]Bordereau de périodes d'exposition</target>
+        <source>[1]Visit period ledger|(1,+Inf]Visit periods ledger</source>
+        <target>[1]Bordereau d'une période de visite|(1,+Inf]Bordereau des périodes de visite</target>
       </trans-unit>
       <trans-unit>
         <source>Concerned manifestations</source>

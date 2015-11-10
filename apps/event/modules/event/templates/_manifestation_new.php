@@ -26,7 +26,7 @@
   if ( $sf_context->getConfiguration()->getApplication() == 'museum' )
   {
     $txt = array(
-      'title' => __('Records your exhibition before it opens a new period screen'),
+      'title' => __('Records your visit before it opens a new period screen'),
       'new'   => __('New period'),
     );
   }
