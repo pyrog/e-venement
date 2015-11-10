@@ -161,7 +161,7 @@ class Ticket extends PluginTicket
       <p class="description"><span>%s</span> <span>%s</span></p>
       <p class="location"><span>%s:</span> <span>%s</span></p>
       <p class="address"><span>%s:</span> <span>%s</span></p>
-      <p class="gauge"><span>%s:</span> <span>%s</span></p>
+      <p class="gauge"><span>%s:</span> <span>%s</span> <span class="seating">%s</span></p>
       <p class="date"><span>%s:</span> <span>%s</span></p>
       <p class="price"><span>%s:</span> <span>%s</span> <span>%s</span></p>
       <p class="seat"><span>%s</span><span>%s</span></p>
@@ -182,7 +182,7 @@ EOF
       , __('Venue', null, 'li_tickets_email'), (string)$this->Manifestation->Location
       , __('Address', null, 'li_tickets_email'), (string)$this->Manifestation->Location->full_address
       //, __('Category', null, 'li_tickets_email'), $this->Gauge->Workspace->on_ticket ? $this->Gauge->Workspace->on_ticket : (string)$this->Gauge
-      , __('Category', null, 'li_tickets_email'), $this->category
+      , __('Category', null, 'li_tickets_email'), $this->category, !$this->seat_id && !$this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Free seating', null, 'li_tickets_email') : __('Seated', null, 'li_tickets_email')
       , __('Date', null, 'li_tickets_email'), $this->Manifestation->getFormattedDate()
       , __('Price', null, 'li_tickets_email'), $this->price_name, format_currency($this->value,'€')
       , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : ($this->Manifestation->voucherized ? __('Voucher', null, 'li_ticket_email') : ''), $this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : __('Free seating', null, 'li_tickets_email'))

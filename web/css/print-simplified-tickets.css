@@ -41,6 +41,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 .cmd-element .desc .comment, .cmd-element.product .contact { top: 257.5mm; white-space: normal; }
 .cmd-element .desc .comment { font-size: 10pt; }
 .cmd-element .comment table, .cmd-element.product .contact table { width: 63mm; }
+.cmd-element .comment table { display: inline-table; }
 .cmd-element .comment td, .cmd-element.product .contact td { vertical-align: middle; height: 13.5mm; width: 63mm; }
 .cmd-element .comment div, .cmd-element.product .contact div { position: static; max-height: 13.5mm; overflow: hidden; width: 100%; white-space: normal; }
 .cmd-element .desc .price { top: 251.5mm; font-size: 5pt; overflow: visible; }
@@ -72,7 +73,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 /* for pdf rendering */
 .pdf .cmd-element * { line-height: 0.9; }
 .pdf .cmd-element .event table { margin-top: -3mm; }
-.cmd-element .desc .comment table { text-align: center; width: 100%; }
+.pdf .cmd-element .desc .comment table { margin-left: 110px; display: table; }
 .pdf .cmd-element .bc span, .pdf .cmd-element .bc a { margin-top: 2.5mm; margin-left: -16.2mm; margin-top: -26mm; padding: 20mm; }
 .pdf .cmd-element .gauge { margin-top: -1mm; }
 .pdf .cmd-element .seat { padding-top: 1mm; }
@@ -83,7 +84,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 /* for debug purposes, remove "debug" */
 dbg#content { border: 1px solid yellow; height: 95%; }
 dbg.cmd-element { border: 1px solid purple; }
-.cmd-element .bc span { border: 1px solid green; }
+dbg.cmd-element .bc span { border: 1px solid green; }
 dbg.cmd-element .desc p,
 dbg.cmd-element .desc div { border: 1px solid red; }
 dbg.cmd-element .event { border: 1px solid green; }
@@ -92,5 +93,6 @@ dbg.cmd-element .price span { border: 1px solid orange; }
 dbg.cmd-element .comment td { border: 1px solid blue; }
 dbg.cmd-element .comment { border: 1px solid blue; }
 dbg.cmd-element .comment td div { border: 1px solid lightblue; }
+dbg.cmd-element .contact .guest { border: 1px solid red; }
 
 /** fonts **/

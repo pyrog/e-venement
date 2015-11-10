@@ -9,6 +9,10 @@
         <target>Placement libre</target>
       </trans-unit>
       <trans-unit>
+        <source>Seated</source>
+        <target>Placement numéroté</target>
+      </trans-unit>
+      <trans-unit>
         <source>at %%date%%</source>
         <target>le %%date%%</target>
       </trans-unit>
