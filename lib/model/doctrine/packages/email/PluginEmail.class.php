@@ -20,6 +20,7 @@ abstract class PluginEmail extends BaseEmail
   protected $parts        = array('text' => NULL, 'html' => NULL);
   protected $embedded_images = 0;
   protected $message = NULL;
+  protected $matcher = array();
   
   protected function isNewsletter()
   {
@@ -37,27 +38,33 @@ abstract class PluginEmail extends BaseEmail
     
     // sending one by one to linked ...
     // contacts
+    $this->matcher = array();
     foreach ( $this->Contacts as $contact )
     if ( $contact->email && !($this->isNewsletter() && $contact->email_no_newsletter) )
+    {
       $this->to[] = trim($contact->email);
+      $this->matcher[count($this->to)-1] = $contact;
+    }
     // professionals
     foreach ( $this->Professionals as $pro )
-    if ( $pro->contact_email && !($this->isNewsletter() && $pro->contact_email_no_newsletter) )
-      $this->to[] = trim($pro->contact_email);
-    else if ( $pro->Organism->email && !($this->isNewsletter() && $pro->Organism->email_no_newsletter) )
-      $this->to[] = trim($pro->Organism->email);
-    else if ( $pro->Contact->email && !($this->isNewsletter() && $pro->Contact->email_no_newsletter) )
-      $this->to[] = trim($pro->Contact->email);
+    {
+      if ( $pro->contact_email && !($this->isNewsletter() && $pro->contact_email_no_newsletter) )
+        $this->to[] = trim($pro->contact_email);
+      else if ( $pro->Organism->email && !($this->isNewsletter() && $pro->Organism->email_no_newsletter) )
+        $this->to[] = trim($pro->Organism->email);
+      else if ( $pro->Contact->email && !($this->isNewsletter() && $pro->Contact->email_no_newsletter) )
+        $this->to[] = trim($pro->Contact->email);
+      $this->matcher[count($this->to)-1] = $pro;
+    }
     // organisms
     foreach ( $this->Organisms as $organism )
     if ( $organism->email && !($this->isNewsletter() && $organism->email_no_newsletter) )
+    {
       $this->to[] = trim($organism->email);
+      $this->matcher[count($this->to)-1] = $organism;
+    }
     
     // concatenate addresses
-    /*
-    if ( $this->field_to )
-      $this->to = array_merge($this->to,explode(',',str_replace(' ','',$this->field_to)));
-    */
     $this->field_to .= implode(', ',$this->to);
     return $this->raw_send(null,$this->nospool);
   }
@@ -109,6 +116,7 @@ abstract class PluginEmail extends BaseEmail
       $this->message->setContentType('multipart/related');
     
     $this->setMailer();
+    $this->mailer->setMatcher($this->matcher);
     
     return $immediatly === true
       ? $this->mailer->sendNextImmediately()->send($this->message)
@@ -202,7 +210,6 @@ abstract class PluginEmail extends BaseEmail
       ->attach($this->parts['html'] = Swift_MimePart::newInstance($h2t->get_html(), 'text/html'))
       ->attach($this->parts['text'] = Swift_MimePart::newInstance($h2t->get_text(), 'text/plain'))
     ;
-    
     return $this;
   }
   

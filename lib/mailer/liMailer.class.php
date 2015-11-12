@@ -25,16 +25,55 @@
 class liMailer extends sfMailer
 {
   protected $email = NULL;
+  protected $matcher = NULL;
   
   public function send(Swift_Mime_Message $message, &$failedRecipients = NULL)
   {
+    $cpt = 0;
     if ( $this->email instanceof Email && count($to = $message->getTo()) == 1 )
     foreach ( $to as $address => $name )
     {
-      $content = str_replace('%%EMAILADDRESS%%', is_int($address) ? $name : $address, $this->email->getFormattedContent());
+      $fields = array(
+        'title'       => '',
+        'firstname'   => '',
+        'name'        => '',
+        'address'     => '',
+        'postalcode'  => '',
+        'city'        => '',
+        'country'     => '',
+        'function'    => '',
+        'organism'    => '',
+      );
+      switch ( get_class($this->matcher[$cpt]) ) {
+        case 'Contact':
+          foreach ( array('firstname', 'title') as $field )
+            $fields[$field]   = $this->matcher[$cpt]->$field;
+        case 'Organism':
+          foreach ( array('name', 'address', 'postalcode', 'city', 'country') as $field )
+            $fields[$field]   = $this->matcher[$cpt]->$field;
+        break;
+        case 'Professional':
+          foreach ( array('firstname', 'title', 'name') as $field )
+            $fields[$field]   = $this->matcher[$cpt]->Contact->$field;
+          foreach ( array('address', 'postalcode', 'city', 'country', 'organism') as $field )
+            $fields[$fields]  = $this->matcher[$cpt]->Organism->$field;
+          $fields['function'] = $this->matcher[$cpt]->name ? $this->matcher[$cpt]->name : (string)$this->matcher[$cpt]->Category;
+        break;
+      }
+      
+      $replace = array('%%EMAILADDRESS%%'  => is_int($address) ? $name : $address);
+      foreach ( $fields as $field => $data )
+        $replace['%%'.strtoupper($field).'%%'] = $data;
+      $content = str_replace(
+        array_keys($replace),
+        array_values($replace),
+        $this->email->getFormattedContent()
+      );
       $message = $this->email->removePart('text')->removePart('html')
         ->addParts($content)
         ->getMessage();
+      
+      $cpt++;
     }
     return parent::send($message);
   }
@@ -42,6 +81,20 @@ class liMailer extends sfMailer
   {
     $this->email = $email;
     return $this;
+  }
+  /**
+   * @function setMatcher
+   *
+   * @param $array    array   $id in the $message->to array => corresponding Contact|Professional|Organism
+   **/
+  public function setMatcher(array $array)
+  {
+    $this->matcher = $array;
+    return $this;
+  }
+  public function getMatcher()
+  {
+    return $this->matcher;
   }
   public function batchSend(Swift_Message $message)
   {
