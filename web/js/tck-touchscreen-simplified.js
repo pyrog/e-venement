@@ -273,6 +273,10 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
     $('#li_fieldset_simplified .cart .paid .payment').remove();
     $('#li_fieldset_simplified .cart .paid .value').html(LI.format_currency(0)).attr('data-value', 0);
     $.each(data, function(id, payment){
+      // do not display payments from other transcations
+      if ( payment.translinked )
+        return;
+      
       $('<span></span>')
         .attr('data-id', payment.id)
         .addClass('payment')
