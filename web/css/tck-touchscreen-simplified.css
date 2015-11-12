@@ -32,7 +32,8 @@
 
 #li_fieldset_simplified .cart li { padding: 3px; margin: 3px; border: 1px solid #A6C9E2; border-radius: 3px; text-align: left; -moz-user-select: none; user-select: none; cursor: default; }
 #li_fieldset_simplified .cart li:not(.end):not(.sold):hover { background-color: rgba(255,237,189,0.6); }
-#li_fieldset_simplified .cart li.sold { background-color: #E8E8E8; }
+#li_fieldset_simplified .cart .item.sold { background-color: #E8E8E8; }
+#li_fieldset_simplified .cart .item.cancelled { border-style: dashed; opacity: 0.5; }
 #li_fieldset_simplified .cart .category { font-weight: bold; display: block; }
 #li_fieldset_simplified .cart .item a, #li_fieldset_simplified .cart .item span { display: block; text-decoration: none; }
 #li_fieldset_simplified .cart .qty, #li_fieldset_simplified .cart .product, #li_fieldset_simplified .cart .price, #li_fieldset_simplified .cart .value { font-size: 90%; }

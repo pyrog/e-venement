@@ -304,24 +304,33 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
   case 'store':
     $.each(data, function(id, pdt){
       $.each(pdt[pdt.declinations_name], function(id, declination){
+        // cancellations preprocessing
+        var cancelling = [];
+        $.each(declination.prices, function(id, price){
+          if ( price.state != 'cancelling' )
+            return;
+          cancelling.push(price);
+          delete declination.prices[id];
+        });
+        
+        // normal tickets
         $.each(declination.prices, function(id, price){
           if ( window.location.hash == '#debug' )
             console.error('Simplified GUI: loading item #'+pdt.id+' sold/to sell of type '+type+'...');
           
           // clear data & recalculate totals
-          $('#li_fieldset_simplified .cart .item.'+type+'[data-product-id="'+pdt.id+'"][data-declination-id="'+declination.id+'"][data-price-id="'+price.id+'"]')
+          $('#li_fieldset_simplified .cart .item.'+type+'[data-product-id="'+pdt.id+'"][data-declination-id="'+declination.id+'"][data-price-id="'+price.id+'"][data-state="'+price.state+'"]')
             .remove();
           LI.touchscreenSimplifiedTotal();
           
           // if nothing has to be displaid, return
-          if ( price.qty <= 0 )
+          if ( price.qty == 0 )
             return;
           
           if ( window.location.hash == '#debug' )
-            console.error('Simplified GUI: rendering item #'+pdt.id+' sold/to sell of type '+type+'...');
+            console.error('Simplified GUI: rendering item #'+pdt.id+' sold/to sell of type '+type+' with ids: '+price.ids.join()+'.');
           // if something needs to be displaid, display it one by one
-          for ( var i = 0 ; i < price.qty ; i++ )
-          {
+          $.each(price.ids, function(i, pdtid){
             var name; switch ( type ) {
             case 'store':
               name = pdt.name;
@@ -341,8 +350,10 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               .attr('data-product-id', pdt.id)
               .attr('data-declination-id', declination.id)
               .attr('data-price-id', price.id)
+              .attr('data-state', price.state)
               .attr('data-qty', price.qty)
-              .attr('data-value', price.pit + price['extra-taxes'])
+              .attr('data-value', (price.pit + price['extra-taxes']) / price.qty)
+              .prop('title', '#'+pdtid+(price.numerotation[i] ? ' → '+price.numerotation[i] : ''))
               .append(left)
               .append(right)
               .insertAfter($('#li_fieldset_simplified .cart .topay'))
@@ -376,7 +387,13 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               .append(' ')
               .append($('<span></span>').attr('data-extra-taxes', price['extra-taxes']/price.qty).html(LI.format_currency(price['extra-taxes'])).addClass('extra-taxes'))
             ;
-          }
+          });
+        });
+        
+        // cancelling post-processing
+        $.each(cancelling, function(i, price){
+          $(str = '#li_fieldset_simplified .cart .item.'+type+'[data-price-id="'+price.id+'"][data-declination-id="'+declination.id+'"][data-product-id="'+pdt.id+'"][data-value="'+(price.pit+price['extra-taxes'])/price.qty+'"]:not([data-state=asked]):not(.cancelled):first')
+            .addClass('cancelled');
         });
       });
     });

@@ -1,5 +1,5 @@
-<?php use_stylesheet('tck-touchscreen-simplified') ?>
-<?php use_javascript('tck-touchscreen-simplified') ?>
+<?php use_stylesheet('tck-touchscreen-simplified?'.date('Ymd')) ?>
+<?php use_javascript('tck-touchscreen-simplified?'.date('Ymd')) ?>
 <?php use_javascript('jquery.nicescroll.min.js') ?>
 <?php use_helper('Number') ?>
 
