@@ -11,6 +11,13 @@ body.sf_fieldset_spectators #more, body.sf_fieldset_tickets #more
 #sf_admin_form_tab_menu .ui-tabs-panel.ui-widget-content { border-width: 0; }
 #content .sf_admin_form table td { line-height: normal; }
 
+#content .ui-tabs-vertical .ui-tabs-panel { width: calc(100% - 50px); }
+#content .ui-tabs-vertical .ui-tabs-panel .tickets { white-space: nowrap; }
+#content .ui-tabs-vertical .ui-tabs-panel table { font-size: 80%; }
+#content .ui-tabs-vertical .ui-tabs-panel a { text-decoration: none; }
+
+#sf_fieldset_spectators .accounting { display: none; }
+
 form.control, .ticket-ids, .tab-export, .tab-print, .ui-tabs-vertical .ui-tabs-nav { display: none; }
 #sfWebDebug, body #jappix_mini { display: none !important; }
 
