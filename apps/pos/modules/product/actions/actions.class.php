@@ -177,7 +177,7 @@ class productActions extends autoProductActions
     }
     
     $charset = sfConfig::get('software_internals_charset');
-    $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q'));
+    $search  = iconv($charset['db'],$charset['ascii'],strtolower($request->getParameter('q')));
     
     $q = Doctrine::getTable('Product')->createQuery('pdt')
       ->limit($request->getParameter('limit', $request->getParameter('max', 10)))
