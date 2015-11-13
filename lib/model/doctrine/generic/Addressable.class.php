@@ -13,9 +13,9 @@
  */
 class Addressable extends PluginAddressable
 {
-  public function setUp()
+  public function construct()
   {
-    parent::setUp();
+    parent::construct();
     $this->_table->getTemplate('Doctrine_Template_Searchable')
       ->getPlugin()
       ->setOption('analyzer',new MySearchAnalyzer());

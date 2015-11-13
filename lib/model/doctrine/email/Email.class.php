@@ -17,9 +17,9 @@ class Email extends PluginEmail
   protected $type         = 'Email';
   protected $dispatcher_params = array();
   
-  public function setUp()
+  public function construct()
   {
-    parent::setUp();
+    parent::construct();
     $this->_table->getTemplate('Doctrine_Template_Searchable')
       ->getPlugin()
       ->setOption('analyzer',new MySearchAnalyzer());
