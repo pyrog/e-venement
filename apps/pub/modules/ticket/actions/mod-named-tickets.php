@@ -201,7 +201,7 @@
       $event['direct_contact'] = false;
     $this->dispatcher->notify($event);
     // the json data
-    $this->data[$ticket->manifestation_id.' '.$ticket->Seat] = array(
+    $this->data[$ticket->manifestation_id.' '.$ticket->Seat.' '.$ticket->id] = array(
       'id'                => $ticket->id,
       'seat_name'         => (string)$ticket->Seat,
       'seat_id'           => $ticket->seat_id,
