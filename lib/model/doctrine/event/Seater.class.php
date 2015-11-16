@@ -67,13 +67,17 @@ class Seater
     
     // Holds
     if ( $this->hold instanceof Hold )
+    {
       $q->leftJoin("$alias.HoldContents hc")
         ->leftJoin('hc.Hold h')
         ->andWhere('hc.hold_id = ?', $this->hold->id);
+    }
     else
-      $q->leftJoin("$alias.HoldContents hc WITH hc.hold_id NOT IN (SELECT hh.id FROM Hold hh WHERE hh.manifestation_id = g.manifestation_id)")
+    {
+      $q->leftJoin("$alias.HoldContents hc WITH hc.hold_id IN (SELECT hh.id FROM Hold hh WHERE hh.manifestation_id = g.manifestation_id)")
         ->leftJoin('hc.Hold h')
         ->andWhere('hc.hold_id IS NULL');
+    }
     
     // Gauge
     if ( $this->gauge_id )

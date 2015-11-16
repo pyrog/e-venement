@@ -100,7 +100,6 @@
     unset($free_seats[$free_seats->key()]);  // remove the used seat from the free seats pool
     $tickets[] = $ticket;
   }
-
   
   // remove tickets that have no seat_id given
   foreach ( $tickets as $key => $ticket )
@@ -111,7 +110,7 @@
   foreach ( $tickets as $ticket )
     $ticket->addLinkedProducts();
   $tickets->save();
-  
+
   $this->dispatcher->notify($event = new sfEvent($this, 'pub.after_adding_tickets', array()));
   
   // return back the list of real tickets
