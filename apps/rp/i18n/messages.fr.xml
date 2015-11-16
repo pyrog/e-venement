@@ -5,6 +5,14 @@
     <header/>
     <body>
       <trans-unit>
+        <source>%%nb%% member card(s) have been cleaned up</source>
+        <target>%%nb%% carte(s) d'abo ont été nettoyées</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Clean&lt;span class="ui-icon ui-icon-wrench"&gt;&lt;/span&gt;</source>
+        <target>Nettoyer&lt;span class="ui-icon ui-icon-wrench"&gt;&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit>
         <source>Email template List</source>
         <target>Liste des modèles de courriel</target>
       </trans-unit>

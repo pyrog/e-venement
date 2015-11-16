@@ -33,5 +33,14 @@ generator:
           NONE: [name, description, users_list, nb_tickets_mini, _show_url_public]
           Money: [value, product_declination_id, price_id]
           Online: [public_details]
-      edit:    ~
+      edit:
+        actions:
+          _list: ~
+          _delete: ~
+          _clean:
+            action: clean
+            ui-icon: wrench
+            params: confirm=Are you sure? title=pouet
+            credentials: pr-card-mod
+          _save: ~
       new:     ~
