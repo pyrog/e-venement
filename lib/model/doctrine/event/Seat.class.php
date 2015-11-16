@@ -21,13 +21,14 @@ class Seat extends PluginSeat
     **/
   public function isHeldFor(Manifestation $manifestation)
   {
-    $id = array_search($manifestation->id, $this->Holds->toKeyValueArray('id', 'manifestation_id'));
-    if ( $id === false )
+    $hid = array_search($manifestation->id, $this->Holds->toKeyValueArray('id', 'manifestation_id'));
+    if ( $hid === false )
       return false;
     
     foreach ( $this->Holds as $hold )
-    if ( $hold->id == $id )
+    if ( $hold->id === $hid )
       return $hold;
+    
     return true;
   }
 }
