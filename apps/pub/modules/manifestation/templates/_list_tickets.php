@@ -31,6 +31,7 @@
     $max = $gauge->value - $gauge->printed - $gauge->ordered - (!(isset($vel['no_online_limit_from_manifestations']) && $vel['no_online_limit_from_manifestations']) ? $manifestation->online_limit : 0) - (sfConfig::get('project_tickets_count_demands',false) ? $gauge->asked : 0);
     $max = $max > $vel['max_per_manifestation'] ? $vel['max_per_manifestation'] : $max;
   ?>
+  <?php if ( $max > 0 ): ?>
   <li data-gauge-id="<?php echo $gauge->id ?>">
     <span class="gauge-name"><?php echo $manifestation->Gauges->count() > 1 ? $gauge : '' ?></span>
     <?php
@@ -106,5 +107,8 @@
       <?php endif ?>
     <?php endforeach ?></ul>
   </li>
+  <?php else: ?>
+    <li><?php include_partial('show_full') ?></li>
+  <?php endif ?>
 <?php endforeach ?></ul>
 <?php endif ?>
