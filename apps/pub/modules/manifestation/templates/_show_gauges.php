@@ -17,7 +17,7 @@
     - $gauge->ordered
     - (sfConfig::get('app_tickets_count_demands',false) ? $gauge->asked : 0)
     - (isset($vel['no_online_limit_from_manifestations']) && $vel['no_online_limit_from_manifestations'] ? 0 : $manifestation->online_limit)
-  ) > $gauge->Manifestation->online_limit ): ?>
+  ) > 0 ): ?>
     <?php include_partial('show_prices',array('gauge' => $gauge, 'free' => $free, 'form' => $form, 'mcp' => $mcp, )) ?>
     <?php include_partial('show_gauge_picture',array('gauge' => $gauge, 'manifestation' => $manifestation)) ?>
     <?php $available++ ?>
