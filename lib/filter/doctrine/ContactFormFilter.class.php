@@ -144,6 +144,13 @@ class ContactFormFilter extends BaseContactFormFilter
     $this->validatorSchema['not_groups_list'] = $this->validatorSchema['groups_list'];
     
     $years = sfContext::getInstance()->getConfiguration()->yob;
+    $script = <<<EOF
+    <script type="text/javascript"><!-- $(document).ready(function(){
+      $('[name="contact_filters[YOB][from][year]"], [name="contact_filters[YOB][to][year]"]').change(function(){
+        $(this).siblings().val($(this).val() ? 1 : '');
+      });
+    }); --></script>
+EOF;
     $this->widgetSchema   ['YOB'] = new sfWidgetFormFilterDate(array(
       'from_date'=> new sfWidgetFormDate(array(
         'format' => '%year% %month% %day%',
@@ -154,7 +161,7 @@ class ContactFormFilter extends BaseContactFormFilter
         'years'  => $years,
       )),
       'with_empty'=> false,
-      'template'  => '<span class="from_year">'.__('From %from_date%').'</span> <span class="to_year">'.__('to %to_date%').'</span>',
+      'template'  => '<span class="from_year">'.__('From %from_date%').'</span> <span class="to_year">'.__('to %to_date%').'</span>'.$script,
     ));
     $this->validatorSchema['YOB'] = new sfValidatorDateRange(array(
       'from_date' => new sfValidatorDate(array('required' => false,)),
