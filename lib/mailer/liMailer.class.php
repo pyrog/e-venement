@@ -89,6 +89,7 @@ class liMailer extends sfMailer
       $this->cpt++;
     }
     
+    error_log('cpt: '.$this->cpt);
     return parent::send($message);
   }
   public function setEmail(Email $email)
