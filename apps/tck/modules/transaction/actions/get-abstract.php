@@ -155,6 +155,9 @@
           ->leftJoin('n.Gauges ng WITH ng.onsite = TRUE')
         ;
       
+      // museums ?
+      $q->andWhere('e.museum = ?', $type == 'museum');
+      
       // retrictive parameters
       $pid = array();
       if ( !$request->getParameter('manifestation_id',false) && !$request->getParameter('gauge_id', false) && $request->hasParameter('simplified') )
@@ -310,7 +313,9 @@
             ->leftJoin('w.WorkspaceUsers wsu WITH wsu.sf_guard_user_id = ?',$this->getUser()->getId())
             ->andWhere('wsu.sf_guard_user_id IS NOT NULL')
             ->andWhere('m.id = ?',$id)
+            ->andWhere('e.museum = ?', $type == 'museum') // museums
           ;
+      
           if ( $gid = $request->getParameter('gauge_id', false) )
             $q->leftJoin('m.IsNecessaryTo int')
               ->leftJoin('int.Gauges intg')
