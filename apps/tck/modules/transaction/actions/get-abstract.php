@@ -155,9 +155,6 @@
           ->leftJoin('n.Gauges ng WITH ng.onsite = TRUE')
         ;
       
-      // museums ?
-      $q->andWhere('e.museum = ?', $type == 'museum');
-      
       // retrictive parameters
       $pid = array();
       if ( !$request->getParameter('manifestation_id',false) && !$request->getParameter('gauge_id', false) && $request->hasParameter('simplified') )
@@ -170,6 +167,7 @@
         $q2 = Doctrine::getTable('Manifestation')->createQuery('m')
           ->select('m.id')
           ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW()")
+          ->andWhere('e.museum = ?', $type == 'museum') // differenciate museums & manifestations
           ->limit($conf['max_display']);
         $ids = array();
         foreach ( $q2->execute() as $manif )
@@ -313,7 +311,6 @@
             ->leftJoin('w.WorkspaceUsers wsu WITH wsu.sf_guard_user_id = ?',$this->getUser()->getId())
             ->andWhere('wsu.sf_guard_user_id IS NOT NULL')
             ->andWhere('m.id = ?',$id)
-            ->andWhere('e.museum = ?', $type == 'museum') // museums
           ;
       
           if ( $gid = $request->getParameter('gauge_id', false) )
