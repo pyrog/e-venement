@@ -49,6 +49,8 @@ $(document).ready(function(){
     
     // THE CONTACT LINK...
     $('#li_transaction_field_contact_id').toggleClass('simplified');
+    // THE NEW TRANSACTION LINK
+    $('#li_transaction_field_new_transaction').toggleClass('simplified');
     
     return false;
   });
@@ -139,6 +141,7 @@ LI.touchscreenSimplifiedLoadData = function(){
       if ( window.location.hash == '#debug' )
         console.error('Simplified GUI: Loading data for '+type);
       
+      console.error(data.success.success_fields[type].data.content);
       LI.touchscreenSimplifiedData[type] = data.success.success_fields[type].data.content; // storing data in the global var
       var events = {};
       $.each(LI.touchscreenSimplifiedData[type], function(id, manif){

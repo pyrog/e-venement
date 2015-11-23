@@ -51,5 +51,8 @@
 #li_fieldset_simplified .cart .total .qty { display: none; }
 #li_fieldset_simplified .cart .print button { width: 100%; min-height: 3em; font-size: 85%; }
 
-#sf_admin_content .li_fieldset #li_transaction_field_contact_id.simplified { position: absolute; z-index: 11; left: 493px; top: 1px; width: 466px; height: 44px; border-bottom: 1px solid rgb(166, 201, 226); border-radius: 5px; font-size: 150%; padding-top: 12px; }
+#sf_admin_content .li_fieldset #li_transaction_field_new_transaction.simplified, #sf_admin_content .li_fieldset #li_transaction_field_contact_id.simplified { position: absolute; z-index: 11; }
+#sf_admin_content .li_fieldset #li_transaction_field_new_transaction.simplified { right: 11px; width: 90px; }
+#sf_admin_content .li_fieldset #li_transaction_field_new_transaction.simplified a { width: 10px; height: 30px; }
+#sf_admin_content .li_fieldset #li_transaction_field_contact_id.simplified { left: 493px; top: 1px; width: 365px; height: 44px; border-bottom: 1px solid rgb(166, 201, 226); border-radius: 5px; font-size: 150%; padding-top: 12px; }
 #li_fieldset_simplified .header .contact { display: none; }
