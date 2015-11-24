@@ -36,6 +36,31 @@ require_once dirname(__FILE__).'/../lib/groupGeneratorHelper.class.php';
  */
 class groupActions extends autoGroupActions
 {
+  public function executeBatchMerge(sfWebRequest $request)
+  {
+    $ids = $request->getParameter('ids');
+    if ( count($ids) < 2 )
+      $this->redirect('group/show?id='.$ids[0]);
+    
+    $q = Doctrine::getTable('Group')->createQuery('g')
+      ->leftJoin('g.Contacts c')
+      ->leftJoin('g.Professionals p')
+      ->leftJoin('g.Organisms o')
+      ->andWhereIn('g.id',$ids)
+    ;
+    $group = new Group;
+    foreach ( $q->execute() as $grp )
+    foreach ( array('Contacts', 'Professionals', 'Organisms') as $collection )
+    foreach ( $grp->$collection as $object )
+    if ( !isset($group->{$collection}[$object->id]) )
+      $group->{$collection}[$object->id] = $object;
+    
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $group->name = __('Search group').' - '.date('Y-m-d H:i:s');
+    $group->save();
+    $this->redirect('group/show?id='.$group->id);
+  }
+  
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
