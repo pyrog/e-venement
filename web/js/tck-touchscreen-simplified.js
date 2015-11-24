@@ -26,7 +26,10 @@ if ( LI.touchscreenOnNewFamilyLoad == undefined )
   LI.touchscreenOnNewFamilyLoad = [];
 LI.touchscreenSimplifiedCookie = {
   name: 'tck.touchscreen.simplified-gui',
-  maxAge: 30*24*60*60 // 30 days expiration
+  options: {
+    maxAge: 30*24*60*60, // 30 days expiration
+    path: '/'
+  }
 };
   
 
@@ -36,14 +39,14 @@ $(document).ready(function(){
     $('#li_fieldset_simplified').fadeToggle(function(){
       if ( !$(this).is(':visible') )
       {
-        Cookie.set(LI.touchscreenSimplifiedCookie.name, 'hide', { maxAge: LI.touchscreenSimplifiedCookie.maxAge }); // 30 days expiration
+        Cookie.set(LI.touchscreenSimplifiedCookie.name, 'hide', LI.touchscreenSimplifiedCookie.options); // 30 days expiration
         return;
       }
-      Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', { maxAge: LI.touchscreenSimplifiedCookie.maxAge });    // 30 days expiration
+      Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', LI.touchscreenSimplifiedCookie.options);    // 30 days expiration
       
       // click on the last (or the first) tab...
       if ( !Cookie.get(LI.touchscreenSimplifiedCookie.bunch) )
-        Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $('#li_fieldset_simplified .products-types [data-bunch-id]').first().attr('data-bunch-id'), { maxAge: LI.touchscreenSimplifiedCookie.maxAge });
+        Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $('#li_fieldset_simplified .products-types [data-bunch-id]').first().attr('data-bunch-id'), LI.touchscreenSimplifiedCookie.options);
       $('#li_fieldset_simplified .products-types [data-bunch-id="'+Cookie.get(LI.touchscreenSimplifiedCookie.bunch)+'"]').click();
     });
     
@@ -61,7 +64,7 @@ $(document).ready(function(){
       return false;
     
     // remember the last chosen tab
-    Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $(this).attr('data-bunch-id'), { maxAge: LI.touchscreenSimplifiedCookie.maxAge });
+    Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $(this).attr('data-bunch-id'), LI.touchscreenSimplifiedCookie.options);
     
     $('#li_fieldset_simplified .products-types .selected').removeClass('selected');
     $(this).addClass('selected');
@@ -72,7 +75,7 @@ $(document).ready(function(){
     LI.touchscreenSimplifiedLoadData();
     return false;
   });
-
+  
   if ( Cookie.get(LI.touchscreenSimplifiedCookie.name) == 'show' )
     $('#simplified-gui').click();
   
@@ -141,7 +144,6 @@ LI.touchscreenSimplifiedLoadData = function(){
       if ( window.location.hash == '#debug' )
         console.error('Simplified GUI: Loading data for '+type);
       
-      console.error(data.success.success_fields[type].data.content);
       LI.touchscreenSimplifiedData[type] = data.success.success_fields[type].data.content; // storing data in the global var
       var events = {};
       $.each(LI.touchscreenSimplifiedData[type], function(id, manif){
