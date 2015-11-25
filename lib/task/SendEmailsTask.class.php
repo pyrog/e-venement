@@ -22,7 +22,13 @@ class SendEmailsTask extends sfProjectSendEmailsTask
   {
     parent::configure();
     $this->addOptions(array(
-      new sfCommandOption('delay', null, sfCommandOption::PARAMETER_OPTIONAL, 'The delay to wait between 2 emails', 15),
+      new sfCommandOption(
+        'delay',
+        null,
+        sfCommandOption::PARAMETER_OPTIONAL,
+        'The delay to wait between 2 emails',
+        sfConfig::get('app_options_email_delay',15)
+      ),
     ));
     
     $this->namespace = 'e-venement';

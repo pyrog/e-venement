@@ -703,7 +703,7 @@ class manifestationActions extends autoManifestationActions
                WHERE ttt.transaction_id = t.id
                  AND (ttt.printed_at IS NOT NULL OR ttt.integrated_at IS NOT NULL OR cancelling IS NOT NULL)
                  AND ttt.duplicating IS NULL)
-            + (SELECT sum(bp.value) + sum(CASE WHEN bp.shipping_fees IS NULL THEN 0 ELSE bp.shipping_fees END) FROM bought_product bp WHERE bp.transaction_id = t.id AND bp.integrated_at IS NOT NULL)
+            + (SELECT CASE WHEN count(bp.id) = 0 THEN 0 ELSE sum(bp.value) + sum(CASE WHEN bp.shipping_fees IS NULL THEN 0 ELSE bp.shipping_fees END) END FROM bought_product bp WHERE bp.transaction_id = t.id AND bp.integrated_at IS NOT NULL)
                AS topay,
               (SELECT CASE WHEN sum(ppp.value) IS NULL THEN 0 ELSE sum(ppp.value) END FROM Payment ppp WHERE ppp.transaction_id = t.id) AS paid,
               c.id AS c_id, c.name, c.firstname,

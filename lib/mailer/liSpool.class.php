@@ -85,8 +85,8 @@ class liSpool extends Swift_DoctrineSpool
         break;
       }
 
-      // keep calm, have a break...
-      sleep($this->delay);
+      // keep calm, have a break... (with +/- 20% of delay)
+      sleep($this->delay+$this->delay*rand(-20,20)/100);
     }
 
     return $count;
