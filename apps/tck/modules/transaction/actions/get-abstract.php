@@ -408,6 +408,7 @@
             $product->Declinations[] = $declination;
           }
           
+          if ( $product )
           $this->json[$product->id] = array(
             'id'            => $product->id,
             'name'          => (string)$product,
@@ -423,6 +424,8 @@
         }
         
         // gauges
+        if ( !$product )
+          continue;
         $this->json[$product->id][$this->json[$product->id]['declinations_name']] = array();
         $cpt = 0;
         foreach ( $product[$subobj.'s'] as $declination )
