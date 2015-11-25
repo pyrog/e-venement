@@ -43,21 +43,33 @@ class groupActions extends autoGroupActions
       $this->redirect('group/show?id='.$ids[0]);
     
     $q = Doctrine::getTable('Group')->createQuery('g')
-      ->leftJoin('g.Contacts c')
-      ->leftJoin('g.Professionals p')
-      ->leftJoin('g.Organisms o')
       ->andWhereIn('g.id',$ids)
+      ->select('g.*')
     ;
-    $group = new Group;
-    foreach ( $q->execute() as $grp )
-    foreach ( array('Contacts', 'Professionals', 'Organisms') as $collection )
-    foreach ( $grp->$collection as $object )
-    if ( !isset($group->{$collection}[$object->id]) )
-      $group->{$collection}[$object->id] = $object;
     
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $group = new Group;
     $group->name = __('Search group').' - '.date('Y-m-d H:i:s');
     $group->save();
+    
+    foreach ( $q->execute() as $grp )
+    foreach ( array(
+      'ContactGroups' => array('contact_id', 'GroupContact'),
+      'ProfessionalGroups' => array('professional_id', 'GroupProfessional'),
+      'OrganismGroups' => array('organism_id', 'GroupOrganism'),
+    ) as $collection => $relation )
+    {
+      foreach ( $grp->$collection as $object )
+      if ( !isset($group->{$collection}[$object->{$relation[0]}]) )
+      {
+        $group->{$collection}[$object->{$relation[0]}] = $object;
+        $rel = new $relation[1];
+        $rel->group_id = $group->id;
+        $rel->{$relation[0]} = $object->{$relation[0]};
+        $rel->save();
+      }
+    }
+    
     $this->redirect('group/show?id='.$group->id);
   }
   
