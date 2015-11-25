@@ -76,7 +76,7 @@ EOF;
       {
         $time = time()*2-strtotime($when); // a trick to get -1 hour to the manif being +1 hour from now
         
-        $q->orWhere('m.reservation_confirmed = ? AND m.happens_at >= ? AND m.happens_at <= ?', array(
+        $q->andWhere('m.reservation_confirmed = ? AND m.happens_at >= ? AND m.happens_at <= ?', array(
           $type == 'tocome',
           $to = date('Y-m-d H:i:s', $time+time()-$period),
           $date = date('Y-m-d H:i:s', $time),
