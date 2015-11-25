@@ -3,6 +3,8 @@ all:
 
 index:
   credentials: [event-hold] #132
+filter:
+  credentials: [event-hold] #132
 ajax:
   credentials: [event-hold] #132
 edit:
