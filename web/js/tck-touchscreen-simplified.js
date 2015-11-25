@@ -173,6 +173,7 @@ LI.touchscreenSimplifiedLoadData = function(){
           .attr('data-family-id', manif.id)
           .appendTo($('#li_fieldset_simplified .bunch[data-bunch-id="'+type+'"]'))
         ;
+        
         $.each(manif[manif.declinations_name], function(i, gauge){
           var li = $('<li></li>')
             .attr('data-'+gauge.type+'-id', gauge.id)
@@ -208,6 +209,37 @@ LI.touchscreenSimplifiedBehavior = function(type){
     if ( ul.find('input').length == 1 )
       ul.find('input').closest('li').click();
     $(this).closest('.content').find('.bunch > li > ul').not($(this).closest('li').find('ul')).slideUp('fast');
+    
+    // graphical gauge triggering...
+    var manif = LI.touchscreenSimplifiedData[type][$(this).closest('[data-family-id]').attr('data-family-id')];
+    if ( $(this).closest('[data-family-id]').find('.gauge-gfx').length == 0 )
+    $(this).closest('[data-family-id]').find('li').each(function(){
+      var gauge = manif[manif.declinations_name][$(this).attr('data-'+manif.declinations_name.slice(0,-1)+'-id')];
+      
+      var li = this;
+      $.ajax({
+        url: gauge.url,
+        method: 'get',
+        success: function(json){
+          if ( json.total > 0 )
+          {
+            var booked = 0
+            $.each(json.booked, function(type, value){
+              booked += value;
+            });
+            $('<span></span>').addClass('gauge-gfx')
+              .append($('<span></span>')
+                .addClass('booked')
+                .css('width', (booked/json.total*100)+'%')
+                .prop('title', booked+' / '+json.total)
+              )
+              .prop('title', json.free+' / '+json.total)
+              .appendTo(li)
+            ; 
+          }
+        }
+      });
+    });
   });
   
   // activating a particular gauge or equivalent
@@ -328,7 +360,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
             console.error('Simplified GUI: loading item #'+pdt.id+' sold/to sell of type '+type+'...');
           
           // clear data & recalculate totals
-          $('#li_fieldset_simplified .cart .item.'+type+'[data-product-id="'+pdt.id+'"][data-declination-id="'+declination.id+'"][data-price-id="'+price.id+'"][data-state="'+price.state+'"]')
+          $('#li_fieldset_simplified .cart .item.'+type+'[data-product-id="'+pdt.id+'"][data-declination-id="'+declination.id+'"][data-price-id="'+price.id+'"][data-state="'+(price.state?price.state:'')+'"]')
             .remove();
           LI.touchscreenSimplifiedTotal();
           
@@ -359,7 +391,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               .attr('data-product-id', pdt.id)
               .attr('data-declination-id', declination.id)
               .attr('data-price-id', price.id)
-              .attr('data-state', price.state)
+              .attr('data-state', price.state ? price.state : '')
               .attr('data-qty', price.qty)
               .attr('data-value', (price.pit + price['extra-taxes']) / price.qty)
               .prop('title', '#'+pdtid+(price.numerotation[i] ? ' → '+price.numerotation[i] : ''))
@@ -377,12 +409,6 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               })
             ;
             left
-              /*
-              .append($('<a></a>').prop('href', pdt.category_url).text(pdt.category).addClass('category').prop('title', pdt.category))
-              .append(' ')
-              .append($('<a></a>').prop('href', pdt.product_url).text(name).addClass('product'))
-              .append(' ')
-              */
               .append($('<span></span>').text(pdt.category).addClass('category').prop('title', pdt.category))
               .append(' ')
               .append($('<span></span>').text(name).addClass('product'))
@@ -401,7 +427,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
         
         // cancelling post-processing
         $.each(cancelling, function(i, price){
-          $(str = '#li_fieldset_simplified .cart .item.'+type+'[data-price-id="'+price.id+'"][data-declination-id="'+declination.id+'"][data-product-id="'+pdt.id+'"][data-value="'+(price.pit+price['extra-taxes'])/price.qty+'"]:not([data-state=asked]):not(.cancelled):first')
+          $(str = '#li_fieldset_simplified .cart .item.'+type+'[data-price-id="'+price.id+'"][data-declination-id="'+declination.id+'"][data-product-id="'+pdt.id+'"][data-value="'+(price.pit+price['extra-taxes'])/price.qty+'"]:not([data-state=""]):not(.cancelled):first')
             .addClass('cancelled');
         });
       });

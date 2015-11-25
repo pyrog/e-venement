@@ -95,7 +95,6 @@
     $this->getContext()->getConfiguration()->loadHelpers(array('Slug', 'I18N'));
     
     $fct = 'createQueryFor'.ucfirst($type);
-    //if ( $type == 'museum' ) $type = 'manifestations'; // a trick to avoid many code, becaude museum & manifestations are treated exactly the same way
     
     if ( $request->getParameter('id',false) )
     {
@@ -277,6 +276,43 @@
       'numerotation' => array(),
     );
     
+    switch ( $type ) {
+      case 'store':
+        $declinations_name = 'declinations';
+        $product_id = 'product_id';
+        $declination_id = 'declination_id';
+        break;
+      default:
+        $declinations_name = 'gauges';
+        $product_id = 'manifestation_id';
+        $declination_id = 'gauge_id';
+        break;
+    }
+    
+    if ( !$this->transaction
+      && !$pid
+      && $request->getParameter($declination_id)
+      && $request->getParameter('price_id')
+    )
+    {
+      if ( !$request->getParameter($product_id, false) )
+        $request->setParameter($product_id, Doctrine::getTable('Gauge')->createQuery('g')->select('g.id, g.'.$product_id)->andWhere('g.id = ?', $request->getParameter($declination_id))->fetchOne()->$product_id);
+      $this->json[$request->getParameter($product_id)] = array(
+        'id' => $request->getParameter($product_id),
+        'declinations_name' => $declinations_name,
+        $declinations_name => array(),
+      );
+      $this->json[$request->getParameter($product_id)][$declinations_name][$request->getParameter($declination_id)] = array(
+        'id' => $request->getParameter($declination_id),
+        'prices' => array($request->getParameter('price_id') => array(
+          'id'      => $request->getParameter('price_id'),
+          'state'   => $request->getParameter('state', '') == 'false' ? '' : $request->getParameter('state', ''),
+          'qty'     => 0,
+        )),
+        'available_prices' => array(),
+      );
+    }
+    else
     foreach ( $this->transaction ? $this->transaction[$subobj.'s'] : $pid as $item ) // loophole
     {
       // by manifestation/product
@@ -333,7 +369,7 @@
             'location_url'  => cross_app_url_for('event', 'location/show?id='.$product->location_id,true),
             'color'         => (string)$product->Color,
             'declination_url'   => cross_app_url_for('event','',true),
-            'declinations_name' => 'gauges',
+            'declinations_name' => $declinations_name,
           );
           break;
         case 'store':
@@ -381,7 +417,7 @@
             'product_url'   => cross_app_url_for('pos', 'product/show?id='.$product->id, true),
             'color'         => NULL,
             'declinations_url'  => NULL,
-            'declinations_name' => 'declinations',
+            'declinations_name' => $declinations_name,
           );
           break;
         }

@@ -76,6 +76,9 @@ LI.completeContent = function(data, type, replaceAll = true)
     
     // manifestations / products
     $.each(data, function(id, pdt){
+      if ( pdt.category === undefined )
+        return;
+      
       var wpdt = $('#li_transaction_'+type+' .families.sample .family:not(.total)').clone(true);
       var add = true;
       if ( $('#li_transaction_'+type+' #'+wpdt.prop('id')+pdt.id).length > 0 )

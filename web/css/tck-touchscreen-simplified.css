@@ -50,6 +50,9 @@
 #li_fieldset_simplified .cart .paid .payment:hover { background-color: rgba(255,237,189,0.6); border-radius: 3px; }
 #li_fieldset_simplified .cart .total .qty { display: none; }
 #li_fieldset_simplified .cart .print button { width: 100%; min-height: 3em; font-size: 85%; }
+#li_fieldset_simplified .bunch .gauge-gfx, #li_fieldset_simplified .bunch .gauge-gfx > * { display: inline-block; height: 1em; border-radius: 3px; }
+#li_fieldset_simplified .bunch .gauge-gfx { float: right; width: 50px; background-color: green; }
+#li_fieldset_simplified .bunch .gauge-gfx .booked { background-color: orange; }
 
 #sf_admin_content .li_fieldset #li_transaction_field_new_transaction.simplified, #sf_admin_content .li_fieldset #li_transaction_field_contact_id.simplified { position: absolute; z-index: 11; }
 #sf_admin_content .li_fieldset #li_transaction_field_new_transaction.simplified { right: 11px; width: 90px; }
