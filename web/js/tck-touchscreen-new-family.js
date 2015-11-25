@@ -149,7 +149,6 @@ LI.addFamilies = function(elt){
     var bunch = nf.closest('.bunch');
     
     nf.submit();
-    $('#li_transaction_field_new_transaction a.persistant').prop('href', $('#li_transaction_field_new_transaction a.persistant').prop('href')+'#'+bunch.prop('id').replace('li_transaction_','')+'-'+nf.find('select').val()); // keep the same manifestations for the next transaction
     nf.find('select option:selected').remove();
     
     setTimeout(function(){
