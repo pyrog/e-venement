@@ -59,7 +59,7 @@ Price:
     rank:
       type: float
       notnull: true
-      default: 100000
+      default: 65536
   relations:
     Manifestations:
       class: Manifestation
