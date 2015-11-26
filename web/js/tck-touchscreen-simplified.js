@@ -487,6 +487,8 @@ LI.touchscreenContentLoad.push(function(data, type){
 if ( LI.touchscreenFormComplete == undefined )
   LI.touchscreenFormComplete = [];
 LI.touchscreenFormComplete.push(function(data, index){
+  if ( data.remote_content === undefined )
+    return;
   if ( !data.remote_content.load.reset )
     return;
   var type = data.remote_content.load.type.replace(/_price$/, '');
