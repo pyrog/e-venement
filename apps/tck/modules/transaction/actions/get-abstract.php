@@ -531,7 +531,7 @@
               continue;
             
             // then add the price...
-            $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['available_prices'][$pp->Price.' '.$pp->price_id] = array(
+            $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['available_prices'][str_pad(number_format($pp->Price->rank,5),20,'0',STR_PAD_LEFT).' || '.$pp->Price.' || '.$pp->price_id] = array(
               'id'  => $pp->price_id,
               'name'  => (string)$pp->Price,
               'description'  => $pp->Price->description,
