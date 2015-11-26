@@ -1,7 +1,8 @@
 <ul>
 <?php foreach ( $contact->Transactions as $transaction ): ?>
 <?php if ( $transaction->type != 'cancellation' ): ?>
-<?php if ( count(array_filter($transaction->getRawValue()->Tickets->toKeyValueArray('id', 'printed_at'))) + count(array_filter($transaction->getRawValue()->Tickets->toKeyValueArray('id', 'integrated_at'))) > 0 ): ?>
+<?php if ( $transaction->Order->count() > 0
+  || count(array_filter($transaction->getRawValue()->Tickets->toKeyValueArray('id', 'printed_at'))) + count(array_filter($transaction->getRawValue()->Tickets->toKeyValueArray('id', 'integrated_at'))) > 0 ): ?>
   <?php
     $printed = false;
     foreach ( $transaction->Tickets as $ticket )
