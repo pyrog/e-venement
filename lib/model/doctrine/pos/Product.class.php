@@ -64,7 +64,7 @@ class Product extends PluginProduct implements liUserAccessInterface
     'critical'  => 'critical',
     'correct'   => 'correct',
     'perfect'   => 'perfect',
-  ), $json)
+  ), $json = false)
   {
     $data = array(
       'id' => $this->id,

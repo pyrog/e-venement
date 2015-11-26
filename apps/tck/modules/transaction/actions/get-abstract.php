@@ -279,31 +279,40 @@
     switch ( $type ) {
       case 'store':
         $declinations_name = 'declinations';
-        $product_id = 'product_id';
-        $declination_id = 'declination_id';
+        $product_param = 'product_id';
+        $declination_param = 'declination_id';
         break;
       default:
         $declinations_name = 'gauges';
-        $product_id = 'manifestation_id';
-        $declination_id = 'gauge_id';
+        $product_param = 'manifestation_id';
+        $declination_param = 'gauge_id';
         break;
     }
     
     if ( !$this->transaction
       && !$pid
-      && $request->getParameter($declination_id)
+      && $request->getParameter($declination_param)
       && $request->getParameter('price_id')
     )
     {
-      if ( !$request->getParameter($product_id, false) )
-        $request->setParameter($product_id, Doctrine::getTable('Gauge')->createQuery('g')->select('g.id, g.'.$product_id)->andWhere('g.id = ?', $request->getParameter($declination_id))->fetchOne()->$product_id);
-      $this->json[$request->getParameter($product_id)] = array(
-        'id' => $request->getParameter($product_id),
+      if ( !$request->getParameter($product_param, false) )
+      {
+        switch ( $type ) {
+        case 'store':
+          $request->setParameter($product_param, Doctrine::getTable('ProductDeclination')->createQuery('pd')->select('pd.id, pd.'.$product_param)->andWhere('pd.id = ?', $request->getParameter($declination_param))->fetchOne()->$product_param);
+          break;
+        default:
+          $request->setParameter($product_param, Doctrine::getTable('Gauge')->createQuery('g')->select('g.id, g.'.$product_param)->andWhere('g.id = ?', $request->getParameter($declination_param))->fetchOne()->$product_param);
+          break;
+        }
+      }
+      $this->json[$request->getParameter($product_param)] = array(
+        'id' => $request->getParameter($product_param),
         'declinations_name' => $declinations_name,
         $declinations_name => array(),
       );
-      $this->json[$request->getParameter($product_id)][$declinations_name][$request->getParameter($declination_id)] = array(
-        'id' => $request->getParameter($declination_id),
+      $this->json[$request->getParameter($product_param)][$declinations_name][$request->getParameter($declination_param)] = array(
+        'id' => $request->getParameter($declination_param),
         'prices' => array($request->getParameter('price_id') => array(
           'id'      => $request->getParameter('price_id'),
           'state'   => $request->getParameter('state', '') == 'false' ? '' : $request->getParameter('state', ''),

@@ -265,8 +265,8 @@ LI.completeContent = function(data, type, replaceAll = true)
   }
   
   // hook for external plugins
-  if ( LI.touchscreenSimplifiedContentLoad != undefined )
-  $.each(LI.touchscreenSimplifiedContentLoad, function(i, fct){
+  if ( LI.touchscreenContentLoad !== undefined )
+  $.each(LI.touchscreenContentLoad, function(i, fct){
     fct(data, type);
   });
   
