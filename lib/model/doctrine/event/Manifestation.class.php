@@ -16,7 +16,7 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
   
   public function getOrderingKey()
   {
-    return preg_replace('/.\d+$/', '', $this->happens_at).' ~~~ '.$this->id;
+    return preg_replace('/\.\d+$/', '', $this->happens_at).' ~~~ '.$this->id;
   }
   public function getName($short = false)
   {
