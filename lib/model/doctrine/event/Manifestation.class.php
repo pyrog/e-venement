@@ -94,6 +94,19 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
     return $this->getName();
   }
   
+  public function getBiggestTransactions()
+  {
+    $q = Doctrine::getTable('Transaction')->createQuery('t')
+      ->groupBy('t.id')
+      ->having('count(tck.id) > 9')
+      ->orderBy('count(tck.id) DESC')
+      ->andWhere('tck.manifestation_id = ?', $this->id)
+      ->andWhere('t.contact_id IS NOT NULL')
+      ->select('t.id')
+    ;
+    return $q->execute();
+  }
+  
   /**
     * method getBestFreeSeat()
     * concerning the seated sales
