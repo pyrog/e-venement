@@ -81,7 +81,7 @@ generator:
           Extra informations: [age_min, age_max, companies_list, display_by_default]
       form: ~
       edit:
-        title: Edit Event %%name%%
+        title: Edit <?php echo $museum ? 'Visit' : 'Event' ?> %%name%%
         display:
           General:   [name, short_name, subtitle, meta_event_id, event_category_id, event_category_description, companies_list]
           Details:   [duration, _form_duration_days, display_by_default, accounting_account, age_min, age_max, description]

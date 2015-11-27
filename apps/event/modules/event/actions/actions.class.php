@@ -135,10 +135,10 @@ class eventActions extends autoEventActions
     parent::executeShow($request);
     
     $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
-    $museum = $this->getContext()->getConfiguration()->getApplication() == 'museum';
-    if ( $this->event->museum && !$museum )
+    $this->museum = $this->getContext()->getConfiguration()->getApplication() == 'museum';
+    if ( $this->event->museum && !$this->museum )
       $this->redirect(cross_app_url_for('museum', 'event/show?id='.$this->event->id));
-    elseif ( !$this->event->museum && $museum )
+    elseif ( !$this->event->museum && $this->museum )
       $this->redirect(cross_app_url_for('event', 'event/show?id='.$this->event->id));
   }
   public function executeEdit(sfWebRequest $request)
