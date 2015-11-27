@@ -365,7 +365,7 @@
           $product = $q->fetchOne();
 
           if ( $product )
-          $this->json[$product->id] = array(
+          $this->json[$product->ordering_key] = array(
             'id'            => $product->id,
             'name'          => NULL,
             'category'      => (string)$product->Event,
@@ -418,7 +418,7 @@
           }
           
           if ( $product )
-          $this->json[$product->id] = array(
+          $this->json[$product->ordering_key] = array(
             'id'            => $product->id,
             'name'          => (string)$product,
             'category'      => (string)$product->Category,
@@ -435,7 +435,7 @@
         // gauges
         if ( !$product )
           continue;
-        $this->json[$product->id][$this->json[$product->id]['declinations_name']] = array();
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']] = array();
         $cpt = 0;
         foreach ( $product[$subobj.'s'] as $declination )
         {
@@ -448,7 +448,7 @@
             break;
           }
           
-          $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id] = array(
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id] = array(
             'id' => $declination->id,
             'sort' => $cpt,
             'name' => (string)$declination,
@@ -465,12 +465,12 @@
             // seated plans
             if ( $seated_plan = $product->Location->getWorkspaceSeatedPlan($declination->workspace_id) )
             {
-              $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['seated_plan_url']
+              $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['seated_plan_url']
                 = cross_app_url_for('default', 'picture/display?id='.$seated_plan->picture_id,true);
-              $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['seated_plan_seats_url']
+              $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['seated_plan_seats_url']
                 = cross_app_url_for('event',   'seated_plan/getSeats?ticketting=true&id='.$seated_plan->id.'&gauge_id='.$declination->id.($this->transaction ? '&transaction_id='.$this->transaction->id : ''),true);
               if ( $seated_plan->ideal_width )
-              $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['seated_plan_width']
+              $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['seated_plan_width']
                 = $seated_plan->ideal_width;
             }
             break;
@@ -531,7 +531,7 @@
               continue;
             
             // then add the price...
-            $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['available_prices'][str_pad(number_format($pp->Price->rank,5),20,'0',STR_PAD_LEFT).' || '.$pp->Price.' || '.$pp->price_id] = array(
+            $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['available_prices'][str_pad(number_format($pp->Price->rank,5),20,'0',STR_PAD_LEFT).' || '.$pp->Price.' || '.$pp->price_id] = array(
               'id'  => $pp->price_id,
               'name'  => (string)$pp->Price,
               'description'  => $pp->Price->description,
@@ -540,7 +540,7 @@
               'currency' => '€',
             );
           }
-          ksort($this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['available_prices']);
+          ksort($this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['available_prices']);
         }
       }
       
@@ -549,7 +549,7 @@
       
       // by price
       $state = $declination = NULL;
-      switch ( $this->json[$product->id]['declinations_name'] ) {
+      switch ( $this->json[$product->ordering_key]['declinations_name'] ) {
       case 'gauges':
         $declination = $item->Gauge;
         $pid = $item->Gauge->manifestation_id;
@@ -582,68 +582,68 @@
       }
       
       $pname = ($item->price_id ? $item->price_id : slugify($item->price_name)).'-'.$state;
-      if (!( isset($this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname])
-          && count($this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids']) > 0
+      if (!( isset($this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname])
+          && count($this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids']) > 0
       ))
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname] = array(
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname] = array(
           'state' => $state,
           'name' => !$item->price_id ? $item->price_name : $item->Price->name,
           'description' => !$item->price_id ? '' : $item->Price->description,
-          'item-details' => in_array($this->json[$product->id]['declinations_name'], array('gauges')), // the link to a specific place to detail the items
+          'item-details' => in_array($this->json[$product->ordering_key]['declinations_name'], array('gauges')), // the link to a specific place to detail the items
           'id' => $item->price_id ? $item->price_id : slugify($item->price_name),
         ) + $items_model;
-      switch ( $this->json[$product->id]['declinations_name'] ) {
+      switch ( $this->json[$product->ordering_key]['declinations_name'] ) {
       case 'gauges':
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->id;
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids_url'][] = cross_app_url_for('tck', 'ticket/show?id='.$item->id, true);
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = $item->numerotation;
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->id;
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids_url'][] = cross_app_url_for('tck', 'ticket/show?id='.$item->id, true);
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = $item->numerotation;
         break;
       case 'declinations':
         if ( !$item->member_card_id )
         {
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->id;
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->id;
           break;
         }
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->member_card_id;
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids_url'][] = cross_app_url_for('rp', 'member_card/show?id='.$item->member_card_id, true);
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = '#'.$item->id;
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $item->member_card_id;
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids_url'][] = cross_app_url_for('rp', 'member_card/show?id='.$item->member_card_id, true);
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = '#'.$item->id;
         break;
       }
       
       // by group of tickets
-      $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['qty']++;
+      $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['qty']++;
       $real_value = $item->value;
       $tep = NULL;
-      switch ( $this->json[$product->id]['declinations_name'] ){
+      switch ( $this->json[$product->ordering_key]['declinations_name'] ){
       case 'gauges':
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['extra-taxes'] += $item->taxes;
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['extra-taxes'] += $item->taxes;
         $real_value = $item->value + $item->taxes;
         break;
       case 'declinations':
-        $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['extra-taxes'] += $item->shipping_fees;
+        $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['extra-taxes'] += $item->shipping_fees;
         $real_value = $item->value + $item->shipping_fees;
         $tep = round($item->value/(1+$item->vat),2) + round($item->shipping_fees/(1+$item->shipping_fees_vat),2);
         break;
       }
       if (!( isset($tep) && !is_null($tep) ))
         $tep = round($real_value/(1+$item->vat),2);
-      $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['pit'] += $item->value;
-      $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['tep'] += $tep;
-      $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['vat'] += $real_value - $tep;
+      $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['pit'] += $item->value;
+      $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['tep'] += $tep;
+      $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['vat'] += $real_value - $tep;
       
       // POST PROD SPECIFICITIES
-      switch ( $this->json[$product->id]['declinations_name'] ) {
+      switch ( $this->json[$product->ordering_key]['declinations_name'] ) {
       case 'gauges':
         // cancelling tickets
         if ( $cancelling = $item->hasBeenCancelled() )
         {
           $state = 'cancelling';
           $pname = $item->price_id.'-'.$state;
-          if (!( isset($this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname])
-            && count($this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids']) > 0
+          if (!( isset($this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname])
+            && count($this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids']) > 0
           ))
           {
-            $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname] = array(
+            $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname] = array(
               'state' => $state,
               'name' => !$item->price_id ? $item->price_name : $item->Price->name,
               'description' => !$item->price_id ? '' : $item->Price->description,
@@ -651,15 +651,15 @@
               'id' => $item->price_id ? $item->price_id : slugify($item->price_name),
             ) + $items_model;
           }
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $cancelling[0]->id;
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = $cancelling[0]->numerotation;
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['ids'][] = $cancelling[0]->id;
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['numerotation'][] = $cancelling[0]->numerotation;
           
           // by group of tickets
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['qty']--;
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['extra-taxes'] += $cancelling[0]->taxes;
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['pit'] += $cancelling[0]->value;
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['tep'] += $tep = round(($cancelling[0]->value+$cancelling[0]->taxes)/(1+$cancelling[0]->vat),2);
-          $this->json[$pid][$this->json[$product->id]['declinations_name']][$declination->id]['prices'][$pname]['vat'] += $cancelling[0]->value + $cancelling[0]->taxes - $tep;
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['qty']--;
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['extra-taxes'] += $cancelling[0]->taxes;
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['pit'] += $cancelling[0]->value;
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['tep'] += $tep = round(($cancelling[0]->value+$cancelling[0]->taxes)/(1+$cancelling[0]->vat),2);
+          $this->json[$product->ordering_key][$this->json[$product->ordering_key]['declinations_name']][$declination->id]['prices'][$pname]['vat'] += $cancelling[0]->value + $cancelling[0]->taxes - $tep;
         }
         break;
       }
@@ -673,6 +673,7 @@
     elseif ( is_array($this->json[$pid][$this->json[$pid]['declinations_name']][$did]['prices']) )
       ksort($this->json[$pid][$this->json[$pid]['declinations_name']][$did]['prices']);
     
+    ksort($this->json);
     $this->json = array(
       'error' => array(false, ''),
       'success' => array(

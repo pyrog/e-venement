@@ -14,6 +14,10 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
 {
   public $current_version = NULL;
   
+  public function getOrderingKey()
+  {
+    return preg_replace('/.\d+$/', '', $this->happens_at).' ~~~ '.$this->id;
+  }
   public function getName($short = false)
   {
     sfApplicationConfiguration::getActive()->loadHelpers(array('I18N','Date'));

@@ -342,7 +342,7 @@ LI.touchscreenSimplifiedPrices = function(gauge, data){
 
 if ( LI.touchscreenContentLoad == undefined )
   LI.touchscreenContentLoad = [];
-LI.touchscreenContentLoad.push(function(data, type){
+LI.touchscreenContentLoad.push(function(data, type, reset){
   // every element on the .cart element is rendered here
   
   switch ( type ) {
@@ -383,6 +383,10 @@ LI.touchscreenContentLoad.push(function(data, type){
   case 'museum':
   case 'manifestations':
   case 'store':
+    // resetting data...
+    if ( reset )
+      $('#li_fieldset_simplified .cart .item.'+type).remove();
+    
     $.each(data, function(id, pdt){
       $.each(pdt[pdt.declinations_name], function(id, declination){
         // cancellations preprocessing
