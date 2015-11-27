@@ -108,11 +108,17 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
   
   public function addDayOfTheWeekColumnQuery(Doctrine_Query $q, $field, $values)
   {
-    if ( $values === '' || is_array($values) && count($values) == 0 )
-      return $q;
-    
     if ( !is_array($values) )
+    {
+      if ( $values === '' )
+        return $q;
       $values = array($values);
+    }
+    
+    if (( $key = array_search('', $values) ) !== false )
+      unset($values[$key]);
+    if ( !$values )
+      return $q;
     
     $a = $q->getRootAlias();
     $q->andWhereIn("EXTRACT(DOW FROM $a.happens_at)", $values);
