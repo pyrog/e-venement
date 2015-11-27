@@ -93,6 +93,7 @@ $(document).ready(function(){
         $(this).closest('.item').attr('data-'+$(this).closest('.item').attr('data-type')+'-id')
       );
       form.find('[name="transaction[price_new][type]"]').val($(this).closest('.item').attr('data-type'));
+      form.find('[name="transaction[price_new][bunch]"]').val($(this).closest('.bunch').attr('data-bunch-id'));
       form.submit();
       
       // reinit

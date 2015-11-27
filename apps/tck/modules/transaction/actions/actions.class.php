@@ -285,6 +285,10 @@ class transactionActions extends autoTransactionActions
     $vs['type'] = new sfValidatorChoice(array(
       'choices' => array('declination', 'gauge'),
     ));
+    $ws['bunch'] = new sfWidgetFormInputHidden;
+    $vs['bunch'] = new sfValidatorChoice(array(
+      'choices' => array('museum', 'manifestations', 'store'),
+    ));
     $ws['id'] = new sfWidgetFormInputHidden;
     $vs['id'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Transaction',
