@@ -168,6 +168,7 @@
           ->select('m.id')
           ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW()")
           ->andWhere('e.museum = ?', $type == 'museum') // differenciate museums & manifestations
+          ->orderBy('m.happens_at ASC')
           ->limit($conf['max_display']);
         $ids = array();
         foreach ( $q2->execute() as $manif )
