@@ -97,12 +97,15 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
   public function getBiggestTransactions()
   {
     $q = Doctrine::getTable('Transaction')->createQuery('t')
+      ->leftJoin('t.Order o')
+      ->andWhere('o.id IS NOT NULL OR tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL')
+      ->andWhere('tck.cancelling IS NULL AND tck.duplicating IS NULL')
       ->groupBy('t.id')
       ->having('count(tck.id) > 9')
       ->orderBy('count(tck.id) DESC')
       ->andWhere('tck.manifestation_id = ?', $this->id)
       ->andWhere('t.contact_id IS NOT NULL')
-      ->select('t.id')
+      ->select('t.id, count(tck.id) as nb_tickets, count(o.id) > 0 AS ordered, sum(tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) > 0 AS printed')
     ;
     return $q->execute();
   }

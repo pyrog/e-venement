@@ -4,7 +4,7 @@ all:
 
 indexSuccess:
   javascripts: [list-scroll, <?php if ( sfConfig::get('app_ticketting_gauge_small',true) ): ?>event-gauge-small<?php endif ?>]
-  stylesheets: [print-list: {media: print}, <?php if ( sfConfig::get('app_ticketting_gauge_small',true) ): ?>event-gauge-small<?php endif ?>]
+  stylesheets: [print-list: {media: print}, <?php if ( sfConfig::get('app_ticketting_gauge_small',true) ): ?>event-gauge-small<?php endif ?>, /private/manifestation.css?<?php echo date('Ymd') ?>]
 
 showSuccess:
   stylesheets: [manifestation-view: { media: all }, view, event-seated-plan: { media: all }, event-hold?<?php echo date('Ymd') ?>]
