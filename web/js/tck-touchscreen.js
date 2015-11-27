@@ -346,6 +346,7 @@ $(document).ready(function(){
 
 // check gauges for overbooking
 LI.checkGauges = function(form){
+  console.error(form);
   // if the current Transaction contains only products, go for the order
   if ( $('#li_transaction_field_content #li_transaction_manifestations .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
     && $('#li_transaction_field_content #li_transaction_museum .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
@@ -359,7 +360,6 @@ LI.checkGauges = function(form){
   if ( $('#li_transaction_field_content #li_transaction_manifestations .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
     && $('#li_transaction_field_content #li_transaction_museum .families:not(.sample) .item tbody .declination [name="qty"]').length > 0 )
     return true;
-    
   
   var qty = 0;
   var go = true;
@@ -368,7 +368,7 @@ LI.checkGauges = function(form){
     if ( go == false )
       return;
     
-    if ( $(this).find('tbody .declination [name="qty"]').length > 0 )
+    if ( $(this).find('tbody .declination:not(.printed):not(.integrated) [name="qty"]').length > 0 )
     {
       var gauge = this;
       qty++;
