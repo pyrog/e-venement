@@ -71,6 +71,25 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       ->andWhere('ii.id IS NOT NULL')
     );
     $this->validatorSchema['participants_list']->setOption('query', $this->widgetSchema['participants_list']->getOption('query'));
+    
+    $this->widgetSchema   ['day_of_the_week'] = new sfWidgetFormChoice(array(
+      'choices' => $choices = array(
+        '' => '',
+        1 => __('Monday', null, 'generic'),
+        2 => __('Tuesday', null, 'generic'),
+        3 => __('Wednesday', null, 'generic'),
+        4 => __('Thrusday', null, 'generic'),
+        5 => __('Friday', null, 'generic'),
+        6 => __('Saturday', null, 'generic'),
+        0 => __('Sunday', null, 'generic')
+      ),
+      'multiple' => true,
+    ));
+    $this->validatorSchema['day_of_the_week'] = new sfValidatorChoice(array(
+      'choices' => array_keys($choices),
+      'required' => false,
+      'multiple' => true,
+    ));
   }
 
   public function getFields()
@@ -83,9 +102,22 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       'has_extra_infos' => 'HasExtraInfos',
       'has_description' => 'HasDescription',
       'location_id'     => 'LocationId',
+      'day_of_the_week' => 'DayOfTheWeek',
     ));
   }
   
+  public function addDayOfTheWeekColumnQuery(Doctrine_Query $q, $field, $values)
+  {
+    if ( $values === '' || is_array($values) && count($values) == 0 )
+      return $q;
+    
+    if ( !is_array($values) )
+      $values = array($values);
+    
+    $a = $q->getRootAlias();
+    $q->andWhereIn("EXTRACT(DOW FROM $a.happens_at)", $values);
+    return $q;
+  }
   public function addLocationIdColumnQuery(Doctrine_Query $q, $field, $value)
   {
     if ( !$value || $field != 'location_id' )

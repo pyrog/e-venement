@@ -9,6 +9,10 @@
         <target>Illimité</target>
       </trans-unit>
       <trans-unit>
+        <source>Day of the week</source>
+        <target>Jour de la semaine</target>
+      </trans-unit>
+      <trans-unit>
         <source>Licenses</source>
         <target>Licences</target>
       </trans-unit>

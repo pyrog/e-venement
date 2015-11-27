@@ -177,7 +177,11 @@ class manifestationActions extends autoManifestationActions
     $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
     
     $this->forward404Unless($request->hasParameter('id'));
-    $this->redirect(cross_app_url_for('tck', 'transaction/new#manifestations-'.$request->getParameter('id')));
+    $this->redirect(cross_app_url_for('tck',
+      'transaction/new#'.
+      ($this->getContext()->getConfiguration()->getApplication() == 'museum' ? 'museum' : 'manifestations').
+      '-'.$request->getParameter('id')
+    ));
   }
   
   public function executeExport(sfWebRequest $request)

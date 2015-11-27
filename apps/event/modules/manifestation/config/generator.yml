@@ -82,7 +82,7 @@ generator:
             label: Change event
       filter:
         display:
-          Manifestation: [happens_at, participants_list, event_id, location_id, workspace_id, meta_event_id, no_print, voucherized]
+          Manifestation: [happens_at, day_of_the_week, participants_list, event_id, location_id, workspace_id, meta_event_id, no_print, voucherized]
           Reservation: [contact_id, booking_list, reservation_confirmed]
           Extra: [color_id, has_description, has_extra_infos, description]
       form: ~
