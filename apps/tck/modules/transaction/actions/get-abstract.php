@@ -341,7 +341,7 @@
         $key = $obj;
       }
       else
-        $key = $id = intval($obj);
+        $key = $id = intval($item);
       
       if ( !isset($this->json[$key]) )
       {
