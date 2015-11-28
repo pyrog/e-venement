@@ -381,13 +381,10 @@ class myUser extends pubUser
   
   public function resetTransaction()
   {
-    if (!( $this->getAttribute('transaction_id',false) && $this->hasContact() ))
-    {
-      $this->getTransaction();
-      return $this;
-    }
+    $contact = false;
+    if ( $this->getAttribute('transaction_id',false) && $this->hasContact() )
+      $contact = $this->getContact();
     
-    $contact = $this->getContact();
     $this->getAttributeHolder()->remove('transaction_id');
     $this->transaction = NULL;
     $this->getTransaction();

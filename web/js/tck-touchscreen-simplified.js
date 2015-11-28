@@ -188,6 +188,13 @@ LI.touchscreenSimplifiedLoadData = function(){
         });
       });
       
+      // relooking of the array, to avoid mistakes w/ the key of the JS associative array
+      var obj = {};
+      $.each(LI.touchscreenSimplifiedData[type], function(key, data){
+        obj[data.id] = data;
+      });
+      LI.touchscreenSimplifiedData[type] = obj;
+      
       LI.touchscreenSimplifiedBehavior(type);
     },
     error: function(){
