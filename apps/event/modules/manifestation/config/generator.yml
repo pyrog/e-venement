@@ -34,6 +34,7 @@ generator:
         contact_id: { label: Applicant, credentials: event-reservation-change-contact }
         list_contact: { label: Applicant }
         event_id: { label: <?php echo $museum ? 'Visit' : 'Event' ?> }
+        event_categories_list: { label: Event categories }
         organism_id: { label: Applied by organism }
         booking_list: { label: Extra locations }
         list_booking_list: { label: Extra locations }
@@ -83,7 +84,7 @@ generator:
             label: Change event
       filter:
         display:
-          Manifestation: [happens_at, day_of_the_week, participants_list, event_id, location_id, workspace_id, meta_event_id, no_print, voucherized]
+          Manifestation: [happens_at, day_of_the_week, participants_list, event_id, location_id, workspace_id, meta_event_id, event_categories_list, no_print, voucherized]
           Reservation: [contact_id, booking_list, reservation_confirmed]
           Extra: [color_id, has_description, has_extra_infos, description]
       form: ~

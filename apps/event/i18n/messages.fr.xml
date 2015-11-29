@@ -1663,6 +1663,10 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Nom</target>
       </trans-unit>
       <trans-unit>
+        <source>Event categories</source>
+        <target>Catégories d'événement</target>
+      </trans-unit>
+      <trans-unit>
         <source>Category</source>
         <target>Catégorie</target>
       </trans-unit>

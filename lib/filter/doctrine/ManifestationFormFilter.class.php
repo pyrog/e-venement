@@ -54,6 +54,17 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       'required'  => false,
     ));
     
+    $this->widgetSchema   ['event_categories_list'] = new sfWidgetFormDoctrineChoice(array(
+      'model'     => 'EventCategory',
+      'order_by'  => array('name',''),
+      'multiple'  => true,
+    ));
+    $this->validatorSchema['event_categories_list'] = new sfValidatorDoctrineChoice(array(
+      'model'     => 'EventCategory',
+      'multiple'  => true,
+      'required'  => false,
+    ));
+    
     $this->widgetSchema['color_id']->setOption('method', 'getName');
     
     $this->widgetSchema   ['has_description'] =
@@ -97,6 +108,7 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
     $arr = parent::getFields();
     unset($arr['location_id']);
     return array_merge($arr,array(
+      'event_categories_list' => 'EventCategoriesList',
       'meta_event_id'   => 'MetaEventId',
       'workspace_id'    => 'WorkspaceId',
       'has_extra_infos' => 'HasExtraInfos',
@@ -151,6 +163,19 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       $q->andWhereIn("e.$field", $value);
     else
       $q->andWhere("e.$field = ?", $value);
+    
+    return $q;
+  }
+  
+  public function addEventCategoriesListColumnQuery(Doctrine_Query $q, $field, $value)
+  {
+    if ( !$value )
+      return $q;
+    
+    if ( !$q->contains('e.EventCategory ec') )
+      $q->leftJoin('e.EventCategory ec');
+    
+    $q->andWhereIn('ec.id', $value);
     
     return $q;
   }
