@@ -25,9 +25,11 @@ class pricesActions extends sfActions
     }
     
     $this->form = new StatsCriteriasForm();
-    $this->form->addUsersCriteria();
-    $this->form->addEventCriterias();
-    $this->form->addManifestationCriteria();
+    $this->form
+      ->addUsersCriteria()
+      ->addEventCriterias()
+      ->addManifestationCriteria()
+    ;
     if ( is_array($this->getUser()->getAttribute('stats.criterias',array(),'admin_module')) )
       $this->form->bind($this->getUser()->getAttribute('stats.criterias',array(),'admin_module'));
   }

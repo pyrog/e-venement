@@ -153,7 +153,7 @@ class StatsCriteriasForm extends BaseForm
     $this->widgetSchema   ['groups_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Group',
       'multiple' => true,
-      'order_by' => array('sf_guard_user_id DESC, name',''),
+      'order_by' => array('sf_guard_user_id ASC, name',''),
       'label' => 'Groups',
     ));
     $this->validatorSchema['groups_list'] = new sfValidatorDoctrineChoice(array(
