@@ -161,7 +161,7 @@ class attendanceActions extends sfActions
       : '';
 
     $q = Doctrine::getTable('Manifestation')->createQuery('m')
-      ->select('m.id, m.happens_at, e.id, et.id, et.name AS event_name, l.name AS location_name, l.city AS location_city')
+      ->select('m.id, m.happens_at, e.id, et.id, et.name, et.name AS event_name, l.name AS location_name, l.city AS location_city')
       //->select('m.*')
       ->addSelect('(SELECT sum(gg.value) FROM gauge gg WHERE m.id = gg.manifestation_id '.$criteria_gg.' AND gg.workspace_id IN (\''.implode("','",array_keys($this->getUser()->getWorkspacesCredentials())).'\')) AS gauge')
       ->addSelect('(SELECT sum((tt.printed_at IS NOT NULL OR tt.integrated_at IS NOT NULL) AND duplicating IS NULL AND cancelling IS NULL) FROM ticket tt LEFT JOIN tt.Transaction ttr WHERE m.id = tt.manifestation_id AND tt.id NOT IN (SELECT ttt.cancelling FROM ticket ttt WHERE ttt.cancelling IS NOT NULL AND ttt.manifestation_id = m.id) '.str_replace('%%d%%','',$criteria_tt_gauge).' '.str_replace('%%d%%','',$criteria_tt_contact).') AS printed')
