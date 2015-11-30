@@ -22,7 +22,7 @@ class sfGuardUserForm extends PluginsfGuardUserForm
     $this->widgetSchema['prices_list']      ->setOption('order_by',array('name',''));
     $this->widgetSchema['member_cards_list']->setOption('order_by',array('name',''));
     
-    $this->validatorSchema['workspaces_list']->setOption('query', $q = Doctrine::getTable('Workspace')->createQuery('ws',true))
+    $this->validatorSchema['workspaces_list']->setOption('query', $q = Doctrine::getTable('Workspace')->createQuery('ws',true));
     $this->widgetSchema   ['workspaces_list']->setOption('query',$q)
                                              ->setOption('order_by',array('name',''));
   }

@@ -26,14 +26,13 @@ class liMailer extends sfMailer
 {
   protected $email = NULL;
   protected $matcher = NULL;
+  protected $cpt = 0;
   
   public function send(Swift_Mime_Message $message, &$failedRecipients = NULL)
   {
-    $cpt = 0;
     if ( $this->email instanceof Email && count($to = $message->getTo()) == 1 )
-    foreach ( $to as $address => $name )
     {
-      $fields = array(
+      $replace = array(
         'title'       => '',
         'firstname'   => '',
         'name'        => '',
@@ -44,37 +43,52 @@ class liMailer extends sfMailer
         'function'    => '',
         'organism'    => '',
       );
-      switch ( get_class($this->matcher[$cpt]) ) {
-        case 'Contact':
-          foreach ( array('firstname', 'title') as $field )
-            $fields[$field]   = $this->matcher[$cpt]->$field;
-        case 'Organism':
-          foreach ( array('name', 'address', 'postalcode', 'city', 'country') as $field )
-            $fields[$field]   = $this->matcher[$cpt]->$field;
-        break;
-        case 'Professional':
-          foreach ( array('firstname', 'title', 'name') as $field )
-            $fields[$field]   = $this->matcher[$cpt]->Contact->$field;
-          foreach ( array('address', 'postalcode', 'city', 'country', 'organism') as $field )
-            $fields[$fields]  = $this->matcher[$cpt]->Organism->$field;
-          $fields['function'] = $this->matcher[$cpt]->name ? $this->matcher[$cpt]->name : (string)$this->matcher[$cpt]->Category;
+      $go = false;
+      foreach ( $replace as $field => $val )
+      if ( strpos('%%'.strtoupper($field).'%%', $this->email->getFormattedContent()) !== FALSE )
+      {
+        $go = true;
         break;
       }
       
-      $replace = array('%%EMAILADDRESS%%'  => is_int($address) ? $name : $address);
+      foreach ( $to as $address => $name )
+      {
+        $fields = $replace;
+        if ( $go )
+        switch ( get_class($this->matcher[$cpt]) ) {
+          case 'Contact':
+            foreach ( array('firstname', 'title') as $field )
+              $fields[$field]   = $this->matcher[$cpt]->$field;
+          case 'Organism':
+            foreach ( array('name', 'address', 'postalcode', 'city', 'country') as $field )
+              $fields[$field]   = $this->matcher[$cpt]->$field;
+          break;
+          case 'Professional':
+            foreach ( array('firstname', 'title', 'name') as $field )
+              $fields[$field]   = $this->matcher[$cpt]->Contact->$field;
+            foreach ( array('address', 'postalcode', 'city', 'country', 'organism') as $field )
+              $fields[$fields]  = $this->matcher[$cpt]->Organism->$field;
+            $fields['function'] = $this->matcher[$cpt]->name ? $this->matcher[$cpt]->name : (string)$this->matcher[$cpt]->Category;
+          break;
+        }
+        $fields['emailaddress'] = is_int($address) ? $name : $address;
+      }
+      
+      $arr = array();
       foreach ( $fields as $field => $data )
-        $replace['%%'.strtoupper($field).'%%'] = $data;
+        $arr['%%'.strtoupper($field).'%%'] = $data;
       $content = str_replace(
-        array_keys($replace),
-        array_values($replace),
+        array_keys($arr),
+        array_values($arr),
         $this->email->getFormattedContent()
       );
       $message = $this->email->removePart('text')->removePart('html')
         ->addParts($content)
         ->getMessage();
       
-      $cpt++;
+      $this->cpt++;
     }
+    
     return parent::send($message);
   }
   public function setEmail(Email $email)

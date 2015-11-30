@@ -1,7 +1,7 @@
 .ticket { height: 50mm; width: 138mm; }
 .left, .right { height: 50mm; }
 .ticket .left { margin-right: -16mm; }
-.ticket .right { width: 31mm; padding-right: 0; }
+.ticket .right { width: 31mm; padding-right: 0; padding-left: 0; }
 .page { height: 137mm; overflow: hidden; }
 
 .metaevt { margin-top: 4mm; }

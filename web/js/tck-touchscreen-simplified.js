@@ -26,7 +26,10 @@ if ( LI.touchscreenOnNewFamilyLoad == undefined )
   LI.touchscreenOnNewFamilyLoad = [];
 LI.touchscreenSimplifiedCookie = {
   name: 'tck.touchscreen.simplified-gui',
-  maxAge: 30*24*60*60 // 30 days expiration
+  options: {
+    maxAge: 30*24*60*60, // 30 days expiration
+    path: '/'
+  }
 };
   
 
@@ -36,19 +39,21 @@ $(document).ready(function(){
     $('#li_fieldset_simplified').fadeToggle(function(){
       if ( !$(this).is(':visible') )
       {
-        Cookie.set(LI.touchscreenSimplifiedCookie.name, 'hide', { maxAge: LI.touchscreenSimplifiedCookie.maxAge }); // 30 days expiration
+        Cookie.set(LI.touchscreenSimplifiedCookie.name, 'hide', LI.touchscreenSimplifiedCookie.options); // 30 days expiration
         return;
       }
-      Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', { maxAge: LI.touchscreenSimplifiedCookie.maxAge });    // 30 days expiration
+      Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', LI.touchscreenSimplifiedCookie.options);    // 30 days expiration
       
       // click on the last (or the first) tab...
       if ( !Cookie.get(LI.touchscreenSimplifiedCookie.bunch) )
-        Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $('#li_fieldset_simplified .products-types [data-bunch-id]').first().attr('data-bunch-id'), { maxAge: LI.touchscreenSimplifiedCookie.maxAge });
+        Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $('#li_fieldset_simplified .products-types [data-bunch-id]').first().attr('data-bunch-id'), LI.touchscreenSimplifiedCookie.options);
       $('#li_fieldset_simplified .products-types [data-bunch-id="'+Cookie.get(LI.touchscreenSimplifiedCookie.bunch)+'"]').click();
     });
     
     // THE CONTACT LINK...
     $('#li_transaction_field_contact_id').toggleClass('simplified');
+    // THE NEW TRANSACTION LINK
+    $('#li_transaction_field_new_transaction').toggleClass('simplified');
     
     return false;
   });
@@ -59,7 +64,7 @@ $(document).ready(function(){
       return false;
     
     // remember the last chosen tab
-    Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $(this).attr('data-bunch-id'), { maxAge: LI.touchscreenSimplifiedCookie.maxAge });
+    Cookie.set(LI.touchscreenSimplifiedCookie.bunch, $(this).attr('data-bunch-id'), LI.touchscreenSimplifiedCookie.options);
     
     $('#li_fieldset_simplified .products-types .selected').removeClass('selected');
     $(this).addClass('selected');
@@ -70,7 +75,7 @@ $(document).ready(function(){
     LI.touchscreenSimplifiedLoadData();
     return false;
   });
-
+  
   if ( Cookie.get(LI.touchscreenSimplifiedCookie.name) == 'show' )
     $('#simplified-gui').click();
   
@@ -168,6 +173,7 @@ LI.touchscreenSimplifiedLoadData = function(){
           .attr('data-family-id', manif.id)
           .appendTo($('#li_fieldset_simplified .bunch[data-bunch-id="'+type+'"]'))
         ;
+        
         $.each(manif[manif.declinations_name], function(i, gauge){
           var li = $('<li></li>')
             .attr('data-'+gauge.type+'-id', gauge.id)
@@ -203,6 +209,77 @@ LI.touchscreenSimplifiedBehavior = function(type){
     if ( ul.find('input').length == 1 )
       ul.find('input').closest('li').click();
     $(this).closest('.content').find('.bunch > li > ul').not($(this).closest('li').find('ul')).slideUp('fast');
+    
+    // graphical gauge triggering...
+    var success = function(json, declination){
+      console.error(json);
+      console.error(declination);
+      
+      var stock = {
+        total: 0,
+        current: 0,
+        state: 'warning' // can be perfect / warning / critical
+      }
+      var type;
+      switch ( type = $(declination).closest('[data-bunch-id]').attr('data-bunch-id') ) {
+      case 'store':
+        var data = json.declinations[$(declination).attr('data-declination-id')];
+        stock.total = data.perfect > data.current ? data.perfect : data.current;
+        stock.current = data.current;
+        stock.state = 'critical';
+        stock.free = data.perfect - data.current;
+        if ( data.current >= data.critical )
+          stock.state = 'warning';
+        if ( data.current >= data.perfect )
+          stock.state = 'correct';
+        break;
+      
+      case 'museum':
+      case 'manifestations':
+        if ( json.total == 0 )
+          return;
+        stock.total = json.total;
+        stock.free = json.free;
+        
+        $.each(json.booked, function(type, value){
+          stock.current += value;
+        });
+        
+        break;
+      default:
+        console.error('Type of gauge/stock not yet implemented...');
+        break;
+      }
+      
+      $('<span></span>').addClass('gauge-gfx').addClass(type)
+        .append($('<span></span>')
+          .addClass(stock.state)
+          .css('width', (stock.current/stock.total*100)+'%')
+          .prop('title', stock.current+' / '+stock.total)
+        )
+        .prop('title', stock.free+' / '+stock.total)
+        .appendTo(declination)
+      ;
+    }
+    var pdt = LI.touchscreenSimplifiedData[type][$(this).closest('[data-family-id]').attr('data-family-id')];
+    var stock_cache = {};
+    if ( $(this).closest('[data-family-id]').find('.gauge-gfx').length == 0 )
+    $(this).closest('[data-family-id]').find('li').each(function(){
+      var gauge = pdt[pdt.declinations_name][$(this).attr('data-'+pdt.declinations_name.slice(0,-1)+'-id')];
+      var declination = this;
+      if ( stock_cache[gauge.url] !== undefined )
+        success(stock_cache[gauge.url], declination);
+      else
+      $.ajax({
+        url: gauge.url,
+        method: 'get',
+        success: function(json){
+          console.error('get');
+          stock_cache[gauge.url] = json;
+          success(json, declination);
+        }
+      });
+    });
   });
   
   // activating a particular gauge or equivalent
@@ -263,9 +340,9 @@ LI.touchscreenSimplifiedPrices = function(gauge, data){
   });
 }
 
-if ( LI.touchscreenSimplifiedContentLoad == undefined )
-  LI.touchscreenSimplifiedContentLoad = [];
-LI.touchscreenSimplifiedContentLoad.push(function(data, type){
+if ( LI.touchscreenContentLoad == undefined )
+  LI.touchscreenContentLoad = [];
+LI.touchscreenContentLoad.push(function(data, type){
   // every element on the .cart element is rendered here
   
   switch ( type ) {
@@ -323,7 +400,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
             console.error('Simplified GUI: loading item #'+pdt.id+' sold/to sell of type '+type+'...');
           
           // clear data & recalculate totals
-          $('#li_fieldset_simplified .cart .item.'+type+'[data-product-id="'+pdt.id+'"][data-declination-id="'+declination.id+'"][data-price-id="'+price.id+'"][data-state="'+price.state+'"]')
+          $('#li_fieldset_simplified .cart .item.'+type+'[data-product-id="'+pdt.id+'"][data-declination-id="'+declination.id+'"][data-price-id="'+price.id+'"][data-state="'+(price.state?price.state:'')+'"]')
             .remove();
           LI.touchscreenSimplifiedTotal();
           
@@ -354,7 +431,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               .attr('data-product-id', pdt.id)
               .attr('data-declination-id', declination.id)
               .attr('data-price-id', price.id)
-              .attr('data-state', price.state)
+              .attr('data-state', price.state ? price.state : '')
               .attr('data-qty', price.qty)
               .attr('data-value', (price.pit + price['extra-taxes']) / price.qty)
               .prop('title', '#'+pdtid+(price.numerotation[i] ? ' → '+price.numerotation[i] : ''))
@@ -372,12 +449,6 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
               })
             ;
             left
-              /*
-              .append($('<a></a>').prop('href', pdt.category_url).text(pdt.category).addClass('category').prop('title', pdt.category))
-              .append(' ')
-              .append($('<a></a>').prop('href', pdt.product_url).text(name).addClass('product'))
-              .append(' ')
-              */
               .append($('<span></span>').text(pdt.category).addClass('category').prop('title', pdt.category))
               .append(' ')
               .append($('<span></span>').text(name).addClass('product'))
@@ -396,7 +467,7 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
         
         // cancelling post-processing
         $.each(cancelling, function(i, price){
-          $(str = '#li_fieldset_simplified .cart .item.'+type+'[data-price-id="'+price.id+'"][data-declination-id="'+declination.id+'"][data-product-id="'+pdt.id+'"][data-value="'+(price.pit+price['extra-taxes'])/price.qty+'"]:not([data-state=asked]):not(.cancelled):first')
+          $(str = '#li_fieldset_simplified .cart .item.'+type+'[data-price-id="'+price.id+'"][data-declination-id="'+declination.id+'"][data-product-id="'+pdt.id+'"][data-value="'+(price.pit+price['extra-taxes'])/price.qty+'"]:not([data-state=""]):not(.cancelled):first')
             .addClass('cancelled');
         });
       });
@@ -410,6 +481,18 @@ LI.touchscreenSimplifiedContentLoad.push(function(data, type){
       console.error('Simplified GUI: '+type+' is not yet implemented');
       break;
   }
+});
+
+// for having a good update after printing/integrating
+if ( LI.touchscreenFormComplete == undefined )
+  LI.touchscreenFormComplete = [];
+LI.touchscreenFormComplete.push(function(data, index){
+  if ( data.remote_content === undefined )
+    return;
+  if ( !data.remote_content.load.reset )
+    return;
+  var type = data.remote_content.load.type.replace(/_price$/, '');
+  $('#li_fieldset_simplified .cart .item.'+type).remove();
 });
 
 LI.touchscreenSimplifiedTotal = function()

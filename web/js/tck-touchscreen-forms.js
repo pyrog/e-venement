@@ -37,6 +37,12 @@ LI.formSubmit = function(){
         $(elt).find('.data').remove();
         $(elt).append('<div class="data"></div>');
         
+        // external calls / hook
+        if ( LI.touchscreenFormComplete !== undefined )
+        $.each(LI.touchscreenFormComplete, function(i, fct){
+          fct(value, index);
+        });
+        
         // if link
         if ( remote_content && value.remote_content.url != undefined && value.remote_content.text != undefined )
         {

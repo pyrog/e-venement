@@ -76,6 +76,9 @@ LI.completeContent = function(data, type, replaceAll = true)
     
     // manifestations / products
     $.each(data, function(id, pdt){
+      if ( pdt.category === undefined )
+        return;
+      
       var wpdt = $('#li_transaction_'+type+' .families.sample .family:not(.total)').clone(true);
       var add = true;
       if ( $('#li_transaction_'+type+' #'+wpdt.prop('id')+pdt.id).length > 0 )
@@ -90,6 +93,12 @@ LI.completeContent = function(data, type, replaceAll = true)
         wpdt.find('.item:not(.total)').remove();
       }
       
+      // keep the same manifestations for the next transaction
+      $('#li_transaction_field_new_transaction a.persistant').prop('href',
+        $('#li_transaction_field_new_transaction a.persistant').prop('href')+
+        '#'+type+'-'+pdt.id
+      );
+                                          
       // in progress: pdt
       wpdt.find('h3 .event').text(pdt.category).prop('href',pdt.category_url);
       wpdt.find('h3').css('background-color', pdt.color);
@@ -256,8 +265,8 @@ LI.completeContent = function(data, type, replaceAll = true)
   }
   
   // hook for external plugins
-  if ( LI.touchscreenSimplifiedContentLoad != undefined )
-  $.each(LI.touchscreenSimplifiedContentLoad, function(i, fct){
+  if ( LI.touchscreenContentLoad !== undefined )
+  $.each(LI.touchscreenContentLoad, function(i, fct){
     fct(data, type);
   });
   

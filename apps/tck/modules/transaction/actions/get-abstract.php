@@ -95,7 +95,6 @@
     $this->getContext()->getConfiguration()->loadHelpers(array('Slug', 'I18N'));
     
     $fct = 'createQueryFor'.ucfirst($type);
-    //if ( $type == 'museum' ) $type = 'manifestations'; // a trick to avoid many code, becaude museum & manifestations are treated exactly the same way
     
     if ( $request->getParameter('id',false) )
     {
@@ -167,6 +166,7 @@
         $q2 = Doctrine::getTable('Manifestation')->createQuery('m')
           ->select('m.id')
           ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW()")
+          ->andWhere('e.museum = ?', $type == 'museum') // differenciate museums & manifestations
           ->limit($conf['max_display']);
         $ids = array();
         foreach ( $q2->execute() as $manif )
@@ -276,6 +276,52 @@
       'numerotation' => array(),
     );
     
+    switch ( $type ) {
+      case 'store':
+        $declinations_name = 'declinations';
+        $product_param = 'product_id';
+        $declination_param = 'declination_id';
+        break;
+      default:
+        $declinations_name = 'gauges';
+        $product_param = 'manifestation_id';
+        $declination_param = 'gauge_id';
+        break;
+    }
+    
+    if ( !$this->transaction
+      && !$pid
+      && $request->getParameter($declination_param)
+      && $request->getParameter('price_id')
+    )
+    {
+      if ( !$request->getParameter($product_param, false) )
+      {
+        switch ( $type ) {
+        case 'store':
+          $request->setParameter($product_param, Doctrine::getTable('ProductDeclination')->createQuery('pd')->select('pd.id, pd.'.$product_param)->andWhere('pd.id = ?', $request->getParameter($declination_param))->fetchOne()->$product_param);
+          break;
+        default:
+          $request->setParameter($product_param, Doctrine::getTable('Gauge')->createQuery('g')->select('g.id, g.'.$product_param)->andWhere('g.id = ?', $request->getParameter($declination_param))->fetchOne()->$product_param);
+          break;
+        }
+      }
+      $this->json[$request->getParameter($product_param)] = array(
+        'id' => $request->getParameter($product_param),
+        'declinations_name' => $declinations_name,
+        $declinations_name => array(),
+      );
+      $this->json[$request->getParameter($product_param)][$declinations_name][$request->getParameter($declination_param)] = array(
+        'id' => $request->getParameter($declination_param),
+        'prices' => array($request->getParameter('price_id') => array(
+          'id'      => $request->getParameter('price_id'),
+          'state'   => $request->getParameter('state', '') == 'false' ? '' : $request->getParameter('state', ''),
+          'qty'     => 0,
+        )),
+        'available_prices' => array(),
+      );
+    }
+    else
     foreach ( $this->transaction ? $this->transaction[$subobj.'s'] : $pid as $item ) // loophole
     {
       // by manifestation/product
@@ -311,6 +357,7 @@
             ->andWhere('wsu.sf_guard_user_id IS NOT NULL')
             ->andWhere('m.id = ?',$id)
           ;
+      
           if ( $gid = $request->getParameter('gauge_id', false) )
             $q->leftJoin('m.IsNecessaryTo int')
               ->leftJoin('int.Gauges intg')
@@ -331,7 +378,7 @@
             'location_url'  => cross_app_url_for('event', 'location/show?id='.$product->location_id,true),
             'color'         => (string)$product->Color,
             'declination_url'   => cross_app_url_for('event','',true),
-            'declinations_name' => 'gauges',
+            'declinations_name' => $declinations_name,
           );
           break;
         case 'store':
@@ -370,6 +417,7 @@
             $product->Declinations[] = $declination;
           }
           
+          if ( $product )
           $this->json[$product->id] = array(
             'id'            => $product->id,
             'name'          => (string)$product,
@@ -379,12 +427,14 @@
             'product_url'   => cross_app_url_for('pos', 'product/show?id='.$product->id, true),
             'color'         => NULL,
             'declinations_url'  => NULL,
-            'declinations_name' => 'declinations',
+            'declinations_name' => $declinations_name,
           );
           break;
         }
         
         // gauges
+        if ( !$product )
+          continue;
         $this->json[$product->id][$this->json[$product->id]['declinations_name']] = array();
         $cpt = 0;
         foreach ( $product[$subobj.'s'] as $declination )
@@ -481,7 +531,7 @@
               continue;
             
             // then add the price...
-            $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['available_prices'][$pp->Price.' '.$pp->price_id] = array(
+            $this->json[$product->id][$this->json[$product->id]['declinations_name']][$declination->id]['available_prices'][str_pad(number_format($pp->Price->rank,5),20,'0',STR_PAD_LEFT).' || '.$pp->Price.' || '.$pp->price_id] = array(
               'id'  => $pp->price_id,
               'name'  => (string)$pp->Price,
               'description'  => $pp->Price->description,

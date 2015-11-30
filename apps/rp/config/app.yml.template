@@ -14,6 +14,7 @@ all:
     #no_event_archives: false
     #labels_offset: 500
     plugins: []
+    #email_delay: 15 # in seconds
   contact:
     force_title: true
     force_uppercase: [name, city]
