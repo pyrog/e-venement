@@ -211,8 +211,14 @@ class OptionCsvForm extends BaseOptionCsvForm
         }
       }
       
-      if ( isset($contact['organism_email']) && $contact['organism_email'] ) $contact['email'] = $contact['organism_email'];
-      if ( isset($contact['professional_email']) && $contact['professional_email'] ) $contact['email'] = $contact['professional_email'];
+      $email = '';
+      if ( isset($contact['professional_email']) && $contact['professional_email'] )
+        $email = $contact['professional_email'];
+      elseif ( $contact['email'] )
+        $email = $contact['email'];
+      elseif ( isset($contact['organism_email']) && $contact['organism_email'] )
+        $email = $contact['organism_email'];
+      $contact['email'] = $email;
       unset($contact['organism_email'], $contact['professional_email']);
       
       if ( isset($contact['organism_phonenumber']) && $contact['organism_phonenumber'] )
