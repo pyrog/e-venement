@@ -51,10 +51,10 @@ abstract class PluginEmail extends BaseEmail
     {
       if ( $pro->contact_email && !($this->isNewsletter() && $pro->contact_email_no_newsletter) )
         $this->to[] = trim($pro->contact_email);
-      else if ( $pro->Organism->email && !($this->isNewsletter() && $pro->Organism->email_no_newsletter) )
-        $this->to[] = trim($pro->Organism->email);
-      else if ( $pro->Contact->email && !($this->isNewsletter() && $pro->Contact->email_no_newsletter) )
+      elseif ( $pro->Contact->email && !($this->isNewsletter() && $pro->Contact->email_no_newsletter) )
         $this->to[] = trim($pro->Contact->email);
+      elseif ( $pro->Organism->email && !($this->isNewsletter() && $pro->Organism->email_no_newsletter) )
+        $this->to[] = trim($pro->Organism->email);
       $this->matcher[count($this->to)-1] = $pro;
     }
     // organisms
