@@ -36,46 +36,6 @@ require_once dirname(__FILE__).'/../lib/priceGeneratorHelper.class.php';
  */
 class priceActions extends autoPriceActions
 {
-  public function executeChangeRank(sfWebRequest $request)
-  {
-    foreach ( array('id', 'smaller_than', 'bigger_than') as $param )
-    if ( intval($request->getParameter($param)).'' !== ''.$request->getParameter($param) )
-      $request->setParameter($param, 0);
-    
-    $this->prices = Doctrine::getTable('Price')->createQuery('e')
-      ->andWhereIn('e.id', array($request->getParameter('id'), $request->getParameter('smaller_than'), $request->getParameter('bigger_than')))
-      ->execute();
-    $this->forward404Unless($this->prices && $this->prices->count() > 1);
-    
-    $dummy = new Price;
-    $prices = array(
-      'current' => NULL,
-      'before'  => $dummy,
-      'after'   => $dummy,
-    );
-    foreach ( $this->prices as $price )
-    switch ( $price->id ) {
-    case $request->getParameter('smaller_than'):
-      $prices['after'] = $price;
-      $dummy->rank = 0;
-      break;
-    case $request->getParameter('id'):
-      $prices['current'] = $price;
-      break;
-    case $request->getParameter('bigger_than'):
-      $prices['before'] = $price;
-      $dummy->rank = $price->rank*3;
-      break;
-    }
-    
-    $rank = ($prices['after']->rank + $prices['before']->rank) / 2;
-    $prices['current']->rank = $rank;
-    $prices['current']->save();
-    
-    $this->price  = $prices['current'];
-    $this->reload = false;
-    return 'Success';
-  }
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
@@ -104,10 +64,5 @@ class priceActions extends autoPriceActions
       return 'Success';
     else
       return 'Json';
-  }
-  
-  protected function getSort()
-  {
-    return array('rank', 'ASC');
   }
 }

@@ -22,7 +22,7 @@ generator:
         linked_products_list: { label: Linked products }
         taxes_list: { label: Taxes }
       list:
-        display: [name, description, value, online, hide, member_card_linked, rank]
+        display: [name, description, value, online, hide, member_card_linked]
         sort: ['hide, pt.name', '']
         object_actions:
           _edit: ~
