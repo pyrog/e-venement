@@ -17,6 +17,7 @@ class ProductDeclinationForm extends BaseProductDeclinationForm
   {
     parent::configure();
     
+    $this->widgetSchema['id']->setAttribute('class', 'declination-id');
     $this->widgetSchema['product_id'] = new sfWidgetFormInputHidden;
     $this->widgetSchema['stock_perfect']->setLabel('Perfect stock')
       ->setAttribute('class', 'stock stock-perfect')
