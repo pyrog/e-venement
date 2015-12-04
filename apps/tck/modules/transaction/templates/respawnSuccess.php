@@ -23,6 +23,11 @@
   <script type="text/javascript">
     $(document).ready(function(){
       $('#operation input[type=text]').focus();
+      if ( window.location.hash ) {
+        $('.sf_admin_edit form').prop('action',
+          $('.sf_admin_edit form').prop('action') + window.location.hash
+        );
+      }
     });
   </script>
 </div>

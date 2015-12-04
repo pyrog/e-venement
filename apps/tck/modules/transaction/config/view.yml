@@ -5,6 +5,7 @@ editSuccess:
   javascripts: [helper-cookies]
 respawnSuccess:
   stylesheets: [-tck-touchscreen]
+  javascripts: [-*]
 registeredSuccess:
   javascripts: [-*]
 batchPrintSuccess:
