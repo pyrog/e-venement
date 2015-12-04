@@ -38,7 +38,6 @@ $(document).ready(function(){
       .mouseleave(function(){ $(this).removeClass('ui-state-hover'); })
       .click(function(){
         var elt = this;
-        console.error('click');
         $('#transition').show();
         $.get($(this).prop('href'), { declination_id: $(this).attr('data-id') }, function(){
           $('#transition .close').click();
