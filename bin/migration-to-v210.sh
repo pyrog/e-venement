@@ -33,7 +33,7 @@ SFUSER="$1"
 [ -n "$5" ] && export PGPORT="$5"
 
 
-echo "Usage: bin/migration-to-v29.sh SFUSER [DB [USER [HOST [PORT]]]]"
+echo "Usage: bin/migration-to-v210.sh SFUSER [DB [USER [HOST [PORT]]]]"
 echo "Are you sure you want to continue with those parameters :"
 echo "The e-venement's DB user: $SFUSER"
 echo "Database: $PGDATABASE"
@@ -68,8 +68,8 @@ if [ "$subm" != "n" ]; then
   done
 fi
 
-
-read -p "Do you want to reset your dump & patch your database for e-venement v2.8 ? [Y/n] " dump
+echo ""
+read -p "Do you want to reset your dump & patch your database for e-venement v2.10 ? [Y/n] " dump
 if [ "$dump" != "n" ]; then
 
 name="$PGDATABASE"
@@ -80,37 +80,6 @@ pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.before.pgdump && echo "DB pre dumped
 
 ## preliminary modifications & backup
 psql <<EOF
-  ALTER TABLE contact ADD COLUMN last_accessor_id integer;
-  ALTER TABLE contact_version ADD COLUMN last_accessor_id integer;
-  
-  ALTER TABLE contact DROP COLUMN latitude;
-  ALTER TABLE contact DROP COLUMN longitude;
-  ALTER TABLE contact_version DROP COLUMN latitude;
-  ALTER TABLE contact_version DROP COLUMN longitude;
-  ALTER TABLE organism DROP COLUMN latitude;
-  ALTER TABLE organism DROP COLUMN longitude;
-  ALTER TABLE organism_version DROP COLUMN latitude;
-  ALTER TABLE organism_version DROP COLUMN longitude;
-  ALTER TABLE location DROP COLUMN latitude;
-  ALTER TABLE location DROP COLUMN longitude;
-  ALTER TABLE addressable DROP COLUMN latitude;
-  ALTER TABLE addressable DROP COLUMN longitude;
-  
-  ALTER TABLE product_declination ADD COLUMN use_stock BOOLEAN DEFAULT false;
-  
-  ALTER TABLE checkpoint ADD COLUMN type VARCHAR(255);
-  UPDATE checkpoint SET type = CASE WHEN legal THEN 'entrance' ELSE 'info' END;
-  ALTER TABLE checkpoint DROP COLUMN legal;
-  UPDATE ticket SET taxes = 0 WHERE taxes IS NULL;
-  UPDATE ticket_version SET taxes = 0 WHERE taxes IS NULL;
-  
-  CREATE TABLE meta_event_translation (id INTEGER, name VARCHAR(255), description TEXT, lang CHARACTER(2));
-  INSERT INTO meta_event_translation (SELECT id, name, '', 'en' FROM meta_event);
-  ALTER TABLE meta_event DROP COLUMN name;
-  
-  INSERT INTO sf_guard_permission(name, description, created_at, updated_at) values ('tck-duplicate-ticket', 'Permission to duplicate tickets', now(), now());
-  INSERT INTO sf_guard_group_permission(permission_id, group_id, created_at, updated_at) values ((select id from sf_guard_permission where name = 'tck-duplicate-ticket'), (select id from sf_guard_group where name = 'tck-responsible'), now(), now());
-  INSERT INTO sf_guard_group_permission(permission_id, group_id, created_at, updated_at) values ((select id from sf_guard_permission where name = 'tck-duplicate-ticket'), (select id from sf_guard_group where name = 'tck-admin'), now(), now());
 EOF
 echo "DUMPING DB..."
 pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.pgdump && echo "DB dumped"
@@ -183,44 +152,14 @@ if [ "$refresh" == 'y' ]; then
   psql $db <<EOF
 DELETE FROM contact_index;
 DELETE FROM organism_index;
+DELETE FROM event_index;
 EOF
   ./symfony e-venement:search-index Contact
   ./symfony e-venement:search-index Organism
+  ./symfony e-venement:search-index Event
 fi
 
 # final data modifications
-echo ""
-read -p "Do you want to copy MetaEvent's english translations (default i18n after a migration from v2.7) into french ? [Y/n] " reset
-[ "$reset" != 'n' ] && ./symfony e-venement:copy-i18n MetaEvent en fr ' '
-echo ""
-read -p "Do you want to update the Postalcodes data (can take a while)? [y/N] " reset
-[ "$reset" = 'y' ] && echo 'DELETE FROM postalcode;' | psql && ./symfony doctrine:data-load --append data/fixtures/20-postalcodes.yml
-
-echo ""
-read -p "Do you want to add the new permissions? [Y/n] " add
-if [ "$add" != 'n' ]
-then
-  echo "If you get Symfony errors in the next few actions, it is not a problem, the permissions simply exist already in the DB"
-  echo ""
-  echo "Permissions & groups for the pos module"
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-pos.yml
-  echo "Permissions & groups for the grp module"
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-grp.yml
-  echo "Permissions & groups for the tck module (museums)"
-  ./symfony doctrine:data-load --append data/fixtures/11-permissions-v29-tck.yml
-fi
-
-echo ""
-read -p 'Adding "pos-admin" users in the new "pos-product-stats" group ? [Y/n] ' dataload
-if [ "$dataload" != 'n' ]; then
-psql <<EOF
-  INSERT INTO sf_guard_user_group(group_id,user_id,created_at,updated_at)
-    (SELECT (SELECT id FROM sf_guard_group WHERE name = 'pos-stats'), user_id, now(), now()
-     FROM sf_guard_user_group
-     WHERE group_id = (SELECT id FROM sf_guard_group WHERE name = 'pos-admin')
-    );
-EOF
-fi
 
 echo ''
 echo "Changing (or not) file permissions for the e-venement Messaging Network ..."
@@ -255,13 +194,6 @@ echo ""
 echo "Don't forget to configure those extra features:"
 echo "- Check the different apps/*/config/*.yml.template to be sure that a apps/*/config/*.yml exists, create it if necessary"
 echo "- Change the apps/*/config/factories.yml to replace sfMailer with liMailer and Swift_DoctrineSpool with liSpool, and correct your scripts to use the task e-venement:send-emails --time-limit=XX instead of project:send-emails"
-echo '- If you have a working "pub" application, think to add a app_manifestation_online_users parameter in app/event/config/app.yml'
-echo "- e-venement Messaging Network: rm -rf web/liJappixPlugin; svn update; then run http[s]://[YOUR E-VENEMENT BASE ROOT]/liJappixPlugin"
-echo "- If this platform needs Passbooks, do not forget to set them up in the apps *pub* & *tck*"
-echo "- If this platform uses the *grp* app, you can enable *liGrpPlugin* in the *tck* app, it will update the *pub* app data when you will cancel a ticket in the *tck* app"
-echo "- If this plateform is using QRCodes, think to move the app_seller_salt from apps/tck/config/app.yml to project_eticketting_salt in config/project.yml"
-echo "- If this instance sells member cards online, do not forget to setup project_cards_expiration_date in your config/project.yml"
-echo "- IMPORTANT: the management of extra modules has evoluated, it has moved from config/extra-modules.php to config/project.yml, DO NOT FORGET IT!"
 
 echo ""
 echo "Don't forget to inform your users about those evolutions"
