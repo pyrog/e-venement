@@ -16,5 +16,17 @@ class MemberCardTypePromoCodeForm extends BaseMemberCardTypePromoCodeForm
   public function configure()
   {
     parent::configure();
+    
+    foreach ( array(
+      'sf_guard_user_id',
+      'automatic',
+      'version',
+      'member_card_type_id',
+    ) as $field )
+      $this->widgetSchema[$field] = new sfWidgetFormInputHidden;
+    
+    $this->widgetSchema['name']->setLabel('Code')->setAttribute('class', 'promo-code-name');
+    $this->widgetSchema['id']->setAttribute('class', 'promo-code-id');
+    $this->widgetSchema['description'] = new sfWidgetFormTextarea;
   }
 }

@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Code</source>
+        <target>Code</target>
+      </trans-unit>
+      <trans-unit>
         <source>%%nb%% member card(s) have been cleaned up</source>
         <target>%%nb%% carte(s) d'abo ont été nettoyées</target>
       </trans-unit>

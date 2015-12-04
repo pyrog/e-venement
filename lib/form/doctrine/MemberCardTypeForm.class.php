@@ -53,5 +53,8 @@ class MemberCardTypeForm extends BaseMemberCardTypeForm
       ),
     );
     $this->widgetSchema['public_details'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    
+    // promo code
+    $this->embedRelation('PromoCodes as promo_codes');
   }
 }

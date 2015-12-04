@@ -1,0 +1,3 @@
+editSuccess :
+  stylesheets: [rp-promo]
+  javascripts: [rp-promo]

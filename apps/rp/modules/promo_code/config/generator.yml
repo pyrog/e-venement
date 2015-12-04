@@ -18,6 +18,12 @@ generator:
         display: [member_card_type_id, =name, begins_at, ends_at]
       filter:
         display: [member_card_type_id, name, begins_at, ends_at]
-      form:    ~
+      form:
+        display:
+          General: [member_card_type_id, name, begins_at, ends_at]
+          '': [created_at]
       edit:    ~
-      new:     ~
+      new:
+        actions:
+          _list: ~
+          _save: ~

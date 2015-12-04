@@ -33,10 +33,14 @@ generator:
           NONE: [name, description, users_list, nb_tickets_mini, _show_url_public]
           Money: [value, product_declination_id, price_id]
           Online: [public_details]
+          Promo Codes: [promo_codes, _form_promo_code_del]
       edit:
         actions:
           _list: ~
           _delete: ~
+          _promo_code:
+            action: addPromoCode
+            ui-icon: plus
           _clean:
             action: clean
             ui-icon: wrench
