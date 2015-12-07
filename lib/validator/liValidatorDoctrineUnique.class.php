@@ -23,7 +23,7 @@
 ?>
 <?php
 
-class liValidatorDoctrineUniqueCaseInsensitive extends liValidatorDoctrineUnique
+class liValidatorDoctrineUnique extends sfValidatorDoctrineUnique
 {
   /**
    * Configures the current validator.
@@ -39,12 +39,70 @@ class liValidatorDoctrineUniqueCaseInsensitive extends liValidatorDoctrineUnique
    *                        You can also pass an array if the table has several primary keys
    *  * connection:         The Doctrine connection to use (null by default)
    *  * throw_global_error: Whether to throw a global error (false by default) or an error tied to the first field related to the column option array
+   *  * comparator:         The comparator that needs to be used to retrieve the uniqueness of the values ('=' by default)
    *
    * @see sfValidatorBase
    */
-  public function __construct($options = array(), $messages = array())
+  protected function configure($options = array(), $messages = array())
   {
-    $options['comparator'] = 'ILIKE';
-    parent::__construct($options, $messages);
+    $this->addRequiredOption('original_object');
+    $this->addOption('comparator', '=');
+    parent::configure($options, $messages);
+  }
+
+  protected function doClean($values)
+  {
+    $originalValues = $values;
+    $table = Doctrine_Core::getTable($this->getOption('model'));
+    if (!is_array($this->getOption('column')))
+    {
+      $this->setOption('column', array($this->getOption('column')));
+    }
+
+    //if $values isn't an array, make it one
+    if (!is_array($values))
+    {
+      //use first column for key
+      $columns = $this->getOption('column');
+      $values = array($columns[0] => $values);
+    }
+
+    $q = Doctrine_Core::getTable($this->getOption('model'))->createQuery('a');
+    foreach ($this->getOption('column') as $column)
+    {
+      $colName = $table->getColumnName($column);
+      if (!array_key_exists($column, $values))
+      {
+        // one of the column has be removed from the form
+        return $originalValues;
+      }
+
+      $q->addWhere('a.' . $colName . ' '.$this->getOption('comparator').' ?', $values[$column]);
+    }
+    
+    // do not consider the current object itself
+    foreach ( $this->getPrimaryKeys() as $key )
+    {
+      $q->andWhere('a.'.$key.' != ?', $this->getOption('original_object')->$key);
+    }
+
+    $object = $q->fetchOne();
+
+    // if no object or if we're updating the object, it's ok
+    if (!$object || $this->isUpdate($object, $values))
+    {
+      return $originalValues;
+    }
+
+    $error = new sfValidatorError($this, 'invalid', array('column' => implode(', ', $this->getOption('column'))));
+
+    if ($this->getOption('throw_global_error'))
+    {
+      throw $error;
+    }
+
+    $columns = $this->getOption('column');
+
+    throw new sfValidatorErrorSchema($this, array($columns[0] => $error));
   }
 }
