@@ -30,6 +30,7 @@ class MemberCardTypePromoCodeForm extends BaseMemberCardTypePromoCodeForm
     $val2 = new liValidatorDoctrineUniqueCaseInsensitive(array(
       'model'     => 'MemberCardTypePromoCode',
       'column'    => 'name',
+      'original_object' => $this->getObject(),
     ));
     $this->validatorSchema['name'] = new sfValidatorAnd;
     $this->validatorSchema['name']->addValidator($val1);
