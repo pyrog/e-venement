@@ -1,4 +1,4 @@
-<?php if ( !$sf_user->hasCredential('pr-card-promo-mod') && $sf_user->hasCredential('pr-card-promo') ): ?>
+<?php if ( !$sf_user->hasCredential('pr-card-promo-edit') && $sf_user->hasCredential('pr-card-promo') ): ?>
   <ol>
   <?php foreach ( $form->getObject()->PromoCodes as $promo ): ?>
     <li data-id="<?php echo $promo->id ?>">

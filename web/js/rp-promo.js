@@ -4,6 +4,7 @@ $(document).ready(function(){
   );
 
   // playing w/ promo codes to make it more ergonomic
+  if ( $(this).closest('form').find('.sf_admin_form_field_promo_code_del').length > 0 )
   $('.mod-member_card_type .sf_admin_form_field_promo_codes input.promo-code-id').each(function(){
     
     // existing declinations
