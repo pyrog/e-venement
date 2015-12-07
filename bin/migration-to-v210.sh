@@ -146,8 +146,8 @@ echo ""
 echo "Be careful with DB errors. A table with an error is an empty table !... If necessary take back the DB backup and correct things by hand before retrying this migration script."
 echo ""
 
-read -p "Do you want to add permissions for the promo codes? [Y/n]" fixtures
-if [ "$fixtures" != 'y' ]; then
+read -p "Do you want to add permissions for the promo codes? [Y/n] " fixtures
+if [ "$fixtures" != 'n' ]; then
   ./symfony doctrine:data-load --append data/fixtures/11-permissions-v30-promo.yml
 fi
 
