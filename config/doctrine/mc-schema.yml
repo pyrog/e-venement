@@ -63,6 +63,11 @@ MemberCardTypePromoCode:
   inheritance:
     extends: Traceable
     type: concrete
+  indexes:
+    mct_promo_code_begins_at:
+      fields: [begins_at]
+    mct_promo_code_ends_at:
+      fields: [ends_at]
   columns:
     name:
       type: string(255)

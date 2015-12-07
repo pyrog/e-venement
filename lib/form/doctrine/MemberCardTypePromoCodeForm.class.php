@@ -25,7 +25,16 @@ class MemberCardTypePromoCodeForm extends BaseMemberCardTypePromoCodeForm
     ) as $field )
       $this->widgetSchema[$field] = new sfWidgetFormInputHidden;
     
-    $this->widgetSchema['name']->setLabel('Code')->setAttribute('class', 'promo-code-name');
+    $this->widgetSchema   ['name']->setLabel('Code')->setAttribute('class', 'promo-code-name');
+    $val1 = $this->validatorSchema['name'];
+    $val2 = new liValidatorDoctrineUniqueCaseInsensitive(array(
+      'model'     => 'MemberCardTypePromoCode',
+      'column'    => 'name',
+    ));
+    $this->validatorSchema['name'] = new sfValidatorAnd;
+    $this->validatorSchema['name']->addValidator($val1);
+    $this->validatorSchema['name']->addValidator($val2);
+    
     $this->widgetSchema['id']->setAttribute('class', 'promo-code-id');
     $this->widgetSchema['description'] = new sfWidgetFormTextarea;
   }

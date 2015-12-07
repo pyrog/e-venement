@@ -20,7 +20,7 @@ generator:
         display: [member_card_type_id, name, begins_at, ends_at]
       form:
         display:
-          General: [member_card_type_id, name, begins_at, ends_at]
+          Promo Codes: [member_card_type_id, name, begins_at, ends_at]
           '': [created_at]
       edit:    ~
       new:

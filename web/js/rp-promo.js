@@ -23,7 +23,7 @@ $(document).ready(function(){
         $('#transition').show();
         $.get($(this).prop('href'), { promo_code_id: $(this).attr('data-id') }, function(){
           $('#transition .close').click();
-          $(elt).closest('tr').fadeOut(function(){ $(this).remove(); });
+          $(elt).closest('table').closest('tr').fadeOut(function(){ $(this).remove(); });
         });
         return false;
       })

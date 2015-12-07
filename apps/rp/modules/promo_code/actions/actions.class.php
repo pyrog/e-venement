@@ -13,6 +13,13 @@ require_once dirname(__FILE__).'/../lib/promo_codeGeneratorHelper.class.php';
  */
 class promo_codeActions extends autoPromo_codeActions
 {
+  public function executeDeleteSimple(sfWebRequest $request)
+  {
+    $this->forward404Unless($promo = Doctrine::getTable('MemberCardTypePromoCode')->find($request->getParameter('promo_code_id', 0)) );
+    $promo->delete();
+    return sfView::NONE;
+  }
+  
   public function executeNew(sfWebRequest $request)
   {
     parent::executeNew($request);
