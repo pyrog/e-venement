@@ -58,6 +58,7 @@ all:
   #  title: Member cards    # tweak this for the ariane widget
   #  show_expire_at: true
   #  complete_your_passes: false  # adds a button in the bottom of the cart
+  #  promo_code: false
   #show:
   #  company_id: 5 # do not set something if you do not care
   seller:

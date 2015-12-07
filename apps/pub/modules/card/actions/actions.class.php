@@ -15,6 +15,37 @@ class cardActions extends sfActions
     $this->dispatcher->notify(new sfEvent($this, 'pub.pre_execute', array('configuration' => $this->configuration)));
     parent::preExecute();
   }
+  public function executeAddPromoCode(sfWebRequest $request)
+  {
+    $this->forward404Unless($request->hasParameter('redirect'));
+    $promo = Doctrine::getTable('MemberCardTypePromoCode')->createQuery('pc')
+      ->andWhere('pc.name ILIKE ?', $request->getParameter('promo-code', ''))
+      ->andWhere('pc.ends_at > NOW() OR pc.ends_at IS NULL')
+      ->andWhere('pc.begins_at < NOW() OR pc.begins_at IS NULL')
+      //->leftJoin('pc.MemberCardType mct')
+      ->fetchOne();
+    
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    if ( !$promo )
+      $this->getUser()->setFlash('error', __('Special offer not found.'));
+    else
+    {
+      $go = true;
+      foreach ( $this->getUser()->hasContact() ? $this->getUser()->getContact()->MemberCards : $this->getUser()->getTransaction()->MemberCards as $mc )
+      if ( $mc->member_card_type_id == $promo->member_card_type_id && strtotime($mc->expire_at) > time() )
+        $go = false;
+      
+      if ( $go )
+      {
+        $this->getContext()->getConfiguration()->addMemberCard($this->getUser()->getTransaction(), $promo->member_card_type_id);
+        $this->getUser()->setFlash('success', __('Enjoy your special offer!'));
+      }
+      else
+        $this->getUser()->setFlash('notice', __('You can already enjoy this special offer.'));
+    }
+    
+    $this->redirect($request->getParameter('redirect'));
+  }
   public function executeIndex(sfWebRequest $request)
   {
     //$this->redirectIfNotAuthenticated();
