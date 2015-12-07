@@ -27,10 +27,11 @@ generator:
         list_platform: { label: Platform }
         list_browser: { label: Browser }
         list_first_user: { label: User }
+        list_origin: { label: Follows }
       list: 
         #actions: []
         title: Statistics from online sales
-        display: [first_page, _list_first_page, referer, _list_referer, campaign, _list_transaction, transaction_id, _list_contact, _list_transaction_amount, _list_deal_done, _list_ipaddress, ipaddress, _list_platform, _list_browser, user_agent, created_at, _list_first_user]
+        display: [first_page, _list_first_page, referer, _list_referer, campaign, _list_transaction, transaction_id, _list_origin, _list_contact, _list_transaction_amount, _list_deal_done, _list_ipaddress, ipaddress, _list_platform, _list_browser, user_agent, created_at, _list_first_user]
         batch_actions:
           _exceptions:
             label: Create exceptions
@@ -41,7 +42,7 @@ generator:
       filter:
         display:
           Externals: [referer_domain, referer, campaign, ipaddress, user_agent]
-          Internals: [transaction_id, done_deal, contact_id, first_page, created_at, sf_guard_user_id]
+          Internals: [transaction_id, done_deal, contact_id, first_page, created_at, only_final_visits, sf_guard_user_id]
           Combinated: [recorded_filters, not_recorded_filters]
       form:    ~
       edit:    ~

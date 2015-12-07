@@ -32,6 +32,7 @@ class myUser extends pubUser
   protected $workspaces = array();
   protected $transaction = NULL;
   protected $auth_exceptions = array();
+  protected $origin_id = NULL;
   
   public function initialize(sfEventDispatcher $dispatcher, sfStorage $storage, $options = array())
   {
@@ -385,6 +386,7 @@ class myUser extends pubUser
     if ( $this->getAttribute('transaction_id',false) && $this->hasContact() )
       $contact = $this->getContact();
     
+    $this->setOriginId();
     $this->getAttributeHolder()->remove('transaction_id');
     $this->transaction = NULL;
     $this->getTransaction();
@@ -397,12 +399,24 @@ class myUser extends pubUser
   {
     if ( $this->getTransaction()->Order->count() == 0 )
       $this->transaction->Tickets->delete();
+    $this->setOriginId();
     $this->getAttributeHolder()->remove('transaction_id');
     $this->transaction = NULL;
     $this->getTransaction();
     
     return $this;
   }
+  
+  public function setOriginId()
+  {
+    $this->origin_id = $this->getAttribute('transaction_id',false);
+    return $this;
+  }
+  public function getOriginId()
+  {
+    return $this->origin_id;
+  }
+  
   
   public function setDefaultCulture(array $languages)
   {

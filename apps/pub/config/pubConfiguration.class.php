@@ -145,20 +145,31 @@ class pubConfiguration extends sfApplicationConfiguration
     $params = $event->getParameters();
     if ( !sfContext::hasInstance() || !( isset($params['transaction']) && $params['transaction'] instanceof Transaction ))
     {
-      error_log('Impossible to record de Web Origin: no transaction given, or similar...');
+      error_log('Impossible to record Web Origin: no transaction given, or similar...');
       return;
     }
     $transaction = $params['transaction'];
     
+    $wo = NULL;
+    $event->getSubject()->getOriginId() && $wo = Doctrine::getTable('WebOrigin')->createQuery('wo')
+      ->andWhere('wo.transaction_id = ?', $event->getSubject()->getOriginId())
+      ->fetchOne();
+    
     $origin = new WebOrigin;
     $origin->Transaction  = $transaction;
-    $origin->first_page   = $request->getUri();
-    $origin->campaign     = $request->getParameter('com');
-    $origin->referer      = $request->getReferer();
+    $origin->first_page   = $wo ? $wo->first_page : $request->getUri();
+    $origin->campaign     = $wo ? $wo->campaign : $request->getParameter('com');
+    $origin->referer      = $wo ? $wo->referer : $request->getReferer();
     $origin->ipaddress    = $request->getRemoteAddress();
     $origin->user_agent   = $_SERVER['HTTP_USER_AGENT'].'';
     
     $origin->save();
+    
+    if ( $wo )
+    {
+      $wo->next_id = $origin->id;
+      $wo->save();
+    }
   }
   
   public function triggerTransactionBeforeCreation(sfEvent $event)

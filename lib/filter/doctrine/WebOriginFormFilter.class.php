@@ -89,6 +89,14 @@ class WebOriginFormFilter extends BaseWebOriginFormFilter
       'choices' => $choices,
       'multiple' => true,
     ));
+    
+    $this->widgetSchema   ['only_final_visits'] = new sfWidgetFormInputCheckbox(array(
+      'value_attribute_value' => 'only',
+    ));
+    $this->validatorSchema['only_final_visits'] = new sfValidatorChoice(array(
+      'choices' => array($this->widgetSchema['only_final_visits']->getOption('value_attribute_value')),
+      'required' => false,
+    ));
   }
   
   public function getFields()
@@ -98,6 +106,7 @@ class WebOriginFormFilter extends BaseWebOriginFormFilter
       'done_deal'             => 'DoneDeal',
       'recorded_filters'      => 'RecordedFilters',
       'not_recorded_filters'  => 'NotRecordedFilters',
+      'only_final_visits'     => 'OnlyFinalVisits',
     );
   }
   
@@ -115,6 +124,17 @@ class WebOriginFormFilter extends BaseWebOriginFormFilter
     
     $q->leftJoin('t.Version tv')
       ->andWhereIn('tv.sf_guard_user_id', $values);
+    return $q;
+  }
+  
+  public function addOnlyFinalVisitsColumnQuery(Doctrine_Query $q, $field, $values)
+  {
+    if ( !$values )
+      return $q;
+    
+    $a = $q->getRootALias();
+    $q->andWhere("$a.next_id IS NULL");
+    
     return $q;
   }
   
@@ -157,6 +177,10 @@ class WebOriginFormFilter extends BaseWebOriginFormFilter
   public function addUserAgentColumnQuery(Doctrine_Query $q, $field, $value)
   {
     if ( !$value )
+      return $q;
+    if ( !is_array($value) )
+      $value = array('text' => $value);
+    if ( !$value['text'] )
       return $q;
     
     $a = $q->getRootAlias();

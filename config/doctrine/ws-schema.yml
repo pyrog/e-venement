@@ -334,10 +334,20 @@ WebOrigin:
       type: string
       notnull: true
       notblank: true
+    next_id:
+      type: integer
+      unique: true
   relations:
     Transaction:
       foreignType: one
       onDelete: CASCADE
+      onUpdate: CASCADE
+    WebNext:
+      foreignType: one
+      class: WebOrigin
+      local: next_id
+      foreignAlias: WebOrigin
+      onDelete: SET NULL
       onUpdate: CASCADE
 WebOriginIp:
   package: ws

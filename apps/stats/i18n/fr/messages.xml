@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Follows</source>
+        <target>Suit</target>
+      </trans-unit>
+      <trans-unit>
         <source>Day</source>
         <target>Jour</target>
       </trans-unit>

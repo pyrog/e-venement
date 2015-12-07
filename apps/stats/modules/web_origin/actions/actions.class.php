@@ -83,6 +83,7 @@ class web_originActions extends autoWeb_originActions
     $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
     $limit = 10;
     $dql = $this->buildQuery()->removeDqlQueryPart('orderby');
+    $dql->andWhere('wo.next_id IS NULL');
     $sql = preg_replace('/^SELECT .* FROM/', '', $dql->getRawSql());
     
     switch ( $which ) {
