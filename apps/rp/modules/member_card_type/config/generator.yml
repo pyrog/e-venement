@@ -41,6 +41,7 @@ generator:
           _promo_code:
             action: addPromoCode
             ui-icon: plus
+            label: Promo Code
           _clean:
             action: clean
             ui-icon: wrench

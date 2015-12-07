@@ -24,6 +24,7 @@ generator:
           '': [created_at]
       edit:    ~
       new:
+        title: New Promo Code
         actions:
           _list: ~
           _save: ~
