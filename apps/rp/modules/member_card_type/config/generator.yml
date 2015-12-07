@@ -33,7 +33,7 @@ generator:
           NONE: [name, description, users_list, nb_tickets_mini, _show_url_public]
           Money: [value, product_declination_id, price_id]
           Online: [public_details]
-          Promo Codes: [promo_codes, _form_promo_code_del]
+          Promo Codes: [promo_codes, _form_promo_codes, _form_promo_code_del]
       edit:
         actions:
           _list: ~
@@ -42,6 +42,7 @@ generator:
             action: addPromoCode
             ui-icon: plus
             label: Promo Code
+            credentials: pr-card-promo-new
           _clean:
             action: clean
             ui-icon: wrench

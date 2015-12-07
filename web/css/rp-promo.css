@@ -8,3 +8,6 @@
 }
 .sf_admin_form_field_promo_codes .widget > table > tbody > tr td { padding-left: 20px; padding-right: 10px; }
 .sf_admin_form_field_promo_codes .li-delete { float: none; font-size: 0; padding: 12px 0 5px 17px; }
+
+#sf_fieldset_promo_codes ol { margin-left: 20px; }
+#sf_fieldset_promo_codes ol .code { font-weight: bold; white-space: pre; font-family: courier; font-size: 140%; }
