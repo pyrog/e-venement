@@ -1,4 +1,24 @@
 sfGuardPermission:
+  sfGuardPermission_150:
+    name: pr-card-promo
+    description: 'Permission to access the promo codes of member cards'
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardPermission_151:
+    name: pr-card-promo-edit
+    description: 'Permission to modify promo codes of member cards'
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardPermission_152:
+    name: pr-card-promo-del
+    description: 'Permission to delete the promo codes of member cards'
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardPermission_153:
+    name: pr-card-promo-new
+    description: 'Permission to create new promo codes of member cards'
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
   sfGuardPermission_148:
     name: tck-museum
     description: 'Possibility to sell tickets for museums'
@@ -691,6 +711,31 @@ sfGuardPermission:
     updated_at: '2014-05-28 09:20:41'
 
 sfGuardGroupPermission:
+  sfGuardGroupPermission_60_150:
+    Group: sfGuardGroup_60
+    Permission: sfGuardPermission_150
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardGroupPermission_61_150:
+    Group: sfGuardGroup_61
+    Permission: sfGuardPermission_150
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardGroupPermission_61_151:
+    Group: sfGuardGroup_61
+    Permission: sfGuardPermission_151
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardGroupPermission_61_152:
+    Group: sfGuardGroup_61
+    Permission: sfGuardPermission_152
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardGroupPermission_61_153:
+    Group: sfGuardGroup_61
+    Permission: sfGuardPermission_153
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
   sfGuardGroupPermission_59_148:
     Group: sfGuardGroup_59
     Permission: sfGuardPermission_148
@@ -1768,6 +1813,16 @@ sfGuardGroupPermission:
     updated_at: '2014-05-28 09:20:00'
 
 sfGuardGroup:
+  sfGuardGroup_60:
+    name: pr-card-promo
+    description: 'Ability to access the promo codes of member cards'
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
+  sfGuardGroup_61:
+    name: pr-card-promo-mod
+    description: 'Ability to get a full access on the promo codes of member cards'
+    created_at: '2015-12-07 14:15:00'
+    updated_at: '2015-12-07 14:15:00'
   sfGuardGroup_59:
     name: tck-museum
     description: "Ability to sell tickets for museums"
