@@ -10,7 +10,7 @@ delete:
   credentials: pr-card-promo-del
 batchDelete:
   credentials: pr-card-promo-del
-simpleDelete:
+deleteSimple:
   credentials: pr-card-promo-del
 
 edit:
