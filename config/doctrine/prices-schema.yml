@@ -56,10 +56,6 @@ Price:
       type: boolean
       notnull: true
       default: false
-    rank:
-      type: float
-      notnull: true
-      default: 65536
   relations:
     Manifestations:
       class: Manifestation
