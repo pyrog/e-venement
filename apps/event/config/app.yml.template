@@ -55,3 +55,4 @@ all:
       #who: [organizers, applicant, location, admins] # default: [organizers, applicant, location]
   #cacher:
   #  timeout: 1 day ago
+  #  public_url: https://e-venement.domain.tld/ # it allows some caching tasks to be done in the background
