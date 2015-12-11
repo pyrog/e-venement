@@ -32,7 +32,6 @@ class liCacher
   {
     if ( $path instanceof sfWebRequest )
       $path = self::componePath($path->getUri());
-    
     return new self($path);
   }
   static public function componePath($uri)
@@ -88,17 +87,23 @@ class liCacher
     return $this;
   }
   
-  public function useCache($interval = NULL)
+  public function needsRefresh($interval = NULL)
   {
     if ( is_null($interval) )
       $interval = sfConfig::get('app_cacher_timeout', '1 day ago');
     
     if ( !file_exists($this->getPath()) )
-      return false;
+      return true;
     
     $ctime = filectime($this->getPath());
-    if (!( $ctime !== false && $ctime > strtotime($interval) ))
-      return false;
-    return $this->loadData()->getData();
+    if ( $ctime !== false && $ctime < strtotime($interval) )
+      return true;
+    
+    return false;
+  }
+  
+  public function useCache($interval = NULL)
+  {
+    return !$this->needsRefresh() ? $this->loadData()->getData() : false;
   }
 }
