@@ -21,12 +21,11 @@
  */
 function cross_app_url_for($appname, $url, $absolute = false, $env = null, $debug = false)
 {
-  global $user;
-  $user = sfContext::getInstance()->getUser();
-  
   $initial_app = sfContext::getInstance()->getConfiguration()->getApplication();
   $initial_web_controler = basename(sfContext::getInstance()->getRequest()->getScriptName());
   $initial_config = sfConfig::getAll();
+  $stack = sfContext::getInstance()->getActionStack();
+  
   // get the environment
   if (is_null($env))
   {
@@ -46,6 +45,12 @@ function cross_app_url_for($appname, $url, $absolute = false, $env = null, $debu
   sfContext::switchTo($initial_app);
   sfConfig::add($initial_config);
   unset($context);
+  if ( sfContext::getInstance()->getActionStack()->getSize() != $stack->getSize() )
+  {
+    while ( sfContext::getInstance()->getActionStack()->popEntry() );
+    while ( $entry = $stack->popEntry() )
+      sfContext::getInstance()->getActionStack()->addEntry($entry->getModuleName(), $entry->getActionName(), $entry);
+  }
 
   //remove initial web controler
   // genUrl use $this->context->getRequest()->getScriptName();, its a call to $_SERVER

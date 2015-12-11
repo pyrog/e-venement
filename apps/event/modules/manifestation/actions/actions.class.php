@@ -438,9 +438,9 @@ class manifestationActions extends autoManifestationActions
     
     $sf_user = $this->getUser();
     $manifestation = $this->getRoute()->getObject();
-    if ( !in_array($manifestation->Event->meta_event_id,array_keys($sf_user->getMetaEventsCredentials())) )
+    if ( !$sf_user->isSuperAdmin() && !in_array($manifestation->Event->meta_event_id,array_keys($sf_user->getMetaEventsCredentials())) )
     {
-      $this->getUser()->setFlash('error',"You cannot access this object, you do not have the required credentials.");
+      $this->getUser()->setFlash('error', $error = "You cannot access this object, you do not have the required credentials.");
       $this->redirect('@event');
     }
     
@@ -452,7 +452,7 @@ class manifestationActions extends autoManifestationActions
       || $manifestation->reservation_confirmed && !$sf_user->hasCredential('event-manif-edit-confirmed') && $manifestation->contact_id !== $sf_user->getContactId()
       || !(isset($config['let_restricted_users_confirm']) && $config['let_restricted_users_confirm']) && !$sf_user->hasCredential('event-manif-edit-confirmed') )
     {
-      $this->getUser()->setFlash('error',"You cannot edit this object, you do not have the required credentials.");
+      $this->getUser()->setFlash('error', $error = "You cannot edit this object, you do not have the required credentials.");
       $this->redirect('manifestation/show?id='.$manifestation->id);
     }
   }

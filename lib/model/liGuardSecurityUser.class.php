@@ -74,6 +74,12 @@ class liGuardSecurityUser extends sfGuardSecurityUser
     return null;
   }
   
+  public function setGuardUser(sfGuardUser $user)
+  {
+    $this->setAttribute('user_id', $user->id, 'sfGuardSecurityUser');
+    return $this;
+  }
+  
   public function getContact()
   {
     if (!( $this->getGuardUser() instanceOf sfGuardUser ))

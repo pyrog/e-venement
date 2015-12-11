@@ -73,36 +73,94 @@ class eventConfiguration extends sfApplicationConfiguration
         return $this;
       }
       
+      $this->loadHelpers('CrossAppLink');
       $timeout = sfConfig::get('app_cacher_timeout', '1 day ago');
       $this->stdout($section, 'Starting the caching process...', 'COMMAND');
+      
+      $context = sfContext::getInstance();
+      $context->getUser()->setGuardUser($user = Doctrine::getTable('sfGuardUser')->createQuery('u')
+        ->andWhere('u.is_super_admin = ?', true)
+        ->andWhere('u.is_active = ?', true)
+        ->fetchOne());
+      if ( !$user )
+      {
+        $this->stdout($section, 'No usable user found to build the cache. Stopping...', 'ERROR');
+        return $this;
+      }
       
       $q = Doctrine::getTable('Manifestation')->createQuery('m')
         ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '1 month'::interval")
         ->andWhere("m.happens_at < NOW() + '1 year'::interval")
         ->orderBy('m.happens_at');
-      $nb = 0;
-      $this->loadHelpers('CrossAppLink');
+      $nb = array();
       foreach ( $q->execute() as $manifestation )
       {
-        $r = curl_init();
-        curl_setopt($r, CURLOPT_URL, $url.cross_app_url_for('event', 'manifestation/show?id='.$manifestation->id));
-        curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($r, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($r, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($r, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_exec($r);
-        $err = curl_errno($r);
-        curl_close($r);
-        
-        if ( $err !== 0 )
+        foreach ( array('showTickets', 'showSpectators', 'statsFillingData',) as $action )
         {
-          $this->stdout($section, 'A network error occured with manifestation #'.$manifestation->id.' ('.$err.')', 'ERROR');
+          if ( !isset($nb[$action]) )
+            $nb[$action] = 0;
+          
+          // preparing the fake request
+          $request = new sfWebRequest($context->getEventDispatcher());
+          $request->setAttribute('sf_route', new sfDoctrineRoute(
+            'manifestation/'.$action,
+            array(),
+            array(),
+            array('model' => 'Manifestation', 'type' => 'object')
+          ));
+          foreach ( $params = array(
+            'id' => $manifestation->id,
+            //'refresh' => 1,
+          ) as $param => $value )
+            $request->setParameter($param, $value);
+          
+          // preparing the context
+          $request->getAttribute('sf_route')->bind($context, $params);
+          $context['request'] = $request;
+          $actions = $context->getController()->getAction('manifestation', $action);
+          while ( $context->getActionStack()->popEntry() ); // clearing the stack
+          $context->getActionStack()->addEntry('manifestation', $action, $actions);
+          $_SERVER['REQUEST_URI'] = $uri =
+            preg_replace('!/$!', '', sfConfig::get('app_cacher_public_url')).
+            '/'.
+            $context->getConfiguration()->getApplication().
+            ($context->getConfiguration()->getEnvironment() != 'prod' ? '_'.$context->getConfiguration()->getEnvironment() : '').
+            '.php'.
+            '/manifestation/'.
+            $manifestation->id.
+            '/'.$action.
+            //'?refresh'
+            ''
+          ;
+          
+          if ( !liCacher::create($request)->needsRefresh() )
+          {
+            if ( sfConfig::get('sf_web_debug', false) )
+              $this->stdout($section, '  x Refreshing the action '.$action.' is not needed for manifestation #'.$manifestation->id, 'INFO');
+            continue;
+          }
+          
+          // executing the action
+          $actions->{'execute'.ucfirst($action)}($request);
+          
+          // logs
+          if ( sfConfig::get('sf_web_debug', false) )
+            $this->stdout($section, '  - Action '.$action.' done for manifestation #'.$manifestation->id, 'INFO');
+          $nb[$action]++;
         }
-        else
-          $nb++;
       }
       
-      $this->stdout($section, "[OK] cache created for $nb manifestations", 'INFO');
+      if ( !$nb )
+        $this->stdout($section, '[OK] No manifestation found for cache updating.', 'INFO');
+      else
+      {
+        if ( array_sum($nb) == 0 )
+          $this->stdout($section, "[KO] Nothing has to be updated, cache is up-to-date everywhere.", 'INFO');
+        else
+        foreach ( $nb as $action => $i )
+        if ( $i > 0 )
+          $this->stdout($section, "[OK] $action cache created for $i manifestations", 'INFO');
+      }
     });
     
     return $this;
