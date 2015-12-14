@@ -46,7 +46,7 @@ $(document).ready(function(){
       Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', LI.touchscreenSimplifiedCookie.options);    // 30 days expiration
       $('<a></a>').addClass('ui-widget-content').addClass('ui-state-default').addClass('ui-corner-all').addClass('ui-widget').addClass('fg-button')
         .prop('href', $('#li_transaction_field_payments_list .accounting.invoice').prop('action'))
-        .prop('title', $('#li_transaction_field_payments_list .accounting.invoice').val())
+        .prop('title', $('#li_transaction_field_payments_list .accounting.invoice input[type=submit]').val())
         .prop('id', 'invoice')
         .prop('target', '_blank')
         .append('<span class="ui-icon ui-icon-clipboard"></span>')
