@@ -18,6 +18,13 @@ class cardActions extends sfActions
   public function executeAddPromoCode(sfWebRequest $request)
   {
     $this->forward404Unless($request->hasParameter('redirect'));
+    
+    if ( !$request->getParameter('promo-code', false) )
+    {
+      $this->getUser()->setFlash('error', __('Special offer not found.'));
+      $this->redirect($request->hasParameter('redirect'));
+    }
+    
     $promo = Doctrine::getTable('MemberCardTypePromoCode')->createQuery('pc')
       ->andWhere('pc.name ILIKE ?', $request->getParameter('promo-code', ''))
       ->andWhere('pc.ends_at > NOW() OR pc.ends_at IS NULL')
@@ -37,7 +44,7 @@ class cardActions extends sfActions
       
       if ( $go )
       {
-        $this->getContext()->getConfiguration()->addMemberCard($this->getUser()->getTransaction(), $promo->member_card_type_id);
+        $this->getContext()->getConfiguration()->addMemberCard($this->getUser()->getTransaction(), $promo->member_card_type_id, $request->getParameter('promo-code', NULL));
         $this->getUser()->setFlash('success', __('Enjoy your special offer!'));
       }
       else

@@ -83,7 +83,8 @@ class web_originActions extends autoWeb_originActions
     $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
     $limit = 10;
     $dql = $this->buildQuery()->removeDqlQueryPart('orderby');
-    $dql->andWhere('wo.next_id IS NULL');
+    $dql->leftJoin('t.MemberCards m');
+    $dql->andWhere('wo.next_id IS NULL OR p.id IS NOT NULL');
     $sql = preg_replace('/^SELECT .* FROM/', '', $dql->getRawSql());
     
     switch ( $which ) {
@@ -92,7 +93,7 @@ class web_originActions extends autoWeb_originActions
       $q = "SELECT $domain AS criteria, count(w.id) AS nb FROM $sql GROUP BY $domain";
       break;
     case 'campaigns':
-      $q = "SELECT w.campaign AS criteria, count(w.id) AS nb FROM $sql GROUP BY w.campaign";
+      $q = "SELECT (CASE WHEN w.campaign IS NOT NULL AND w.campaign != '' THEN w.campaign ELSE 'Promo: '||m.detail END) AS criteria, count(w.id) AS nb FROM $sql GROUP BY w.campaign, m.detail";
       $limit++; // to remove the empty campaign in the post production
       break;
     case 'deal_done':

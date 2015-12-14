@@ -130,6 +130,7 @@ MemberCard:
       type: integer
       default: 0
       notnull: true
+    detail: string(255)
   relations:
     Contact:
       foreignAlias: MemberCards

@@ -85,7 +85,7 @@ class pubConfiguration extends sfApplicationConfiguration
     return array_shift($txt);
   }
   
-  public static function addMemberCard(Transaction $transaction, $member_card_type_id)
+  public static function addMemberCard(Transaction $transaction, $member_card_type_id, $detail = NULL)
   {
     $mcf = new MemberCardForm;
     $arr = array();
@@ -103,6 +103,8 @@ class pubConfiguration extends sfApplicationConfiguration
     $arr['transaction_id'] = $transaction->id;
     $arr['contact_id'] = $transaction->contact_id;
     $arr['active'] = false;
+    if ( $detail )
+      $arr['detail'] = $detail;
     $arr[$mcf->getCSRFFieldName()] = $mcf->getCSRFToken();
     
     $arr['expire_at'] = sfConfig::has('project_cards_expiration_delay')
