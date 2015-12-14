@@ -254,6 +254,10 @@ $(document).ready(function(){
     // show the contact's file if the screen width is wide enough
     if ( $('#sf_admin_container').width() > 1400 && $('#li_transaction_field_contact_id .data a').length > 0 )
     {
+      // do not show the contact if we are inside the simplified process
+      if ( $('#li_fieldset_simplified').is(':visible') )
+        return;
+      
       $('#sf_admin_container').width($('#sf_admin_container').width()-800);
       setTimeout(function(){ $(window).resize(); }, 1500); // because of the transition-duration
       
