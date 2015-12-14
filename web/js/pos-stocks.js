@@ -29,7 +29,7 @@ LI.posStocks = function(){
       $.each(json, function(i, data){
         LI.csvData.declinations.push(data);
       });
-      $.jqplot('declinations_chart', [json], {
+      $.jqplot('declinations_chart', [data], {
         seriesDefaults: {
           rendererOptions: {
             fill: false,

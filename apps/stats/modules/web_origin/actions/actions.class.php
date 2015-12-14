@@ -24,6 +24,25 @@ class web_originActions extends autoWeb_originActions
     $this->debug($request);
     $this->data = $this->getData($request->getParameter('which', 'referers'));
   }
+  public function executeJson(sfWebRequest $request)
+  {
+    $this->debug($request);
+    $data = $this->getData($request->getParameter('which', 'referers'), true);
+    $this->data = array();
+    
+    $previous = NULL;
+    foreach ( $data as $date => $value )
+    {
+      if ( $previous && strtotime($previous) < strtotime('-1 day', strtotime($date)) )
+      {
+        $tmp = strtotime($previous);
+        while ( ($tmp = strtotime('+1 day', $tmp)) < strtotime($date) )
+          $this->data[date('Y-m-d H:i:s', $tmp)] = 0;
+      }
+      $this->data[$date] = $value;
+      $previous = $date;
+    }
+  }
   public function executeCsv(sfWebRequest $request)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink','Number'));
@@ -78,7 +97,7 @@ class web_originActions extends autoWeb_originActions
     
     return sfConfig::get('sf_web_debug', false);
   }
-  protected function getData($which = 'referers')
+  protected function getData($which = 'referers', $sysdate = false)
   {
     $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
     $limit = 10;
@@ -145,7 +164,7 @@ class web_originActions extends autoWeb_originActions
       ksort($data);
       $tmp = array();
       foreach ( $data as $key => $value )
-        $tmp[format_date($key)] = $value; // to have human readable dates
+        $tmp[$sysdate ? $key : format_date($key,'d')] = $value; // to have human readable dates
       $data = $tmp;
       break;
     }

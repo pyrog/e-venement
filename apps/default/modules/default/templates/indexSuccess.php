@@ -122,4 +122,6 @@
   </div>
 
   <?php include_partial('default/themeswitcher') ?>
+  
+  <?php include_partial('default/dashboard') ?>
 </div>

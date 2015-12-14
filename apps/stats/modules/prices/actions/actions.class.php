@@ -34,6 +34,12 @@ class pricesActions extends sfActions
       $this->form->bind($this->getUser()->getAttribute('stats.criterias',array(),'admin_module'));
   }
   
+  public function executeJson(sfWebRequest $request)
+  {
+    $param = $request->getParameter('id');
+    $this->lines = $this->getPrices($param == 'asked', $param == 'ordered', $param == 'all', 'array');
+  }
+  
   public function executeCsv(sfWebRequest $request)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink','Number'));

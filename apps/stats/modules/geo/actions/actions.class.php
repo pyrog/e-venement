@@ -44,6 +44,11 @@ class geoActions extends sfActions
     return $this;
   }
   
+  public function executeJson(sfWebRequest $request)
+  {
+    $criterias = $this->getCriterias();
+    $this->data = $this->getData($request->getParameter('type','ego'), !(isset($criterias['approach']) && $criterias['approach'] === ''));
+  }
   public function executeCsv(sfWebRequest $request)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink','Number'));
