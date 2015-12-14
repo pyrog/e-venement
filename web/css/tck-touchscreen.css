@@ -191,4 +191,5 @@
 /* OTHERS */
 .sf_admin_flashes { position: absolute; width: 94%; z-index: 2; margin-left: 5px; margin-top: -2.85em; }
 #li_fieldset_hidden { display: none; }
-h1 #simplified-gui, h1 #resend-email, h1 #abandon { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }
+h1 .fg-button { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }
+#simplified-gui, h1 #resend-email, h1 #abandon { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }

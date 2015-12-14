@@ -39,10 +39,19 @@ $(document).ready(function(){
     $('#li_fieldset_simplified').fadeToggle(function(){
       if ( !$(this).is(':visible') )
       {
+        $('#sf_admin_container h1 #invoice').fadeOut(function(){ $(this).remove(); });
         Cookie.set(LI.touchscreenSimplifiedCookie.name, 'hide', LI.touchscreenSimplifiedCookie.options); // 30 days expiration
         return;
       }
       Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', LI.touchscreenSimplifiedCookie.options);    // 30 days expiration
+      $('<a></a>').addClass('ui-widget-content').addClass('ui-state-default').addClass('ui-corner-all').addClass('ui-widget').addClass('fg-button')
+        .prop('href', $('#li_transaction_field_payments_list .accounting.invoice').prop('action'))
+        .prop('title', $('#li_transaction_field_payments_list .accounting.invoice').val())
+        .prop('id', 'invoice')
+        .prop('target', '_blank')
+        .append('<span class="ui-icon ui-icon-clipboard"></span>')
+        .insertBefore($('#sf_admin_container h1 #simplified-gui'))
+      ;
       
       // click on the last (or the first) tab...
       if ( !Cookie.get(LI.touchscreenSimplifiedCookie.bunch) )
