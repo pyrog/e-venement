@@ -8,7 +8,7 @@
 <?php if ( $tickets->count() > 0 ): ?>
 <?php $value = $nb = 0 ?>
 <div class="sf_admin_form_row">
-  <label><?php echo __('List of pending tickets') ?>:</label>
+  <label><?php echo __('List of tickets') ?>:</label>
   <table class="tickets_list ui-widget ui-corner-all ui-widget-content">
   <tbody>
   <?php foreach ( $tickets as $ticket ): ?>
