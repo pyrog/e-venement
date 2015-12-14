@@ -327,11 +327,13 @@ LI.touchscreenSimplifiedPrices = function(gauge, data){
   // click on a price button
   $(target).find('button').click(function(){
     var declname;
-    $.each(LI.touchscreenSimplifiedData[$('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-bunch-id')], function(id, pdt){
+    var bunch = $('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-bunch-id');
+    $.each(LI.touchscreenSimplifiedData[bunch], function(id, pdt){
       declname = pdt.declinations_name.slice(0,-1); // remove the last char "s"
     });
     
     var form = $('#li_transaction_field_price_new form.prices');
+    $(form).find('[name="transaction[price_new][bunch]"]').val(bunch);
     $(form).find('[name="transaction[price_new][price_id]"]').val($(this).val());
     $(form).find('[name="transaction[price_new][declination_id]"]').val($('#li_fieldset_simplified .bunch :checked').val());
     $(form).find('[name="transaction[price_new][type]"]').val(declname);
