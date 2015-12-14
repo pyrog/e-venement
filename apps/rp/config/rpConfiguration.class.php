@@ -158,7 +158,6 @@ class rpConfiguration extends sfApplicationConfiguration
       
       $mcs = new Doctrine_Collection('MemberCard');
       
-      $this->stdout($section, 'Looking for member cards that are going to expire...', 'COMMAND');
       $q = Doctrine::getTable('MemberCard')->createQuery('mc')
         ->leftJoin('mc.Contact c')
         ->andWhere('mc.expire_at <= ?', date('Y-m-d', strtotime($options['delay_before'].' days')))
@@ -166,8 +165,8 @@ class rpConfiguration extends sfApplicationConfiguration
         ->andWhere('(SELECT COUNT(mmc.id) FROM MemberCard mmc WHERE mmc.member_card_type_id = mc.member_card_type_id AND mc.contact_id = mmc.contact_id AND mmc.expire_at > mc.expire_at) = 0')
       ;
       $mcs->merge($q->execute());
+      $this->stdout($section, 'Got '.($nb = $mcs->count()).' member cards that are going to expire.', 'COMMAND');
       
-      $this->stdout($section, 'Looking for member cards that have just expired...', 'COMMAND');
       $q = Doctrine::getTable('MemberCard')->createQuery('mc')
         ->leftJoin('mc.Contact c')
         ->andWhere('mc.expire_at >= ?', date('Y-m-d', strtotime($options['delay_after'].' days')))
@@ -175,7 +174,7 @@ class rpConfiguration extends sfApplicationConfiguration
         ->andWhere('(SELECT COUNT(mmc.id) FROM MemberCard mmc WHERE mmc.member_card_type_id = mc.member_card_type_id AND mc.contact_id = mmc.contact_id AND mmc.expire_at > mc.expire_at) = 0')
       ;
       $mcs->merge($q->execute());
-      
+      $this->stdout($section, 'Got '.($mcs->count() - $nb).' member cards that have already expired.', 'COMMAND');
       
       $nb = 0;
       foreach ( $mcs as $mc )
@@ -188,7 +187,6 @@ class rpConfiguration extends sfApplicationConfiguration
         $email->isATest(false);
         $email->save();
         $nb++;
-        break;
       }
       
       $this->stdout($section, "[OK] $nb emails sent", 'INFO');

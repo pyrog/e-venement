@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Has an email address</source>
+        <target>A une adresse email</target>
+      </trans-unit>
+      <trans-unit>
         <source>%%nb%% member card(s) have been cleaned up</source>
         <target>%%nb%% carte(s) d'abo ont été nettoyées</target>
       </trans-unit>
