@@ -93,7 +93,7 @@ class web_originActions extends autoWeb_originActions
       $q = "SELECT $domain AS criteria, count(w.id) AS nb FROM $sql GROUP BY $domain";
       break;
     case 'campaigns':
-      $q = "SELECT (CASE WHEN w.campaign IS NOT NULL AND w.campaign != '' THEN w.campaign ELSE 'Promo: '||m.detail END) AS criteria, count(w.id) AS nb FROM $sql GROUP BY w.campaign, m.detail";
+      $q = "SELECT (CASE WHEN m.detail IS NOT NULL AND m.detail != '' THEN 'Promo: '||m.detail ELSE w.campaign END) AS criteria, count(w.id) AS nb FROM $sql GROUP BY w.campaign, m.detail";
       $limit++; // to remove the empty campaign in the post production
       break;
     case 'deal_done':
