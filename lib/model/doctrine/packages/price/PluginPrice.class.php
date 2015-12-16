@@ -21,16 +21,4 @@ abstract class PluginPrice extends BasePrice
   {
     return strtolower(get_class($this));
   }
-  
-  public function preInsert($event)
-  {
-    $this->rank = $this->getTable()->createQuery('p')
-      ->orderBy('p.rank DESC')
-      ->limit(1)
-      ->select('p.id, p.rank')
-      ->fetchOne()
-      ->rank * 2
-    ;
-    return parent::preInsert($event);
-  }
 }
