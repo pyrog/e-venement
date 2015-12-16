@@ -5,10 +5,13 @@
 <?php include_partial('show_ical_qrcode', array('manifestation' => $manifestation)) ?>
 
 <?php if ( $use_synthetic_plans ): ?>
-  
+<div class="synthetic">
+
   <?php use_stylesheet('pub-manifestation-synthetic?'.date('Ymd')) ?>
   <?php use_javascript('pub-manifestation-synthetic?'.date('Ymd')) ?>
   <?php use_javascript('pub-seated-plan?'.date('Ymd')) ?>
+  
+  <?php include_partial('show_synthetic_full', array('gauges' => $gauges)) ?>
   
   <div id="tickets">
     <?php include_partial('show_named_tickets', array('manifestation' => $manifestation)) ?>
@@ -43,6 +46,7 @@
   </div>
   <?php include_partial('global/show_links', array('objects' => $manifestation)) ?>
   
+</div>
 <?php else: ?>
   
   <?php include_partial('show_gauges', array('gauges' => $gauges, 'manifestation' => $manifestation, 'form' => $form, 'mcp' => $mcp, )) ?>
