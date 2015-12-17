@@ -313,7 +313,12 @@
           $.ajax({
             url: $(this).prop('action'),
             data: $(this).serialize(),
-            complete: function(){
+            success: function(json){
+              // message
+              console.error(json);
+              if ( json.message )
+                LI.alert(json.message, json.success ? 'success' : 'error');
+              
               // graphical removal
               $(seat).parent().find('.seat[data-id='+$(seat).attr('data-id')+']').remove();
               $('.sf_admin_form_field_show_picture .pre-seat').remove();  // cleaning current stuff
