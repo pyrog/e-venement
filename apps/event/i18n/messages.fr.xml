@@ -13,6 +13,10 @@
         <target>Groupes</target>
       </trans-unit>
       <trans-unit>
+        <source>You cannot remove this seat, probably at least one ticket has been sold on it.</source>
+        <target>Vous ne pouvez pas supprimer cette place, un billet a probablement déjà été vendu pour celle-ci.</target>
+      </trans-unit>
+      <trans-unit>
         <source>Unlimited</source>
         <target>Illimité</target>
       </trans-unit>
