@@ -64,7 +64,6 @@ LI.dashboardStats = function(){
       switch ( name ) {
       case 'web-origin':
       case 'debts':
-        console.error(array);
         $.jqplot(id, [array], {
           seriesDefaults: {
             showMarker: false
