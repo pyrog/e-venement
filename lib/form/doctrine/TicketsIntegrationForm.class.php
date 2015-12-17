@@ -30,6 +30,7 @@ class TicketsIntegrationForm extends BaseFormDoctrine
     $filetypes = array(
       'fb' => 'FranceBillet',
       'tkn' => 'TicketMaster',
+      'digitick' => 'Digitick',
     );
     $this->widgetSchema   ['filetype'] = new sfWidgetFormChoice(array(
       'choices' => $filetypes,

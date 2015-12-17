@@ -54,8 +54,12 @@
         ->fetchOne()->id;
       
       $this->translation = array('prices' => array(), 'workspaces' => array());
-      for ( $i = 0 ; isset($integrate['translation_workspaces_category_ref'.$i]) && isset($integrate['translation_workspaces_zone_ref'.$i]) && isset($integrate['translation_workspaces_dest'.$i]) ; $i++ )
-      if ( $integrate['translation_workspaces_category_ref'.$i] && $integrate['translation_workspaces_zone_ref'.$i] && $integrate['translation_workspaces_dest'.$i] )
+      if ( !isset($integrate['translation_workspaces_category_ref'.$i]) )
+        $integrate['translation_workspaces_category_ref'.$i] = '';
+      if ( !isset($integrate['translation_workspaces_category_ref'.$i]) )
+        $integrate['translation_categories_ref'.$i] = '';
+      for ( $i = 0 ; isset($integrate['translation_workspaces_zone_ref'.$i]) && isset($integrate['translation_workspaces_dest'.$i]) ; $i++ )
+      if ( $integrate['translation_workspaces_dest'.$i] )
         $this->translation['workspaces'][$integrate['translation_workspaces_zone_ref'.$i].$glue.$integrate['translation_workspaces_category_ref'.$i]] = $integrate['translation_workspaces_dest'.$i];
       for ( $i = 0 ; isset($integrate['translation_prices_ref'.$i]) && isset($integrate['translation_prices_dest'.$i]) ; $i++ )
       if ( $integrate['translation_prices_ref'.$i] && $integrate['translation_prices_dest'.$i] )
@@ -88,6 +92,9 @@
       $transaction = new Transaction();
       
       switch ( $integrate['filetype'] ) {
+      case 'digitick':
+        require(dirname(__FILE__).'/batch-integrate-'.$integrate['filetype'].'.php');
+        break;
       case 'fb':
         require(dirname(__FILE__).'/batch-integrate-'.$integrate['filetype'].'.php');
         break;
@@ -118,6 +125,8 @@
           $q = Doctrine::getTable('Contact')->createQuery('c');
           if ( $ticket['postalcode'] )
             $q->andWhere('c.postalcode = ?',$ticket['postalcode']);
+          if ( isset($ticket['email']) && $ticket['email'] )
+            $q->andWhere('c.email = ?', $ticket['email']);
           $contacts = Doctrine::getTable('Contact')->search($search,$q)->execute();
           
           if ( $contacts->count() == 0 )
@@ -127,13 +136,14 @@
             $transaction->Contact->name = $ticket['name'];
             $transaction->Contact->firstname = $ticket['firstname'];
             $transaction->Contact->postalcode = $ticket['postalcode'];
-            if ( !$ticket['city'] )
-            {
-              $postalcode = Doctrine::getTable('Postalcode')->createQuery()->andWhere('postalcode = ?',$ticket['postalcode'])->fetchOne();
+            if ( !$ticket['city'] && $ticket['postalcode'] )
+            if ( $postalcode = Doctrine::getTable('Postalcode')->createQuery()->andWhere('postalcode = ?',$ticket['postalcode'])->fetchOne() )
               $ticket['city'] = $postalcode->city;
-            }
             $transaction->Contact->city = $ticket['city'];
             $transaction->Contact->country = $ticket['country'];
+            
+            if ( isset($ticket['email']) && $ticket['email'] )
+              $transaction->Contact->email = $ticket['email'];
           }
           else
           {
@@ -160,7 +170,7 @@
         }
         
         // if it's not a cancellation
-        if ( !$ticket['cancel'] )
+        if (!( isset($ticket['cancel']) && $ticket['cancel'] ))
         {
           $tck = new Ticket();
           $tck->manifestation_id = $this->manifestation->id;
@@ -168,9 +178,12 @@
           $tck->price_id = $ticket['price_id'] ? $ticket['price_id'] : $price_default_id;
           $tck->value = $ticket['value'];
           $tck->integrated_at = date('Y-m-d H:i:s');
-          $tck->id = $ticket['id'];
           $tck->gauge_id = $gauges[$ticket['workspace_id']];
           $tck->created_at = date('Y-m-d H:i:s',strtotime(isset($ticket['created_at']) && $ticket['created_at'] ? $ticket['created_at'] : NULL));
+          
+          // is the ticket's id found from the sequence or from the imported data ?
+          if ( isset($ticket['id']) && $ticket['id'] )
+            $tck->id = $ticket['id'];
           
           // seated integration...
           if ( isset($ticket['seat']) && $ticket['seat'] )
@@ -215,7 +228,13 @@
             }
             elseif ( sfConfig::get('sf_web_debug', false) )
               error_log('Seat not found: '.$ticket['seat']);
+            
           }
+          
+          // Digitick & e-venement's QRCodes
+          foreach ( array('barcode', 'othercode') as $id )
+          if ( isset($ticket[$id]) && $ticket[$id] )
+            $tck->$id = $ticket[$id];
           
           if ( !$tck->gauge_id )
             $nberr++;
