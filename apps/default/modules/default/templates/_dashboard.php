@@ -4,22 +4,6 @@
 <?php use_helper('CrossAppLink') ?>
 
   <div id="dashboard">
-    <?php if ( $sf_user->hasCredential('stats-prices') ): ?>
-      <?php include_partial('global/chart_jqplot', array(
-        'id'    => 'prices',
-        'data'  => cross_app_url_for('stats', 'prices/json'),
-        'label' => __('Prices', null, 'menu'),
-        //'name'  => 'Prices',
-       )) ?>
-    <?php endif ?>
-    <?php if ( $sf_user->hasCredential('stats-activity') ): ?>
-      <?php include_partial('global/chart_jqplot', array(
-        'id'    => 'debts',
-        'data'  => cross_app_url_for('stats', 'debts/json'),
-        'label' => __('Debts'),
-        'name'  => __('Debts'),
-       )) ?>
-    <?php endif ?>
     <?php if ( $sf_user->hasCredential('stats-pub') ): ?>
       <?php include_partial('global/chart_jqplot', array(
         'id'    => 'web-origin',
@@ -34,6 +18,22 @@
         'data'  => cross_app_url_for('stats', 'geo/json'),
         'label' => __('Geographical approach', null, 'menu'),
         //'name'  => 'Geographical approach',
+       )) ?>
+    <?php endif ?>
+    <?php if ( $sf_user->hasCredential('stats-prices') ): ?>
+      <?php include_partial('global/chart_jqplot', array(
+        'id'    => 'prices',
+        'data'  => cross_app_url_for('stats', 'prices/json'),
+        'label' => __('Prices', null, 'menu'),
+        //'name'  => 'Prices',
+       )) ?>
+    <?php endif ?>
+    <?php if ( $sf_user->hasCredential('stats-activity') ): ?>
+      <?php include_partial('global/chart_jqplot', array(
+        'id'    => 'debts',
+        'data'  => cross_app_url_for('stats', 'debts/json'),
+        'label' => __('Debts'),
+        'name'  => __('Debts'),
        )) ?>
     <?php endif ?>
   </div>
