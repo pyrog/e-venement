@@ -239,6 +239,10 @@ class manifestationActions extends autoManifestationActions
       if ( $location->id )
       $this->form->setDefault('location_id', $location->id);
     }
+    if ( $request->getParameter('start') )
+      $this->form->setDefault('happens_at', $request->getParameter('start')/1000);
+    if ( $request->getParameter('start') && $request->getParameter('end') )
+      $this->form->setDefault('duration', ($request->getParameter('end') - $request->getParameter('start'))/1000);
     
     // booking_list
     if ( ($list = $request->getParameter('booking_list', $this->getUser()->getFlash('booking_list',array())))

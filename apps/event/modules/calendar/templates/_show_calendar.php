@@ -57,6 +57,11 @@ $(document).ready(function(){
     allDayText: "<?php echo __('All day long') ?>",
     allDayDefault: false,
     allDaySlot: true,
+    selectable: true,
+    selectHelper: true,
+    select: function(start, end, jsEvent, view, resource){
+      window.location = '/event.php/manifestation/new?start='+start+'&end='+end;
+    },
     header: { left: 'today prev,next', center: 'title', right: 'month,agendaWeek,resourceWeek,agendaDay,resourceDay' },
     titleFormat: { day: 'dddd LL' },
     
