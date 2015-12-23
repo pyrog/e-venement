@@ -19,6 +19,15 @@ LI.formSubmit = function(){
       if ( data.error[0] )
       {
         LI.alert(data.error[1],'error');
+        setTimeout(function(){
+          if ( data.error[2] && data.error[3] && data.error[4] && confirm(data.error[2]) )
+          {
+            var input = $(form).find('[name="transaction['+data.error[3]+']['+data.error[4]+']"]')
+              .val(1);
+            $(form).submit();
+            input.val(null);
+          }
+        },750);
         return;
       }
       
