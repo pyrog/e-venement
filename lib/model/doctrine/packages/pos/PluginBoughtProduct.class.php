@@ -78,29 +78,21 @@ abstract class PluginBoughtProduct extends BaseBoughtProduct
       && $this->product_declination_id
       && $this->Declination->use_stock )
     {
-      if ( $this->Declination->stock > 0 )
+      // if integrating
+      if ( isset($mods['integrated_at']) )
       {
-        // if integrating
-        if ( isset($mods['integrated_at']) )
-        {
-          $this->Declination->stock = $this->Declination->stock + ($this->integrated_at ? -1 : 1);
-          $this->destocked = true;
-        }
-        // if not currently integrating, but it needs to be count in the stock's outputs
-        elseif ( isset($mods['destocked']) && !$this->integrated_at )
-        {
-          if ( !$this->isNew() )
-            $this->Declination->stock = $this->Declination->stock + ($this->destocked ? -1 : 1);
-          elseif ( $this->destocked )
-            $this->Declination->stock = $this->Declination->stock - 1;
-        }
-        $this->Declination->save();
+        $this->Declination->stock = $this->Declination->stock + ($this->integrated_at ? -1 : 1);
+        $this->destocked = true;
       }
-      else // if there is no more stock...
+      // if not currently integrating, but it needs to be count in the stock's outputs
+      elseif ( isset($mods['destocked']) && !$this->integrated_at )
       {
-        $this->integrated_at = NULL;
-        $this->destocked = false;
+        if ( !$this->isNew() )
+          $this->Declination->stock = $this->Declination->stock + ($this->destocked ? -1 : 1);
+        elseif ( $this->destocked )
+          $this->Declination->stock = $this->Declination->stock - 1;
       }
+      $this->Declination->save();
     }
     return parent::preUpdate($event);
   }

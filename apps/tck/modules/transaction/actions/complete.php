@@ -248,6 +248,7 @@
         break;
       case 'store_integrate':
         $this->json['success']['success_fields'][$field] = $success;
+        $force = $this->form[$field]->getValue('force') && $this->getUser()->hasCredential('tck-admin');
         $error_stock = 0;
         $products = new Doctrine_Collection('BoughtProduct');
         foreach ( Doctrine::getTable('BoughtProduct')->createQuery('bp')
@@ -257,7 +258,7 @@
           ->leftJoin('bp.Declination d')
           ->execute() as $bp )
         {
-          if ( $bp->product_declination_id && $bp->Declination->stock > 0 )
+          if ( $bp->product_declination_id && ($bp->Declination->stock > 0 || $force) )
           {
             $bp->integrated_at = date('Y-m-d H:i:s');
             $bp->save();
@@ -276,13 +277,19 @@
           )));
         
         if ( $error_stock > 0 )
-          $this->json['error'] = array(true, format_number_choice(
-            '[1]One product cannot be delivered, its stock is empty.'.
-            '|'.
-            '(1,+Inf]%%nb%% products cannot be delivered, their stocks are empty.',
-            array('%%nb%%' => $error_stock),
-            $error_stock
-          ));
+          $this->json['error'] = array(
+            true,
+            format_number_choice(
+              '[1]One product cannot be delivered, its stock is empty.'.
+              '|'.
+              '(1,+Inf]%%nb%% products cannot be delivered, their stocks are empty.',
+              array('%%nb%%' => $error_stock),
+              $error_stock
+            ),
+            __('Do you want to force the delivery?'),
+            $field,
+            'force',
+          );
         $this->json['success']['success_fields'][$field]['remote_content']['load']['type']  = 'store_price';
         $this->json['success']['success_fields'][$field]['remote_content']['load']['url']   = url_for('transaction/getStore?id='.$request->getParameter('id'), true);
         break;
