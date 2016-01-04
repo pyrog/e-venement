@@ -76,8 +76,7 @@ class MySearchAnalyzer extends Doctrine_Search_Analyzer_Utf8
         if (strcasecmp($encoding, 'utf-8') != 0 && strcasecmp($encoding, 'utf8') != 0)
             $text = iconv($encoding, 'UTF-8', $text);
         
-        
-        $text = preg_replace('/\s[0-9]+\s/', ' ', $text);
+        //$text = preg_replace('/\s[0-9]+\s/', ' ', $text);
         $text = preg_replace('/\s[^\s]\s/', ' ', $text);
         $text = preg_replace('/[^\p{L}\p{N}]+/u', ' ', $text);
         $text = preg_replace('/\s\s+/', ' ', $text);
