@@ -251,7 +251,11 @@ class manifestationActions extends autoManifestationActions
     $eids = array();
     if ( $search )
     {
-      $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery('e')->andWhere('e.museum = ?', $museum));
+      $e = Doctrine_Core::getTable('Event')->search($search.'*',
+        Doctrine::getTable('Event')->createQuery('e')
+          ->andWhere('e.museum = ?', $museum)
+          ->andWhereIn('e.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
+      );
       foreach ( $e->execute() as $event )
         $eids[] = $event['id'];
     }
