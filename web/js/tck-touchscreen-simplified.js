@@ -513,6 +513,9 @@ LI.touchscreenFormComplete.push(function(data, index){
     return;
   if ( !data.remote_content.load.reset )
     return;
+  if ( !data.remote_content.load.type )
+    return;
+  
   var type = data.remote_content.load.type.replace(/_price$/, '');
   $('#li_fieldset_simplified .cart .item.'+type).remove();
 });
