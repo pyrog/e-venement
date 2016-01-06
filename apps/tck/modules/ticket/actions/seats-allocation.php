@@ -45,7 +45,7 @@
     ->andWhere('tck.id NOT IN (SELECT tt.duplicating FROM ticket tt  WHERE tt.duplicating IS NOT NULL AND tt.transaction_id = t.id)')
     ->andWhere('tck.id NOT IN (SELECT ttt.cancelling FROM ticket ttt LEFT JOIN ttt.Transaction tttr WHERE ttt.cancelling IS NOT NULL AND tttr.transaction_id = t.id)')
     ->andWhere('tck.gauge_id = ?',$request->getParameter('gauge_id',0))
-    ->andWhere('tck.seat_id IS NULL OR tck.price_id IS NULL')
+    //->andWhere('tck.seat_id IS NULL OR tck.price_id IS NULL')
     ->orderBy('tck.price_name');
   if ( $request->getParameter('toprint',false) && is_array($request->getParameter('toprint')) )
     $q->andwhereIn('tck.id', $request->getParameter('toprint'));
@@ -83,10 +83,12 @@
   
   if ( $request->hasParameter('add_tickets') )
   {
+    /* REMOVED because it's more ergonomic without this restriction - Brest Métropole 2015-01-06
     // artificially remove price'd tickets (WARNING: DO NOT SAVE THE TRANSACTION IN THIS ACTION !!)
     foreach ( $this->transaction->Tickets as $key => $ticket )
     if ( $ticket->price_id )
       unset($this->transaction->Tickets[$key]);
+    */
     
     // add "fake" tickets to seat them before giving them a price
     for ( $i = 0 ; $i < 10 ; $i++ )
