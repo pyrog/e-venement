@@ -12,7 +12,6 @@
       var seat = this;
       $('#done form [name="ticket[numerotation]"]').val($(this).find('input').val());
       $('#done form [name="ticket[id]"]').val($('#todo .ticket:first input').val());
-      console.error($('#done form').serialize());
       if ( location.hash == '#debug' )
         $('#done form').submit();
       else
