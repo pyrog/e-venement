@@ -171,7 +171,7 @@ class rpConfiguration extends sfApplicationConfiguration
       $q = Doctrine::getTable('MemberCard')->createQuery('mc')
         ->leftJoin('mc.Contact c')
         ->andWhere('mc.expire_at >= ?', date('Y-m-d', strtotime($options['delay_after'].' days')))
-        ->andWhere('mc.expire_at <  ?', date('Y-m-d', strtotime(($options['delay_after']).' days')))
+        ->andWhere('mc.expire_at <  ?', date('Y-m-d', strtotime(($options['delay_after']+1).' days')))
         ->andWhere('(SELECT COUNT(mmc.id) FROM MemberCard mmc WHERE mmc.member_card_type_id = mc.member_card_type_id AND mc.contact_id = mmc.contact_id AND mmc.expire_at > mc.expire_at) = 0')
       ;
       $mcs->merge($q->execute());
