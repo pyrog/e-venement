@@ -164,6 +164,7 @@ body #content { width: auto; }
 #tdp-content .sf_admin_list_th_list_firstname, #tdp-content .sf_admin_list_td_firstname { display: none; }
 
 #tdp-content .sf_admin_list_td_list_phones span, #tdp-content .sf_admin_list_td_list_organism_phones_list span { white-space: nowrap; }
+
 #tdp-content .sf_admin_list_td_list_phones span:not(:last-child):after, #tdp-content .sf_admin_list_td_list_organism_phones_list span:not(:last-child):after { content: ', '; }
 #tdp-content .sf_admin_list_th_list_professional_emails, #tdp-content .sf_admin_list_td_list_professional_emails,
 #tdp-content .sf_admin_list_th_list_professional_description, #tdp-content .sf_admin_list_td_list_professional_description
@@ -178,8 +179,10 @@ body #content { width: auto; }
 #tdp-content .sf_admin_list_td_list_transactions .not-printed { font-style: italic; }
 #tdp-content .sf_admin_list_td_list_transactions .ordered a { text-decoration: underline; }
 #tdp-content .sf_admin_list_td_list_transactions .not-printed:not(.ordered), #tdp-content .sf_admin_list_td_list_transactions .not-printed:not(.ordered) a { color: silver; }
+#tdp-content .sf_admin_list_td_groups_picto .professional { opacity: 0.3; }
 @media screen and (min-width: 1820px) {
 #tdp-content .sf_admin_list_th_organisms_list, #tdp-content .sf_admin_list_td_organisms_list,
+#tdp-content .sf_admin_list_td_groups_picto .professional,
 #tdp-content .sf_admin_list_td_list_contact, #tdp-content .sf_admin_list_th_list_contact,
 #tdp-content .sf_admin_list_td_list_professional_id, #tdp-content .sf_admin_list_th_list_professional_id,
 #tdp-content .sf_admin_list_td_list_see_orgs, #tdp-content .sf_admin_list_th_list_see_orgs { display: none; }
@@ -431,3 +434,4 @@ a:not([href]) { color: gray; }
 .tdp-iframe { padding: 0 0 0 0; background-color: transparent; }
 .tdp-iframe #content { padding-top: 18px; }
 .tdp-iframe #tdp-content { margin-left: 0; }
+

@@ -372,6 +372,13 @@ LI.tdp_show_orgs = function()
     return false;
   });
   
+  // reproducing the professional groups (remarkables) in the personal section
+  $('.sf_admin_list .sf_admin_row').each(function(){
+    $(this).find('.sf_admin_list_td_list_professional_groups_picto .picto').clone()
+      .addClass('professional')
+      .appendTo($(this).find('.sf_admin_list_td_groups_picto'));
+  });
+  
   // Normalize the lines' heights
   seeorgs = $('#tdp-content table.see-orgs').length > 0;
   if ( seeorgs )
