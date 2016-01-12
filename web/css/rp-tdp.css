@@ -179,6 +179,7 @@ body #content { width: auto; }
 #tdp-content .sf_admin_list_td_list_transactions .ordered a { text-decoration: underline; }
 #tdp-content .sf_admin_list_td_list_transactions .not-printed:not(.ordered), #tdp-content .sf_admin_list_td_list_transactions .not-printed:not(.ordered) a { color: silver; }
 @media screen and (min-width: 1820px) {
+#tdp-content .sf_admin_list_th_organisms_list, #tdp-content .sf_admin_list_td_organisms_list,
 #tdp-content .sf_admin_list_td_list_contact, #tdp-content .sf_admin_list_th_list_contact,
 #tdp-content .sf_admin_list_td_list_professional_id, #tdp-content .sf_admin_list_th_list_professional_id,
 #tdp-content .sf_admin_list_td_list_see_orgs, #tdp-content .sf_admin_list_th_list_see_orgs { display: none; }
