@@ -29,6 +29,7 @@ for dir in /var/www/*; do
   if [ -x ./symfony ] && [ ! -e $LOCKFILE ]; then
     echo $dir
     touch $LOCKFILE
+    ./symfony e-venement:garbage-collector event &
     ./symfony e-venement:garbage-collector tck
     ./symfony e-venement:garbage-collector pub
     ./symfony e-venement:garbage-collector pos
