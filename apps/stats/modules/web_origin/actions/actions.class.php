@@ -102,9 +102,20 @@ class web_originActions extends autoWeb_originActions
       $criteria = "date_trunc('day', w.created_at)";
       $q = "SELECT $criteria AS criteria, count(w.id) AS nb FROM $sql GROUP BY $criteria";
       $limit = 30;
+      break;
     }
     
-    $q .= " ORDER BY count(w.id) DESC LIMIT $limit";
+    switch ( $which ) {
+    case 'referers':
+    case 'campaigns':
+    case 'deal_done':
+      $q .= " ORDER BY count(w.id) DESC LIMIT $limit";
+      break;
+    case 'evolution':
+      $q .= " ORDER BY $criteria DESC LIMIT $limit";
+      break;
+    }
+    
     $stmt = $pdo->prepare($q);
     $stmt->execute();
     $data = $stmt->fetchAll();
@@ -127,12 +138,9 @@ class web_originActions extends autoWeb_originActions
       break;
     case 'evolution':
       $this->type = 'line';
-      $start = strtotime(date('Y-m-d'));
       foreach ( $data as $criteria => $value )
-      {
-        if ( strtotime($values['criteria']) < strtotime('-1 month', $start) )
-          unset($data[$criteria]);
-      }
+      if ( strtotime($criteria) < strtotime('-1 month') )
+        unset($data[$criteria]);
       
       // completing empty days
       for ( $i = 0 ; $i < 31 ; $i++ )
