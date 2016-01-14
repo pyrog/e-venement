@@ -248,15 +248,22 @@ abstract class PluginTicket extends BaseTicket
       && is_null($this->cancelling) && is_null($this->duplicating) )
     {
       $ticket = new Ticket;
+      $q = Doctrine_Query::create()->from('Gauge g')
+        ->andWhere('g.workspace_id IN (SELECT gg.workspace_id FROM Gauge gg WHERE gg.id = ?)',$this->gauge_id)
+        ->andWhere('g.manifestation_id = ?',$this->Manifestation->depends_on);
       $ticket->gauge_id = Doctrine_Query::create()->from('Gauge g')
         ->andWhere('g.workspace_id IN (SELECT gg.workspace_id FROM Gauge gg WHERE gg.id = ?)',$this->gauge_id)
         ->andWhere('g.manifestation_id = ?',$this->Manifestation->depends_on)
         ->fetchOne()->id;
-      $ticket->price_name = $this->price_name;
-      $ticket->transaction_id = $this->transaction_id;
-      $ticket->sf_guard_user_id = $this->sf_guard_user_id;
-      $ticket->save();
-      $this->Transaction->Tickets[] = $ticket;
+      // the original ticket AND the depending ticket need to be within the same workspace, if not nothing more is added
+      if ( $ticket->gauge_id )
+      {
+        $ticket->price_name = $this->price_name;
+        $ticket->transaction_id = $this->transaction_id;
+        $ticket->sf_guard_user_id = $this->sf_guard_user_id;
+        $ticket->save();
+        $this->Transaction->Tickets[] = $ticket;
+      }
     }
     
     // resetting generic properties
