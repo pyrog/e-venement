@@ -59,6 +59,7 @@ class ManifestationForm extends BaseManifestationForm
       ->setOption('order_by', array('value, name', ''));
     $this->widgetSchema['depends_on'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
       'model' => 'Manifestation',
+      'method_for_query' => 'slightlyFindOneById',
       'url'   => url_for('manifestation/ajax?except='.$this->object->id),
       'config' => '{ max: '.sfConfig::get('app_manifestation_depends_on_limit',10).' }',
     ));
