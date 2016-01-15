@@ -53,6 +53,11 @@
           &rarr;
           <select name="sample"><option>Parterre Fauteuils</option></select>
         </p>
+        <p class="digitick">
+          <input type="text" name="sample" value="Bloc" readonly="" />
+          &rarr;
+          <select name="sample"><option>Gradin</option></select>
+        </p>
       </div>
       <?php for ( $i = 0; isset($form['translation_workspaces_zone_ref'.$i]) ; $i++ ): ?>
         <p>
@@ -78,6 +83,11 @@
           <input type="text" name="sample" value="Normal" readonly="" />
           &rarr;
           <select name="sample"><option>FBA</option></select>
+        </p>
+        <p class="digitick">
+          <input type="text" name="sample" value="Tarif unique" readonly="" />
+          &rarr;
+          <select name="sample"><option>DGT</option></select>
         </p>
       </div>
       <?php for ( $i = 0; isset($form['translation_prices_ref'.$i]) ; $i++ ): ?>

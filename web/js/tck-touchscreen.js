@@ -93,6 +93,7 @@ $(document).ready(function(){
         $(this).closest('.item').attr('data-'+$(this).closest('.item').attr('data-type')+'-id')
       );
       form.find('[name="transaction[price_new][type]"]').val($(this).closest('.item').attr('data-type'));
+      form.find('[name="transaction[price_new][bunch]"]').val($(this).closest('.bunch').attr('data-bunch-id'));
       form.submit();
       
       // reinit
@@ -253,6 +254,10 @@ $(document).ready(function(){
     // show the contact's file if the screen width is wide enough
     if ( $('#sf_admin_container').width() > 1400 && $('#li_transaction_field_contact_id .data a').length > 0 )
     {
+      // do not show the contact if we are inside the simplified process
+      if ( $('#li_fieldset_simplified').is(':visible') )
+        return;
+      
       $('#sf_admin_container').width($('#sf_admin_container').width()-800);
       setTimeout(function(){ $(window).resize(); }, 1500); // because of the transition-duration
       
@@ -346,6 +351,7 @@ $(document).ready(function(){
 
 // check gauges for overbooking
 LI.checkGauges = function(form){
+  console.error(form);
   // if the current Transaction contains only products, go for the order
   if ( $('#li_transaction_field_content #li_transaction_manifestations .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
     && $('#li_transaction_field_content #li_transaction_museum .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
@@ -359,7 +365,6 @@ LI.checkGauges = function(form){
   if ( $('#li_transaction_field_content #li_transaction_manifestations .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
     && $('#li_transaction_field_content #li_transaction_museum .families:not(.sample) .item tbody .declination [name="qty"]').length > 0 )
     return true;
-    
   
   var qty = 0;
   var go = true;
@@ -368,7 +373,7 @@ LI.checkGauges = function(form){
     if ( go == false )
       return;
     
-    if ( $(this).find('tbody .declination [name="qty"]').length > 0 )
+    if ( $(this).find('tbody .declination:not(.printed):not(.integrated) [name="qty"]').length > 0 )
     {
       var gauge = this;
       qty++;

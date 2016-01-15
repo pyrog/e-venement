@@ -285,6 +285,10 @@ class transactionActions extends autoTransactionActions
     $vs['type'] = new sfValidatorChoice(array(
       'choices' => array('declination', 'gauge'),
     ));
+    $ws['bunch'] = new sfWidgetFormInputHidden;
+    $vs['bunch'] = new sfValidatorChoice(array(
+      'choices' => array('museum', 'manifestations', 'store'),
+    ));
     $ws['id'] = new sfWidgetFormInputHidden;
     $vs['id'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Transaction',
@@ -348,7 +352,14 @@ class transactionActions extends autoTransactionActions
         ->andWhere('t.closed = ?', false)
         ->andWhere('t.id = ?', $this->transaction->id),
     ));
-    $this->form['content']['store']->integrate->setDefault('id', $this->transaction->id);
+    $ws['force'] = new sfWidgetFormInputHidden;
+    $vs['force'] = new sfValidatorPass(array(
+      'required' => false,
+    ));
+    $this->form['content']['store']->integrate
+      ->setDefault('id', $this->transaction->id)
+      ->setDefault('force', null)
+    ;
 
     // NEW PAYMENT
     $this->form['payment_new'] = new sfForm;

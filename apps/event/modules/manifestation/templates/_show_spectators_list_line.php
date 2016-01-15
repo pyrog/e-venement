@@ -8,7 +8,10 @@
           $arr[] = (string)$pn;
       }
     ?>
-    <td class="name" title="<?php echo implode(', ', $arr) ?>"><?php echo cross_app_link_to($transac->Contact,'rp','contact/show?id='.$transac->contact_id) ?> <span class="pictos"><?php if ( $transac->contact_id ) echo $sf_data->getRaw('transac')->Contact->groups_picto ?></span></td>
+    <td class="name" title="<?php echo implode(', ', $arr) ?>">
+      <?php echo cross_app_link_to($transac->Contact,'rp','contact/show?id='.$transac->contact_id) ?>
+      <span class="pictos"><?php if ( $transac->contact_id ) echo $sf_data->getRaw('transac')->Contact->groups_picto ?></span>
+    </td>
     <td class="pro-groups"><?php echo $sf_data->getRaw('transac')->professional_id ? $sf_data->getRaw('transac')->Professional->groups_picto : '' ?></td>
     <?php
       $arr = array();

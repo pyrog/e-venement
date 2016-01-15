@@ -1,0 +1,30 @@
+generator:
+  class: sfDoctrineGenerator
+  param:
+    model_class:           MemberCardTypePromoCode
+    theme:                 jroller
+    non_verbose_templates: true
+    with_show:             false
+    singular:              ~
+    plural:                ~
+    route_prefix:          member_card_type_promo_code
+    with_doctrine_route:   true
+    actions_base_class:    sfActions
+
+    config:
+      actions: ~
+      fields:  ~
+      list:
+        display: [member_card_type_id, =name, begins_at, ends_at]
+      filter:
+        display: [member_card_type_id, name, begins_at, ends_at]
+      form:
+        display:
+          Promo Codes: [member_card_type_id, name, begins_at, ends_at]
+          '': [created_at]
+      edit:    ~
+      new:
+        title: New Promo Code
+        actions:
+          _list: ~
+          _save: ~

@@ -5,8 +5,24 @@
     <header/>
     <body>
       <trans-unit>
+        <source>%%nb%% tickets</source>
+        <target>%%nb%% billets</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Groups</source>
+        <target>Groupes</target>
+      </trans-unit>
+      <trans-unit>
+        <source>You cannot remove this seat, probably at least one ticket has been sold on it.</source>
+        <target>Vous ne pouvez pas supprimer cette place, un billet a probablement déjà été vendu pour celle-ci.</target>
+      </trans-unit>
+      <trans-unit>
         <source>Unlimited</source>
         <target>Illimité</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Day of the week</source>
+        <target>Jour de la semaine</target>
       </trans-unit>
       <trans-unit>
         <source>Licenses</source>
@@ -1651,6 +1667,10 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
         <target>Nom</target>
       </trans-unit>
       <trans-unit>
+        <source>Event categories</source>
+        <target>Catégories d'événement</target>
+      </trans-unit>
+      <trans-unit>
         <source>Category</source>
         <target>Catégorie</target>
       </trans-unit>
@@ -1697,6 +1717,10 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit id="92">
         <source>View Event %%name%%</source>
         <target>Fiche de l'événement %%name%%</target>
+      </trans-unit>
+      <trans-unit id="92">
+        <source>View Visit %%name%%</source>
+        <target>Fiche de la Visite %%name%%</target>
       </trans-unit>
       <trans-unit id="93">
         <source>Companies list</source>
@@ -1753,6 +1777,10 @@ Attention cet outil a une limite : il ne fonctionne bien qu'avec les lots de pla
       <trans-unit id="104">
         <source>Edit Event %%name%%</source>
         <target>Modifier l'événement %%name%%</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Edit Visit %%name%%</source>
+        <target>Modifier la visite %%name%%</target>
       </trans-unit>
       <trans-unit id="105">
         <source>Detailed category</source>

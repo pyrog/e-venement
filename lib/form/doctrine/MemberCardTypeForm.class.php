@@ -53,5 +53,14 @@ class MemberCardTypeForm extends BaseMemberCardTypeForm
       ),
     );
     $this->widgetSchema['public_details'] = new liWidgetFormTextareaTinyMCE($tinymce);
+    
+    // promo code
+    if ( sfContext::hasInstance() && !sfContext::getInstance()->getUser()->hasCredential('pr-card-promo-edit') )
+    {
+      $this->widgetSchema   ['promo_codes'] = new sfWidgetFormInputHidden;
+      $this->validatorSchema['promo_codes'] = new sfValidatorPass;
+    }
+    else
+      $this->embedRelation('PromoCodes as promo_codes');
   }
 }

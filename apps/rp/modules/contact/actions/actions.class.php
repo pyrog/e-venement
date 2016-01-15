@@ -495,14 +495,24 @@ class contactActions extends autoContactActions
   }
   public function executeIndex(sfWebRequest $request)
   {
+    if ( $organism_id = intval($request->getParameter('organism_id')) )
+    {
+      $this->setFilters(array('organism_id' => $organism_id));
+      $this->redirect('contact/index');
+    }
     parent::executeIndex($request);
     if ( !$this->sort[0] )
     {
       $this->sort = array('name','');
       $this->pager->getQuery()->orderby('name');
     }
+    /*
     if ( $organism_id = intval($request->getParameter('organism_id')) )
+    {
       $this->pager->getQuery()->andWhere('o.id = ?', $organism_id);
+      echo $this->pager->getCountQuery()->andWhere('o.id = ?', $organism_id);
+    }
+    */
   }
   public function executeAjax(sfWebRequest $request)
   {

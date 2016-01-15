@@ -47,7 +47,7 @@ class OrderFormFilter extends BaseOrderFormFilter
     ));
     
     $this->widgetSchema   ['closed'] = new sfWidgetFormChoice(array(
-      'choices' => $choices = array('' => __('yes or no',null,'sf_admin'), 'yes' => __('yes',null,'sf_admin'), 'no' => __('no',null,'sf_admin')),
+      'choices' => $choices = array('na' => __('yes or no',null,'sf_admin'), 'yes' => __('yes',null,'sf_admin'), 'no' => __('no',null,'sf_admin')),
     ));
     $this->validatorSchema['closed'] = new sfValidatorChoice(array(
       'choices' => array_keys($choices),
@@ -120,7 +120,7 @@ class OrderFormFilter extends BaseOrderFormFilter
   
   public function addClosedColumnQuery(Doctrine_Query $q, $field, $value)
   {
-    if ( !$value )
+    if ( !$value || $value == 'na' )
       return $q;
     
     $o = $q->getRootAlias();

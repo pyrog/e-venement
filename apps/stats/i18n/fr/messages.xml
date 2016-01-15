@@ -5,6 +5,22 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Follows</source>
+        <target>Suit</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Day</source>
+        <target>Jour</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Meta-event</source>
+        <target>Meta-événement</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Event category</source>
+        <target>Catégorie d'événement</target>
+      </trans-unit>
+      <trans-unit>
         <source>Platform</source>
         <target>Plateforme</target>
       </trans-unit>

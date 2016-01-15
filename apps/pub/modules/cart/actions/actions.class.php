@@ -67,7 +67,10 @@ class cartActions extends sfActions
       str_pad(floor($time%3600%60), 2, '0', STR_PAD_LEFT)
     ;
     if ( $time <= 0 )
+    {
       $this->timeout = true;
+      $this->getUser()->resetTransaction();
+    }
     
     // older item timeout
     $ticket = Doctrine::getTable('Ticket')->createQuery('tck')
@@ -87,7 +90,10 @@ class cartActions extends sfActions
         str_pad(floor($time%3600%60), 2, '0', STR_PAD_LEFT)
       ;
       if ( $time <= 0 )
+      {
         $this->timeout = true;
+        $this->getUser()->resetTransaction();
+      }
     }
   }
   public function executeEmpty(sfWebRequest $request)

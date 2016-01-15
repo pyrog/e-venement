@@ -1,3 +1,12 @@
+member_card_type_promo_code:
+  class: sfDoctrineRouteCollection
+  options:
+    model:                MemberCardTypePromoCode
+    module:               promo_code
+    prefix_path:          /promo_code
+    column:               id
+    with_wildcard_routes: true
+
 email_template:
   class: sfDoctrineRouteCollection
   options:

@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Debts</source>
+        <target>Dettes</target>
+      </trans-unit>
+      <trans-unit>
         <source>Direct access</source>
         <target>Accès direct</target>
       </trans-unit>

@@ -1,7 +1,9 @@
+      <?php if ( isset($sfFunction) ): ?>
       $('#sf_fieldset_<?php echo $tab ?> .tab-print a.refresh').click(function(){
         $.get($(this).prop('href'), <?php echo $jsFunction ?>);
         return false;
       });
+      <?php endif ?>
       
       $('#sf_fieldset_<?php echo $tab ?> .tab-print a.print').click(function(){
         $('body').addClass('sf_fieldset_<?php echo $tab ?>');

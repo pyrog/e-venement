@@ -341,10 +341,17 @@ class seated_planActions extends autoSeated_planActions
     
     $q = Doctrine::getTable('Seat')->createQuery('s')
       ->andWhere('s.seated_plan_id = ?', $request->getParameter('id'))
-      ->andWhere('s.id = ?', $data['id']);
-    $q->delete()->execute();
+      ->andWhere('s.id = ?', $data['id'])
+      ->andWhere('s.id NOT IN (SELECT tck.seat_id FROM Ticket tck)');
     
-    return sfView::NONE;
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $this->json = array('success' => false, 'message' => __('You cannot remove this seat, probably at least one ticket has been sold on it.'));
+    if ( $q->count() > 0 )
+    {
+      $this->json['success'] = true;
+      $this->json['message'] = '';
+    }
+    $q->delete()->execute();
   }
   
   public function executeDelPicture(sfWebRequest $request)

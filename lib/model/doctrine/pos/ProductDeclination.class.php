@@ -12,4 +12,8 @@
  */
 class ProductDeclination extends PluginProductDeclination
 {
+  public function getOrderingKey()
+  {
+    return $this->Product->name.' '.$this->name.' ~~ '.$this->product_id.' '.$this->id;
+  }
 }

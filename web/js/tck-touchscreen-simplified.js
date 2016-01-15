@@ -39,10 +39,19 @@ $(document).ready(function(){
     $('#li_fieldset_simplified').fadeToggle(function(){
       if ( !$(this).is(':visible') )
       {
+        $('#sf_admin_container h1 #invoice').fadeOut(function(){ $(this).remove(); });
         Cookie.set(LI.touchscreenSimplifiedCookie.name, 'hide', LI.touchscreenSimplifiedCookie.options); // 30 days expiration
         return;
       }
       Cookie.set(LI.touchscreenSimplifiedCookie.name, 'show', LI.touchscreenSimplifiedCookie.options);    // 30 days expiration
+      $('<a></a>').addClass('ui-widget-content').addClass('ui-state-default').addClass('ui-corner-all').addClass('ui-widget').addClass('fg-button')
+        .prop('href', $('#li_transaction_field_payments_list .accounting.invoice').prop('action'))
+        .prop('title', $('#li_transaction_field_payments_list .accounting.invoice input[type=submit]').val())
+        .prop('id', 'invoice')
+        .prop('target', '_blank')
+        .append('<span class="ui-icon ui-icon-clipboard"></span>')
+        .insertBefore($('#sf_admin_container h1 #simplified-gui'))
+      ;
       
       // click on the last (or the first) tab...
       if ( !Cookie.get(LI.touchscreenSimplifiedCookie.bunch) )
@@ -188,6 +197,13 @@ LI.touchscreenSimplifiedLoadData = function(){
         });
       });
       
+      // relooking of the array, to avoid mistakes w/ the key of the JS associative array
+      var obj = {};
+      $.each(LI.touchscreenSimplifiedData[type], function(key, data){
+        obj[data.id] = data;
+      });
+      LI.touchscreenSimplifiedData[type] = obj;
+      
       LI.touchscreenSimplifiedBehavior(type);
     },
     error: function(){
@@ -327,11 +343,13 @@ LI.touchscreenSimplifiedPrices = function(gauge, data){
   // click on a price button
   $(target).find('button').click(function(){
     var declname;
-    $.each(LI.touchscreenSimplifiedData[$('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-bunch-id')], function(id, pdt){
+    var bunch = $('#li_fieldset_simplified .bunch :checked').closest('.bunch').attr('data-bunch-id');
+    $.each(LI.touchscreenSimplifiedData[bunch], function(id, pdt){
       declname = pdt.declinations_name.slice(0,-1); // remove the last char "s"
     });
     
     var form = $('#li_transaction_field_price_new form.prices');
+    $(form).find('[name="transaction[price_new][bunch]"]').val(bunch);
     $(form).find('[name="transaction[price_new][price_id]"]').val($(this).val());
     $(form).find('[name="transaction[price_new][declination_id]"]').val($('#li_fieldset_simplified .bunch :checked').val());
     $(form).find('[name="transaction[price_new][type]"]').val(declname);
@@ -342,7 +360,7 @@ LI.touchscreenSimplifiedPrices = function(gauge, data){
 
 if ( LI.touchscreenContentLoad == undefined )
   LI.touchscreenContentLoad = [];
-LI.touchscreenContentLoad.push(function(data, type){
+LI.touchscreenContentLoad.push(function(data, type, reset){
   // every element on the .cart element is rendered here
   
   switch ( type ) {
@@ -383,6 +401,10 @@ LI.touchscreenContentLoad.push(function(data, type){
   case 'museum':
   case 'manifestations':
   case 'store':
+    // resetting data...
+    if ( reset )
+      $('#li_fieldset_simplified .cart .item.'+type).remove();
+    
     $.each(data, function(id, pdt){
       $.each(pdt[pdt.declinations_name], function(id, declination){
         // cancellations preprocessing
@@ -491,6 +513,9 @@ LI.touchscreenFormComplete.push(function(data, index){
     return;
   if ( !data.remote_content.load.reset )
     return;
+  if ( !data.remote_content.load.type )
+    return;
+  
   var type = data.remote_content.load.type.replace(/_price$/, '');
   $('#li_fieldset_simplified .cart .item.'+type).remove();
 });

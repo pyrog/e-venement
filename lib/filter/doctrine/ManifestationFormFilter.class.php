@@ -54,6 +54,17 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       'required'  => false,
     ));
     
+    $this->widgetSchema   ['event_categories_list'] = new sfWidgetFormDoctrineChoice(array(
+      'model'     => 'EventCategory',
+      'order_by'  => array('name',''),
+      'multiple'  => true,
+    ));
+    $this->validatorSchema['event_categories_list'] = new sfValidatorDoctrineChoice(array(
+      'model'     => 'EventCategory',
+      'multiple'  => true,
+      'required'  => false,
+    ));
+    
     $this->widgetSchema['color_id']->setOption('method', 'getName');
     
     $this->widgetSchema   ['has_description'] =
@@ -71,6 +82,25 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       ->andWhere('ii.id IS NOT NULL')
     );
     $this->validatorSchema['participants_list']->setOption('query', $this->widgetSchema['participants_list']->getOption('query'));
+    
+    $this->widgetSchema   ['day_of_the_week'] = new sfWidgetFormChoice(array(
+      'choices' => $choices = array(
+        '' => '',
+        1 => __('Monday', null, 'generic'),
+        2 => __('Tuesday', null, 'generic'),
+        3 => __('Wednesday', null, 'generic'),
+        4 => __('Thrusday', null, 'generic'),
+        5 => __('Friday', null, 'generic'),
+        6 => __('Saturday', null, 'generic'),
+        0 => __('Sunday', null, 'generic')
+      ),
+      'multiple' => true,
+    ));
+    $this->validatorSchema['day_of_the_week'] = new sfValidatorChoice(array(
+      'choices' => array_keys($choices),
+      'required' => false,
+      'multiple' => true,
+    ));
   }
 
   public function getFields()
@@ -78,14 +108,34 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
     $arr = parent::getFields();
     unset($arr['location_id']);
     return array_merge($arr,array(
+      'event_categories_list' => 'EventCategoriesList',
       'meta_event_id'   => 'MetaEventId',
       'workspace_id'    => 'WorkspaceId',
       'has_extra_infos' => 'HasExtraInfos',
       'has_description' => 'HasDescription',
       'location_id'     => 'LocationId',
+      'day_of_the_week' => 'DayOfTheWeek',
     ));
   }
   
+  public function addDayOfTheWeekColumnQuery(Doctrine_Query $q, $field, $values)
+  {
+    if ( !is_array($values) )
+    {
+      if ( $values === '' )
+        return $q;
+      $values = array($values);
+    }
+    
+    if (( $key = array_search('', $values) ) !== false )
+      unset($values[$key]);
+    if ( !$values )
+      return $q;
+    
+    $a = $q->getRootAlias();
+    $q->andWhereIn("EXTRACT(DOW FROM $a.happens_at)", $values);
+    return $q;
+  }
   public function addLocationIdColumnQuery(Doctrine_Query $q, $field, $value)
   {
     if ( !$value || $field != 'location_id' )
@@ -113,6 +163,19 @@ class ManifestationFormFilter extends BaseManifestationFormFilter
       $q->andWhereIn("e.$field", $value);
     else
       $q->andWhere("e.$field = ?", $value);
+    
+    return $q;
+  }
+  
+  public function addEventCategoriesListColumnQuery(Doctrine_Query $q, $field, $value)
+  {
+    if ( !$value )
+      return $q;
+    
+    if ( !$q->contains('e.EventCategory ec') )
+      $q->leftJoin('e.EventCategory ec');
+    
+    $q->andWhereIn('ec.id', $value);
     
     return $q;
   }

@@ -45,5 +45,5 @@
   href="#"
   title="<?php echo __('Switch to simplified GUI / back from ...') ?>"
   id="simplified-gui"
-><span class="ui-icon ui-icon-document-b"></span></a>
+><span class="ui-icon ui-icon-transferthick-e-w"></span></a>
 </form>

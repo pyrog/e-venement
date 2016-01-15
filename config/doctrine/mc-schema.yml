@@ -58,6 +58,31 @@ MemberCardType:
       foreignAlias: MemberCardTypes
       onDelete: RESTRICT
       onUpdate: CASCADE
+MemberCardTypePromoCode:
+  package: mc
+  inheritance:
+    extends: Traceable
+    type: concrete
+  indexes:
+    mct_promo_code_begins_at:
+      fields: [begins_at]
+    mct_promo_code_ends_at:
+      fields: [ends_at]
+  columns:
+    name:
+      type: string(255)
+      unique: true
+      notnull: true
+      notblank: true
+    description: string(255)
+    member_card_type_id: integer
+    begins_at: timestamp
+    ends_at: timestamp
+  relations:
+    MemberCardType:
+      foreignAlias: PromoCodes
+      onDelete: CASCADE
+      onUpdate: CASCADE
 MemberCardTypeUser:
   package: mc
   columns:
@@ -105,6 +130,7 @@ MemberCard:
       type: integer
       default: 0
       notnull: true
+    detail: string(255)
   relations:
     Contact:
       foreignAlias: MemberCards

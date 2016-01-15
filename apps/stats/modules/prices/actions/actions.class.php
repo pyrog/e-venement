@@ -25,11 +25,19 @@ class pricesActions extends sfActions
     }
     
     $this->form = new StatsCriteriasForm();
-    $this->form->addUsersCriteria();
-    $this->form->addEventCriterias();
-    $this->form->addManifestationCriteria();
+    $this->form
+      ->addUsersCriteria()
+      ->addEventCriterias()
+      ->addManifestationCriteria()
+    ;
     if ( is_array($this->getUser()->getAttribute('stats.criterias',array(),'admin_module')) )
       $this->form->bind($this->getUser()->getAttribute('stats.criterias',array(),'admin_module'));
+  }
+  
+  public function executeJson(sfWebRequest $request)
+  {
+    $param = $request->getParameter('id');
+    $this->lines = $this->getPrices($param == 'asked', $param == 'ordered', $param == 'all', 'array');
   }
   
   public function executeCsv(sfWebRequest $request)

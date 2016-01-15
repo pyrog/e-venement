@@ -44,6 +44,11 @@ class geoActions extends sfActions
     return $this;
   }
   
+  public function executeJson(sfWebRequest $request)
+  {
+    $criterias = $this->getCriterias();
+    $this->data = $this->getData($request->getParameter('type','ego'), !(isset($criterias['approach']) && $criterias['approach'] === ''));
+  }
   public function executeCsv(sfWebRequest $request)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink','Number'));
@@ -244,7 +249,7 @@ class geoActions extends sfActions
       $cpt = 0;
       foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
-        if ( intval($code).'' !== ''.$code )
+        if ( str_pad(intval($code).'',5,'0',STR_PAD_LEFT) !== ''.$code )
         {
           foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
           {
@@ -293,7 +298,7 @@ class geoActions extends sfActions
       $cpt = 0;
       foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
-        if ( intval($code).'' !== ''.$code )
+        if ( str_pad(intval($code).'',2,'0',STR_PAD_LEFT) !== ''.$code )
         {
           foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
           {
