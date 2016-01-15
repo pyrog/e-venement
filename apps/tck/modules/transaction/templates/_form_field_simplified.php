@@ -26,14 +26,13 @@
           <?php echo __('Print and deliver') ?>
           <span class="ui-icon ui-icon-print"></span>
         </button>
-       </li>
-      <li class="total end">
+      </li>
+      <li class="topay end">
         <div class="left">
-          <span class="category"><?php echo __('To pay') ?></span>
-          <span class="qty" data-qty="0">0</span>
+          <span class="category"><?php echo __('Still missing') ?></span>
         </div>
         <div class="right">
-          <span class="value" data-value="0"><?php echo format_currency(0,'€') ?></span>
+          <span class="value"><?php echo format_currency(0,'€') ?></span>
         </div>
       </li>
       <li class="paid end">
@@ -44,12 +43,13 @@
           <span class="value" data-value="0"><?php echo format_currency(0,'€') ?></span>
         </div>
       </li>
-      <li class="topay end">
+      <li class="total end">
         <div class="left">
-          <span class="category"><?php echo __('Still missing') ?></span>
+          <span class="category"><?php echo __('To pay') ?></span>
+          <span class="qty" data-qty="0">0</span>
         </div>
         <div class="right">
-          <span class="value"><?php echo format_currency(0,'€') ?></span>
+          <span class="value" data-value="0"><?php echo format_currency(0,'€') ?></span>
         </div>
       </li>
     </ul>

@@ -437,7 +437,7 @@ LI.touchscreenContentLoad.push(function(data, type){
               .prop('title', '#'+pdtid+(price.numerotation[i] ? ' → '+price.numerotation[i] : ''))
               .append(left)
               .append(right)
-              .insertAfter($('#li_fieldset_simplified .cart .topay'))
+              .insertAfter($('#li_fieldset_simplified .cart .total'))
               .dblclick(function(){
                 if ( $(this).is('.sold') )
                   return;
