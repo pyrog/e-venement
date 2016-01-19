@@ -67,6 +67,17 @@ class eventConfiguration extends sfApplicationConfiguration
     $this->addGarbageCollector('manifestations-cache', function(){
       $section = 'Caching manifs';
       
+      // the lockfile
+      $lockfile = sfConfig::get('sf_app_cache_dir').'/caching_manifestations.lock';
+      if ( file_exists($lockfile) && filectime($lockfile) > strtotime('12 hours ago') )
+      {
+        $this->stdout($section, 'An other process is still running in the background', 'ERROR');
+        return $this;
+      }
+      if ( file_exists($lockfile) )
+        unlink($lockfile);
+      touch($lockfile);
+      
       $timeout = sfConfig::get('app_cacher_timeout', '1 day ago');
       $this->stdout($section, 'Starting the caching process...', 'COMMAND');
       
@@ -142,6 +153,10 @@ class eventConfiguration extends sfApplicationConfiguration
         if ( $i > 0 )
           $this->stdout($section, "[OK] $action cache created for $i manifestations", 'INFO');
       }
+      
+      // the lockfile
+      if ( file_exists($lockfile) )
+        unlink($lockfile);
     });
     
     return $this;
