@@ -219,7 +219,7 @@ class OptionCsvForm extends BaseOptionCsvForm
       elseif ( isset($contact['organism_email']) && $contact['organism_email'] )
         $email = $contact['organism_email'];
       $contact['email'] = $email;
-      unset($contact['organism_email'], $contact['professional_email']);
+      $contact['organism_email'] = $contact['professional_email'] = '';
       
       if ( isset($contact['organism_phonenumber']) && $contact['organism_phonenumber'] )
       {
