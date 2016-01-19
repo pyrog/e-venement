@@ -192,7 +192,7 @@
     break;
     case 'store':
       $subobj = 'BoughtProduct';
-      $product_id  = 'Declination->id';
+      $product_id  = 'Declination->product_id';
       $product_key = 'Declination->ordering_key';
       
       if ( !$request->getParameter('id',false) && $request->hasParameter('simplified') )
@@ -263,7 +263,7 @@
       $this->transaction = $q->fetchOne();
     elseif ( $q->count() == 0 )
       return;
-    
+
     // model for ticket's data
     $items_model = array(
       'state' => '',
@@ -370,7 +370,7 @@
             ->andWhere('wsu.sf_guard_user_id IS NOT NULL')
             ->andWhere('m.id = ?',$id)
           ;
-      
+          
           if ( $gid = $request->getParameter('gauge_id', false) )
             $q->leftJoin('m.IsNecessaryTo int')
               ->leftJoin('int.Gauges intg')
