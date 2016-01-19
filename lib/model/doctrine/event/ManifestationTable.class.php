@@ -272,6 +272,7 @@ class ManifestationTable extends PluginManifestationTable
   public function slightlyFindOneById($value)
   {
     return $this->createQuery('m', true)
+      ->select('m.*')
       ->andWhere('m.id = ?', $value)
       ->fetchOne();
   }

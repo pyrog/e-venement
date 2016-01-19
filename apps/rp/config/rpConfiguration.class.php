@@ -129,7 +129,8 @@ class rpConfiguration extends sfApplicationConfiguration
     $this->addGarbageCollector('mc-alerts', function(){
       sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date', 'CrossAppLink'));
       $section = 'MC expiration';
-      $nb = 0;
+      $nb = $err = 0;
+      $this->stdout($section, 'Looking for member cards...', 'COMMAND');
       
       $options = OptionMCForm::getDBOptions();
       if ( !$options['enabled'] || !$options['email_from'] )
@@ -178,6 +179,7 @@ class rpConfiguration extends sfApplicationConfiguration
       
       $nb = 0;
       foreach ( $mcs as $mc )
+      if ( $mc->Contact->email )
       {
         $email = new Email;
         $email->field_from = $options['email_from'];
@@ -188,8 +190,10 @@ class rpConfiguration extends sfApplicationConfiguration
         $email->save();
         $nb++;
       }
+      else
+        $err++;
       
-      $this->stdout($section, "[OK] $nb emails sent", 'INFO');
+      $this->stdout($section, "[OK] $nb emails sent".($err > 0 ? ", $err not sent (no email given for the related Contact)" : ''), 'INFO');
     });
   }
 }

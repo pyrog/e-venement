@@ -66,14 +66,18 @@ class eventConfiguration extends sfApplicationConfiguration
     // Caching manifestations in the background
     $this->addGarbageCollector('manifestations-cache', function(){
       $section = 'Caching manifs';
-      if (!( $url = sfConfig::get('app_cacher_public_url', false) )
-        || !function_exists('curl_init') )
+      
+      // the lockfile
+      $lockfile = sfConfig::get('sf_app_cache_dir').'/caching_manifestations.lock';
+      if ( file_exists($lockfile) && filectime($lockfile) > strtotime('12 hours ago') )
       {
-        $this->stdout($section, 'No public URL set in the configuration (app.yml). Stopping the process.', 'ERROR');
+        $this->stdout($section, 'An other process is still running in the background', 'ERROR');
         return $this;
       }
+      if ( file_exists($lockfile) )
+        unlink($lockfile);
+      touch($lockfile);
       
-      $this->loadHelpers('CrossAppLink');
       $timeout = sfConfig::get('app_cacher_timeout', '1 day ago');
       $this->stdout($section, 'Starting the caching process...', 'COMMAND');
       
@@ -84,7 +88,7 @@ class eventConfiguration extends sfApplicationConfiguration
         ->fetchOne());
       if ( !$user )
       {
-        $this->stdout($section, 'No usable user found to build the cache. Stopping...', 'ERROR');
+        $this->stdout($section, 'No suitable user found to build the cache. Stopping...', 'ERROR');
         return $this;
       }
       
@@ -119,19 +123,7 @@ class eventConfiguration extends sfApplicationConfiguration
           $context['request'] = $request;
           $actions = $context->getController()->getAction('manifestation', $action);
           while ( $context->getActionStack()->popEntry() ); // clearing the stack
-          $context->getActionStack()->addEntry('manifestation', $action, $actions);
-          $_SERVER['REQUEST_URI'] = $uri =
-            preg_replace('!/$!', '', sfConfig::get('app_cacher_public_url')).
-            '/'.
-            $context->getConfiguration()->getApplication().
-            ($context->getConfiguration()->getEnvironment() != 'prod' ? '_'.$context->getConfiguration()->getEnvironment() : '').
-            '.php'.
-            '/manifestation/'.
-            $manifestation->id.
-            '/'.$action.
-            //'?refresh'
-            ''
-          ;
+            $context->getActionStack()->addEntry('manifestation', $action, $actions);
           
           if ( !liCacher::create($request)->needsRefresh() )
           {
@@ -161,6 +153,10 @@ class eventConfiguration extends sfApplicationConfiguration
         if ( $i > 0 )
           $this->stdout($section, "[OK] $action cache created for $i manifestations", 'INFO');
       }
+      
+      // the lockfile
+      if ( file_exists($lockfile) )
+        unlink($lockfile);
     });
     
     return $this;
