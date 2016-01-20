@@ -21,15 +21,14 @@ class ProductDeclination extends PluginProductDeclination
   
   public function findOrderedSiblings($excluded_transaction_id = NULL)
   {
+    if ( !$this->id )
+      return new Doctrine_Collection('BoughtProduct');
     if ( !is_null($this->ordered_siblings) )
       return $this->ordered_siblings;
     
-    $q = Doctrine::getTable('BoughtProduct')->createQuery('bp')
-      ->leftJoin('bp.Transaction t')
-      ->leftJoin('t.Order o')
+    $q = Doctrine::getTable('BoughtProduct')->createQueryOrdered('bp')
+      ->andWhere('bp.product_declination_id = ?', $this->id)
       ->select('bp.*')
-      ->andWhere('bp.integrated_at IS NULL')
-      ->andWhere('o.id IS NOT NULL')
     ;
     
     if ( $excluded_transaction_id )

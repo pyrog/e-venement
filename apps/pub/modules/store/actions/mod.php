@@ -43,6 +43,9 @@ $count = $q->copy()->andWhere('bp.integrated_at IS NULL')->count();
 if ( $count == 0 )
 {
   // security checks
+  $q2 = Doctrine::getTable('BoughtProduct')->createQueryOrdered('bbp')
+    ->andWhere('bbp.product_declination_id = ?', $store['declination_id'])
+    ->select('count(bbp.id)');
   $check = Doctrine::getTable('ProductDeclination')->createQuery('d')
     ->andWhere('d.id = ?', $store['declination_id'])
     ->leftJoin('d.Product p')
@@ -50,6 +53,7 @@ if ( $count == 0 )
     ->andWhere('price.id = ?', $store['price_id'])
     ->leftJoin('price.Users pu')
     ->andWhere('pu.id = ?', $this->getUser()->getId())
+    ->andWhere("d.stock > ($q2)", $store['declination_id'])
   ;
   if ( $check->count() == 0 )
     return 'Error';

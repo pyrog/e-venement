@@ -12,8 +12,8 @@ class ProductDeclinationTable extends PluginProductDeclinationTable
      *
      * @return object ProductDeclinationTable
      */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('ProductDeclination');
-    }
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('ProductDeclination');
+  }
 }
