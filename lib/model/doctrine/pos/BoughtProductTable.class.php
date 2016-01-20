@@ -24,6 +24,8 @@ class BoughtProductTable extends PluginBoughtProductTable
       ->leftJoin("$alias.Transaction {$alias}t")
       ->leftJoin("{$alias}t.Order {$alias}o")
       ->andWhere("{$alias}o.id IS NOT NULL")
+      ->andWhere("$alias.integrated_at IS NULL")
+      ->andWhere("$alias.destocked = ?", false)
     ;
   }
 }

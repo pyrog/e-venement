@@ -53,7 +53,7 @@ if ( $count == 0 )
     ->andWhere('price.id = ?', $store['price_id'])
     ->leftJoin('price.Users pu')
     ->andWhere('pu.id = ?', $this->getUser()->getId())
-    ->andWhere("d.stock > ($q2)", $store['declination_id'])
+    ->andWhere("d.stock > ($q2)", $q2->getParams())
   ;
   if ( $check->count() == 0 )
     return 'Error';
