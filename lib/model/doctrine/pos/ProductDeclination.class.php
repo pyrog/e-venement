@@ -14,11 +14,6 @@ class ProductDeclination extends PluginProductDeclination
 {
   protected $ordered_siblings = NULL;
   
-  public function getOrderingKey()
-  {
-    return $this->Product->name.' '.$this->name.' ~~ '.$this->product_id.' '.$this->id;
-  }
-  
   public function findOrderedSiblings($excluded_transaction_id = NULL)
   {
     if ( !$this->id )
