@@ -111,7 +111,7 @@ abstract class PluginEmail extends BaseEmail
     
     // attach normal file attachments
     foreach ( $this->Attachments as $key => $attachment )
-    if ( file_exists(sfConfig::get('sf_upload_dir').DIRECTORY_SEPARATOR.$attachment->filename, $attachment->mime_type) )
+    if ( file_exists(sfConfig::get('sf_upload_dir').DIRECTORY_SEPARATOR.$attachment->filename) )
     {
       $id = $attachment->getId() ? $attachment->getId() : date('YmdHis').rand(10000,99999);
       $att = Swift_Attachment::fromPath($path = substr($attachment->filename, 0, 1) == '/'
