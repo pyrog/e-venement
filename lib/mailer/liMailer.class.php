@@ -45,7 +45,7 @@ class liMailer extends sfMailer
       );
       $go = false;
       foreach ( $replace as $field => $val )
-      if ( strpos('%%'.strtoupper($field).'%%', $this->email->getFormattedContent()) !== FALSE )
+      if ( strpos($this->email->getFormattedContent(), '%%'.strtoupper($field).'%%') !== FALSE )
       {
         $go = true;
         break;
@@ -55,20 +55,20 @@ class liMailer extends sfMailer
       {
         $fields = $replace;
         if ( $go )
-        switch ( get_class($this->matcher[$cpt]) ) {
+        switch ( get_class($this->matcher[$this->cpt]) ) {
           case 'Contact':
             foreach ( array('firstname', 'title') as $field )
-              $fields[$field]   = $this->matcher[$cpt]->$field;
+              $fields[$field]   = $this->matcher[$this->cpt]->$field;
           case 'Organism':
             foreach ( array('name', 'address', 'postalcode', 'city', 'country') as $field )
-              $fields[$field]   = $this->matcher[$cpt]->$field;
+              $fields[$field]   = $this->matcher[$this->cpt]->$field;
           break;
           case 'Professional':
             foreach ( array('firstname', 'title', 'name') as $field )
-              $fields[$field]   = $this->matcher[$cpt]->Contact->$field;
+              $fields[$field]   = $this->matcher[$this->cpt]->Contact->$field;
             foreach ( array('address', 'postalcode', 'city', 'country', 'organism') as $field )
-              $fields[$fields]  = $this->matcher[$cpt]->Organism->$field;
-            $fields['function'] = $this->matcher[$cpt]->name ? $this->matcher[$cpt]->name : (string)$this->matcher[$cpt]->Category;
+              $fields[$fields]  = $this->matcher[$this->cpt]->Organism->$field;
+            $fields['function'] = $this->matcher[$this->cpt]->name ? $this->matcher[$this->cpt]->name : (string)$this->matcher[$this->cpt]->Category;
           break;
         }
         $fields['emailaddress'] = is_int($address) ? $name : $address;
