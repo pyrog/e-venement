@@ -28,7 +28,7 @@ abstract class PluginPrice extends BasePrice
       ->orderBy('p.rank DESC')
       ->limit(1)
       ->select('p.id, p.rank')
-      ->fetchOne()
+      ->fetchOne();
     if ( $price )
       $this->rank = $price->rank * 2;
     return parent::preInsert($event);
