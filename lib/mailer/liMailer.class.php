@@ -62,6 +62,7 @@ class liMailer extends sfMailer
           case 'Organism':
             foreach ( array('name', 'address', 'postalcode', 'city', 'country') as $field )
               $fields[$field]   = $this->matcher[$this->cpt]->{$fields[$field] ? $fields[$field] : $field};
+            $fields['organism'] = $fields['name'];
           break;
           case 'Professional':
             foreach ( array('firstname', 'title', 'name') as $field )
