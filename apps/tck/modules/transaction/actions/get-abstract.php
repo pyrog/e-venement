@@ -375,9 +375,10 @@
             $q->leftJoin('m.IsNecessaryTo int')
               ->leftJoin('int.Gauges intg')
               ->andWhere('g.id = ? OR intg.id = ?', array($gid, $gid));
-          $product = $q->fetchOne();
 
-          if ( $product )
+          if (!( $product = $q->fetchOne() ))
+            break;
+
           $this->json[$product->ordering_key] = array(
             'id'            => $product->id,
             'name'          => NULL,
@@ -444,6 +445,9 @@
           );
           break;
         }
+        
+        if ( !$product )
+          continue;
         
         // gauges
         if ( !$product )
