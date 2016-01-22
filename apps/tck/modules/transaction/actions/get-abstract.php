@@ -269,7 +269,8 @@
           ;
           if ( $gid = $request->getParameter('gauge_id', false) )
             $q->andWhere('g.id = ?', $gid);
-          $product = $q->fetchOne();
+          if (!( $product = $q->fetchOne() ))
+            break;
           
           $this->json[$product->id] = array(
             'id'            => $product->id,
@@ -336,6 +337,9 @@
           );
           break;
         }
+        
+        if ( !$product )
+          continue;
         
         // gauges
         $this->json[$product->id][$this->json[$product->id]['declinations_name']] = array();
