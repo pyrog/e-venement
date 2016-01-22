@@ -138,11 +138,18 @@
     $command .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($amount,'€')."\n";
     if ( sfConfig::get('app_payment_type', 'paybox') != 'onthespot' )
     {
-      $command .= "\n";
-      $command .= "Paiements\n";
+      $payments = '';
       if ( $mc_amount = $transaction->getTicketsLinkedToMemberCardPrice(true) )
-      $command .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($mc_amount,'€')."\n";
-      $command .= "&nbsp;&nbsp;".__('Credit card').": ".format_currency($transaction->getPrice(true,true),'€')."\n";
+        $payments .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($mc_amount,'€')."\n";
+      $amount = 0;
+      foreach ( $transaction->Payments as $payment )
+        $payments .= "&nbsp;&nbsp;".$payment->PaymentMethod.": ".format_currency($transaction->getPrice(true,true),'€')."\n";
+      if ( $payments )
+      {
+        $command .= "\n";
+        $command .= "Paiements\n";
+        $command .= $payments;
+      }
     }
     
     $replace = array(
