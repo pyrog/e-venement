@@ -139,11 +139,16 @@
     if ( sfConfig::get('app_payment_type', 'paybox') != 'onthespot' )
     {
       $payments = '';
-      if ( $mc_amount = $transaction->getTicketsLinkedToMemberCardPrice(true) )
-        $payments .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($mc_amount,'€')."\n";
       $amount = 0;
+      $cpt = 0;
       foreach ( $transaction->Payments as $payment )
-        $payments .= "&nbsp;&nbsp;".$payment->PaymentMethod.": ".format_currency($transaction->getPrice(true,true),'€')."\n";
+      {
+        $payments .= "&nbsp;&nbsp;".$payment->Method.": ".format_currency($payment->value,'€')."\n";
+        $amount += $payment->value;
+        $cpt++;
+      }
+      if ( $cpt > 1 )
+        $payments .= "&nbsp;&nbsp;Total: ".format_currency($amount,'€')."\n";
       if ( $payments )
       {
         $command .= "\n";
