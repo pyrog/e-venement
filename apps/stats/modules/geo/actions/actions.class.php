@@ -138,9 +138,10 @@ class geoActions extends sfActions
   
   protected function buildQuery()
   {
-    $q = $this->addFiltersToQuery(Doctrine_Query::create()->from('Contact c'))
-      ->leftJoin('c.Transactions t')
-      ->leftJoin('t.Professional pro')
+    $q = $this->addFiltersToQuery(Doctrine_Query::create()->from('Contact c')
+        ->leftJoin('c.Transactions t')
+        ->leftJoin('t.Professional pro')
+      )
       ->leftJoin('pro.Organism o')
       ->leftJoin('t.Tickets tck')
       ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL')
