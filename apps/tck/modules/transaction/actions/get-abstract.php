@@ -364,7 +364,9 @@
               ->andWhere('g.id = ? OR intg.id = ?', array($gid, $gid));
           $product = $q->fetchOne();
 
-          if ( $product )
+          if (!( $product = $q->fetchOne() ))
+            break;
+          
           $this->json[$product->id] = array(
             'id'            => $product->id,
             'name'          => NULL,
@@ -431,6 +433,9 @@
           );
           break;
         }
+        
+        if ( !$product )
+          continue;
         
         // gauges
         if ( !$product )
