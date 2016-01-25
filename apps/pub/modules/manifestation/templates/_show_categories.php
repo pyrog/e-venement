@@ -16,7 +16,7 @@
       );
     }
     
-    foreach ( $gauge->PriceGauges as $pg )
+    foreach ( $gauge->getPriceGaugesFiltered() as $pg )
     if ( $pg->Price->isAccessibleBy($sf_user->getRawValue()) )
     {
       if ( !isset($groups[$gauge->group_name][$pg->price_id]) )
