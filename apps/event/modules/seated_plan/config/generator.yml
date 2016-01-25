@@ -60,7 +60,7 @@ generator:
             credentials: [event-seated-plan-new, event-seated-plan-edit]
           _delete: ~
       filter:
-        display: [location_id, workspaces_list, background]
+        display: [location_id, manifestation_id, workspaces_list, background]
       form:    ~
       edit:
         actions:

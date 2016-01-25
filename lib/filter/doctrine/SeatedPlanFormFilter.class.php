@@ -39,9 +39,34 @@ class SeatedPlanFormFilter extends BaseSeatedPlanFormFilter
       ->setOption('query', Doctrine::getTable('Location')->createQuery()->andWhere('place = ?',true))
       ->setOption('order_by', array('rank, name',''))
     ;
+    
+    $this->widgetSchema['manifestation_id'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
+      'model' => 'Manifestation',
+      'url'   => cross_app_url_for('event','manifestation/ajax'),
+    ));
+    $this->validatorSchema['manifestation_id'] = new sfValidatorDoctrineChoice(array(
+      'model' => 'Manifestation',
+      'required' => false,
+    ));
     /*
     $this->widgetSchema['workspace_id']
       ->setOption('query', Doctrine::getTable('Workspace')->createQuery('ws')->andWhere('ws.seated = ?',true));
     */
+  }
+  
+  public function addManifestationIdColumnQuery($query, $field, $value)
+  {
+    if ( !$value )
+      return $query;
+    
+    $a = $query->getRootAlias();
+    
+    $query
+      ->leftJoin('w.Gauges g')
+      ->andWhere('g.manifestation_id = ?', $value)
+      ->leftJoin('l.Manifestations m')
+      ->andWhere('m.id = ?', $value)
+    ;
+    return $query;
   }
 }
