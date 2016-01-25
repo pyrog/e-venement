@@ -28,11 +28,11 @@ class liCacher
   protected $path = NULL;
   const refreshKeyword = 'refresh';
   
-  static public function create($path)
+  static public function create($path, $escape = false)
   {
     if ( $path instanceof sfWebRequest && $path->getUri() )
-      $path = self::componePath($path->getUri());
-    return new self($path);
+      return new self(self::componePath($path->getUri()));
+    return new self($escape ? self::componePath($path) : $path);
   }
   static public function componePath($uri)
   {
