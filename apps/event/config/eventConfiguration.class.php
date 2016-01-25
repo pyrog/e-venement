@@ -102,7 +102,7 @@ class eventConfiguration extends sfApplicationConfiguration
           while ( $context->getActionStack()->popEntry() ); // clearing the stack
             $context->getActionStack()->addEntry('manifestation', $action, $actions);
           
-          if ( !liCacher::create($request)->needsRefresh() )
+          if ( !liCacher::create('manifestation/'.$action.'?id='.$manifestation->id)->needsRefresh() )
           {
             if ( sfConfig::get('sf_web_debug', false) )
               $this->stdout($section, '  x Refreshing the action '.$action.' is not needed for manifestation #'.$manifestation->id, 'INFO');
