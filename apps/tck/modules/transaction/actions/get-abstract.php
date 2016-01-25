@@ -372,16 +372,9 @@
           ;
           
           if ( $gid = $request->getParameter('gauge_id', false) )
-<<<<<<< HEAD
-            $q->leftJoin('m.IsNecessaryTo int')
-              ->leftJoin('int.Gauges intg')
-              ->andWhere('g.id = ? OR intg.id = ?', array($gid, $gid));
-
-=======
             $q->leftJoin('m.IsNecessaryTo n')
               ->leftJoin('n.Gauges ng WITH g.onsite = TRUE OR g.id IN (SELECT ntck.gauge_id FROM Ticket ntck WHERE ntck.transaction_id = ? AND ntck.gauge_id = ng.id)', $request->getParameter('id',0))
               ->andWhere('g.id = ? OR (ng.id = ? AND ng.workspace_id = g.workspace_id)', array($gid, $gid));
->>>>>>> 88e8f97... (tck) Re-enabling support of auto-load for manifestations necessary to another one on which a ticket has been added ('&gauge_id=' is set in the URL)
           if (!( $product = $q->fetchOne() ))
             break;
 
