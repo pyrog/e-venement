@@ -110,7 +110,8 @@ abstract class PluginEmail extends BaseEmail
       $this->message->setCc($this->field_cc);
     
     // attach normal file attachments
-    foreach ( $this->Attachments as $attachment )
+    foreach ( $this->Attachments as $key => $attachment )
+    if ( file_exists(sfConfig::get('sf_upload_dir').DIRECTORY_SEPARATOR.$attachment->filename) )
     {
       $id = $attachment->getId() ? $attachment->getId() : date('YmdHis').rand(10000,99999);
       $att = Swift_Attachment::fromPath($path = substr($attachment->filename, 0, 1) == '/'
@@ -119,6 +120,11 @@ abstract class PluginEmail extends BaseEmail
         ->setFilename($attachment->original_name)
         ->setId('part.'.$id.'@e-venement');
       $this->message->attach($att);
+    }
+    else
+    {
+      unset($this->Attachments[$key]);
+      error_log('PluginEmail: attachment #'.$attachment->id.' not found for email #'.$this->id.', continuing.');
     }
     
     // force setting the Content-Type to 'multipart/related' to really follow the norm

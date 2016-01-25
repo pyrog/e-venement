@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Do you want to force the delivery?</source>
+        <target>Voulez-vous forcer la livraison ?</target>
+      </trans-unit>
+      <trans-unit>
         <source>Print and deliver</source>
         <target>Imprimer et délivrer</target>
       </trans-unit>

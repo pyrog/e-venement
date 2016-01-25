@@ -375,6 +375,10 @@ class pubConfiguration extends sfApplicationConfiguration
   {
     $this->task = $task;
     
+    // if the app is closed
+    if ( !sfConfig::get('app_open', false) )
+      return;
+    
     // destocked products, too old to stay out of the stock
     $this->addGarbageCollector('stocks', function(){
       $cart_timeout = sfConfig::get('app_timeout_global', '1 hour');

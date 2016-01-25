@@ -91,7 +91,7 @@ abstract class PluginTicket extends BaseTicket
           ->andWhere('(pmp.id IS NOT NULL OR pgp.id IS NOT NULL)')
         ;
       
-      if ( $price = $q->fetchOne() )
+      if ( $price = $q->select('p.*, pt.*, pm.*, pg.*')->fetchOne() )
       {
         if ( is_null($this->price_name) )
           $this->price_name = $price->name;
@@ -250,19 +250,27 @@ abstract class PluginTicket extends BaseTicket
       $q = Doctrine_Query::create()->from('Gauge g')
         ->andWhere('g.workspace_id IN (SELECT gg.workspace_id FROM Gauge gg WHERE gg.id = ?)',$this->gauge_id)
         ->andWhere('g.manifestation_id = ?',$this->Manifestation->depends_on);
-      $ticket->gauge_id = Doctrine_Query::create()->from('Gauge g')
+      $gauge = Doctrine_Query::create()->from('Gauge g')
         ->andWhere('g.workspace_id IN (SELECT gg.workspace_id FROM Gauge gg WHERE gg.id = ?)',$this->gauge_id)
         ->andWhere('g.manifestation_id = ?',$this->Manifestation->depends_on)
-        ->fetchOne()->id;
+        ->fetchOne();
       // the original ticket AND the depending ticket need to be within the same workspace, if not nothing more is added
-      if ( $ticket->gauge_id ) try
+      if ( $gauge ) try
       {
+        $ticket->gauge_id = $gauge->id;
         $ticket->price_name = $this->price_name;
         $ticket->transaction_id = $this->transaction_id;
         $ticket->sf_guard_user_id = $this->sf_guard_user_id;
         $ticket->save();
         $this->Transaction->Tickets[] = $ticket;
-      } catch ( Doctrine_Hydrator_Exception $e ) { error_log('PluginTicket: '.$e->getMessage()); } // it usually happens if no similar price is available in the depending manifestation
+      }
+      catch ( Doctrine_Hydrator_Exception $e )
+      {
+        if ( !sfConfig::get('sf_web_debug', false) )
+          error_log('PluginTicket: '.$e->getMessage());
+        else
+          throw $e;
+      } // it usually happens if no similar price is available in the depending manifestation
     }
     
     // resetting generic properties
