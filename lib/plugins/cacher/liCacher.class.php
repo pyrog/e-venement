@@ -30,7 +30,7 @@ class liCacher
   
   static public function create($path)
   {
-    if ( $path instanceof sfWebRequest )
+    if ( $path instanceof sfWebRequest && $path->getUri() )
       $path = self::componePath($path->getUri());
     return new self($path);
   }
