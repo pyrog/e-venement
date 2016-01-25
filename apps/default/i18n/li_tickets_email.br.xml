@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.1">
+  <file source-language="EN" target-language="BR" datatype="plaintext" original="messages" date="2016/01/18 09:37:18" product-name="messages">
+    <body>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source>Voucher exchange</source>
+        <target state="translated">Eilmerk da eskemm</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="yes">
+        <source>Guest of %%contact%%</source>
+        <target state="translated">Pedet gant %%contact%%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="yes">
+        <source>This is your ticket</source>
+        <target state="translated">Ho pilhed eo hema単</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="5" approved="yes">
+        <source>Image</source>
+        <target state="translated">Skeudenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="6" approved="yes">
+        <source>Category</source>
+        <target state="translated">Rummad</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="7" approved="yes">
+        <source>Address</source>
+        <target state="translated">Chomlec'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="8" approved="yes">
+        <source>Product</source>
+        <target state="translated">Produ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="9" approved="yes">
+        <source>Precision</source>
+        <target state="translated">Resisadenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="10" approved="yes">
+        <source>This ticket is a duplicate of #%%tid%%,  it replaces and cancels any previous version of this ticket you might have recieved</source>
+        <target state="translated">Un eil skrid eus #%%tid%% eo ar bilhed-ma単, erlec'hia単 ha nulla単 a ra kement stumm eus ar bilhed ho pefe gallet resev a-raok </target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="11" approved="yes">
+        <source>Event</source>
+        <target state="translated">Abadenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="12" approved="yes">
+        <source>Price</source>
+        <target state="translated">Priz</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="13" approved="yes">
+        <source>Date</source>
+        <target state="translated">Deiziad</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="14" approved="yes">
+        <source>your order #</source>
+        <target state="translated">hoc'h urzhiad niv.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="15" approved="yes">
+        <source>Seat #</source>
+        <target state="translated">Plas niv.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="16" approved="yes">
+        <source>Venue</source>
+        <target state="translated">Lec'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="17" approved="yes">
+        <source>Not yet allocated</source>
+        <target state="translated">N'eo ket niverennet c'hoazh</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

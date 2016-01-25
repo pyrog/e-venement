@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.1">
+  <file source-language="EN" target-language="BR" datatype="plaintext" original="messages" date="2016/01/18 09:37:18" product-name="messages">
+    <body>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source>Direct access</source>
+        <target state="translated">Moned eeun</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="yes">
+        <source>Ticket control</source>
+        <target state="translated">Kontroll ar bilhedoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="yes">
+        <source>Mandatory fields for public relations</source>
+        <target state="translated">Maeziennoù rekis evit an darempred gant an dud</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="5" approved="yes">
+        <source>Address</source>
+        <target state="translated">Chomlec'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="6" approved="yes">
+        <source>Postalcode</source>
+        <target state="translated">Kod-post</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="7" approved="yes">
+        <source>City</source>
+        <target state="translated">Kêr</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="8" approved="yes">
+        <source>Country</source>
+        <target state="translated">Bro</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="9" approved="yes">
+        <source>Title</source>
+        <target state="translated">Titl</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="10" approved="yes">
+        <source>Family contact</source>
+        <target state="translated">Darempred familh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="11" approved="yes">
+        <source>Organism category</source>
+        <target state="translated">Rummad aozadur</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="12" approved="yes">
+        <source>Familial quotient</source>
+        <target state="translated">Rannad tiegezhel</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="13" approved="yes">
+        <source>Type of resources</source>
+        <target state="translated">Seurt gounidoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="14" approved="yes">
+        <source>Familial situation</source>
+        <target state="translated">Saviad familh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="15" approved="yes">
+        <source>Description</source>
+        <target state="translated">Deskrivadur</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="16" approved="yes">
+        <source>Auto groups</source>
+        <target state="translated">Strolladoù emgefre</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="17" approved="yes">
+        <source>List of groups to join automatically on a contact/organism creation (careful: to be active  the user needs the permission to access this group on top of here)</source>
+        <target state="translated">Roll ar strolladoù da ouzhpennañ ent emgefre pa grouer un darempred pe un aozadur (diwallit : evit ma vefe oberiant e tle an implijer bezañ bet aotreet da vont d'ar strollad-se el lodenn amañ a-us)</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="18" approved="yes">
+        <source>Filters list</source>
+        <target state="translated">Roll ar siloù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="19" approved="yes">
+        <source>Transactions</source>
+        <target state="translated">Oberiadennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="20" approved="yes">
+        <source>Schools &amp; Groups</source>
+        <target state="translated">Skolioù &amp; Strolladoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="21" approved="yes">
+        <source>Search</source>
+        <target state="translated">Klask</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="22" approved="yes">
+        <source>Global Search</source>
+        <target state="translated">Enklask hollek</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="23" approved="yes">
+        <source>Try again your global search with a valid string</source>
+        <target state="translated">Esait en-dro hoc'h enklask hollek gant ur chadennad reizh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="24" approved="yes">
+        <source>Your organism</source>
+        <target state="translated">Hoc'h aozadur</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="25" approved="yes">
+        <source>What's new?</source>
+        <target state="translated">Petra a-nevez ?</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="26" approved="yes">
+        <source>Are you sure?</source>
+        <target state="translated">Daoust ha sur oc'h ?</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="27" approved="yes">
+        <source>is empty</source>
+        <target state="translated">goullo eo ?</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="28" approved="yes">
+        <source>Error loading the data from manifestations</source>
+        <target state="translated">Fazi pa garged roadennoù an abadennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="29" approved="yes">
+        <source>New Jabber account</source>
+        <target state="translated">Kont Jabber nevez</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="30" approved="yes">
+        <source>List of jabber accounts</source>
+        <target state="translated">Roll ar c'hontoù Jabber</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="31" approved="yes">
+        <source>List of authorized groups</source>
+        <target state="translated">Roll ar strolladoù aotreet</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="32" approved="yes">
+        <source>Public relations</source>
+        <target state="translated">Darempred gant an dud</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="33" approved="yes">
+        <source>Edit the %%User%%'s Jabber account</source>
+        <target state="translated">Aozañ kont Jabber %%User%%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="34" approved="yes">
+        <source>Remove linked contact</source>
+        <target state="translated">Lemel an darempred liammet</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="35" approved="yes">
+        <source>Linked contact</source>
+        <target state="translated">Darempred liammet</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="36" approved="yes">
+        <source>Height</source>
+        <target state="translated">Uhelder</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="37" approved="yes">
+        <source>Width</source>
+        <target state="translated">Ledander</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="38" approved="yes">
+        <source>Is valid ?</source>
+        <target state="translated">Reizh eo ?</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="39" approved="yes">
+        <source>Member cards list</source>
+        <target state="translated">Roll ar c'hartennoù-koumanant</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="40" approved="yes">
+        <source>Misc</source>
+        <target state="translated">Traoù all</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="41" approved="yes">
+        <source>Prices association for member cards</source>
+        <target state="translated">Prizioù kevelet evit ar c'hartennoù-koumanant</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="42" approved="yes">
+        <source>The chosen user has been correctly duplicated,  please verify its username and its email address</source>
+        <target state="translated">Eilet eo bet an implijer dibabet evel a oa dleet,  gwiriit e anv-implijer hag e chomlec'h postel  mar plij</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="43" approved="yes">
+        <source>Ticketting items</source>
+        <target state="translated">Elfennoù bilhederezh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="44" approved="yes">
+        <source>Prices list</source>
+        <target state="translated">Roll ar prizioù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="45" approved="yes">
+        <source>e-venement error</source>
+        <target state="translated">Fazi e-venement</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="46" approved="yes">
+        <source>A Symfony error occured !</source>
+        <target state="translated">Ur fazi Symfony zo bet !</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="47" approved="yes">
+        <source>Please report it to your technical correspondent precising with all the details you've got the steps to reproduce this error.</source>
+        <target state="translated">Titourit anezhañ d'ho skoazeller teknikel ha deskrivit dezhañ dre ar munud ar pazennoù evit adober ar fazi</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="48" approved="yes">
+        <source>Note that it's almost possible that this error have been generated by a request to delete an element with ties to others parts of the software.</source>
+        <target state="translated">Mat eo gouzout e c'hall ar fazi-mañ bezañ abalamour d'ur goulenn evit lemel un elfenn liammet gant lodennoù all eus ar meziant</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="49" approved="yes">
+        <source>Workspaces list</source>
+        <target state="translated">Roll an takadoù-labour</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="50" approved="yes">
+        <source>Meta events list</source>
+        <target state="translated">Roll ar meta-abadennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="51" approved="yes">
+        <source>You can't add an account as a (Super)Admin if you're not a (Super)Admin youself. This flag has been simply deactivated.</source>
+        <target state="translated">Ne c'hallit ket ouzhpennañ ur gont evel (Gour)Merour ma n'oc'h ket (Gour)Merour hoc'h-unan. Diweredekaet eo bet ar banniel-mañ eeun-ha-eeun.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="52" approved="yes">
+        <source>A problem occurs when deleting some of the selected item (you probably tried to delete one or more (Super)Admin accounts without being a (Super)Admin yourself).</source>
+        <target state="translated">Ur gudenn zo bet pa oac'h oc'h esa dilemel lod eus an elfennoù diuzet (oc'h esa dilemel ur gont (Gour)Merour pe meur a hini e oac'h moarbat</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="53" approved="yes">
+        <source>Some of the selected items have been deleted successfully.</source>
+        <target state="translated">Darn eus an elfennoù diuzet a zo bet dilamet evel ma oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="54" approved="yes">
+        <source>The selected items have been deleted successfully.</source>
+        <target state="translated">Dilamet eo bet an elfennoù diuzet evel ma oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="55" approved="yes">
+        <source>A problem occurs when deleting the selected items.</source>
+        <target state="translated">Ur gudenn zo bet pa oad o tilemel an elfennoù diuzet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="56" approved="yes">
+        <source>You are not allowed to access account %%user%%,  it is a (Super)Admin account.</source>
+        <target state="translated">N'oc'h ket aotreet da vonnt d'ar gont %%user%%,  ur gont (Gour)Merour eo.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="57" approved="yes">
+        <source>The username and/or password is invalid.</source>
+        <target state="translated">Direizh eo an anv implijer pe ar ger-tremen.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="58" approved="yes">
+        <source>You don't have access to this part.</source>
+        <target state="translated">N'ho peus ket gwir da vont d'al lodenn-mañ.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="59" approved="yes">
+        <source>Login below to gain access</source>
+        <target state="translated">Kevreit amañ dindan evit gallout mont</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="60" approved="yes">
+        <source>Oops! The screen you asked for is secure and you do not have proper credentials.</source>
+        <target state="translated">Popop ! Suraet eo ar skramm ho peus goulennet ha n'emañ ket ar gwirioù a zo ezhomm ganeoc'h.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="61" approved="yes">
+        <source>Last actions</source>
+        <target state="translated">Oberiadennoù diwezhañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="62" approved="yes">
+        <source>Emails</source>
+        <target state="translated">Posteloù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="63" approved="yes">
+        <source>Organisms</source>
+        <target state="translated">Aozadurioù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="64" approved="yes">
+        <source>Do not worry,  we can help you get back in to your account safely!</source>
+        <target state="translated">Arabat bezañ nec'het ! Gallout a reomp sikour ac'hanoc'h da zistreiñ d'ho kont e surentez !</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="65" approved="yes">
+        <source>Fill out the form below to request an e-mail with information on how to reset your password.</source>
+        <target state="translated">Leugnit ar furmskrid amañ dindan da resev ur postel gant an displegadennoù evit adderaouekaat ho ker-tremen.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="66" approved="yes">
+        <source>Username or E-Mail</source>
+        <target state="translated">Anv implijer pe postel</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="67" approved="yes">
+        <source>Remember</source>
+        <target state="translated">Chom kevreet ?</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="68" approved="yes">
+        <source>Associated</source>
+        <target state="translated">Kevelet</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="69" approved="yes">
+        <source>Unassociated</source>
+        <target state="translated">N'int ket kevelet</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="70" approved="yes">
+        <source>Permission list</source>
+        <target state="translated">Roll an aotreoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="71" approved="yes">
+        <source>Editing Permission "%%name%%"</source>
+        <target state="translated">Aozañ an aotre "%%name%%"</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="72" approved="yes">
+        <source>Groups</source>
+        <target state="translated">Strolladoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="73" approved="yes">
+        <source>Viewing permission</source>
+        <target state="translated">Gwelet an aotre</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="74" approved="yes">
+        <source>Viewing Group</source>
+        <target state="translated">Gwelet ar strollad</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="75" approved="yes">
+        <source>Updated at</source>
+        <target state="translated">Hizivaet d'an</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="76" approved="yes">
+        <source>Created at</source>
+        <target state="translated">Krouet d'an</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="77" approved="yes">
+        <source>Editing Group "%%name%%"</source>
+        <target state="translated">Aozañ ar strollad "%%name%%"</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="78" approved="yes">
+        <source>Group list</source>
+        <target state="translated">Roll ar strolladoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="79" approved="yes">
+        <source>New Group</source>
+        <target state="translated">Strollad nevez</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="80" approved="yes">
+        <source>Name</source>
+        <target state="translated">Anv</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="81" approved="yes">
+        <source>Users</source>
+        <target state="translated">Implijerien</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="82" approved="yes">
+        <source>Welcome %%user%%</source>
+        <target state="translated"> Deuet-mat oc'h %%user%%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="83" approved="yes">
+        <source>Login</source>
+        <target state="translated">Anv implijer</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="84" approved="yes">
+        <source>Firstname</source>
+        <target state="translated">Anv-bihan</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="85" approved="yes">
+        <source>Lastname</source>
+        <target state="translated">Anv</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="86" approved="yes">
+        <source>Email address</source>
+        <target state="translated">Chomlec'h postel</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="87" approved="yes">
+        <source>Email</source>
+        <target state="translated">Postel</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="88" approved="yes">
+        <source>Permissions and groups</source>
+        <target state="translated">Strolladoù hag aotreoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="89" approved="yes">
+        <source>Is super admin</source>
+        <target state="translated">(Gour)merour ?</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="90" approved="yes">
+        <source>Is active</source>
+        <target state="translated">Oberiant ?</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="91" approved="yes">
+        <source>User</source>
+        <target state="translated">Implijer</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="92" approved="yes">
+        <source>User view</source>
+        <target state="translated">Gwel implijer</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="93" approved="yes">
+        <source>Editing User "%%username%%"</source>
+        <target state="translated">Aozañ an implijer "%%username%%"</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="94" approved="yes">
+        <source>User list</source>
+        <target state="translated">Roll an implijerien</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="95" approved="yes">
+        <source>View %1% - %2% of %3%</source>
+        <target state="translated">Eus %1% da %2% diwar %3%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="96" approved="yes">
+        <source>of %1%</source>
+        <target state="translated">diwar %1%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="97" approved="yes">
+        <source>Filters</source>
+        <target state="translated">Siloù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="98" approved="yes">
+        <source>Last login</source>
+        <target state="translated">Kevreadur diwezhañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="99" approved="yes">
+        <source>Groups list</source>
+        <target state="translated">Roll ar strolladoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="100" approved="yes">
+        <source>Permissions list</source>
+        <target state="translated">Roll an aotreoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="101" approved="yes">
+        <source>Password</source>
+        <target state="translated">Ger-tremen</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="102" approved="yes">
+        <source>Password (again)</source>
+        <target state="translated">Ger-tremen (adarre)</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

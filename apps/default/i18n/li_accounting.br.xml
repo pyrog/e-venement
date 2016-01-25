@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.1">
+  <file source-language="EN" target-language="BR" datatype="plaintext" original="messages" date="2016/01/18 09:37:18" product-name="messages">
+    <body>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source>Product</source>
+        <target state="translated">Produ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="yes">
+        <source>Seats</source>
+        <target state="translated">Plasoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="yes">
+        <source>Taxes</source>
+        <target state="translated">Taosoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="5" approved="yes">
+        <source>Get a PDF</source>
+        <target state="translated">Furmad PDF</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="6" approved="yes">
+        <source>Modify on-the-fly</source>
+        <target state="translated">Kemmañ an teul</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="7" approved="yes">
+        <source>On %%d%%</source>
+        <target state="translated">D'an %%d%%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="8" approved="yes">
+        <source>&lt;span class="name inline-modifiable"&gt;Invoice&lt;/span&gt; #%%prefix%%&lt;span class="invoice_id"&gt;%%iid%%-%%version%%&lt;/span&gt;&lt;span class="transaction"&gt;  for transaction #&lt;span class="transaction_id inline-modifiable"&gt;%%tid%%&lt;/span&gt; from the &lt;span class="date inline-modifiable"&gt;%%d%%&lt;/span&gt;&lt;/span&gt;</source>
+        <target state="translated">&lt;span class="name inline-modifiable"&gt;Fakturenn&lt;/span&gt; #%%prefix%%&lt;span class="invoice_id"&gt;%%iid%%-%%version%%&lt;/span&gt;&lt;span class="transaction"&gt;  evit an oberiadenn #&lt;span class="transaction_id inline-modifiable"&gt;%%tid%%&lt;/span&gt; eus an &lt;span class="date inline-modifiable"&gt;%%d%%&lt;/span&gt;&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="9" approved="yes">
+        <source>&lt;span class="name inline-modifiable"&gt;Order&lt;/span&gt; #&lt;span class="order_id inline-modifiable"&gt;%%oid%%&lt;/span&gt;  for transaction #&lt;span class="transaction_id inline-modifiable"&gt;%%tid%%&lt;/span&gt;</source>
+        <target state="translated">&lt;span class="name inline-modifiable"&gt;Paperenn urzhiañ&lt;/span&gt; #&lt;span class="order_id inline-modifiable"&gt;%%oid%%&lt;/span&gt;  evit an oberiadenn #&lt;span class="transaction_id inline-modifiable"&gt;%%tid%%&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="10" approved="yes">
+        <source>TEP</source>
+        <target state="translated">PTM</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="11" approved="yes">
+        <source>PIT</source>
+        <target state="translated">PTB</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="12" approved="yes">
+        <source>Time</source>
+        <target state="translated">Eur</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="13" approved="yes">
+        <source>UP Net</source>
+        <target state="translated">PU Rik</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="14" approved="yes">
+        <source>TIP</source>
+        <target state="translated">PTB</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="15" approved="yes">
+        <source>VAT</source>
+        <target state="translated">TGO</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="16" approved="yes">
+        <source>PET</source>
+        <target state="translated">PTM</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="17" approved="yes">
+        <source>Event</source>
+        <target state="translated">Abadenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="18" approved="yes">
+        <source>Location</source>
+        <target state="translated">Lec'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="19" approved="yes">
+        <source>City</source>
+        <target state="translated">Kêr</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="20" approved="yes">
+        <source>Price</source>
+        <target state="translated">Priz</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="21" approved="yes">
+        <source>Unit TIP</source>
+        <target state="translated">P.U.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="22" approved="yes">
+        <source>Qty</source>
+        <target state="translated">Ktd</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="23" approved="yes">
+        <source>Paid with</source>
+        <target state="translated">Paet gant</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="24">
+        <source>Total</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="25" approved="yes">
+        <source>Still missing</source>
+        <target state="translated">Da baeañ c'hoazh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="26" approved="yes">
+        <source>Total excl. tax:</source>
+        <target state="translated">Holad PTM :</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="27" approved="yes">
+        <source>VAT %%p%%:</source>
+        <target state="translated">TGO %%p%% :</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="28" approved="yes">
+        <source>Total incl. taxes:</source>
+        <target state="translated">Hollad PTB :</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="29" approved="yes">
+        <source>Invoice</source>
+        <target state="translated">Fakturenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="30" approved="yes">
+        <source>Order</source>
+        <target state="translated">Urzhiad</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

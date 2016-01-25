@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.1">
+  <file source-language="EN" target-language="BR" datatype="plaintext" original="messages" date="2016/01/18 09:37:18" product-name="messages">
+    <body>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source>Licensed under</source>
+        <target state="translated">Embannet dindan aotre-implijout</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="yes">
+        <source>Enhanced by</source>
+        <target state="translated">Gwellaet gant</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="yes">
+        <source>the free and open source ticketing software</source>
+        <target state="translated">ar bilhederezh dre urzhiataer digoust ha digor e vammenn</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

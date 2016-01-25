@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.1">
+  <file source-language="EN" target-language="BR" datatype="plaintext" original="messages" date="2016/01/18 09:37:18" product-name="messages">
+    <body>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source>Print tickets</source>
+        <target state="translated">Moullañ ar bilhedoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="yes">
+        <source>Best free seat</source>
+        <target state="translated">Plas vak gwellañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="yes">
+        <source>Your language as been successfully updated.</source>
+        <target state="translated">Hizivaet eo bet ho yezh evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="5" approved="yes">
+        <source>Please,  try again…</source>
+        <target state="translated">Esait en-dro mar plij...</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="6" approved="yes">
+        <source>Filter's name</source>
+        <target state="translated">Anv ar sil</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="7" approved="yes">
+        <source>Record</source>
+        <target state="translated">Enrollañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="8" approved="yes">
+        <source>An object with the same "%column%" already exist.</source>
+        <target state="translated">Un draezenn gant ar memes "%column%" zo anezhi dija.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="9" approved="yes">
+        <source>Your email have been sent correctly.</source>
+        <target state="translated">Kaset eo bet ho postel evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="10" approved="yes">
+        <source>You cannot access this object,  you do not have the required credentials.</source>
+        <target state="translated">Ne c'hallit ket mont d'an draezenn-mañ rak n'emañ ket an aotraoù rekis ganeoc'h.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="11" approved="yes">
+        <source>You cannot edit this object,  you do not have the required credentials.</source>
+        <target state="translated">Ne c'hallit ket aozañ an draezenn-mañ rak n'emañ ket an aotroù rekis ganeoc'h.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="12" approved="yes">
+        <source>Current</source>
+        <target state="translated">A vremañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="13" approved="yes">
+        <source>Confirm</source>
+        <target state="translated">Kadarnaat</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="14" approved="yes">
+        <source>Error moving the manifestation</source>
+        <target state="translated">Fazi pa oad o tilec'hiañ an abadenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="15" approved="yes">
+        <source>Error changing the manifestation's duration</source>
+        <target state="translated">Fazi pa oad o cheñch pad an abadenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="16" approved="yes">
+        <source>Error loading the data from manifestations</source>
+        <target state="translated">Fazi pa oad o kargañ roadennoù an abadennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="17" approved="yes">
+        <source>Some chars are not allowed here</source>
+        <target state="translated">Arouezennoù zo n'eus ket gwir d'ober ganto amañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="18" approved="yes">
+        <source>Merge</source>
+        <target state="translated">Kendeuziñ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="19" approved="yes">
+        <source>Periodicity</source>
+        <target state="translated">Mareadegezh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="20" approved="yes">
+        <source>Change event</source>
+        <target state="translated">Cheñch abadenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="21" approved="yes">
+        <source>Duplicate</source>
+        <target state="translated">Eilañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="22" approved="yes">
+        <source>Back</source>
+        <target state="translated">Distreiñ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="23" approved="yes">
+        <source>Add in a group</source>
+        <target state="translated">Ouzhpennañ d'ur strollad</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="24" approved="yes">
+        <source>Click to validate your modifications</source>
+        <target state="translated">Klikit evit gwiriekaat ho kemmoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="25" approved="yes">
+        <source>A problem occurs when adding the selected items as some items do not exist anymore.</source>
+        <target state="translated">Ne c'haller ket ouzhpennañ an traezoù diuzit rak n'eus ket ken eus darn anezho.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="26" approved="yes">
+        <source>WARNING: CAPS Lock is off.</source>
+        <target state="translated">DIWALLIT : diweredekaet eo ar stokell Prenn Pennlizh.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="27" approved="yes">
+        <source>WARNING: CAPS Lock has to be on.</source>
+        <target state="translated">DIWALLIT : ret eo d'ar stokell Prenn Pennlizh. bezañ gweredekaet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="28" approved="yes">
+        <source>Invalid.</source>
+        <target state="translated">Diwiriek</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="29" approved="yes">
+        <source>File attached.</source>
+        <target state="translated">Restr stag.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="30" approved="yes">
+        <source>Integrate</source>
+        <target state="translated">Enframmañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="31" approved="yes">
+        <source>Login below to gain access</source>
+        <target state="translated">Gallout a rit cheñch kont gant ar furmskrid amañ dindan pe ober gant al lañser da genderc'hel da implijout e-venement gant ho kont</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="32" approved="yes">
+        <source>Oops! The screen you asked for is secure and you do not have proper credentials.</source>
+        <target state="translated">Popop ! Suraet eo ar skramm ho peus goulennet ha n'emañ ket an aotreoù rekis ganeoc'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="33" approved="yes">
+        <source>Back to contact</source>
+        <target state="translated"> Distreiñ d'an darempred</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="34" approved="yes">
+        <source>Ledger</source>
+        <target state="translated">Roll</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="35" approved="yes">
+        <source>New</source>
+        <target state="translated">Nevez</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="36" approved="yes">
+        <source>Edit</source>
+        <target state="translated">Aozañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="37" approved="yes">
+        <source>Delete</source>
+        <target state="translated">Dilemel</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="38" approved="yes">
+        <source>List</source>
+        <target state="translated">Roll</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="39" approved="yes">
+        <source>Update</source>
+        <target state="translated">Hizivaat</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="40" approved="yes">
+        <source>Validate</source>
+        <target state="translated">Gwiriekaat</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="41" approved="yes">
+        <source>Save</source>
+        <target state="translated">Enrollañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="42" approved="yes">
+        <source>Save and add</source>
+        <target state="translated">Enrollañ hag ouzhpennañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="43" approved="yes">
+        <source>Cancel</source>
+        <target state="translated">Nullañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="44" approved="yes">
+        <source>Choose an action</source>
+        <target state="translated">Dibab un ober</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="45" approved="yes">
+        <source>go</source>
+        <target state="translated">mat eo</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="46" approved="yes">
+        <source>Back to list</source>
+        <target state="translated">Distreiñ d'ar roll</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="47" approved="yes">
+        <source>Reset</source>
+        <target state="translated">Diverkañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="48" approved="yes">
+        <source>Filter</source>
+        <target state="translated">Sil</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="49" approved="yes">
+        <source>No result</source>
+        <target state="translated">Disoc'h ebet</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="50" approved="yes">
+        <source>Actions</source>
+        <target state="translated">Oberoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="51" approved="yes">
+        <source>(page %%page%%/%%nb_pages%%)</source>
+        <target state="translated">(pajenn %%page%%/%%nb_pages%%)</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="52" approved="yes">
+        <source>asc</source>
+        <target state="translated">war gresk</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="53" approved="yes">
+        <source>desc</source>
+        <target state="translated">war zigresk</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="54" approved="yes">
+        <source>[0] no result|[1] 1 result|(1+Inf] %1% results</source>
+        <target state="translated">[0] disoc'h ebet|[1] 1 disoc'h|(1+Inf] %1% disoc'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="55" approved="yes">
+        <source>First page</source>
+        <target state="translated">Pajenn gentañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="56" approved="yes">
+        <source>Previous page</source>
+        <target state="translated">Pajenn a-raok</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="57" approved="yes">
+        <source>Next page</source>
+        <target state="translated">Pajenn war-lerc'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="58" approved="yes">
+        <source>Last page</source>
+        <target state="translated">Pajenn diwezhañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="59" approved="yes">
+        <source>The item was created successfully.</source>
+        <target state="translated">Krouet eo bet an elfenn evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="60" approved="yes">
+        <source>The item was updated successfully.</source>
+        <target state="translated">Hizivaet eo bet an elfenn evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="61" approved="yes">
+        <source>The item was created successfully. You can add another one below.</source>
+        <target state="translated">Krouet eo bet an elfenn evel a oa dleet. Gallout a rit ouzhpennañ unan all.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="62" approved="yes">
+        <source>The item was updated successfully. You can add another one below.</source>
+        <target state="translated">Hizivaet eo bet an elfenn evel a oa dleet. Gallout a rit ouzhpennañ unan all.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="63" approved="yes">
+        <source>The item has not been saved due to some errors.</source>
+        <target state="translated">N'eo ket bet enrollet an elfenn abalamour da fazioù.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="64" approved="yes">
+        <source>The item was deleted successfully.</source>
+        <target state="translated"> Dilmaet eo bet an elfenn evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="65" approved="yes">
+        <source>You must at least select one item.</source>
+        <target state="translated">Ret eo deoc'h diuzañ un elfenn da nebeutañ.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="66" approved="yes">
+        <source>You must at least select two items.</source>
+        <target state="translated">Ret eo deoc'h diuzañ div elfenn da nebeutañ.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="67" approved="yes">
+        <source>You must select an action to execute on the selected items.</source>
+        <target state="translated">Ret eo deoc'h diuzañ un dra d'ober war an elfennoù diuzet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="68" approved="yes">
+        <source>A problem occurs when deleting the selected items as some items do not exist anymore.</source>
+        <target state="translated">C'hoarvezet ez eus ur fazi pa oad o tilemel an elfennoù diuzet rak n'eus ket ken eus darn anezho.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="69" approved="yes">
+        <source>The selected items have been deleted successfully.</source>
+        <target state="translated">Dilamet eo bet an elfennoù diuzet evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="70" approved="yes">
+        <source>The selected items have been merged successfully.</source>
+        <target state="translated">Kendeuzet eo bet an elfennoù diuzet evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="71" approved="yes">
+        <source>The selected items have been duplicated successfully.</source>
+        <target state="translated">Eilet eo bet an elfennoù diuzet evel a oa dleet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="72" approved="yes">
+        <source>A problem occurs when deleting the selected items.</source>
+        <target state="translated">C'hoarvezet ez eus ur gudenn pa oad o tilemel an elfennoù diuzet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="73" approved="yes">
+        <source>A problem occurs when merging the selected items.</source>
+        <target state="translated">C'hoarvezet ez eus ur gudenn pa oad o kendeuziñ an elfennoù diuzet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="74" approved="yes">
+        <source>A problem occurs when duplicating the selected items.</source>
+        <target state="translated">C'hoarvezet ez eus ur gudenn pa oad oc'h eilañ an elfennoù diuzet.</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="75" approved="yes">
+        <source>is empty</source>
+        <target state="translated">zo goullo</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="76" approved="yes">
+        <source>yes or no</source>
+        <target state="translated">ya pe ket</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="77" approved="yes">
+        <source>yes</source>
+        <target state="translated">ya</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="78" approved="yes">
+        <source>no</source>
+        <target state="translated">ket</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="79" approved="yes">
+        <source>&lt;span class="dates"&gt;&lt;span&gt;from %from_date%&lt;/span&gt; &lt;span&gt;to %to_date%&lt;/span&gt;</source>
+        <target state="translated">&lt;span class="dates"&gt;&lt;span&gt;eus an %from_date%&lt;/span&gt; &lt;span&gt;d'an %to_date%&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="80" approved="yes">
+        <source>from %from_date% to %to_date%</source>
+        <target state="translated">eus an %from_date% d'an %to_date%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="81" approved="yes">
+        <source>from %from_date%&lt;br /&gt;to %to_date%</source>
+        <target state="translated">eus an %from_date%&lt;br /&gt;d'an %to_date%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="82" approved="yes">
+        <source>Filters</source>
+        <target state="translated">Siloù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="83" approved="yes">
+        <source>Show</source>
+        <target state="translated">Gwelet</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.1">
+  <file source-language="EN" target-language="BR" datatype="plaintext" original="messages" date="2016/01/18 09:37:18" product-name="messages">
+    <body>
+      <trans-unit xml:space="preserve" id="1" approved="yes">
+        <source>Legal notices</source>
+        <target state="translated">Menegoù lezennel</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source>Editor</source>
+        <target state="translated">Embanner</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="yes">
+        <source>Software</source>
+        <target state="translated">Meziant</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="yes">
+        <source>About</source>
+        <target state="translated">Diwar-benn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="5" approved="yes">
+        <source>Insurance: &lt;a href="%%url%%"&gt;%%name%%&lt;/a&gt;</source>
+        <target state="translated">Asurañs : &lt;a href="%%url%%"&gt;%%name%%&lt;/a&gt; (CGI)</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="6" approved="yes">
+        <source>By &lt;a href="%%url%%"&gt;%%name%%&lt;/a&gt;</source>
+        <target state="translated">Gant &lt;a href="%%url%%"&gt;%%name%%&lt;/a&gt;</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="7" approved="yes">
+        <source>the contributors</source>
+        <target state="translated">ar genoberourien</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="8" approved="yes">
+        <source>there is worst,  but it's more expensive</source>
+        <target state="translated">gwashoc'h zo,  met keroc'h eo</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="9" approved="yes">
+        <source>the ticketting software to accompany your development</source>
+        <target state="translated">ar meziant bilhederezh evit sikour ac’hanoc’h da ziorren</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="10" approved="yes">
+        <source>All rights reserved</source>
+        <target state="translated">Pep gwir miret strizh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="11" approved="yes">
+        <source>%e% is licensed under</source>
+        <target state="translated">%e% zo dindan aotre-impjout</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="12" approved="yes">
+        <source>This gives you freedoms, but also you must respect its clauses (attribution  share-alike)</source>
+        <target state="translated">Kement-se a ro frankizoù deoc'h,  met rankout a rit ivez doujañ d'e zivizoù (menegiñ ar mammennoù rannañ er memes doare)</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="13" approved="yes">
+        <source>%e% and the %e% logo are the properties of %firm%</source>
+        <target state="translated">%e% ha logo %e% zo perc'hennet gant %firm%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="14" approved="yes">
+        <source>%e% for %client%</source>
+        <target state="translated">%e% evit %client%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="15" approved="yes">
+        <source>gov.</source>
+        <target state="translated">KHT</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

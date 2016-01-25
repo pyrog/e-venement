@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.1">
+  <file source-language="EN" target-language="BR" datatype="plaintext" original="messages" date="2016/01/18 09:37:18" product-name="messages">
+    <body>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source>Survey List</source>
+        <target state="translated">Roll ar rolloù-gouennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="yes">
+        <source>Search</source>
+        <target state="translated">Klask</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="yes">
+        <source>Name</source>
+        <target state="translated">Anv</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="5" approved="yes">
+        <source>Description</source>
+        <target state="translated">Deskrivadur</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="6" approved="yes">
+        <source>Add query</source>
+        <target state="translated">Ouzhpennañ ur goulenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="7" approved="yes">
+        <source>Answers</source>
+        <target state="translated">Respontoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="8" approved="yes">
+        <source>Used by</source>
+        <target state="translated">Arloañ ouzh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="9" approved="yes">
+        <source>Statistics</source>
+        <target state="translated">Stadegoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="10" approved="yes">
+        <source>Survey</source>
+        <target state="translated">Roll-goulennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="11" approved="yes">
+        <source>Only used with appropriate fields</source>
+        <target state="translated">Implijet gant ar maeziennoù dereat hepken</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="12" approved="yes">
+        <source>Can be empty</source>
+        <target state="translated">Gallout a ra bezañ goullo</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="13" approved="yes">
+        <source>Checkbox</source>
+        <target state="translated">Log da askañ</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="14" approved="yes">
+        <source>Date with helper</source>
+        <target state="translated">Deiziad gant deiziataer</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="15" approved="yes">
+        <source>Date+Time</source>
+        <target state="translated">Deiziad hag Eur</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="16" approved="yes">
+        <source>Text</source>
+        <target state="translated">Testenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="17" approved="yes">
+        <source>Text (rich)</source>
+        <target state="translated">Testenn (pinvidikaet)</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="18" approved="yes">
+        <source>Select one in a list</source>
+        <target state="translated">Diuzañ unan er roll</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="19" approved="yes">
+        <source>Select one or many in a list</source>
+        <target state="translated">Diuzañ unan pe meur a hini er roll</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="20" approved="yes">
+        <source>Range</source>
+        <target state="translated">Esaouenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="21" approved="yes">
+        <source>Line</source>
+        <target state="translated">Linenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="22" approved="yes">
+        <source>Stats</source>
+        <target state="translated">Stadegoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="23" approved="yes">
+        <source>free</source>
+        <target state="translated">frank</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="24" approved="yes">
+        <source>choices</source>
+        <target state="translated">dibaboù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="25" approved="yes">
+        <source>numbers</source>
+        <target state="translated">niveroù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="26" approved="yes">
+        <source>Order</source>
+        <target state="translated">Urzh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="27" approved="yes">
+        <source>Weight</source>
+        <target state="translated">Pouez</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="28" approved="yes">
+        <source>General</source>
+        <target state="translated">Hollek</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="29" approved="yes">
+        <source>Details</source>
+        <target state="translated">Munudoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="30" approved="yes">
+        <source>View Query</source>
+        <target state="translated">Gwelet ar goulenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="31" approved="yes">
+        <source>List nb queries</source>
+        <target state="translated">Niver a c'houlennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="32" approved="yes">
+        <source>List nb answers group</source>
+        <target state="translated">Niver a respontoù d'ar roll-goulennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="33" approved="yes">
+        <source>Public form</source>
+        <target state="translated">Furmskrid foran</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="34" approved="yes">
+        <source>AnswersGroups</source>
+        <target state="translated">Strolladoù respontoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="35" approved="yes">
+        <source>Edit Survey</source>
+        <target state="translated">Aozañ ar roll-goulennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="36" approved="yes">
+        <source>View Survey</source>
+        <target state="translated">Gwelet ar roll-goulennoù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="37" approved="yes">
+        <source>New Query</source>
+        <target state="translated">Goulenn nevez</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="38" approved="yes">
+        <source>ApplyTo</source>
+        <target state="translated">Arloañ ouzh</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="39" approved="yes">
+        <source>Everywhere</source>
+        <target state="translated">E pep lec'h</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="40" approved="yes">
+        <source>Group</source>
+        <target state="translated">Strollad</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="41" approved="yes">
+        <source>Date from</source>
+        <target state="translated">Eus an</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="42" approved="yes">
+        <source>Date to</source>
+        <target state="translated">D'an</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="43" approved="yes">
+        <source>Edit Survey %%name%%</source>
+        <target state="translated">Aozañ ar roll-goulennoù %%name%%</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="44" approved="yes">
+        <source>Date to</source>
+        <target state="translated">D'an</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="45" approved="yes">
+        <source>Add query&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</source>
+        <target state="translated">Ouzhpennañ ur goulenn&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="46" approved="yes">
+        <source>Edit Query</source>
+        <target state="translated">Aozañ ar goulenn</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="47" approved="yes">
+        <source>Value</source>
+        <target state="translated">Talvoud</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="48" approved="yes">
+        <source>Typical answers</source>
+        <target state="translated">Respontoù standart</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
