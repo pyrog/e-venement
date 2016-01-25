@@ -93,7 +93,7 @@ class eventConfiguration extends sfApplicationConfiguration
       }
       
       $q = Doctrine::getTable('Manifestation')->createQuery('m')
-        ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '1 month'::interval")
+        ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '6 month'::interval")
         ->andWhere("m.happens_at < NOW() + '1 year'::interval")
         ->orderBy('m.happens_at');
       $nb = array();
