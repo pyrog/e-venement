@@ -16,20 +16,24 @@
 #    along with e-venement; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # 
-#    Copyright (c) 2006-2014 Baptiste SIMON <baptiste.simon AT e-glop.net>
-#    Copyright (c) 2006-2014 Libre Informatique [http://www.libre-informatique.fr/]
+#    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
+#    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
 # 
 #**********************************************************************************/
+
+LOCKFILE=cache/cron.minutely.lock
 
 for dir in /var/www/*; do
   [ ! -d $dir ] && continue
   cd $dir
-  if [ -x ./symfony ]; then
-     echo $dir
+  if [ -x ./symfony ] && [ ! -e $LOCKFILE ]; then
+    echo $dir
+    touch $LOCKFILE
     ./symfony e-venement:garbage-collector tck
     ./symfony e-venement:garbage-collector pub
     ./symfony e-venement:garbage-collector pos
-    ./symfony e-venement:garbage-collector rp
     ./symfony e-venement:garbage-collector ws
+    ./symfony e-venement:garbage-collector rp
+    rm $LOCKFILE
   fi
 done

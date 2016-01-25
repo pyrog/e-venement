@@ -93,6 +93,12 @@ LI.completeContent = function(data, type, replaceAll = true)
         wpdt.find('.item:not(.total)').remove();
       }
       
+      // keep the same manifestations for the next transaction
+      $('#li_transaction_field_new_transaction a.persistant').prop('href',
+        $('#li_transaction_field_new_transaction a.persistant').prop('href')+
+        '#'+type+'-'+pdt.id
+      );
+                                          
       // in progress: pdt
       wpdt.find('h3 .event').text(pdt.category).prop('href',pdt.category_url);
       wpdt.find('h3').css('background-color', pdt.color);

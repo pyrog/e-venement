@@ -50,11 +50,16 @@ EOF;
     $this->configuration->loadHelpers(array('CrossAppLink', 'Url', 'I18N', 'Date', 'Tag'));
     
     // setting alarms
-    $period   = sfConfig::get('app_synchronization_cron_period','1 hour');
+    $period   = strtotime(sfConfig::get('app_synchronization_cron_period','1 hour'));
+    $quitfile = sfConfig::get('app_synchronization_cron_quittime_file',sfConfig::get('sf_cache_dir').'/cron.hourly.quittime');
     $base_url = sfConfig::get('app_synchronization_base_url',false);
     $from     = sfConfig::get('app_synchronization_email_from');
     $tocome   = sfConfig::get('app_synchronization_alarms',false);
     $pendings = sfConfig::get('app_synchronization_pending_alarms',false);
+    
+    // if last modification time is older than $period, then use its last modification time
+    if ( file_exists($quitfile) && filemtime($quitfile) < strtotime($period) )
+      $period = filemtime($quitfile);
 
     $q = Doctrine_Query::create()->from('Manifestation m')
       ->leftJoin('m.Event e')
@@ -71,9 +76,9 @@ EOF;
       {
         $time = time()*2-strtotime($when); // a trick to get -1 hour to the manif being +1 hour from now
         
-        $q->orWhere('m.reservation_confirmed = ? AND m.happens_at >= ? AND m.happens_at <= ?', array(
+        $q->andWhere('m.reservation_confirmed = ? AND m.happens_at >= ? AND m.happens_at <= ?', array(
           $type == 'tocome',
-          $to = date('Y-m-d H:i:s', $time+time()-strtotime($period)),
+          $to = date('Y-m-d H:i:s', $time+time()-$period),
           $date = date('Y-m-d H:i:s', $time),
         ));
       }
