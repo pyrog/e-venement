@@ -34,10 +34,16 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
   public $overload_config_file;
 
   protected $routings = array();
- 
   
   public function setup()
   {
+    if ( !sfConfig::get('project_internals_use_local_rw_dirs', false) )
+    {
+      $ucache = basename($this->getRootDir()).'-'.md5($this->getRootDir());
+      $this->setCacheDir("/tmp/$ucache/cache");
+      $this->setLogDir("/tmp/$ucache/log");
+    }
+    
     // year of birth
     $this->yob = array();
     for ( $i = 0 ; $i < 80 ; $i++ )
@@ -149,7 +155,7 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
   }
   
   // @see liGarbageCollectorInterface
-  public function executeGarbageCollectors($names = NULL)
+  public function executeGarbageCollectors($names = NULL, $id = NULL)
   {
     if ( is_null($names) )
       $names = array_keys($this->collectors);
@@ -161,7 +167,7 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
     {
       $fct = $this->getGarbageCollector($name);
       if ( $fct instanceof Closure )
-        $fct();
+        $fct($id);
     }
     
     return $this;
