@@ -175,6 +175,14 @@
         <source>Codes</source>
         <target state="translated">Kodoù</target>
       </trans-unit>
+      <trans-unit xml:space="preserve" id="45" approved="yes">
+        <source>Shipping fees</source>
+        <target state="translated">Espediañ frezioù</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="46" approved="yes">
+        <source>VAT on shipping fees</source>
+        <target state="translated">TGO evit espediañ frezioù</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
