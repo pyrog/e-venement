@@ -84,6 +84,7 @@ class liCacher
   public function writeData()
   {
     file_put_contents($this->getPath(), (string)$this);
+    chmod($this->getPath(), 0666);
     return $this;
   }
   
