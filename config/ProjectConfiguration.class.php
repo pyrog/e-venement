@@ -37,7 +37,7 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
   
   public function setup()
   {
-    if ( !sfConfig::get('project_internals_use_local_rw_dirs', false) )
+    if (!( defined('SF_USE_LOCAL_RW_DIRS') && SF_USE_LOCAL_RW_DIRS ))
     {
       $ucache = basename($this->getRootDir()).'-'.md5($this->getRootDir());
       $this->setCacheDir("/tmp/$ucache/cache");

@@ -63,7 +63,6 @@ all:
       en: English
       br: Breizhoneg
     plugins: []       # e.g. [liMemberCardPlugin]
-    #use_local_rw_dirs: false (use the local cache/ & log/ dirs instead of locating them in /tmp/)
 
   eticketting:
     salt: ARANDOMSALTHERE
