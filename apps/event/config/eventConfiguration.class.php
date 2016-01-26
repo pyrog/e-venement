@@ -64,7 +64,7 @@ class eventConfiguration extends sfApplicationConfiguration
     $this->task = $task;
     
     // Caching manifestations in the background
-    $this->addGarbageCollector('manifestations-cache', function(){
+    $this->addGarbageCollector('manifestations-cache', function($id = NULL){
       $section = 'Caching manifs';
       
       // the lockfile
@@ -97,6 +97,8 @@ class eventConfiguration extends sfApplicationConfiguration
         ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '6 month'::interval")
         ->andWhere("m.happens_at < NOW() + '1 year'::interval")
         ->orderBy('m.happens_at');
+      if ( $id )
+        $q->andWhere('m.id = ?', $id);
       $nb = array();
       foreach ( $q->execute() as $manifestation )
       {
