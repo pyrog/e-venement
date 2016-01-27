@@ -89,6 +89,7 @@
     }
     
     $this->lines = array();
+    $tickets = new Doctrine_Collection('Ticket');
     foreach ( $this->spectators as $spectator )
     {
       // contact infos
@@ -106,17 +107,44 @@
       // tickets infos
       $total = array('qty' => 0, 'value' => 0);
       foreach ( $spectator->Tickets as $ticket )
-      if ( !$ticket->hasBeenCancelled() )
+      if ( !$ticket->contact_id )
       {
         $this->lines[count($this->lines)-1]['price_'.$ticket->price_id]++;
         $this->lines[count($this->lines)-1]['price_'.$ticket->price_id.'_value'] += $ticket->value;
         $total['qty']++;
         $total['value'] += $ticket->value;
       }
+      else
+        $tickets[] = $ticket;
+      
       $this->lines[count($this->lines)-1]['total_qty']    = $total['qty'];
       $this->lines[count($this->lines)-1]['total_value']  = $total['value'];
       $this->lines[count($this->lines)-1]['accounting']   = $spectator->Invoice->count() > 0 ? '#'.$spectator->Invoice[0]->id : '';
       $this->lines[count($this->lines)-1]['transaction']  = '#'.$spectator->id;
+    }
+    
+    // the tickets with a direct contact embedded
+    foreach ( $tickets as $ticket )
+    {
+      // contact infos
+      $this->lines[] = array(
+        'contact'     => (string)$ticket->DirectContact,
+        'organism'    => '',
+        'department'  => '',
+        'organism_an' => '',
+      );
+      
+      // prices infos
+      foreach ( $this->prices as $key => $name )
+        $this->lines[count($this->lines)-1][$key] = 0;
+      
+      // totals
+      $total['qty']   += $this->lines[count($this->lines)-1]['total_qty']    = 1;
+      $total['value'] += $this->lines[count($this->lines)-1]['total_value']  = $ticket->value;
+      
+      // & co
+      $this->lines[count($this->lines)-1]['accounting']   = '';
+      $this->lines[count($this->lines)-1]['transaction']  = '#'.$ticket->transaction_id;
     }
     
     // adding the last "total" line
