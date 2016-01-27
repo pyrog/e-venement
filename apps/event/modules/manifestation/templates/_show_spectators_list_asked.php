@@ -5,17 +5,33 @@
   <?php $overlined = true ?>
   <?php if ( !isset($spectators) ) $spectators = $form->spectators ?>
   <?php foreach ( $spectators as $transac ): ?>
+  <?php foreach ( array(true, false) as $has_direct_contact ): ?>
   <?php
     $transaction = $contact = $pro = array();
-    $contact = array('value' => array(), 'prices' => array(), 'ticket-ids' => array());
+    $contact = array();
+    foreach ( array('value' => array(), 'prices' => array(), 'tickets-nums' => array(), 'ticket-ids' => array()) as $key => $value )
+      $contact[$key] = $value;
     $contact['transaction'] = $transac;
-    $contact['pro'] = $transac->Professional;
+    $contact['contact'] = $transac->contact_id ? $transac->Contact : false;
+    $contact['pro'] = $transac->professional_id ? $transac->Professional : false;
     $count = false;
-    if ( !isset($transac->asked) )
+    
+    if ( !isset($transac->asked) ) // if the display needs to be totally explicit
     {
       foreach ( $transac->Tickets as $t )
-      if ( !$t->printed_at && !$t->integrated_at && $t->Transaction->Order->count() == 0 )
+      if ( !$t->printed_at && !$t->integrated_at && $t->Transaction->Order->count() == 0
+        && ($has_direct_contact ? $t->getRawValue()->contact_id : !$t->getRawValue()->contact_id)
+      )
       {
+        // init data on every loop for tickets that has an embedded contact
+        if ( $t->getRawValue()->contact_id )
+        {
+          foreach ( array('value' => array(), 'prices' => array(), 'tickets-nums' => array(), 'ticket-ids' => array()) as $key => $value )
+            $contact[$key] = $value;
+          $contact['pro'] = NULL;
+          $contact['contact'] = $t->getRawValue()->DirectContact;
+        }
+        
         if ( !isset($contact['ticket-ids'][$t->Gauge->workspace_id]) )
           $contact['ticket-ids'][$t->Gauge->workspace_id] = array('name' => $t->Gauge->Workspace->name);
         $contact['ticket-ids'][$t->Gauge->workspace_id][] = $t->id;
@@ -40,6 +56,21 @@
         $workspaces[$t->gauge_id] = $t->Gauge->Workspace->name;
         $total['value'] += $t->value;
         
+        // display tickets that has an embedded contact
+        if ( $t->getRawValue()->contact_id )
+        {
+          ?><tr class="<?php echo ($overlined = !$overlined) ? 'overlined' : '' ?>"><?php
+          include_partial('show_spectators_list_line',array(
+            'transac' => $transac,
+            'contact' => $contact,
+            'ws'      => $contact['prices'][$t->Gauge->workspace_id],
+            'show_workspaces' => $show_workspaces,
+            'wsid'    => $t->Gauge->workspace_id,
+          ));
+          ?></tr><?php
+          $contact['ticket-ids'] = array();
+        }
+        
         $count = true;
       }
     }
@@ -49,7 +80,7 @@
       $contact['ticket-ids'][] = '-';
       $contact['prices'][''] = $transac->asked;
       $contact['value'] = $transac->asked_value;
-      $total['qty'] += $transac->asked;
+      $total['qty'][0] += $transac->asked;
       $total['value'] += $transac->asked_value;
       $count = $transac->printed > 0;
     }
@@ -75,6 +106,7 @@
   </tr>
   <?php endforeach ?>
   <?php endif ?>
+  <?php endforeach ?>
   <?php endforeach ?>
   </tbody>
   <?php include_partial('show_spectators_list_table_footer',array('total' => $total, 'workspaces' => $workspaces)) ?>
