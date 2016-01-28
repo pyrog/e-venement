@@ -320,4 +320,15 @@ class Transaction extends PluginTransaction
     }
     return $final;
   }
+  /**
+   * @return array
+   */
+  public function getDirectContacts()
+  {
+    $contacts = array();
+    foreach ( $this->Tickets as $ticket )
+    if ( $ticket->contact_id )
+        $contacts[] = $ticket->DirectContact;
+    return $contacts;
+  }
 }

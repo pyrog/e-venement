@@ -27,26 +27,35 @@ class SurveyAnswersGroupForm extends BaseSurveyAnswersGroupForm
     ksort($queries);
     foreach ( $queries as $query )
     {
-      // TODO: loop for each direct contact when query.type is liWidgetFormChoiceMultiple
+      // get transaction direct contacts for liWidgetFormChoiceMultiple queries
+      $contacts = ( $query->type == 'liWidgetFormChoiceMultipleContact' ) ?
+         $this->object->Transaction->DirectContacts :
+         array(null);
 
-      $answer = null;
-      $selected_choices = array();
-      foreach ($this->object->Answers as $a)
-      if ( $a->Query->id == $query->id )
+      foreach ( $contacts as $contact )
       {
-        $selected_choices[] = $a->value;
-        $answer = $a;
-      }
-      if ( !$answer ) {
-        $answer = new SurveyAnswer;
-        $answer->Query = $query;
-        $answer->Group = $this->object;
-        $this->object->Answers[] = $answer;
-      }
+          $answer = new SurveyAnswer;
+          $answer->Query = $query;
+          $answer->Group = $this->object;
+          $answer->Contact = $contact;
+        $selected_choices = array();
+        foreach ($this->object->Answers as $a)
+        if ( $a->Query->id == $query->id && $a->contact_id == $contact->id)
+        {
+          $selected_choices[] = $a->value;
+        }
+        if ( !$selected_choices ) {
 
-      $form = new SurveyAnswerForm($answer);
-      $this->embedForm($query->id, $form->forge($query, $selected_choices));
-      $useFields[] = $query->id;
+          $this->object->Answers[] = $answer;
+        }
+
+        $form = new SurveyAnswerForm($answer);
+        if ( $contact )
+            $form->getWidgetSchema()->setLabel($contact);
+        $subform_id = $contact ? $query->id . "_" .$contact->id : $query->id;
+        $this->embedForm($subform_id, $form->forge($query, $selected_choices));
+        $useFields[] = $subform_id;
+      }
     }
 
     $this->useFields($useFields);

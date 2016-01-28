@@ -34,7 +34,6 @@ class SurveyDirectForm extends SurveyForm
       $group->survey_id = $this->object->id;
     }
 
-    //unset($this->object->AnswersGroups);
     $this->object->AnswersGroups = new Doctrine_collection('SurveyAnswersGroup');
     $this->object->AnswersGroups[] = $group;
 
@@ -77,7 +76,15 @@ class SurveyDirectForm extends SurveyForm
   {
     if (null === $con)
       $con = $this->getConnection();
+
+    foreach ($this->transaction->SurveyAnswersGroups as $sag)
+    if ( $sag->survey_id == $this->object->id )
+    {
+       $sag->Answers = new Doctrine_collection('SurveyAnswer');
+    }
+
     $this->updateObject();
+
     $this->saveEmbeddedForms($con);
   }
 }
