@@ -131,9 +131,46 @@
           // if the last contact was already confirmed, cannot modify such a contact
           if ( !$ticket->contact_id || $ticket->DirectContact->confirmed )
           {
-            $ticket->DirectContact = new Contact;
-            if ( $ticket->Transaction->Order->count() == 0 )
-              $ticket->DirectContact->confirmed = false;
+            $get_keywords = function($search)
+            {
+              $nb = mb_strlen($search);
+              $charset = sfConfig::get('software_internals_charset');
+              $transliterate = sfConfig::get('software_internals_transliterate',array());
+              
+              $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
+              $search = str_replace(MySearchAnalyzer::$cutchars,' ',$search);
+              $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
+              
+              return explode(' ', preg_replace('/\s+/', ' ', $search));
+            };
+            
+            // Search for an existing contact
+            $q = Doctrine_Query::create()->from('Contact c')
+              ->orderBy('c.updated_at DESC');
+            
+            $i = 0;
+            foreach ( array('firstname', 'name', 'email') as $field )
+            foreach ( $get_keywords($data[$ticket->id]['contact'][$field]) as $keyword )
+            {
+              $i++;
+              $alias = "ci$i";
+              $s = Doctrine::getTable('ContactIndex')->createQuery($alias)
+                ->select("$alias.id")
+                ->andWhere("$alias.field = ?", $field)
+                ->andWhere("$alias.keyword ILIKE ?", $keyword)
+              ;
+              $q->andWhere("c.id IN ($s)", $s->getParams()['where']);
+            }
+            $contact = $q->fetchOne();
+            
+            if ( $contact )
+              $ticket->DirectContact = $contact;
+            else
+            {
+              $ticket->DirectContact = new Contact;
+              if ( $ticket->Transaction->Order->count() == 0 )
+                $ticket->DirectContact->confirmed = false;
+            }
           }
           
           foreach ( array('title', 'name', 'firstname', 'email') as $field )
@@ -152,7 +189,7 @@
               unset($ticket->DirectContact);
           }
           
-          break;
+          break; // only 1 loop is sufficient to process 1 ticket/contact
         }
       }
       
