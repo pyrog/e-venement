@@ -18,7 +18,7 @@ class surveyActions extends autoSurveyActions
     $this->forward404Unless($survey = Doctrine::getTable('Survey')->find($request->getParameter('id')));
     $new = $survey->copy();
     $new->name = $new->name.' (copy '.date('Y-m-d H:i:s').')';
-    
+
     foreach ( $survey->Queries as $query )
     {
       $q = $query->copy();
@@ -29,7 +29,7 @@ class surveyActions extends autoSurveyActions
       $q->slug = NULL;
       $new->Queries[] = $q;
     }
-    
+
     foreach ( $survey->ApplyTo as $at )
     {
       $go = false;
@@ -40,7 +40,7 @@ class surveyActions extends autoSurveyActions
       else
         $at->delete();
     }
-    
+
     $new->save();
     $this->redirect('survey/edit?id='.$new->id);
   }
@@ -58,73 +58,73 @@ class surveyActions extends autoSurveyActions
   {
     $this->redirect('query/new?survey-id='.$request->getParameter('id'));
   }
-  
+
   public function executeShow(sfWebRequest $request)
   {
     parent::executeShow($request);
     $this->form = new SurveyForm($this->survey);
   }
-  
+
   public function executeCommit(sfWebRequest $request)
   {
     $params = $request->getParameter('survey');
     $request->setParameter('id', $params['id']);
     parent::executeShow($request);
-    
+
     // add the lang param, adjusted to the user's culture
     foreach ( $params['answers'] as $id => $param )
     if ( is_array($param) && !(isset($params['answers'][$id]['lang']) && $params['answers'][$id]['lang']) )
       $params['answers'][$id]['lang'] = $this->getUser()->getCulture();
-    
+
     // add the link to the user's contact
     if ( $this->getUser()->getContact() )
       $params['answers']['contact_id'] = $this->getUser()->getContact()->id;
-    
+
     $this->form = new SurveyPublicForm($this->survey);
     $this->form->bind($params);
     if ( $this->form->isValid() )
     {
       $this->getContext()->getConfiguration()->loadHelpers('I18N');
       $this->getUser()->setFlash('success', __('Submission recorded.'));
-      
+
       $object = $this->form->save();
       $this->redirect('survey/show?id='.$this->survey->id);
     }
-    
+
     $this->setTemplate('show');
   }
-  
+
   public function executeSearch(sfWebRequest $request)
   {
     self::executeIndex($request);
     $table = Doctrine::getTable('Survey');
-    
+
     $search = $this->sanitizeSearch($request->getParameter('s'));
     $this->pager->setQuery($table->search($search.'*',$this->pager->getQuery()));
     $this->pager->setPage($request->getParameter('page') ? $request->getParameter('page') : 1);
     $this->pager->init();
-    
+
     $this->setTemplate('index');
   }
-  
+
   public static function sanitizeSearch($search)
   {
     $nb = mb_strlen($search);
     $charset = sfConfig::get('software_internals_charset');
     $transliterate = sfConfig::get('software_internals_transliterate',array());
-    
+
     $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
     $search = str_replace(array('_','@','.','-','+',',',"'"),' ',$search);
     $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
     return $search;
   }
-  
+
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
     $this->filters = true; // hack Beaulieu du 30/09/2013 à valider avant commit
     $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q'));
-    
+
     $q = Doctrine::getTable('Survey')
       ->createQuery()
       ->orderBy('name')
@@ -136,10 +136,10 @@ class surveyActions extends autoSurveyActions
     $surveys = array();
     foreach ( $request as $survey )
       $surveys[$survey->id] = (string) $survey;
-    
+
     return $this->renderText(json_encode($surveys));
   }
-  
+
   protected function getPager()
   {
     $pager = $this->configuration->getPager('Survey');

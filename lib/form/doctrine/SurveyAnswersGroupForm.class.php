@@ -18,24 +18,37 @@ class SurveyAnswersGroupForm extends BaseSurveyAnswersGroupForm
     parent::configure();
     $this->widgetSchema['contact_id'] = new sfWidgetFormInputHidden;
     $this->widgetSchema['transaction_id'] = new sfWidgetFormInputHidden;
-    
+
     $useFields = array('contact_id', 'transaction_id');
-    
+
     $queries = array();
     foreach ( $this->object->Survey->Queries as $query )
       $queries[$query->rank.'-'.$query->id] = $query;
     ksort($queries);
     foreach ( $queries as $query )
     {
-      $answer = new SurveyAnswer;
-      $answer->Query = $query;
-      $this->object->Answers[] = $answer;
+      // TODO: loop for each direct contact when query.type is liWidgetFormChoiceMultiple
+
+      $answer = null;
+      $selected_choices = array();
+      foreach ($this->object->Answers as $a)
+      if ( $a->Query->id == $query->id )
+      {
+        $selected_choices[] = $a->value;
+        $answer = $a;
+      }
+      if ( !$answer ) {
+        $answer = new SurveyAnswer;
+        $answer->Query = $query;
+        $answer->Group = $this->object;
+        $this->object->Answers[] = $answer;
+      }
 
       $form = new SurveyAnswerForm($answer);
-      $this->embedForm($query->id, $form->forge($query));
+      $this->embedForm($query->id, $form->forge($query, $selected_choices));
       $useFields[] = $query->id;
     }
-    
+
     $this->useFields($useFields);
   }
 }

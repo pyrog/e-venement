@@ -1,0 +1,8 @@
+form.srv-direct-survey {
+  color: red;
+}
+
+form.srv-direct-survey td { color: #000; }
+
+form.srv-direct-survey table table th { color: #999; }
+form.srv-direct-survey table table th label { color: #000; }

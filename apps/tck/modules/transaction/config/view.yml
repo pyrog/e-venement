@@ -9,6 +9,8 @@ registeredSuccess:
   javascripts: [-*]
 batchPrintSuccess:
   javascripts: [-*]
+directSurveysSuccess:
+  stylesheets: [srv-direct-surveys]
 
 json:
   has_layout: false
