@@ -41,7 +41,7 @@ class eventConfiguration extends sfApplicationConfiguration
     $this->task = $task;
     
     // Caching manifestations in the background
-    $this->addGarbageCollector('manifestations-cache', function(){
+    $this->addGarbageCollector('manifestations-cache', function($id = NULL){
       $section = 'Caching manifs';
       
       // the lockfile
@@ -69,10 +69,13 @@ class eventConfiguration extends sfApplicationConfiguration
         return $this;
       }
       
-      $q = Doctrine::getTable('Manifestation')->createQuery('m')
-        ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '1 month'::interval")
+      $q = Doctrine::getTable('Manifestation')->createQuery('m', true)
+        ->select('m.*')
+        ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '6 month'::interval")
         ->andWhere("m.happens_at < NOW() + '1 year'::interval")
         ->orderBy('m.happens_at');
+      if ( $id )
+        $q->andWhere('m.id = ?', $id);
       $nb = array();
       foreach ( $q->execute() as $manifestation )
       {
@@ -102,7 +105,7 @@ class eventConfiguration extends sfApplicationConfiguration
           while ( $context->getActionStack()->popEntry() ); // clearing the stack
             $context->getActionStack()->addEntry('manifestation', $action, $actions);
           
-          if ( !liCacher::create($request)->needsRefresh() )
+          if ( !liCacher::create('manifestation/'.$action.'?id='.$manifestation->id)->needsRefresh() )
           {
             if ( sfConfig::get('sf_web_debug', false) )
               $this->stdout($section, '  x Refreshing the action '.$action.' is not needed for manifestation #'.$manifestation->id, 'INFO');

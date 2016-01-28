@@ -559,7 +559,7 @@ class manifestationActions extends autoManifestationActions
     $this->setLayout('nude');
     $this->securityAccessFiltering($request, false);
     
-    $cacher = liCacher::create($request);
+    $cacher = liCacher::create('manifestation/showSpectators?id='.$request->getParameter('id'), true);
     if ( !$cacher->requiresRefresh($request) )
     if ( ($this->cache = $cacher->useCache()) !== false )
       return 'Success';
@@ -581,7 +581,7 @@ class manifestationActions extends autoManifestationActions
     $this->setLayout('nude');
     $this->securityAccessFiltering($request, false);
     
-    $cacher = liCacher::create($request);
+    $cacher = liCacher::create('manifestation/showTickets?id='.$request->getParameter('id'), true);
     if ( !$cacher->requiresRefresh($request) )
     if ( ($this->cache = $cacher->useCache()) !== false )
       return 'Success';

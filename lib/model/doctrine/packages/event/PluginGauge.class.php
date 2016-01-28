@@ -12,4 +12,20 @@
  */
 abstract class PluginGauge extends BaseGauge
 {
+  /**
+   * getPriceGaugesFiltered()
+   * filtering the PriceGauges returned depending on the availability of their Price in the current Workspace
+   *
+   * @return PriceGauge
+   **/
+  public function getPriceGaugesFiltered()
+  {
+    $pgs = new Doctrine_Collection('PriceGauge');
+    
+    foreach ( $this->PriceGauges as $pg )
+    if ( in_array($pg->price_id, $this->Workspace->Prices->getPrimaryKeys()) )
+      $pgs[] = $pg;
+    
+    return $pgs;
+  }
 }
