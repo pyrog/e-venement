@@ -70,6 +70,8 @@ class Transaction extends PluginTransaction
     
     // surveys applyable everywhere
     foreach ( Doctrine::getTable('Survey')->createQuery('s')
+      ->leftJoin('s.AnswersGroups as WITH as.transaction_id = ?', $this->id)
+      ->leftJoin('as.Answers a')
       ->leftJoin('s.ApplyTo sat')
       ->andWhere('sat.everywhere = ?', true)
       ->andWhere('sat.date_from <= NOW() OR sat.date_from IS NULL')

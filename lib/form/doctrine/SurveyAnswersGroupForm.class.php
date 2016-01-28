@@ -27,12 +27,28 @@ class SurveyAnswersGroupForm extends BaseSurveyAnswersGroupForm
     ksort($queries);
     foreach ( $queries as $query )
     {
-      $answer = new SurveyAnswer;
-      $answer->Query = $query;
-      $this->object->Answers[] = $answer;
-
-      $form = new SurveyAnswerForm($answer);
-      $this->embedForm($query->id, $form->forge($query));
+      $answers = array();
+      foreach ( $this->object->Survey->AnswersGroups as $sag )
+      foreach ( $sag->Answers as $sa )
+      if ( $sa->survey_query_id == $query->id )
+        $answers[] = $sa;
+      
+      if ( $answers )
+      foreach ( $answers as $answer )
+      {
+        $query->Answers[] = $answer;
+        $this->object->Answers[] = $answer;
+      }
+      else
+      {
+        $answer = new SurveyAnswer;
+        $query->Answers[] = $answer;
+        $answer->Query = $query;
+        $this->object->Answers[] = $answer;
+      }
+      
+      $form = new SurveyAnswersForm($this->object->Answers, array('query' => $query, 'answers_group' => $this->object));
+      $this->embedForm($query->id, $form);
       $useFields[] = $query->id;
     }
     

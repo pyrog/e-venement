@@ -36,6 +36,34 @@ require_once dirname(__FILE__).'/../lib/transactionGeneratorHelper.class.php';
  */
 class transactionActions extends autoTransactionActions
 {
+  public function executeSurveys(sfWebRequest $request)
+  {
+    $this->forms = array();
+    $this->transaction = Doctrine::getTable('Transaction')->fetchOneById($request->getParameter('id'));
+    foreach ( $this->transaction->getSurveys() as $survey )
+      $this->forms[] = new SurveyDirectForm($survey, array('transaction' => $this->transaction));
+  }
+  public function executeCommitSurvey(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+    $this->transaction = Doctrine::getTable('Transaction')->fetchOneById($request->getParameter('id'));
+    
+    $params = $request->getParameter('survey', array());
+    
+    $s = new Survey;
+    foreach ( $surveys = $this->transaction->getSurveys() as $survey )
+    if ( $survey->id == $params['id'] )
+    {
+      $s = $survey;
+      break;
+    }
+    $this->form = new SurveyDirectForm($s, array('transaction' => $this->transaction));
+    
+    $this->form->bind($params);
+    if ( $this->form->isValid() )
+      $this->form->save();
+    $this->redirect('transaction/surveys?id='.$this->transaction->id);
+  }
   public function executeIndex(sfWebRequest $request)
   {
     $this->redirect('transactionsList/index');
