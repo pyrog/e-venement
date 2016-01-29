@@ -577,77 +577,11 @@ class transactionActions extends autoTransactionActions
     $this->form->bind($params);
     if ( !$this->form->isValid() )
     {
-      $this->getUser()->setFlash('notice', __('The transaction options have been saved sucessfully'));
+      return "Error";
     }
     else
     {
       $this->form->save();
-      $this->getUser()->setFlash('notice', __('The transaction options have been saved sucessfully'));
     }
-    $this->redirect('transaction/directSurveys?id=' . $transaction->id);
-
   }
-
-
-    public function getErrors($form = false, $embedded_forms = array()) {
-      if (!$form){
-        return false;
-      }
-      $errors = array();  $total_error++;
-      // individual widget errors
-      foreach ($form as $form_field) {
-        if ($form_field->hasError()) {
-          $error_obj = $form_field->getError();
-          if ($error_obj instanceof sfValidatorErrorSchema) {
-            foreach ($error_obj->getErrors() as $error) {
-              // add namespace for embedded form erros
-              if ($form->getName() != $form->getName()) {
-                $errors[$form->getName()][$form_field->getName()][] = $error->getMessage();  $total_error++;
-              } else {
-                $errors[$form_field->getName()][] = $error->getMessage();
-              }
-            }
-          } else {
-            if ($form->getName() != $form->getName()) {
-              $errors[$form->getName()][$form_field->getName()][] = $error_obj->getMessage();  $total_error++;
-            } else {
-              $errors[$form_field->getName()] = $error_obj->getMessage();  $total_error++;
-            }
-          }
-        }
-      }
-      // for global errors
-      foreach ($form->getGlobalErrors() as $validator_error) {
-        $errors[] = $validator_error->getMessage();
-      }
-      // for embedded form error processing
-      $count_embedded_error = 0;
-      if (count($embedded_forms) && is_array($embedded_forms) ) {
-        foreach($embedded_forms as $key => $embedded_form_name){
-          if (isset($errors[$embedded_form_name])) {
-            if(is_array($errors[$embedded_form_name])){
-              foreach($errors[$embedded_form_name] as $key1=>$errors_embedded){
-                $error_embedded_form = array();
-                $asEFRawErrors = explode("]", $errors_embedded);
-                foreach($asEFRawErrors as $ssRawError){
-                  if ($ssRawError!=null) {
-                    $raw_error = explode("[",$ssRawError);
-                    $error_embedded_form[trim($raw_error[0])] = trim($raw_error[1]);  $total_error++;
-                    //$error_embedded_form[] = $ssRawError;
-                  }
-                }
-                $errors[$embedded_form_name][$key1] = $error_embedded_form;
-                $count_embedded_error += count($error_embedded_form);
-              }
-            }
-          }
-        }
-      }
-      $errors_final['error_message'] = $errors;
-      // count errors
-      $errors_final['error_count'] = $total_error;
-      return $errors_final;
-    }
-
-
 }

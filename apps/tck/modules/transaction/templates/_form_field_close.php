@@ -46,4 +46,11 @@
   title="<?php echo __('Switch to simplified GUI / back from ...') ?>"
   id="simplified-gui"
 ><span class="ui-icon ui-icon-transferthick-e-w"></span></a>
+<a
+  class="ui-widget-content ui-state-default ui-corner-all ui-widget fg-button"
+  href="<?php echo url_for('transaction/directSurveys?id='.$transaction->id) ?>"
+  title="<?php echo __('Edit transaction surveys...') ?>"
+  id="direct-surveys"
+  target="_blank"
+><span class="ui-icon ui-icon-gear"></span></a>
 </form>
