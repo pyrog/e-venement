@@ -7,7 +7,7 @@ section.srv-direct-survey-container h1 {
 }
 
 form.srv-direct-survey {
-  color: red;  /* hide AnswersGroups labels and ids */
+  color: transparent;  /* hide AnswersGroups labels and ids */
   margin-bottom: 20px;
 }
 
