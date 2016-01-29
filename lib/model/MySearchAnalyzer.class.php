@@ -65,7 +65,7 @@ class MySearchAnalyzer extends Doctrine_Search_Analyzer_Utf8
         $text = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $text);
         
         // considering very special chars as spaces
-        $text = str_replace($this->cutchars,' ',$text);
+        $text = str_replace(self::$cutchars,' ',$text);
         
         $charset = sfConfig::get('software_internals_charset');
         $text = mb_strtolower(iconv($charset['db'],$charset['ascii'],$text));
