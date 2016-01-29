@@ -157,7 +157,7 @@
               $s = Doctrine::getTable('ContactIndex')->createQuery($alias)
                 ->select("$alias.id")
                 ->andWhere("$alias.field = ?", $field)
-                ->andWhere("$alias.keyword ILIKE ?", $keyword)
+                ->andWhere("$alias.keyword = ?", $keyword)
               ;
               $q->andWhere("c.id IN ($s)", $s->getParams()['where']);
             }
