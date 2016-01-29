@@ -19,8 +19,11 @@ LI.submitNextSurveyForm = function() {
       return false;
     }
   });
-  if ( nb_done === 0 )
-    $('#transition .close').click();
+  if ( nb_done === 0 ) {
+    $('#transition .close').click(); // remove overlay
+    window.close();
+  }
+
 };
 
 $(document).ready(function(){
@@ -56,5 +59,5 @@ $(document).ready(function(){
     return false;
   });
 
-  $('#submit-all-forms').click(LI.submitAllSurveyForms);
+  $('button.submit-all-forms').click(LI.submitAllSurveyForms);
 });

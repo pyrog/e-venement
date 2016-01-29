@@ -77,10 +77,13 @@ class SurveyDirectForm extends SurveyForm
     if (null === $con)
       $con = $this->getConnection();
 
+    // Delete all the direct answers
     foreach ($this->transaction->SurveyAnswersGroups as $sag)
     if ( $sag->survey_id == $this->object->id )
+    foreach ( $sag->Answers as $k => $answer )
+    if ( $answer->Query->type == "liWidgetFormChoiceMultipleContact" )
     {
-       $sag->Answers = new Doctrine_collection('SurveyAnswer');
+      unset($sag->Answers[$k]);
     }
 
     $this->updateObject();

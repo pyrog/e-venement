@@ -1,12 +1,13 @@
 section.srv-direct-survey-container {
-  padding: 5px 0;
+  margin-bottom: 10px;
+  width: 1000px;
 }
 section.srv-direct-survey-container h1 {
   padding: 5px 0;
 }
 
 form.srv-direct-survey {
-  color: transparent;  /* hide AnswersGroups labels and ids */
+  color: red;  /* hide AnswersGroups labels and ids */
   margin-bottom: 20px;
 }
 
