@@ -43,7 +43,7 @@ class transactionActions extends autoTransactionActions
   public function executeDispatch(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
-    
+
     $dispatch = $request->getParameter('dispatch');
     $q = Doctrine::getTable('Ticket')->createQuery('tck')
       ->andWhereIn('tck.id', $dispatch)
@@ -55,13 +55,13 @@ class transactionActions extends autoTransactionActions
     ;
     $this->transaction = new Transaction;
     $tickets = $q->execute();
-    
+
     if ( $tickets->count() == 0 )
     {
       $this->getUser()->setFlash('error', __('No ticket to be dispatched...'));
       $this->redirect($request->getReferer());
     }
-    
+
     foreach ( $tickets as $ticket )
     {
       $ticket->Transaction->closed = false;
@@ -70,7 +70,7 @@ class transactionActions extends autoTransactionActions
       $this->transaction->Tickets[] = $ticket;
     }
     $this->transaction->save();
-    
+
     $this->getUser()->setFlash('notice', __('%%nb%% ticket(s) have been dispatched into this new transaction.', array('%%nb%%' => $tickets->count())));
     $this->redirect('transaction/edit?id='.$this->transaction->id);
   }
@@ -87,23 +87,23 @@ class transactionActions extends autoTransactionActions
       else
         $this->redirect('transaction/edit?id='.$ticket->transaction_id);
     }
-    
+
     // find by seat_id + gauge_id
     if ( $request->hasParameter('seat_id') && ($request->hasParameter('gauge_id')||$request->hasParameter('manifestation_id')) )
     {
       $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
-      
+
       $q = Doctrine::getTable('Seat')->createQuery('s')
         ->andWhere('s.id = ?', $request->getParameter('seat_id'));
       if ( $request->hasParameter('gauge_id') )
         $q->leftJoin('s.Tickets tck WITH tck.gauge_id = ?', $request->getParameter('gauge_id'));
       if ( $request->hasParameter('manifestation_id') )
         $q->leftJoin('s.Tickets tck WITH tck.manifestation_id = ?', $request->getParameter('manifestation_id'));
-      
+
       $this->forward404Unless($seat = $q->fetchOne());
       if ( $seat->Tickets->count() > 0 )
         $this->redirect('transaction/edit?id='.$seat->Tickets[0]->transaction_id);
-      
+
       $q = Doctrine::getTable('Gauge')->createQuery('g',false);
       if ( $request->hasParameter('gauge_id') )
         $q->andWhere('g.id = ?', $request->getParameter('gauge_id'));
@@ -118,7 +118,7 @@ class transactionActions extends autoTransactionActions
         ->andWhere('sps.id = ?',$request->getParameter('seat_id'))
       ;
       $this->forward404Unless($gauge = $q->fetchOne());
-      
+
       $this->transaction = new Transaction;
       $ticket = new Ticket;
       $ticket->Seat = $seat;
@@ -127,18 +127,18 @@ class transactionActions extends autoTransactionActions
       $ticket->value = 0;
       $this->transaction->Tickets[] = $ticket;
       $this->transaction->save();
-      
+
       $this->getUser()->setFlash('success', __('Transaction created'));
       $this->redirect('transaction/edit?id='.$this->transaction->id);
     }
-    
+
     $this->forward404();
   }
   public function executeRegistered(sfWebRequest $request)
   {
     $this->transaction = $this->getRoute()->getObject();
     $this->forms = array();
-    
+
     foreach ( $this->transaction->Tickets as $ticket )
     if ( $ticket->gauge_id == $request->getParameter('gauge_id', 0)
       && $ticket->price_id == $request->getParameter('price_id', 0)
@@ -155,12 +155,12 @@ class transactionActions extends autoTransactionActions
     $data = $request->getParameter('ticket');
     if ( !isset($data[$id]) )
       return 'Error';
-    
+
     $this->form = new TicketRegisteredForm;
     if ( !$this->getUser()->hasCredential('tck-transaction-reduc') && isset($data[$id]['reduc']) )
       unset($data[$id]['reduc']);
     $this->form->bind($data[$id]);
-    
+
     if ( $request->hasParameter('debug') && sfConfig::get('sf_web_debug') )
     {
       $this->debug = true;
@@ -168,12 +168,12 @@ class transactionActions extends autoTransactionActions
       $this->getResponse()->sendHttpHeaders();
       $this->setLayout('layout');
     }
-    
+
     if ( !$this->form->isValid() )
       return 'Error';
-    
+
     $this->getContext()->getConfiguration()->loadHelpers(array('Url', 'I18N'));
-    
+
     $ticket = $this->form->save();
     $this->json = array('success' => array(
       'message'   => __('Ticket #%%id%% registered', array('%%id%%' => $ticket->id)),
@@ -188,7 +188,7 @@ class transactionActions extends autoTransactionActions
   {
     $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink','I18N'));
     parent::executeEdit($request);
-    
+
     if ( $this->transaction->closed && $this->getUser()->hasCredential('tck-unblock') && sfConfig::get('app_transaction_auto_reopen', false) )
     {
       $this->transaction->closed = false;
@@ -205,9 +205,9 @@ class transactionActions extends autoTransactionActions
       $this->getUser()->setFlash('error',__("You can respawn here only normal transactions"));
       $this->redirect('ticket/pay?id='.$this->transaction->id);
     }
-    
+
     $this->form = array();
-    
+
     // Contact
     $this->form['contact_id'] = new sfForm;
     $this->form['contact_id']->setDefault('contact_id', $this->transaction->contact_id);
@@ -222,7 +222,7 @@ class transactionActions extends autoTransactionActions
       'model' => 'Contact',
       'required' => false,
     ));
-    
+
     // Professional
     $this->form['professional_id'] = new sfForm;
     $this->form['professional_id']->setDefault('professional_id', $this->transaction->professional_id);
@@ -238,7 +238,7 @@ class transactionActions extends autoTransactionActions
       'model' => 'Professional',
       'required' => false,
     ));
-    
+
     // Deposit + Shipment (calling the "more" template)
     $this->form['more'] = new sfForm;
     $ws = $this->form['more']->getWidgetSchema()->setNameFormat('transaction[%s]');
@@ -255,7 +255,7 @@ class transactionActions extends autoTransactionActions
       'required' => false,
     ));
     $this->form['more']->setDefault('with_shipment', $this->transaction->with_shipment);
-    
+
     // DESCRIPTION
     $this->form['description'] = new sfForm;
     $this->form['description']->setDefault('description', $this->transaction->description);
@@ -263,7 +263,7 @@ class transactionActions extends autoTransactionActions
     $vs = $this->form['description']->getValidatorSchema();
     $ws['description'] = new sfWidgetFormTextarea();
     $vs['description'] = new sfValidatorString(array('required' => false,));
-    
+
     // PRICES
     $this->form['price_new'] = new sfForm;
     $ws = $this->form['price_new']->getWidgetSchema()->setNameFormat('transaction[price_new][%s]');
@@ -308,7 +308,7 @@ class transactionActions extends autoTransactionActions
       'min' => 0,
       'required' => false,
     ));
-    
+
     // NEW "PRODUCTS"
     $this->form['content'] = array();
     $this->form['content']['manifestations'] = new sfForm;
@@ -392,7 +392,7 @@ class transactionActions extends autoTransactionActions
       'required' => false,
       'min'     => strtotime('6 years ago 0:00'),
     ));
-    
+
     // DELETE PAYMENT
     $this->form['payments_list'] = new sfForm;
     $ws = $this->form['payments_list']->getWidgetSchema()->setNameFormat('transaction[payments_list][%s]');
@@ -404,7 +404,7 @@ class transactionActions extends autoTransactionActions
         ->leftJoin('p.Transaction t')
         ->andWhere('t.closed = ?', false),
     ));
-    
+
     // CLOSE THE TRANSACTION
     $this->form['close'] = new sfForm;
     $ws = $this->form['close']->getWidgetSchema()->setNameFormat('transaction[close][%s]');
@@ -417,11 +417,11 @@ class transactionActions extends autoTransactionActions
         ->andWhere('t.id = ?', $this->transaction->id),
     ));
     $this->form['close']->setDefault('id', $this->transaction->id);
-    
+
     // SIMPLIFIED GUI
     //$this->form['simplified']['manifestations'] = $this->form['content']['manifestations'];
   }
-  
+
   public function executeRespawn(sfWebRequest $request)
   {
     $this->sf_request = $request;
@@ -429,7 +429,7 @@ class transactionActions extends autoTransactionActions
   public function executeAccess(sfWebRequest $request)
   {
     $transaction = Doctrine::getTable('Transaction')->findOneById($request->getParameter('id'));
-    
+
     // reopen the transaction
     if ( $transaction->closed
       && $request->hasParameter('reopen')
@@ -439,10 +439,10 @@ class transactionActions extends autoTransactionActions
       $transaction->closed = false;
       $transaction->save();
     }
-    
+
     $this->redirect('transaction/edit?id='.$request->getParameter('id'));
   }
-  
+
   public function executeComplete(sfWebRequest $request)
   {
     // initialization
@@ -455,11 +455,11 @@ class transactionActions extends autoTransactionActions
         ->leftJoin('w.Users wu')
         ->andWhere('wu.id = ?', $this->getUser()->getId()),
     ));
-    
+
     require(dirname(__FILE__).'/complete.php');
     return '';
   }
-  
+
   public function executeGetManifestations(sfWebRequest $request)
   { return $this->getAbstract($request, 'manifestations'); }
   public function executeGetPeriods(sfWebRequest $request)
@@ -471,26 +471,26 @@ class transactionActions extends autoTransactionActions
     // initialization
     $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink', 'Number'));
     $this->dealWithDebugMode($request);
-    
+
     require(dirname(__FILE__).'/get-abstract.php');
     return '';
   }
-  
+
   public function executeGetPayments(sfWebRequest $request)
   {
     // initialization
     $this->getContext()->getConfiguration()->loadHelpers(array('CrossAppLink', 'Number'));
     $this->dealWithDebugMode($request);
-    
+
     require(dirname(__FILE__).'/get-payments.php');
     return '';
   }
-  
+
   public function executeNew(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers(array('I18N'));
     parent::executeNew($request);
-    
+
     if ( $request->getParameter('professional_id').'' === ''.intval($request->getParameter('professional_id')) )
     {
       $pro = Doctrine::getTable('Professional')->find(intval($request->getParameter('professional_id')));
@@ -502,11 +502,11 @@ class transactionActions extends autoTransactionActions
     }
     if ( $request->getParameter('contact_id').'' === ''.intval($request->getParameter('contact_id')) )
       $this->transaction->contact_id = intval($request->getParameter('contact_id'));
-    
+
     $this->dispatcher->notify(new sfEvent($this, 'tck.before_transaction_creation', array('transaction' => $this->transaction)));
     $this->transaction->save();
     $this->dispatcher->notify(new sfEvent($this, 'tck.after_transaction_creation', array('transaction' => $this->transaction)));
-    
+
     $this->getUser()->setFlash('success', __('Transaction created'));
     $this->redirect('transaction/edit?id='.$this->transaction->id);
   }
@@ -520,7 +520,7 @@ class transactionActions extends autoTransactionActions
   { $this->forward404('You are not supposed to be here...'); }
   public function executeUpdate(sfWebRequest $request)
   { $this->forward404('You are not supposed to be here...'); }
-  
+
   public function executeSeatsFirst(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers(array('Url'));
@@ -529,11 +529,11 @@ class transactionActions extends autoTransactionActions
   }
   public function executeCloseWindow(sfWebRequest $request)
   { }
-  
+
   protected function dealWithDebugMode(sfWebRequest $request)
   {
     $this->setTemplate('json');
-    
+
     if ( $request->hasParameter('debug') && sfConfig::get('sf_web_debug', false) )
     {
       $this->getResponse()->setContentType('text/html');
@@ -543,6 +543,45 @@ class transactionActions extends autoTransactionActions
     {
       sfConfig::set('sf_debug',false);
       sfConfig::set('sf_escaping_strategy', false);
+    }
+  }
+
+  public function executeDirectSurveys(sfWebRequest $request)
+  {
+    $this->transaction = Doctrine::getTable('Transaction')->find($request->getParameter('id'));
+	  $this->forward404Unless($this->transaction);
+
+    $this->forms = array();
+    foreach ( $surveys = $this->transaction->getSurveys() as $survey )
+      $this->forms[] = new SurveyDirectForm($survey, array('transaction' => $this->transaction));
+  }
+
+  public function executeCommitDirectSurvey(sfWebRequest $request)
+  {
+    $this->getContext()->getConfiguration()->loadHelpers('I18N');
+
+    $transaction = Doctrine::getTable('Transaction')->find($request->getParameter('transaction_id', 0));
+	  $this->forward404Unless($transaction);
+
+    $params = $request->getParameter('survey', array());
+
+    $s = new Survey;
+    foreach ( $surveys = $transaction->getSurveys() as $survey )
+    if ( $survey->id == $params['id'] )
+    {
+      $s = $survey;
+      break;
+    }
+    $this->form = new SurveyDirectForm($s, array('transaction' => $transaction));
+
+    $this->form->bind($params);
+    if ( !$this->form->isValid() )
+    {
+      return "Error";
+    }
+    else
+    {
+      $this->form->save();
     }
   }
 }

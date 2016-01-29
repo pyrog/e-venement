@@ -1,0 +1,39 @@
+section.srv-direct-survey-container {
+  margin-bottom: 10px;
+  width: 1000px;
+}
+section.srv-direct-survey-container h1 {
+  padding: 5px 0;
+}
+
+form.srv-direct-survey {
+  color: transparent;  /* hide AnswersGroups label */
+  margin-bottom: 20px;
+}
+
+form.srv-direct-survey > * { color: initial; }
+
+form.srv-direct-survey th {
+  vertical-align: middle;
+  color: transparent; /* hide AnswersGroups ids */
+}
+
+form.srv-direct-survey table table th {
+  color: #333; /* contact names */
+  padding-right: 20px;
+  border-bottom: 1px solid #999;
+  width: 200px;
+}
+form.srv-direct-survey table table th span { display: none; } /* hide query id */
+form.srv-direct-survey table table td {
+  border-bottom: 1px solid #999;
+}
+
+form.srv-direct-survey table table table td,
+form.srv-direct-survey table table table th {
+  border-bottom: none;
+  padding: 3px;
+}
+
+/* query label */
+form.srv-direct-survey table table th label { color: #000; }

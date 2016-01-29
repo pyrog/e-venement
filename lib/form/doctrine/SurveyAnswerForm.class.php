@@ -18,26 +18,34 @@ class SurveyAnswerForm extends BaseSurveyAnswerForm
     parent::configure();
     $this->widgetSchema['survey_query_id'] = new sfWidgetFormInputHidden;
     $this->widgetSchema['lang'] = new sfWidgetFormInputHidden;
-    
+    $this->widgetSchema['contact_id'] = new sfWidgetFormInputHidden;
+    $this->validatorSchema['contact_id']->setOption('query', Doctrine_Query::create()->from('Contact c'));
+
     $sf_user = sfContext::hasInstance() ? sfContext::getInstance()->getUser() : NULL;
     if ( $sf_user )
       $this->setDefault('lang', $sf_user->getCulture());
   }
-  
-  public function forge(SurveyQuery $query)
+
+  public function forge(SurveyQuery $query, $selected_choices = array())
   {
     $this->widgetSchema   ['value'] = $query->getWidget();
     $this->validatorSchema['value'] = $query->getValidator();
-    
+
+    if ( $selected_choices )
+    {
+      $this->setDefault('value', $selected_choices);
+    }
+
     $this->useFields(array(
       'value',
       'survey_query_id',
       'lang',
+      'contact_id',
     ));
-    
+
     return $this;
   }
-  
+
   public function doSave($con = null)
   {
     if ( !trim($this->object->value) )
