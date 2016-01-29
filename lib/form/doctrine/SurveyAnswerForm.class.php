@@ -19,6 +19,7 @@ class SurveyAnswerForm extends BaseSurveyAnswerForm
     $this->widgetSchema['survey_query_id'] = new sfWidgetFormInputHidden;
     $this->widgetSchema['lang'] = new sfWidgetFormInputHidden;
     $this->widgetSchema['contact_id'] = new sfWidgetFormInputHidden;
+    $this->validatorSchema['contact_id']->setOption('query', Doctrine_Query::create()->from('Contact c'));
 
     $sf_user = sfContext::hasInstance() ? sfContext::getInstance()->getUser() : NULL;
     if ( $sf_user )

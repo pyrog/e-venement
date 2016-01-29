@@ -66,6 +66,7 @@ class SurveyAnswersGroupForm extends BaseSurveyAnswersGroupForm
           $answer = new SurveyAnswer;
           $answer->Query = $query;
           $answer->Group = $this->object;
+          $answer->Contact = null;
           $this->object->Answers[] = $answer;
         }
 
