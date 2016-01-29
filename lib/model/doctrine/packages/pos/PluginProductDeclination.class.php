@@ -18,6 +18,8 @@ abstract class PluginProductDeclination extends BaseProductDeclination
     
     if ( !$this->code )
       $this->code = NULL;
+    if ( substr($this->code,-1) == '!' )
+      $this->code = substr($this->code, 0, -1);
   }
   public function getIndexesPrefix()
   {
