@@ -147,7 +147,7 @@
             // Search for an existing contact
             $q = Doctrine_Query::create()->from('Contact c')
               ->orderBy('c.updated_at DESC')
-              ->andWhere('c.email ILIKE = ?', trim($data[$ticket->id]['contact']['email']))
+              ->andWhere('c.email = ?', strtolower(trim($data[$ticket->id]['contact']['email'])))
             ;
             
             $i = 0;
@@ -177,6 +177,7 @@
           
           foreach ( array('title', 'name', 'firstname', 'email') as $field )
             $ticket->DirectContact->$field = trim($data[$ticket->id]['contact'][$field]);
+          $ticket->DirectContact->email = strtolower($ticket->DirectContact->email);
           
           $validator = new sfValidatorEmail;
           try {
