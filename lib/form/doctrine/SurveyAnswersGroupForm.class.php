@@ -70,6 +70,7 @@ class SurveyAnswersGroupForm extends BaseSurveyAnswersGroupForm
         }
 
         $form = new SurveyAnswerForm($answer);
+        $form->getWidgetSchema()->setLabel('<span>' . $query->id . '</span>');
         $this->embedForm($query->id, $form->forge($query));
         $useFields[] = $query->id;
       }
