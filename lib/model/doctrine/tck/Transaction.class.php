@@ -257,6 +257,7 @@ class Transaction extends PluginTransaction
     if ( $pdt instanceof Doctrine_Record )
       $with['only'][$key] = $pdt->id;
 
+    $batch = array();
     $content = array();
     if (!( isset($with['tickets']) && !$with['tickets'] ))
     foreach ( $this->Tickets as $ticket )
@@ -266,9 +267,51 @@ class Transaction extends PluginTransaction
         if ( !in_array($ticket->id, $with['only']) )
           continue;
       }
-      $content[] = $ticket->renderSimplified($with['barcode']);
+      if ( true )
+      {
+        // init on the first loop
+        if ( count($batch) == 0 )
+          $batch[] = array('barcodes' => array(), 'tickets' => array(), 'descriptions' => array());
+        // init on a specific condition (can be on every manifestation, on every DirectContact... or never)
+        if ( isset($batch[count($batch)-1]['tickets'][0])
+          && $batch[count($batch)-1]['tickets'][0]->manifestation_id != $ticket->manifestation_id )
+          $batch[] = array('barcodes' => array(), 'tickets' => array(), 'descriptions' => array());
+        
+        $batch[count($batch)-1]['barcodes'][] = $ticket->barcode;
+        $batch[count($batch)-1]['tickets'][] = $ticket;
+        $batch[count($batch)-1]['descriptions'][] = $ticket->description;
+      }
+      else
+        $content[] = $ticket->renderSimplified($with['barcode']);
     }
-
+    
+    // process tickets in batch mode
+    if ( $batch )
+    foreach ( $batch as $b )
+    if ( count($b) > 0 )
+    {
+      // if there is only one ticket in the batch
+      if ( count($b['tickets']) == 1 )
+      {
+        $content[] = $b['tickets'][0]->renderSimplified($with['barcode']);
+        continue;
+      }
+      
+      $tck = new Ticket;
+      $tck->id = ' ';
+      $tck->Manifestation = clone $ticket->Manifestation;
+      $tck->Manifestation->Event->name = __('Batch of tickets', null, 'li_tickets_email');
+      $tck->Transaction = $ticket->Transaction;
+      $tck->Manifestation->Location = new Location;
+      $tck->Manifestation->Location->country = '';
+      $tck->Gauge = new Gauge;
+      $tck->Manifestation->happens_at = NULL;
+      $tck->Gauge = $ticket->Gauge;
+      $tck->Manifestation->Event->description = implode('<br/>', $b['descriptions']);
+      $tck->barcode = json_encode($b['barcodes']);
+      $content[] = $tck->renderSimplified($with['barcode']);
+    }
+    
     return $tickets_html."\n".implode("\n", $content);
   }
   public function renderSimplifiedProducts(array $with = array())
