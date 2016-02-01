@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2016 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2016 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -58,21 +58,24 @@
       // creating tickets ids array
       if ( $field != 'othercode' )
       {
-        $tmp = explode(',',$params['ticket_id']);
-        if ( count($tmp) == 1 )
-          $tmp = preg_split('/\s+/',$params['ticket_id']);
-        $params['ticket_id'] = array();
-        foreach ( $tmp as $key => $ids )
+        if ( $params['ticket_id'] = json_decode($params['ticket_id']) ); // json array
+        else // human encoded arrays
         {
-          $ids = explode('-',$ids);
-          
-          if ( count($ids) > 0 && isset($ids[1]) )
-          for ( $i = intval($ids[0]) ; $i <= intval($ids[1]) ; $i++ )
-            $params['ticket_id'][$i] = $i;
-          else
-            $params['ticket_id'][] = $ids[0];
+          $tmp = explode(',',$params['ticket_id']);
+          if ( count($tmp) == 1 )
+            $tmp = preg_split('/\s+/',$params['ticket_id']);
+          $params['ticket_id'] = array();
+          foreach ( $tmp as $key => $ids )
+          {
+            $ids = explode('-',$ids);
+            
+            if ( count($ids) > 0 && isset($ids[1]) )
+            for ( $i = intval($ids[0]) ; $i <= intval($ids[1]) ; $i++ )
+              $params['ticket_id'][$i] = $i;
+            else
+              $params['ticket_id'][] = $ids[0];
+          }
         }
-        
         // decode EAN if it exists
         if ( $field == 'id' )
         foreach ( $params['ticket_id'] as $key => $value )
@@ -97,10 +100,10 @@
       if ( isset($params['ticket_id'][0]) && $params['ticket_id'][0] )
       {
         $q->leftJoin('m.Tickets t')
-          ->whereIn('t.'.$field,$params['ticket_id']);
+          ->whereIn('t.'.$field, $params['ticket_id']);
       }
       
-      if ( intval($params['checkpoint_id']).'' == ''.$params['checkpoint_id']
+      if ( intval($params['checkpoint_id']).'' === ''.$params['checkpoint_id']
         && count($params['ticket_id']) > 0 )
       {
         $q = Doctrine::getTable('Checkpoint')->createQuery('c')
@@ -163,54 +166,31 @@
         {
           if ( $checkpoint->id )
           {
-            if ( $field != 'id' )
+            $err = $tck = array();
+            $ids = $params['ticket_id'];
+            foreach ( $ids as $id )
             {
-              $params['ticket_id'] = $params['ticket_id'][0];
+              $params['ticket_id'] = $id;
+              $this->form = new ControlForm;
               $this->form->bind($params, $request->getFiles($this->form->getName()));
               if ( $this->form->isValid() )
               {
-                $this->tickets[] = Doctrine::getTable('Ticket')->createQuery('tck')
-                  ->andWhereIn("tck.$field", $params['ticket_id'])
-                  ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL')
-                  ->fetchOne();
                 $this->form->save();
-                $this->success = true;
-                return 'Result';
+                $this->tickets[] = $this->form->getObject()->Ticket;
               }
               else
               {
-                unset($params['ticket_id']);
-                $this->form->bind($params);
+                $err[] = $id;
+                $this->tickets[] = $tck[$id] = Doctrine::getTable('Ticket')->find($id);
               }
             }
-            else
-            {
-              $err = $tck = array();
-              $ids = $params['ticket_id'];
-              foreach ( $ids as $id )
-              {
-                $params['ticket_id'] = $id;
-                $this->form = new ControlForm;
-                $this->form->bind($params, $request->getFiles($this->form->getName()));
-                if ( $this->form->isValid() )
-                {
-                  $this->form->save();
-                  $this->tickets[] = $this->form->getObject()->Ticket;
-                }
-                else
-                {
-                  $err[] = $id;
-                  $this->tickets[] = $tck[$id] = Doctrine::getTable('Ticket')->find($id);
-                }
-              }
-              foreach ( $err as $e )
-                $this->errors[] = __('An error occurred controlling your ticket #%%id%%.', array('%%id%%' => $e))
-                  .($tck[$e] instanceof Ticket && !$tck[$e]->printed_at && !$tck[$e]->integrated_at ? ' '.__('This ticket is not sold yet.') : '');
-              $this->success = count($err) < count($ids);
-              return 'Result';
-            }
+            foreach ( $err as $e )
+              $this->errors[] = __('An error occurred controlling your ticket #%%id%%.', array('%%id%%' => $e))
+                .($tck[$e] instanceof Ticket && !$tck[$e]->printed_at && !$tck[$e]->integrated_at ? ' '.__('This ticket is not sold yet.') : '');
+            $this->success = count($err) < count($ids);
+            return 'Result';
           }
-          else
+          else // !$checkpoint->id
           {
             if ( !$params['checkpoint_id'] )
             {
@@ -228,7 +208,7 @@
             }
           }
         }
-        else
+        else // !$cancontrol
         {
           $this->success = false;
           foreach ( $this->tickets as $ticket )

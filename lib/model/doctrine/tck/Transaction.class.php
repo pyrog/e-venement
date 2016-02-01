@@ -257,6 +257,7 @@ class Transaction extends PluginTransaction
     if ( $pdt instanceof Doctrine_Record )
       $with['only'][$key] = $pdt->id;
 
+    $batch = array();
     $content = array();
     if (!( isset($with['tickets']) && !$with['tickets'] ))
     foreach ( $this->Tickets as $ticket )
@@ -266,9 +267,76 @@ class Transaction extends PluginTransaction
         if ( !in_array($ticket->id, $with['only']) )
           continue;
       }
+      
+      // merging tickets
+      if ( in_array(sfConfig::get('app_tickets_merge', false), array('horizontal', 'vertical')) )
+      {
+        // init on the first loop
+        if ( count($batch) == 0 )
+          $batch[] = array('barcodes' => array(), 'tickets' => array(), 'descriptions' => array());
+        
+        $id = false;
+        switch ( sfConfig::get('app_tickets_merge', false) ) {
+          case 'horizontal': // every tickets for one manifestation
+            $id = 'm'.$ticket->manifestation_id;
+            break;
+          case 'vertical': // every tickets of a single DirectContact
+            if ( $ticket->contact_id )
+              $id = 'c'.$ticket->contact_id;
+            break;
+        }
+        
+        // if something has to be merged
+        if ( $id )
+        {
+          if ( !isset($batch[$id]) )
+            $batch[$id] = array('barcodes' => array(), 'tickets' => array(), 'descriptions' => array());
+          
+          $batch[$id]['barcodes'][] = $ticket->barcode;
+          $batch[$id]['tickets'][] = $ticket;
+          $batch[$id]['descriptions'][] = $ticket->description;
+          
+          continue;
+        }
+      }
+      
+      // normal processing
       $content[] = $ticket->renderSimplified($with['barcode']);
     }
-
+    
+    // process tickets in batch mode
+    if ( $batch )
+    foreach ( $batch as $b )
+    if ( count($b) > 0 )
+    {
+      // if nothing has to be processed as a merged ticket
+      if ( count($b['tickets']) == 0 )
+        continue;
+      
+      // if there is only one ticket in the batch
+      if ( count($b['tickets']) == 1 )
+      {
+        $content[] = $b['tickets'][0]->renderSimplified($with['barcode']);
+        continue;
+      }
+      
+      $tck = new Ticket;
+      $tck->id = ' ';
+      if ( sfConfig::get('app_tickets_merge', false) == 'vertical' )
+        $tck->DirectContact = $b['tickets'][0]->DirectContact;
+      $tck->Manifestation = clone $b['tickets'][0]->Manifestation;
+      $tck->Manifestation->Event->name = __('Meta-Ticket', null, 'li_tickets_email');
+      $tck->Transaction = $b['tickets'][0]->Transaction;
+      $tck->Manifestation->Location = new Location;
+      $tck->Manifestation->Location->country = '';
+      $tck->Gauge = new Gauge;
+      $tck->Manifestation->happens_at = NULL;
+      $tck->Gauge = $b['tickets'][0]->Gauge;
+      $tck->Manifestation->Event->description = implode('<br/>',$b['descriptions']);
+      $tck->barcode = json_encode($b['barcodes']);
+      $content[] = '<div class="merged">'.$tck->renderSimplified($with['barcode']).'</div>';
+    }
+    
     return $tickets_html."\n".implode("\n", $content);
   }
   public function renderSimplifiedProducts(array $with = array())

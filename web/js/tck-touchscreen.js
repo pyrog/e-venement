@@ -351,7 +351,6 @@ $(document).ready(function(){
 
 // check gauges for overbooking
 LI.checkGauges = function(form){
-  console.error(form);
   // if the current Transaction contains only products, go for the order
   if ( $('#li_transaction_field_content #li_transaction_manifestations .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
     && $('#li_transaction_field_content #li_transaction_museum .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
@@ -417,7 +416,7 @@ LI.checkGauges = function(form){
     }
   });
 
-  return false;
+  return go;
 }
 
 LI.renderStocks = function(item)
