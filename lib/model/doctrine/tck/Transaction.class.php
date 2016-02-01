@@ -267,22 +267,41 @@ class Transaction extends PluginTransaction
         if ( !in_array($ticket->id, $with['only']) )
           continue;
       }
-      if ( true )
+      
+      // merging tickets
+      if ( in_array(sfConfig::get('app_tickets_merge', false), array('horizontal', 'vertical')) )
       {
         // init on the first loop
         if ( count($batch) == 0 )
           $batch[] = array('barcodes' => array(), 'tickets' => array(), 'descriptions' => array());
-        // init on a specific condition (can be on every manifestation, on every DirectContact... or never)
-        if ( isset($batch[count($batch)-1]['tickets'][0])
-          && $batch[count($batch)-1]['tickets'][0]->manifestation_id != $ticket->manifestation_id )
-          $batch[] = array('barcodes' => array(), 'tickets' => array(), 'descriptions' => array());
         
-        $batch[count($batch)-1]['barcodes'][] = $ticket->barcode;
-        $batch[count($batch)-1]['tickets'][] = $ticket;
-        $batch[count($batch)-1]['descriptions'][] = $ticket->description;
+        $id = false;
+        switch ( sfConfig::get('app_tickets_merge', false) ) {
+          case 'horizontal': // every tickets for one manifestation
+            $id = 'm'.$ticket->manifestation_id;
+            break;
+          case 'vertical': // every tickets of a single DirectContact
+            if ( $ticket->contact_id )
+              $id = 'c'.$ticket->contact_id;
+            break;
+        }
+        
+        // if something has to be merged
+        if ( $id )
+        {
+          if ( !isset($batch[$id]) )
+            $batch[$id] = array('barcodes' => array(), 'tickets' => array(), 'descriptions' => array());
+          
+          $batch[$id]['barcodes'][] = $ticket->barcode;
+          $batch[$id]['tickets'][] = $ticket;
+          $batch[$id]['descriptions'][] = $ticket->description;
+          
+          continue;
+        }
       }
-      else
-        $content[] = $ticket->renderSimplified($with['barcode']);
+      
+      // normal processing
+      $content[] = $ticket->renderSimplified($with['barcode']);
     }
     
     // process tickets in batch mode
@@ -290,6 +309,10 @@ class Transaction extends PluginTransaction
     foreach ( $batch as $b )
     if ( count($b) > 0 )
     {
+      // if nothing has to be processed as a merged ticket
+      if ( count($b['tickets']) == 0 )
+        continue;
+      
       // if there is only one ticket in the batch
       if ( count($b['tickets']) == 1 )
       {
@@ -299,17 +322,19 @@ class Transaction extends PluginTransaction
       
       $tck = new Ticket;
       $tck->id = ' ';
-      $tck->Manifestation = clone $ticket->Manifestation;
+      if ( sfConfig::get('app_tickets_merge', false) == 'vertical' )
+        $tck->DirectContact = $b['tickets'][0]->DirectContact;
+      $tck->Manifestation = clone $b['tickets'][0]->Manifestation;
       $tck->Manifestation->Event->name = __('Batch of tickets', null, 'li_tickets_email');
-      $tck->Transaction = $ticket->Transaction;
+      $tck->Transaction = $b['tickets'][0]->Transaction;
       $tck->Manifestation->Location = new Location;
       $tck->Manifestation->Location->country = '';
       $tck->Gauge = new Gauge;
       $tck->Manifestation->happens_at = NULL;
-      $tck->Gauge = $ticket->Gauge;
-      $tck->Manifestation->Event->description = implode('<br/>', $b['descriptions']);
+      $tck->Gauge = $b['tickets'][0]->Gauge;
+      $tck->Manifestation->Event->description = implode('<br/>',$b['descriptions']);
       $tck->barcode = json_encode($b['barcodes']);
-      $content[] = $tck->renderSimplified($with['barcode']);
+      $content[] = '<div class="merged">'.$tck->renderSimplified($with['barcode']).'</div>';
     }
     
     return $tickets_html."\n".implode("\n", $content);

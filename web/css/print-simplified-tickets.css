@@ -31,6 +31,7 @@ html { font-family: 'dejavu sans', Gotham, DejaVuSans, sans-serif; }
 .cmd-element .event td { vertical-align: bottom; height: 26mm; padding: 0 3mm; text-align: center; }
 .cmd-element .event-2nd { top: 92.5mm; }
 .cmd-element .description { top: 107mm; }
+.merged .cmd-element .description { font-size: 10px; }
 .cmd-element .date { top: 140mm; font-size: 16pt; }
 .cmd-element .location { top: 154.5mm; font-size: 16pt; }
 .cmd-element .address { top: 166.5mm; font-size: 9pt; }
