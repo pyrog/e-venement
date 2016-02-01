@@ -5,8 +5,8 @@
     <header/>
     <body>
       <trans-unit>
-        <source>Batch of tickets</source>
-        <target>Billets par lot</target>
+        <source>Meta-Ticket</source>
+        <target>Méta-billet</target>
       </trans-unit>
       <trans-unit>
         <source>Free seating</source>
