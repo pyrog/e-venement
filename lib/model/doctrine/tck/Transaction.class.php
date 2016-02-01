@@ -325,7 +325,7 @@ class Transaction extends PluginTransaction
       if ( sfConfig::get('app_tickets_merge', false) == 'vertical' )
         $tck->DirectContact = $b['tickets'][0]->DirectContact;
       $tck->Manifestation = clone $b['tickets'][0]->Manifestation;
-      $tck->Manifestation->Event->name = __('Batch of tickets', null, 'li_tickets_email');
+      $tck->Manifestation->Event->name = __('Meta-Ticket', null, 'li_tickets_email');
       $tck->Transaction = $b['tickets'][0]->Transaction;
       $tck->Manifestation->Location = new Location;
       $tck->Manifestation->Location->country = '';
