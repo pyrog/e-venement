@@ -101,6 +101,10 @@
         <target>Choisir un ou plusieurs éléments de la liste</target>
       </trans-unit>
       <trans-unit>
+        <source>Select one or many in a list for each contact</source>
+        <target>QCM pour chaque participant</target>
+      </trans-unit>
+      <trans-unit>
         <source>Range</source>
         <target>Intervalle</target>
       </trans-unit>
