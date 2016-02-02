@@ -102,7 +102,7 @@
     );
     
     // direct transaction's fields
-    foreach ( array('contact_id', 'professional_id', 'description', 'deposit', 'with_shipment',) as $form )
+    foreach ( array('contact_id', 'professional_id', 'postalcode', 'description', 'deposit', 'with_shipment',) as $form )
     if ( isset($params[$form]) && (isset($this->form[$form]) || $this->form['more']->getWidgetSchema()->offsetExists($form)) )
     {
       $field = $form;
@@ -123,6 +123,7 @@
           if ( $params[$field] )
           {
             $object = Doctrine::getTable('Contact')->findOneById($params[$field]);
+            $this->transaction->postalcode = '';
             foreach ( $object->Professionals as $pro )
               $this->json['success']['success_fields'][$field]['remote_content']['load']['data'][$pro->id]
                 = $pro->full_desc;

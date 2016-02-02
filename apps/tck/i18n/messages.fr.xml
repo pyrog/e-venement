@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Postalcode</source>
+        <target>Code postal</target>
+      </trans-unit>
+      <trans-unit>
         <source>Surveys for transaction #%%id%%</source>
         <target>Questionnaires pour l'opération de vente #%%id%%</target>
       </trans-unit>

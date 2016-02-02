@@ -234,8 +234,8 @@ $(document).ready(function(){
   });
 
   // vCard & co
-  $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more').click(function(){
-    $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more').addClass('ui-state-highlight');
+  $('#li_transaction_field_professional_id, #li_transaction_field_postalcode, #li_transaction_field_contact_id, #li_transaction_field_more').click(function(){
+    $('#li_transaction_field_professional_id, #li_transaction_field_postalcode, #li_transaction_field_contact_id, #li_transaction_field_more').addClass('ui-state-highlight');
     if ( $('#li_transaction_field_contact_id .data a').length > 0
       && $('#li_transaction_field_informations .vcard').length == 0 )
     {
@@ -552,9 +552,15 @@ LI.initTouchscreen = function(elt)
   switch ( elt ) {
   case '#li_transaction_field_contact_id':
     if ( $(elt+' [name="transaction[contact_id]"]').val() == '' )
+    {
       $(elt+' .data a').remove();
+      $('#li_transaction_field_postalcode').fadeIn();
+    }
     else
+    {
       $(elt+' .data a').prepend('<span class="ui-icon ui-icon-person"></span>');
+      $('#li_transaction_field_postalcode').fadeOut(function(){ $(this).find('input').val(''); });
+    }
     $(elt+' .li_touchscreen_new').toggle($(elt+' .data a').length == 0);
     $('#li_transaction_field_informations .vcard').remove();
     $(elt).click();

@@ -225,6 +225,8 @@ class transactionActions extends autoTransactionActions
 
     // Professional
     $this->form['professional_id'] = new sfForm;
+    $ws = $this->form['professional_id']->getWidgetSchema()->setNameFormat('transaction[%s]');
+    $vs = $this->form['professional_id']->getValidatorSchema();
     $this->form['professional_id']->setDefault('professional_id', $this->transaction->professional_id);
     $ws = $this->form['professional_id']->getWidgetSchema()->setNameFormat('transaction[%s]');
     $vs = $this->form['professional_id']->getValidatorSchema();
@@ -237,6 +239,16 @@ class transactionActions extends autoTransactionActions
     $vs['professional_id'] = new sfValidatorDoctrineChoice(array(
       'model' => 'Professional',
       'required' => false,
+    ));
+    
+    $this->form['postalcode'] = new sfForm;
+    $ws = $this->form['postalcode']->getWidgetSchema()->setNameFormat('transaction[%s]');
+    $vs = $this->form['postalcode']->getValidatorSchema();
+    $this->form['postalcode']->setDefault('postalcode', $this->transaction->postalcode);
+    $ws['postalcode'] = new sfWidgetFormInputText(array(), array('size' => 6));
+    $vs['postalcode'] = new sfValidatorString(array(
+      'required' => false,
+      'max_length' => 32,
     ));
 
     // Deposit + Shipment (calling the "more" template)
