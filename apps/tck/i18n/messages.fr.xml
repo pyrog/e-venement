@@ -5,12 +5,16 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Do you want to force the delivery?</source>
+        <target>Voulez-vous forcer la livraison ?</target>
+      </trans-unit>
+      <trans-unit>
         <source>Print and deliver</source>
         <target>Imprimer et délivrer</target>
       </trans-unit>
       <trans-unit>
         <source>Switch to simplified GUI / back from ...</source>
-        <target>Basculter vers l'interface simplifiée / Revenir de ...</target>
+        <target>Basculer vers l'interface simplifiée / Revenir de ...</target>
       </trans-unit>
       <trans-unit>
         <source>Resend confirmation email</source>

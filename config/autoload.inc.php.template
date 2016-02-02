@@ -28,3 +28,5 @@ sfCoreAutoload::register();
 require_once dirname(__FILE__).'/../lib/vendor/symfony/lib/config/sfProjectConfiguration.class.php';
 require_once dirname(__FILE__).'/../lib/config/liGarbageCollectorInterface.class.php';
 
+// activate local cache & log directories (sf_root_dir/cache & sf_root_dir/log)
+//define('SF_USE_LOCAL_RW_DIRS', true);

@@ -28,16 +28,17 @@ class GarbageCollectorTask extends sfBaseTask{
     $this->addArguments(array(
       new sfCommandArgument('application', sfCommandArgument::REQUIRED, 'The application'),
       new sfCommandArgument('subtask', sfCommandArgument::OPTIONAL, 'The subtask to collect'),
+      new sfCommandArgument('id', sfCommandArgument::OPTIONAL, 'The identifier to process'),
     ));
     $this->addOptions(array(
-      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environement', 'prod'),
+      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
     ));
     $this->namespace = 'e-venement';
     $this->name = 'garbage-collector';
     $this->briefDescription = 'Executes garbage collectors for an application';
     $this->detailedDescription = <<<EOF
       The [gc:garbage-collector|INFO] Executes garbage collectors for an application:
-      [./symfony e-venement:garbage-collector --env=prod tck [wip]|INFO]
+      [./symfony e-venement:garbage-collector --env=prod tck [wip] [id]|INFO]
 EOF;
   }
 
@@ -50,6 +51,6 @@ EOF;
       throw new sfCommandException('The application configuration does not permit garbage collection');
     
     $this->configuration->initGarbageCollectors($this);
-    $this->configuration->executeGarbageCollectors($arguments['subtask']);
+    $this->configuration->executeGarbageCollectors($arguments['subtask'], $arguments['id']);
   }
 }

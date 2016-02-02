@@ -16,8 +16,8 @@
 *    along with e-venement; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    Copyright (c) 2006-2015 Baptiste SIMON <baptiste.simon AT e-glop.net>
-*    Copyright (c) 2006-2015 Libre Informatique [http://www.libre-informatique.fr/]
+*    Copyright (c) 2006-2016 Baptiste SIMON <baptiste.simon AT e-glop.net>
+*    Copyright (c) 2006-2016 Libre Informatique [http://www.libre-informatique.fr/]
 *
 ***********************************************************************************/
 ?>
@@ -64,7 +64,7 @@ class eventConfiguration extends sfApplicationConfiguration
     $this->task = $task;
     
     // Caching manifestations in the background
-    $this->addGarbageCollector('manifestations-cache', function(){
+    $this->addGarbageCollector('manifestations-cache', function($id = NULL){
       $section = 'Caching manifs';
       
       // the lockfile
@@ -92,10 +92,13 @@ class eventConfiguration extends sfApplicationConfiguration
         return $this;
       }
       
-      $q = Doctrine::getTable('Manifestation')->createQuery('m')
-        ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '1 month'::interval")
+      $q = Doctrine::getTable('Manifestation')->createQuery('m', true)
+        ->select('m.*')
+        ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '6 month'::interval")
         ->andWhere("m.happens_at < NOW() + '1 year'::interval")
         ->orderBy('m.happens_at');
+      if ( $id )
+        $q->andWhere('m.id = ?', $id);
       $nb = array();
       foreach ( $q->execute() as $manifestation )
       {
@@ -125,7 +128,7 @@ class eventConfiguration extends sfApplicationConfiguration
           while ( $context->getActionStack()->popEntry() ); // clearing the stack
             $context->getActionStack()->addEntry('manifestation', $action, $actions);
           
-          if ( !liCacher::create($request)->needsRefresh() )
+          if ( !liCacher::create('manifestation/'.$action.'?id='.$manifestation->id)->needsRefresh() )
           {
             if ( sfConfig::get('sf_web_debug', false) )
               $this->stdout($section, '  x Refreshing the action '.$action.' is not needed for manifestation #'.$manifestation->id, 'INFO');
