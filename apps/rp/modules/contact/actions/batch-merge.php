@@ -95,8 +95,9 @@
         foreach ( $contact->MemberCards as $mc )
         {
           $base_contact->MemberCards[] = $mc;
-          $mc->contact_id = $base_contact->id;
-          $mc->save();
+          // this is needed for an obscur reason of a triangulation between transactions, member cards and the base contact
+          if ( $mc->transaction_id )
+            $mc->Transaction->Contact = $base_contact;
         }
         
         // pro + groups
@@ -202,7 +203,13 @@
       }
     }
     if ( $base_contact )
+    {
+      // this is needed for an obscur reason of a triangulation between transactions, member cards and the base contact
+      foreach ( $base_contact->MemberCards as $mc )
+        $mc->save();
+      // save it!
       $base_contact->save();
+    }
     
     $this->getUser()->setFlash('notice',__('%%nb%% contacts properly merged into one',array('%%nb%%' => $cpt)));
     $this->redirect('contact/edit?id='.$base_contact->id);
