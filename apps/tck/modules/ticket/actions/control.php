@@ -173,11 +173,11 @@
               $params['ticket_id'] = $id;
               $this->form = new ControlForm;
               $this->form->bind($params, $request->getFiles($this->form->getName()));
-              if ( $this->form->isValid() )
+              if ( $this->form->isValid() ) try
               {
                 $this->form->save();
                 $this->tickets[] = $this->form->getObject()->Ticket;
-              }
+              } catch ( liEvenementException $e ) { error_log('TicketActions::executeControl() - '.$e->getMessage().' Passing by.'); }
               else
               {
                 $err[] = $id;
