@@ -58,7 +58,10 @@ class ManifestationForm extends BaseManifestationForm
       'time' => new liWidgetFormTimeText(),
     ));
     $this->validatorSchema['ends_at'] = new sfValidatorDateTime(array('required' => false));
-    $this->validatorSchema['duration'] = new sfValidatorString(array('required' => false));
+    $this->validatorSchema['duration'] = new sfValidatorRegex(array(
+      'required' => false,
+      'pattern'  => '/^\d+:\d\d$/',
+    ));
     
     $this->widgetSchema['vat_id']
       ->setOption('order_by', array('value, name', ''));
