@@ -78,6 +78,14 @@ if ( $group->Answers->count() > 0 )
   
   foreach ( $group->Answers as $answer )
   {
+    if ( $answer->contact_id )
+    {
+      $this->lines[$i]['name'] = (string)$answer->Contact;
+      $this->lines[$i]['professional'] = '';
+      $this->lines[$i]['organism'] = (string)$group->Professional->Organism;
+      $this->lines[$i]['transaction'] = '#'.$group->transaction_id;
+    }
+    
     if ( $queries[$answer->survey_query_id]->Options->count() == 0 )
       $this->lines[$i][$queries[$answer->survey_query_id]->slug] = $answer->value;
     else
@@ -90,6 +98,8 @@ if ( $group->Answers->count() > 0 )
       if ( $option->value == $answer->value )
         $this->lines[$i][$queries[$answer->survey_query_id]->slug.'-'.$option->id] = $answer->value;
     }
+    
+    $i++;
   }
   $i++;
 }
