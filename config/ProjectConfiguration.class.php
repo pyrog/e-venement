@@ -42,6 +42,14 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
       $ucache = basename($this->getRootDir()).'-'.md5($this->getRootDir());
       $this->setCacheDir("/tmp/$ucache/cache");
       $this->setLogDir("/tmp/$ucache/log");
+      
+      foreach ( array("/tmp/$ucache/cache", "/tmp/$ucache/log") as $dir )
+      if ( !file_exists($dir) )
+      {
+        mkdir($dir, 0777, true);
+        chmod(dirname($dir), 0777); // to be sure...
+        chmod($dir, 0777); // to be sure...
+      }
     }
     
     // year of birth
