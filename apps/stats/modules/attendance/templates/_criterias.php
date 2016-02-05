@@ -9,6 +9,12 @@
       <span><?php echo $form['approach'] ?></span>
     </li>
     <?php endif ?>
+    <?php if ( isset($form['only_what']) ): ?>
+    <li class="only_what">
+      <?php echo $form['only_what']->renderLabel() ?>
+      <span><?php echo $form['only_what'] ?></span>
+    </li>
+    <?php endif ?>
     <?php if ( isset($form['dates']) ): ?>
     <li class="dates">
       <?php echo $form['dates']->renderLabel() ?>

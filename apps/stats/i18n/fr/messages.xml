@@ -5,6 +5,22 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Type of contact</source>
+        <target>Type de contact</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Everybody</source>
+        <target>Tout le monde</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Professionals</source>
+        <target>Professionnels</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Individuals</source>
+        <target>Individuels</target>
+      </trans-unit>
+      <trans-unit>
         <source>Follows</source>
         <target>Suit</target>
       </trans-unit>

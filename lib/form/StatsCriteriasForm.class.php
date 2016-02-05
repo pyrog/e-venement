@@ -180,6 +180,22 @@ class StatsCriteriasForm extends BaseForm
     ));
     return $this;
   }
+  public function addOnlyWhatCriteria()
+  {
+    $this->widgetSchema   ['only_what'] = new sfWidgetFormChoice(array(
+      'choices' => $arr = array(
+        '' => 'Everybody',
+        'individuals' => 'Individuals',
+        'professionals' => 'Professionals',
+      ),
+      'label' => 'Type of contact',
+    ));
+    $this->validatorSchema['approach'] = new sfValidatorChoice(array(
+      'required' => false,
+      'choices' => array_keys($arr),
+    ));
+    return $this;
+  }
   public function addStrictContactsCriteria()
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');

@@ -26,6 +26,7 @@ class geoActions extends sfActions
     
     $this->form = new StatsCriteriasForm();
     $this->form
+      ->addOnlyWhatCriteria()
       ->addApproachCriteria()
       ->addEventCriterias()
       ->addManifestationCriteria()
@@ -82,21 +83,21 @@ class geoActions extends sfActions
     }
     
     $this->lines['total'] = array(
-      'name'    => __('Total'),
-      'contacts'     => $total['nb'],
-      'percent' => 100,
-      'tickets'   => $total['tickets'],
-      'tickets%' => 100,
-      'value'   => format_currency($total['value'],'€'),
-      'value%' => 100,
+      'name'          => __('Total'),
+      'qty'           => $total['nb'],
+      'percent'       => 100,
+      'tickets'       => $total['tickets'],
+      'tickets%'      => 100,
+      'value'         => format_currency($total['value'],'€'),
+      'value%'        => 100,
     );
     
     $params = OptionCsvForm::getDBOptions();
     $this->options = array(
-      'ms' => in_array('microsoft',$params['option']),
-      'fields' => array('name','qty','percent','tickets', 'tickets%', 'value','value%'),
-      'tunnel' => false,
-      'noheader' => false,
+      'ms'        => in_array('microsoft',$params['option']),
+      'fields'    => array('name','qty','percent','tickets', 'tickets%', 'value','value%'),
+      'tunnel'    => false,
+      'noheader'  => false,
     );
     
     $this->outstream = 'php://output';
@@ -179,6 +180,15 @@ class geoActions extends sfActions
       ;
     }
     
+    if ( isset($criterias['only_what']) )
+    switch ( $criterias['only_what'] ) {
+    case 'individuals':
+      $q->andWhere('t.professional_id IS NULL');
+      break;
+    case 'professionals':
+      $q->andWhere('t.professional_id IS NOT NULL');
+      break;
+    }
     if ( isset($criterias['meta_events_list']) && is_array($criterias['meta_events_list']) )
       $q->andWhereIn('e.meta_event_id', $criterias['meta_events_list']);
     if ( isset($criterias['event_categories_list']) && is_array($criterias['event_categories_list']) )
@@ -350,15 +360,6 @@ class geoActions extends sfActions
         ->execute() as $dpt )
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        // this is here as a workaround of the arrival of postalcodes within transactions
-        if ( $approach == 'nb' )
-        {
-          $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
-          if ( in_array($id, $contacts) )
-            continue;
-          $contacts[] = $id;
-        }
-        
         $res[$approach][$dpt->name] = $res[$approach][$dpt->num];
         unset($res[$approach][$dpt->num]);
       }
@@ -542,7 +543,7 @@ class geoActions extends sfActions
         // this is here as a workaround of the arrival of postalcodes within transactions
         if ( $approach == 'nb' )
         {
-          $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
           if ( in_array($id, $contacts) )
             continue;
           $contacts[] = $id;
@@ -574,7 +575,7 @@ class geoActions extends sfActions
           // this is here as a workaround of the arrival of postalcodes within transactions
           if ( $approach == 'nb' )
           {
-            $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+            $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
             if ( in_array($id, $contacts) )
               continue;
             $contacts[] = $id;
@@ -605,7 +606,7 @@ class geoActions extends sfActions
         // this is here as a workaround of the arrival of postalcodes within transactions
         if ( $approach == 'nb' )
         {
-          $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
           if ( in_array($id, $contacts) )
             continue;
           $contacts[] = $id;
@@ -633,7 +634,7 @@ class geoActions extends sfActions
         // this is here as a workaround of the arrival of postalcodes within transactions
         if ( $approach == 'nb' )
         {
-          $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
           if ( in_array($id, $contacts) )
             continue;
           $contacts[] = $id;
@@ -660,7 +661,7 @@ class geoActions extends sfActions
         // this is here as a workaround of the arrival of postalcodes within transactions
         if ( $approach == 'nb' )
         {
-          $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
           if ( in_array($id, $contacts) )
             continue;
           $contacts[] = $id;
@@ -686,7 +687,7 @@ class geoActions extends sfActions
         // this is here as a workaround of the arrival of postalcodes within transactions
         if ( $approach == 'nb' )
         {
-          $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
           if ( in_array($id, $contacts) )
             continue;
           $contacts[] = $id;
