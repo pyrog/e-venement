@@ -7,7 +7,10 @@
   </div>
   <div class="chart">
     <?php echo liWidgetOfc::createChart(400, 250, 'query/data?id='.$query->id, true); ?>
-    <div class="actions"><?php include_partial('global/chart_actions',array('module' => 'query', 'anchor' => 'chart-all', 'id' => $query->id)) ?></div>
+    <div class="actions"><?php include_partial('global/chart_actions',array(
+      'dl' => url_for('query/csv?id='.$query->id),
+      'anchor' => 'chart-all',
+    )) ?></div>
   </div>
 <?php endif ?>
 <?php endforeach ?>
