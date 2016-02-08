@@ -401,7 +401,7 @@
           seat.attr('data-ticket-id', null);
           $('#done [name="ticket[numerotation]"], #done [name="ticket[id]"]').val('');
           $('#done [name=ticket_numerotation][value="'+seat.attr('data-num')+'"]').val('')
-            .closest('.ticket').find('[name=ticket_id]').val('')
+            //.closest('.ticket').find('[name=ticket_id]').val('') // done on 2016-01-08 by beta on the advise of Brest Metropole
             .closest('.ticket').prependTo('#todo')
           ;
           $('#done .total').text(parseInt($('#done .total').text())-1);

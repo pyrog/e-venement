@@ -2005,7 +2005,7 @@ sfGuardGroup:
     updated_at: '2013-09-10 12:14:50' 
   sfGuardGroup_31:
     name: event-access-restricted
-    description: Ability to add, del & modify one''s own manifestations and events
+    description: Ability to add, del & modify one's own manifestations and events
     created_at: '2013-09-16 14:11:50'
     updated_at: '2013-09-16 14:11:50' 
   sfGuardGroup_32:

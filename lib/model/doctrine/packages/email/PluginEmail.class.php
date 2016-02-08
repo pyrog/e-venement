@@ -83,8 +83,11 @@ abstract class PluginEmail extends BaseEmail
     // sets the PHP timeout to 5 times the default parameter, to be able to process the sending correctly
     set_time_limit(ini_get('max_execution_time')*6);
     // sets the PHP memory_limit to twice the default parameter, to be able to process the sending correctly
-    preg_match('/(\d+)(\w)/', ini_get('memory_limit'), $matches);
-    ini_set('memory_limit', ($matches[1]*3).$matches[2]);
+    if ( ini_get('memory_limit') > 0 )
+    {
+      preg_match('/(\d+)(\w)/', ini_get('memory_limit'), $matches);
+      ini_set('memory_limit', ($matches[1]*3).$matches[2]);
+    }
     
     $to = is_array($to) && count($to) > 0 ? $to : $this->to;
     if ( !$to && !$this->field_to )
@@ -107,7 +110,8 @@ abstract class PluginEmail extends BaseEmail
       $this->message->setCc($this->field_cc);
     
     // attach normal file attachments
-    foreach ( $this->Attachments as $attachment )
+    foreach ( $this->Attachments as $key => $attachment )
+    if ( file_exists(sfConfig::get('sf_upload_dir').DIRECTORY_SEPARATOR.$attachment->filename) )
     {
       $id = $attachment->getId() ? $attachment->getId() : date('YmdHis').rand(10000,99999);
       $att = Swift_Attachment::fromPath($path = substr($attachment->filename, 0, 1) == '/'
@@ -116,6 +120,11 @@ abstract class PluginEmail extends BaseEmail
         ->setFilename($attachment->original_name)
         ->setId('part.'.$id.'@e-venement');
       $this->message->attach($att);
+    }
+    else
+    {
+      unset($this->Attachments[$key]);
+      error_log('PluginEmail: attachment #'.$attachment->id.' not found for email #'.$this->id.', continuing.');
     }
     
     // force setting the Content-Type to 'multipart/related' to really follow the norm

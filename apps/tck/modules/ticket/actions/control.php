@@ -75,8 +75,9 @@
         
         // decode EAN if it exists
         if ( $field == 'id' )
+        foreach ( $params['ticket_id'] as $key => $value )
         {
-          foreach ( $params['ticket_id'] as $key => $value )
+          $value = preg_replace('/!$/', '', $value);
           if ( (strlen($value) == 13 || strlen($value) == 12 ) && substr($value,0,1) === '0' )
           {
             try { $value = liBarcode::decode_ean($value); }
@@ -87,7 +88,7 @@
         }
       }
       else
-        $params['ticket_id'] = array($params['ticket_id']);
+        $params['ticket_id'] = array(preg_replace('/!$/', '', $params['ticket_id']));
       
       if ( $field != 'id' && intval($params['ticket_id'][0]).'' === ''.$params['ticket_id'][0] )
         $field = 'id';

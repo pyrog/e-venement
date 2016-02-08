@@ -172,15 +172,15 @@ class EventFormFilter extends BaseEventFormFilter
   
   // I18N
   public function addNameColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
+  { return $this->addI18nTextQuery($q, $field, $values, 'translation'); }
   public function addShortNameColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
+  { return $this->addI18nTextQuery($q, $field, $values, 'translation'); }
   public function addDescriptionColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
+  { return $this->addI18nTextQuery($q, $field, $values, 'translation'); }
   public function addExtradescColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
+  { return $this->addI18nTextQuery($q, $field, $values, 'translation'); }
   public function addExtraspecColumnQuery(Doctrine_Query $q, $field, $values)
-  { return $this->addI18nTextQuery($q, $field, $values); }
+  { return $this->addI18nTextQuery($q, $field, $values, 'translation'); }
   
   public function addDatesRangeColumnQuery(Doctrine_Query $q, $field, $values)
   {

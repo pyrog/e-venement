@@ -8,6 +8,7 @@
     $('#sf_fieldset_tickets > *').remove();
     $('#sf_fieldset_tickets').prepend($(data).find('#sf_fieldset_tickets > *'));
     
+    LI.fixCacherLinks();
     <?php include_partial('show_print_part_js',array('tab' => 'tickets', 'jsFunction' => 'LI.manifShowTickets')) ?>
   });
 </script>

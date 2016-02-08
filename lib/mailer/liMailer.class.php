@@ -41,11 +41,11 @@ class liMailer extends sfMailer
         'city'        => '',
         'country'     => '',
         'function'    => '',
-        'organism'    => '',
+        'organism'    => 'name',
       );
       $go = false;
       foreach ( $replace as $field => $val )
-      if ( strpos('%%'.strtoupper($field).'%%', $this->email->getFormattedContent()) !== FALSE )
+      if ( strpos($this->email->getFormattedContent(), '%%'.strtoupper($field).'%%') !== FALSE )
       {
         $go = true;
         break;
@@ -55,20 +55,23 @@ class liMailer extends sfMailer
       {
         $fields = $replace;
         if ( $go )
-        switch ( get_class($this->matcher[$cpt]) ) {
+        switch ( get_class($this->matcher[$this->cpt]) ) {
           case 'Contact':
             foreach ( array('firstname', 'title') as $field )
-              $fields[$field]   = $this->matcher[$cpt]->$field;
+              $fields[$field]   = $this->matcher[$this->cpt]->{$fields[$field] ? $fields[$field] : $field};
           case 'Organism':
             foreach ( array('name', 'address', 'postalcode', 'city', 'country') as $field )
-              $fields[$field]   = $this->matcher[$cpt]->$field;
+              $fields[$field]   = $this->matcher[$this->cpt]->{$fields[$field] ? $fields[$field] : $field};
+            $fields['organism'] = $fields['name'];
           break;
           case 'Professional':
             foreach ( array('firstname', 'title', 'name') as $field )
-              $fields[$field]   = $this->matcher[$cpt]->Contact->$field;
+              $fields[$field]   = $this->matcher[$this->cpt]->Contact->{$fields[$field] ? $fields[$field] : $field};
             foreach ( array('address', 'postalcode', 'city', 'country', 'organism') as $field )
-              $fields[$fields]  = $this->matcher[$cpt]->Organism->$field;
-            $fields['function'] = $this->matcher[$cpt]->name ? $this->matcher[$cpt]->name : (string)$this->matcher[$cpt]->Category;
+              $fields[$field]  = $this->matcher[$this->cpt]->Organism->{$fields[$field] ? $fields[$field] : $field};
+            $fields['function'] = $this->matcher[$this->cpt]->name
+              ? $this->matcher[$this->cpt]->name
+              : (string)$this->matcher[$this->cpt]->ProfessionalType;
           break;
         }
         $fields['emailaddress'] = is_int($address) ? $name : $address;

@@ -258,7 +258,7 @@
           ->leftJoin('bp.Declination d')
           ->execute() as $bp )
         {
-          if ( $bp->product_declination_id && ($bp->Declination->stock > 0 || $force) )
+          if ( $bp->product_declination_id && ($bp->Declination->stock > 0 || $force || $bp->destocked) )
           {
             $bp->integrated_at = date('Y-m-d H:i:s');
             $bp->save();

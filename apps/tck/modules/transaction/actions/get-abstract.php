@@ -185,8 +185,8 @@
         ;
       }
       if ( $gid = $request->getParameter('gauge_id', false) )
-        $q->andWhere('(g.id = ? OR ng.id = ? AND g.workspace_id = ng.workspace_id)',array($gid, $gid));
-      
+        $q->andWhere('(g.id = ? OR (ng.id = ? AND g.workspace_id = ng.workspace_id))',array($gid, $gid));
+    
     break;
     case 'store':
       $subobj = 'BoughtProduct';
@@ -359,12 +359,12 @@
           ;
       
           if ( $gid = $request->getParameter('gauge_id', false) )
-            $q->leftJoin('m.IsNecessaryTo int')
-              ->leftJoin('int.Gauges intg')
-              ->andWhere('g.id = ? OR intg.id = ?', array($gid, $gid));
-          $product = $q->fetchOne();
-
-          if ( $product )
+            $q->leftJoin('m.IsNecessaryTo n')
+              ->leftJoin('n.Gauges ng WITH g.onsite = TRUE OR g.id IN (SELECT ntck.gauge_id FROM Ticket ntck WHERE ntck.transaction_id = ? AND ntck.gauge_id = ng.id)', $request->getParameter('id',0))
+              ->andWhere('g.id = ? OR (ng.id = ? AND ng.workspace_id = g.workspace_id)', array($gid, $gid));
+          if (!( $product = $q->fetchOne() ))
+            break;
+          
           $this->json[$product->id] = array(
             'id'            => $product->id,
             'name'          => NULL,
@@ -431,6 +431,9 @@
           );
           break;
         }
+        
+        if ( !$product )
+          continue;
         
         // gauges
         if ( !$product )
