@@ -330,6 +330,12 @@
     else
     {
       sfConfig::set('sf_web_debug', false);
-      $this->getResponse()->setContentType('application/pdf');
+      if ( sfConfig::get('app_tickets_direct_printing', false) )
+      {
+        $this->setLayout(false);
+        $this->getResponse()->setContentType('application/octet-stream');
+      }
+      else
+        $this->getResponse()->setContentType('application/pdf');
     }
     return 'Simplified';
