@@ -11,5 +11,7 @@
   // records the PDF as a file, and remember the name of that file
   $filename = sfConfig::get('sf_app_cache_dir').'/tickets-'.date('YmdHis').'-'.rand(1000000, 9999999).'.pdf';
   file_put_contents($filename, $pdf->render());
-  echo exec('/usr/sbin/cupsfilter -e -m printer/pqueue -p /var/www/e-venement-git/data/cups/StarTSP700.ppd '.$filename.' 2> /dev/null');
+  $cmd = '/usr/sbin/cupsfilter -e -m printer/pqueue -p '.sfConfig::get('sf_root_dir').'/data/cups/StarTSP700.ppd '.$filename.' 2> /dev/null';
+  error_log("Executing: $cmd...");
+  echo exec($cmd);
 ?>
