@@ -319,6 +319,19 @@
       'user'        => $this->getUser(),
     )));
     
+    if ( $request->hasParameter('direct') )
+    {
+      // TODO, redering a specific PDF for direct printing
+      $this->content = '';
+      foreach ( $this->transactions as $transaction )
+        $this->content .= $transaction->renderSimplifiedTickets(array('only' => $this->tickets));
+      sfConfig::set('sf_web_debug', false);
+      $this->setLayout(false);
+      $this->getResponse()->setContentType('application/octet-stream');
+      
+      return 'Direct';
+    }
+    
     if (!( sfConfig::get('app_tickets_simplified_printing', false) && count($this->tickets) > 0 ))
       return 'Success';
     
@@ -330,12 +343,6 @@
     else
     {
       sfConfig::set('sf_web_debug', false);
-      if ( sfConfig::get('app_tickets_direct_printing', false) )
-      {
-        $this->setLayout(false);
-        $this->getResponse()->setContentType('application/octet-stream');
-      }
-      else
-        $this->getResponse()->setContentType('application/pdf');
+      $this->getResponse()->setContentType('application/pdf');
     }
     return 'Simplified';
