@@ -73,7 +73,6 @@ class myUser extends pubUser
     // detecting if one ticket has to be affected to the current contact
     if ( $this->getTransaction()->contact_id )
     {
-      $nocontactatall = true;
       $manifs = array();
       foreach ( $this->getTransaction()->Tickets as $ticket )
       {
@@ -84,6 +83,7 @@ class myUser extends pubUser
       
       foreach ( $manifs as $manifid => $tickets )
       {
+        $nocontactatall = true;
         foreach ( $tickets as $ticket )
         if ( $ticket->contact_id )
         {
