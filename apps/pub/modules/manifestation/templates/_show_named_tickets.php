@@ -62,8 +62,11 @@
 </form>
 <?php if (!( isset($display_continue) && !$display_continue )): ?>
 <p class="submit">
-  <a href="<?php echo url_for('transaction/show?id='.$sf_user->getTransactionId()) ?>">
-    <button name="submit" value=""><?php echo __('Continue') ?></button>
-  </a>
+  <a class="complete" href="<?php echo url_for('ticket/completeNamedTickets?manifestation_id='.$manifestation->id) ?>"><button name="complete" value="">
+    <?php echo __('Resume contacts') ?>
+  </button></a>
+  <a href="<?php echo url_for('transaction/show?id='.$sf_user->getTransactionId()) ?>"><button name="submit" value="">
+    <?php echo __('Continue') ?>
+  </button></a>
 </p>
 <?php endif ?>

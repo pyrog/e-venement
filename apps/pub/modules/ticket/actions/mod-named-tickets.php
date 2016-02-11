@@ -236,10 +236,6 @@
         $prices[''.$pid] = $tmp[$pid];
     }
     
-    $event = new sfEvent($this, 'pub.after_adding_tickets', array());
-    if ( $no_direct_contact )
-      $event['direct_contact'] = false;
-    $this->dispatcher->notify($event);
     // the json data
     $this->data[$ticket->manifestation_id.' '.$ticket->Seat.' '.$ticket->id] = array(
       'id'                => $ticket->id,
@@ -261,6 +257,11 @@
       'comment'           => $ticket->comment,
     );
   }
+  
+  $event = new sfEvent($this, 'pub.after_adding_tickets', array('tickets' => $tickets));
+  if ( sfConfig::get('app_tickets_direct_contact', 'auto') == 'auto' && isset($no_direct_contact) && $no_direct_contact )
+    $event['direct_contact'] = false;
+  $this->dispatcher->notify($event);
   
   ksort($this->data);
   // delete stored-for-deletion tickets (if not getting back a transaction already paid)

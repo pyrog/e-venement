@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Resume contacts</source>
+        <target>Reprendre des contacts</target>
+      </trans-unit>
+      <trans-unit>
         <source>No special offer found.</source>
         <target>Aucune offre spéciale trouvée.</target>
       </trans-unit>

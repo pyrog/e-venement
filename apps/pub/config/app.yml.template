@@ -40,6 +40,7 @@ all:
     #pdf_attachments: true
     #merge: vertical # horizontal: merge tickets by manifestations | vertical: merge tickets by DirectContact, depends on 'pdf_attachments: true'
     #nb_manifestations_per_default: 100
+    #direct_contact: auto # auto (default) | manuall
   store:
     #disabled: false
     max_per_product: 9

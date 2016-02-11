@@ -111,8 +111,6 @@
     $ticket->addLinkedProducts();
   $tickets->save();
 
-  $this->dispatcher->notify($event = new sfEvent($this, 'pub.after_adding_tickets', array()));
-  
   // return back the list of real tickets
   $this->data = array('tickets' => array());
   foreach ( $this->getUser()->getTransaction()->Tickets as $ticket )
@@ -131,5 +129,7 @@
       'value'             => (float)$ticket->value,
     );
   }
+  
+  $this->dispatcher->notify($event = new sfEvent($this, 'pub.after_adding_tickets', array('tickets' => $tickets, 'direct_contact' => sfConfig::get('app_tickets_direct_contact', 'auto') == 'auto')));
   
   return 'Success';
