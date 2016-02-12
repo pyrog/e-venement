@@ -14,6 +14,8 @@ class Cache extends PluginCache
 {
   public function getContent()
   {
-    return stream_get_contents($this->rawGet('content'));
+    if ( is_resource($content = $this->rawGet('content')) )
+      return stream_get_contents($content);
+    return $content;
   }
 }

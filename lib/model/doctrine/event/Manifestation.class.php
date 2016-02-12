@@ -453,7 +453,7 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
   public function getCacheTimeout()
   {
     $interval = sfConfig::get('app_cacher_timeout', '1 day ago');
-    $rand = random(2,11);
+    $rand = rand(2,11);
     if ( strtotime($this->ends_at) > time() && strtotime($this->happens_at) < time() )
       $interval = '6 hours '.$rand.' minutes ago';
     elseif ( strtotime($this->ends_at) < time() ) // in the past
