@@ -314,4 +314,16 @@ Filter:
       class: sfGuardUser
       foreignAlias: Filters
       
-      
+Cache:
+  package: generic
+  actAs:
+    Timestampable: ~
+    Versionable: ~
+  indexes:
+    cache_domain_identifier_idx:
+      fields: [domain, identifier]
+      unique: true
+  columns:
+    content: blob
+    domain: string(255)
+    identifier: string(255)
