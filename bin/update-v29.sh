@@ -78,8 +78,4 @@ then
   exit 255
 fi
 
-  ./symfony e-venement:search-index Contact
-  ./symfony e-venement:search-index Organism
-fi
-
 echo "Your update went good. Finish the process testing your software and let's go!!"
