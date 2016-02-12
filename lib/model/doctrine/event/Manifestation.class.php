@@ -453,31 +453,32 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
   public function getCacheTimeout()
   {
     $interval = sfConfig::get('app_cacher_timeout', '1 day ago');
+    $rand = random(2,11);
     if ( strtotime($this->ends_at) > time() && strtotime($this->happens_at) < time() )
-      $interval = '6 hours ago';
+      $interval = '6 hours '.$rand.' minutes ago';
     elseif ( strtotime($this->ends_at) < time() ) // in the past
     {
       $buf = time() - strtotime($this->ends_at);
       if ( $buf/60/60/24/7 <= 1 ) // less than 1 week ago
-        $interval = ($buf/60/60/24/7+1).' day ago';
+        $interval = '1 day '.$rand.' minutes ago';
       elseif ( $buf/60/60/24/30 <= 1 ) // between 1 week & 1 month ago
-        $interval = ($buf/60/60/30+3).' days ago';
+        $interval = '3 days '.$rand.' minutes ago';
       elseif ( $buf/60/60/24/90 <= 1 ) // between 1 month & 3 month ago
         $interval = ($buf/60/60/90+7).' days ago';
       else // more than 3 month ago
-        $interval = ($buf/60/60/100+17).' days ago';
+        $interval = '17 days '.$rand.' minutesago';
     }
     elseif ( strtotime($this->ends_at) > time() ) // in the future
     {
       $buf = strtotime($this->happens_at) - time();
       if ( $buf/60/60/24/7 <= 1 ) // less than 1 week ago
-        $interval = ($buf/60/60/24/7+1).' day ago';
+        $interval = '1 day '.$rand.' minutes ago';
       elseif ( $buf/60/60/24/30 <= 1 ) // between 1 week & 1 month ago
-        $interval = ($buf/60/60/30+3).' days ago';
+        $interval = '3 days '.$rand.' minutes ago';
       elseif ( $buf/60/60/24/90 <= 1 ) // between 1 month & 3 month ago
         $interval = ($buf/60/60/90+7).' days ago';
       else // more than 3 month ago
-        $interval = ($buf/60/60/100+17).' days ago';
+        $interval = '17 days '.$rand.' minutesago';
     }
 
     return $interval;
