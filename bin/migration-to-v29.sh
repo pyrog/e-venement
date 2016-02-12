@@ -125,27 +125,27 @@ db="$PGDATABASE"
 echo "Resetting the DB"
 echo ""
 # recreation and data backup
-# those rm -rf cache/* are hacks to avoid cache related segfaults...
+# those ./symfony cc are hacks to avoid cache related segfaults...
 dropdb $db;
 createdb $db
 
 last=$?
-rm -rf cache/*
+./symfony cc
 [ $last -eq 0 ] && ./symfony doctrine:drop-db --no-confirmation && ./symfony doctrine:build-db
 last=$?
-rm -rf cache/*
+./symfony cc
 [ $last -eq 0 ] && ./symfony doctrine:build-model
 last=$?
-rm -rf cache/*
+./symfony cc
 [ $last -eq 0 ] && ./symfony doctrine:build-forms
 last=$?
-rm -rf cache/*
+./symfony cc
 [ $last -eq 0 ] && ./symfony doctrine:build-filters
 last=$?
-rm -rf cache/*
+./symfony cc
 [ $last -eq 0 ] && ./symfony doctrine:build-sql
 last=$?
-rm -rf cache/*
+./symfony cc
 [ $last -eq 0 ] && ./symfony doctrine:insert-sql
 if [ ! $? -eq 0 ]
 then
