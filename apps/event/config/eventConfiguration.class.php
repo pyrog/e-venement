@@ -65,6 +65,9 @@ class eventConfiguration extends sfApplicationConfiguration
     
     // Caching manifestations in the background
     $this->addGarbageCollector('manifestations-cache', function($id = NULL){
+      // BEFORE REWRITING THE PROCESS COMPLETELY
+      return $this;
+      
       $section = 'Caching manifs';
       
       // the lockfile
