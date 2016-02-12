@@ -469,5 +469,38 @@ class Manifestation extends PluginManifestation implements liUserAccessInterface
 
     return $v->createCalendar();
   }
+  
+  public function getCacheTimeout()
+  {
+    $interval = sfConfig::get('app_cacher_timeout', '1 day ago');
+    if ( strtotime($this->ends_at) > time() && strtotime($this->happens_at) < time() )
+      $interval = '6 hours ago';
+    elseif ( strtotime($this->ends_at) < time() ) // in the past
+    {
+      $buf = time() - strtotime($this->ends_at);
+      if ( $buf/60/60/24/7 <= 1 ) // less than 1 week ago
+        $interval = '1 day ago';
+      elseif ( $buf/60/60/24/30 <= 1 ) // between 1 week & 1 month ago
+        $interval = '3 days ago';
+      elseif ( $buf/60/60/24/90 <= 1 ) // between 1 month & 3 month ago
+        $interval = '7 days ago';
+      else // more than 3 month ago
+        $interval = '17 days ago';
+    }
+    elseif ( strtotime($this->ends_at) > time() ) // in the future
+    {
+      $buf = strtotime($this->happens_at) - time();
+      if ( $buf/60/60/24/7 <= 1 ) // less than 1 week ago
+        $interval = '1 day ago';
+      elseif ( $buf/60/60/24/30 <= 1 ) // between 1 week & 1 month ago
+        $interval = '3 days ago';
+      elseif ( $buf/60/60/24/90 <= 1 ) // between 1 month & 3 month ago
+        $interval = '7 days ago';
+      else // more than 3 month ago
+        $interval = '17 days ago';
+    }
+
+    return $interval;
+  }
 }
 
