@@ -26,6 +26,7 @@ class liCacher
 {
   protected $data = NULL;
   protected $path = NULL;
+  protected $cache = NULL;
   const refreshKeyword = 'refresh';
   
   static public function create($path, $escape = false)
@@ -39,7 +40,7 @@ class liCacher
     $uri = preg_replace('![?&/]{0,1}'.self::refreshKeyword.'([=/][\w\d]*){0,1}!', '', $uri);
     $uri = preg_replace('![?&/]+$!', '', $uri);
     
-    return sfConfig::get('sf_module_cache_dir').'/'.md5($uri).'.data';
+    return $uri;
   }
   static public function requiresRefresh(sfWebRequest $request)
   {
@@ -76,15 +77,34 @@ class liCacher
     return $this;
   }
   
+  protected function getDBCache()
+  {
+    if ( $this->cache )
+      return $this->cache;
+    
+    if (!( $this->cache = Doctrine::getTable('Cache')->createQuery('c')
+      ->andWhere('c.identifier = ?', $this->getPath())
+      ->andWhere('c.domain = ?', 'cache_files')
+      ->fetchOne() ))
+    {
+      $this->cache = new Cache;
+      $this->cache->domain = 'cache_files';
+      $this->cache->identifier = $this->getPath();
+    }
+    
+    return $this->cache;
+  }
   public function loadData()
   {
-    $this->setData(unserialize(file_get_contents($this->getPath())));
+    $this->setData(unserialize($this->getDBCache()->content));
     return $this;
   }
   public function writeData()
   {
-    file_put_contents($this->getPath(), (string)$this);
-    chmod($this->getPath(), 0666);
+    $this->getDBCache()->content = (string)$this;
+    $this->getDBCache()->updated_at = date('Y-m-d H:i:s');
+    $this->getDBCache()->save();
+    
     return $this;
   }
   
@@ -93,10 +113,10 @@ class liCacher
     if ( is_null($interval) )
       $interval = sfConfig::get('app_cacher_timeout', '1 day ago');
     
-    if ( !file_exists($this->getPath()) )
+    if ( $this->getDBCache()->isNew() )
       return true;
     
-    $ctime = filectime($this->getPath());
+    $ctime = strtotime($this->getDBCache()->updated_at);
     if ( $ctime !== false && $ctime < strtotime($interval) )
       return true;
     
@@ -105,6 +125,6 @@ class liCacher
   
   public function useCache($interval = NULL)
   {
-    return !$this->needsRefresh() ? $this->loadData()->getData() : false;
+    return !$this->needsRefresh($interval) ? $this->loadData()->getData() : false;
   }
 }

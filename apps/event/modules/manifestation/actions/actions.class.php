@@ -559,9 +559,38 @@ class manifestationActions extends autoManifestationActions
     $this->setLayout('nude');
     $this->securityAccessFiltering($request, false);
     
+    $manifestation = $this->getRoute()->getObject();
+    $interval = sfConfig::get('app_cacher_timeout', '1 day ago');
+    if ( strtotime($manifestation->ends_at) > time() && strtotime($manifestation->happens_at) < time() )
+      $interval = '6 hours ago';
+    elseif ( strtotime($manifestation->ends_at) < time() ) // in the past
+    {
+      $buf = time() - strtotime($manifestation->ends_at);
+      if ( $buf/60/60/24/7 <= 1 ) // less than 1 week ago
+        $interval = '1 day ago';
+      elseif ( $buf/60/60/24/30 <= 1 ) // between 1 week & 1 month ago
+        $interval = '3 days ago';
+      elseif ( $buf/60/60/24/90 <= 1 ) // between 1 month & 3 month ago
+        $interval = '7 days ago';
+      else // more than 3 month ago
+        $interval = '17 days ago';
+    }
+    elseif ( strtotime($manifestation->ends_at) > time() ) // in the future
+    {
+      $buf = strtotime($manifestation->happens_at) - time();
+      if ( $buf/60/60/24/7 <= 1 ) // less than 1 week ago
+        $interval = '1 day ago';
+      elseif ( $buf/60/60/24/30 <= 1 ) // between 1 week & 1 month ago
+        $interval = '3 days ago';
+      elseif ( $buf/60/60/24/90 <= 1 ) // between 1 month & 3 month ago
+        $interval = '7 days ago';
+      else // more than 3 month ago
+        $interval = '17 days ago';
+    }
+    
     $cacher = liCacher::create('manifestation/showSpectators?id='.$request->getParameter('id'), true);
     if ( !$cacher->requiresRefresh($request) )
-    if ( ($this->cache = $cacher->useCache()) !== false )
+    if ( ($this->cache = $cacher->useCache($interval)) !== false )
       return 'Success';
     
     $this->manifestation_id = $request->getParameter('id');
