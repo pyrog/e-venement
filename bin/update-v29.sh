@@ -28,7 +28,7 @@
 [ -z "$1" ] && echo "You must specify the DB user that is used by e-venement as the first parameter" && exit 1
 SFUSER="$1"
 [ -n "$2" ] && export PGDATABASE="$2"
-[ -n "$3" ] && export PGUSER="$3"
+[ -n "$3" ] && export USER="$3"
 [ -n "$4" ] && export PGHOST="$4"
 [ -n "$5" ] && export PGPORT="$5"
 
@@ -37,7 +37,7 @@ echo "Usage: bin/update-v29.sh SFUSER [DB [USER [HOST [PORT]]]]"
 echo "Are you sure you want to continue with those parameters :"
 echo "The e-venement's DB user: $SFUSER"
 echo "Database: $PGDATABASE"
-echo "User: $PGUSER"
+echo "User: $SFUSER"
 echo "Host: $PGHOST"
 echo "Port: $PGPORT"
 echo ""
@@ -45,13 +45,19 @@ echo "To continue press ENTER"
 echo "To cancel press CTRL+C NOW !!"
 read
 
-echo "DUMPING DB..."
-pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.update.before.pgdump && echo "DB pre dumped"
+read -p "Do you want to dump your DB? [Y/n] " dump
+if [ "$dump" != "n" ]; then
+  echo "DUMPING DB..."
+  pg_dump -Fc > data/sql/$name-`date +%Y%m%d`.update.before.pgdump && echo "DB pre dumped"
+fi
+
+db="$PGDATABASE"
+[ -z "$db" ] && db=$PGUSER
 
 ## preliminary modifications & backup
-psql <<EOF
+psql $db <<EOF
 CREATE TABLE cache (
-    id bigint NOT NULL,
+    id serial NOT NULL,
     content bytea,
     domain character varying(255),
     identifier character varying(255),
@@ -59,6 +65,17 @@ CREATE TABLE cache (
     updated_at timestamp without time zone NOT NULL,
     version bigint
 );
+ALTER TABLE cache OWNER TO $SFUSER;
+CREATE TABLE cache_version (
+    id bigint NOT NULL,
+    content bytea,
+    domain character varying(255),
+    identifier character varying(255),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    version bigint NOT NULL
+);
+ALTER TABLE cache_version OWNER TO $SFUSER;
 EOF
 
 ./symfony cc
