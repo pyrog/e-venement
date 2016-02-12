@@ -78,7 +78,7 @@ class MemberCard extends PluginMemberCard
         return parent::delete($con);
       $go = true;
       foreach ( $this->Tickets as $ticket )
-      if ( $ticket->printed_at || $ticket->integrated_at || $ticket->cancelling || $ticket->duplicating )
+      if ( ($ticket->printed_at || $ticket->integrated_at) && !$ticket->hasBeenCancelled() )
       {
         $go = false;
         break;
@@ -92,8 +92,8 @@ class MemberCard extends PluginMemberCard
     
     $payments = $tickets = 0;
     foreach ( $this->Tickets as $ticket )
-    if ( $ticket->Duplicatas->count() == 0 && ($ticket->integrated_at || $ticket->printed_at) )
-      $tickets += is_null($ticket->cancelling)*2-1;
+    if ( $ticket->Duplicatas->count() == 0 && ($ticket->integrated_at || $ticket->printed_at) && !$ticket->hasBeenCancelled() )
+      $tickets++;
     foreach ( $this->Payments as $payment )
       $payments += $payment->value;
     

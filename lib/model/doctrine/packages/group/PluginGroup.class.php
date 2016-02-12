@@ -17,7 +17,7 @@ abstract class PluginGroup extends BaseGroup
     parent::preSave($event);
     
     // adding every active user to the permission if 0 given
-    if ( $this->Users->count() == 0 && is_null($this->sf_guard_user_id) )
+    if ( $this->isModified() && $this->Users->count() == 0 && is_null($this->sf_guard_user_id) )
     {
       foreach ( Doctrine::getTable('sfGuardUser')->createQuery('u')
         ->andWhere('u.is_active = TRUE')
