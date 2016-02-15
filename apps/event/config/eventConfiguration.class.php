@@ -92,8 +92,7 @@ class eventConfiguration extends sfApplicationConfiguration
         return $this;
       }
       
-      $q = Doctrine::getTable('Manifestation')->createQuery('m', true)
-        ->select('m.*')
+      $q = Doctrine_Query::create()->from('Manifestation m')
         ->andWhere("m.happens_at + (m.duration||' seconds')::interval > NOW() - '6 month'::interval")
         ->andWhere("m.happens_at < NOW() + '1 year'::interval")
         ->orderBy('m.happens_at');
@@ -128,7 +127,7 @@ class eventConfiguration extends sfApplicationConfiguration
           while ( $context->getActionStack()->popEntry() ); // clearing the stack
             $context->getActionStack()->addEntry('manifestation', $action, $actions);
           
-          if ( !liCacher::create('manifestation/'.$action.'?id='.$manifestation->id)->needsRefresh() )
+          if ( !liCacher::create('manifestation/'.$action.'?id='.$manifestation->id)->needsRefresh($manifestation->getCacheTimeout()) )
           {
             if ( sfConfig::get('sf_web_debug', false) )
               $this->stdout($section, '  x Refreshing the action '.$action.' is not needed for manifestation #'.$manifestation->id, 'INFO');
