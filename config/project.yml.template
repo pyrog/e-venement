@@ -61,7 +61,7 @@ all:
     cultures:
       fr: Français
       en: English
-      br: Breizhoneg
+      br: Brezhoneg
     plugins: []       # e.g. [liMemberCardPlugin]
 
   eticketting:
