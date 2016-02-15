@@ -12,7 +12,13 @@ class ProfessionalForm extends BaseProfessionalForm
 {
   public function configure()
   {
-    $this->widgetSchema['professional_type_id']->setOption('order_by',array('name',''));
+    $this->widgetSchema   ['professional_type_id'] = new sfWidgetFormDoctrineChoice(array(
+      'model'     => 'ProfessionalType',
+      'order_by'  => array('name','')
+    ));
+    $this->validatorSchema['professional_type_id'] = new sfValidatorDoctrineChoice(array(
+      'model'     => 'ProfessionalType',
+    ));
     
     $this->widgetSchema ['groups_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
       'model' => 'Group',
