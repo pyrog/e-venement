@@ -49,6 +49,13 @@ class liGuardUserAdminForm extends sfGuardUserAdminForm
       'required' => false,
     ));
     
+    $this->widgetSchema   ['domain'] = new sfWidgetFormInputText(array(
+      'default' => !$this->object->Domain[0]->isNew() ? preg_replace('/\.'.sfConfig::get('project_internals_users_domain', '').'$/', '', $this->object->Domain[0]->name) : '',
+    ));
+    $this->validatorSchema['domain'] = new sfValidatorString(array(
+      'required' => false,
+    ));
+    
     foreach ( array('groups_list', 'prices_list', 'meta_events_list', 'member_cards_list', 'permissions_list') as $key )
       $this->widgetSchema[$key]
         ->setOption('expanded',true)
@@ -109,6 +116,17 @@ class liGuardUserAdminForm extends sfGuardUserAdminForm
       $this->object->Contact[0] = Doctrine::getTable('Contact')->fetchOneById($this->values['contact_id']);
     else
       unset($this->object->Contact[0]);
+    unset($this->values['contact_id']);
+    
+    // domain embedded form
+    if ( !$this->values['domain'] )
+      unset($this->object->Domain[0]);
+    elseif (!( isset($this->object->Domain[0]) && (string)$this->object->Domain[0] == $this->values['domain'] ))
+    {
+      $domain = new Domain;
+      $domain->name = $this->values['domain'].(sfConfig::get('project_internals_users_domain', '') ? '.'.sfConfig::get('project_internals_users_domain', '') : '');
+      $this->object->Domain[0] = $domain;
+    }
     unset($this->values['contact_id']);
     
     $this->saveRpMandatoryFieldsList($con);

@@ -14,10 +14,18 @@ class sfGuardUserTable extends PluginsfGuardUserTable
     $e  = 'e'  == $alias ? 'e1'  : 'e';
     $ws = 'ws' == $alias ? 'ws1' : 'ws';
     
-    return parent::createQuery($alias)
+    $q = parent::createQuery($alias)
       ->leftJoin("$alias.MetaEvents $me")
       ->leftJoin("$alias.Workspaces $ws")
     ;
+    
+    if ( sfConfig::get('project_internals_users_domain', '') )
+    {
+      $q->leftJoin("$alias.Domain domain")
+        ->andWhere('domain.name LIKE ?', '%.'.sfConfig::get('project_internals_users_domain', ''));
+    }
+    
+    return $q;
   }
     /**
      * Returns an instance of this class.
@@ -33,5 +41,12 @@ class sfGuardUserTable extends PluginsfGuardUserTable
     {
       $q = $this->createQuery('u')->andWhere('username = ?',$username);
       return $q->fetchOne();
+    }
+    
+    public function retrieveByUsername($username, $isActive = true)
+    {
+      return $this->createQuery('u')
+        ->andWhere('u.username = ?', $username)
+        ->fetchOne();
     }
 }
