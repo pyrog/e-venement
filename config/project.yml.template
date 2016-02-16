@@ -63,6 +63,7 @@ all:
       en: English
       br: Brezhoneg
     plugins: []       # e.g. [liMemberCardPlugin]
+    #users_domain: eve # to restrict the listing of users in this particular domain and its subdomain (this is not a DNS but an internal split only)
 
   eticketting:
     salt: ARANDOMSALTHERE
