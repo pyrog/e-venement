@@ -79,7 +79,7 @@ class EventForm extends BaseEventForm
       foreach ( $this->object->Manifestations as $key => $manif )
       {
         foreach(array(
-          'event_id', 'sf_guard_user_id', 'version',
+          'event_id', 'sf_guard_user_id', 'version', 'automatic',
           'workspaces_list', 'prices_list', 'organizers_list',
           'description',
           'depends_on', 'contact_id',
