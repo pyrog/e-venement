@@ -18,7 +18,7 @@ class rpConfiguration extends sfApplicationConfiguration
   public function setup()
   {
     if (!( sfContext::hasInstance() && get_class(sfContext::getInstance()->getConfiguration()) != get_class($this) ))
-      $this->enablePlugins(array('liClassLoaderPlugin', 'sfDomPDFPlugin', 'liBarcodePlugin'));
+      $this->enablePlugins(array('liClassLoaderPlugin', 'liPDFPlugin', 'sfDomPDFPlugin', 'liBarcodePlugin'));
     parent::setup();
   }
   public function configure()

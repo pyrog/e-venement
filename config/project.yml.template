@@ -71,6 +71,7 @@ all:
     #exec_path:   # change things here only if you know exactly what you do, and refer to config/e-venement.yml params
     #  cupsfilter: /usr/sbin/cupsfilter
     #  base64: /usr/bin/base64
+    #wkhtmltopdf: disabled        # uncomment this to use DomPDF (or nothing) for PDF rendering
 
   eticketting:
     salt: ARANDOMSALTHERE

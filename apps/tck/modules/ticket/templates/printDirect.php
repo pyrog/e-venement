@@ -5,19 +5,18 @@
     return;
   }
   
-  $pdf = new sfDomPDFPlugin();
-  $pdf->setInput(get_partial('global/get_tickets_pdf', array('tickets_html' => $content)));
+  $generator = new liPDFPlugin(get_partial('global/get_tickets_pdf', array('tickets_html' => $content)));
 
   // if no printer has been found, then prints out a PDF
   if ( !$printer )
   {
-    echo $pdf->render();
+    echo $generator->getPDF();
     return;
   }
   
   // records the PDF as a file, and remember the name of that file
   $filename = sfConfig::get('sf_app_cache_dir').'/tickets-'.date('YmdHis').'-'.rand(1000000, 9999999).'.pdf';
-  file_put_contents($filename, $pdf->render());
+  file_put_contents($filename, $generator->getPDF());
   
   // defining which PPD file we will use
   switch ( $type ) {
