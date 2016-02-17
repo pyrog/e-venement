@@ -488,7 +488,7 @@
 
 *OpenGroup: OutputGroup/Output Options
 *OpenUI *PrintSpeed/1. Print Speed: PickOne
-*DefaultPrintSpeed: 0High
+*DefaultPrintSpeed: 1Middle
 *PrintSpeed 0High/High: ""
 *PrintSpeed 1Middle/Middle: ""
 *PrintSpeed 2Low/Low: ""
@@ -509,14 +509,14 @@
 
 *OpenGroup: CutGroup/Cut Options
 *OpenUI *PageCutType/1. Page Cut Type: PickOne
-*DefaultPageCutType: 0NoCutPage
+*DefaultPageCutType: 2FullCutPage
 *PageCutType 0NoCutPage/No Cut: ""
 *PageCutType 1PartialCutPage/Partial Cut: ""
 *PageCutType 2FullCutPage/Full Cut: ""
 *CloseUI: *PageCutType
 
 *OpenUI *DocCutType/2. Document Cut Type: PickOne
-*DefaultDocCutType: 1PartialCutDoc
+*DefaultDocCutType: 2FullCutDoc
 *DocCutType 0NoCutDoc/No Cut: ""
 *DocCutType 1PartialCutDoc/Partial Cut: ""
 *DocCutType 2FullCutDoc/Full Cut: ""
@@ -525,7 +525,7 @@
 
 *OpenGroup: CashDrawerGroup/Cash Drawer Control
 *OpenUI *CashDrawerSetting/1. Cash Drawer: PickOne
-*DefaultCashDrawerSetting: 0DoNotOpenDrawers
+*DefaultCashDrawerSetting: 1OpenDrawer1
 *CashDrawerSetting 0DoNotOpenDrawers/Do Not Open Drawers: ""
 *CashDrawerSetting 1OpenDrawer1/Open Drawer 1: ""
 *CashDrawerSetting 2OpenDrawer2/Open Drawer 2: ""
