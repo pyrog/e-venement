@@ -14,7 +14,8 @@ class ProfessionalForm extends BaseProfessionalForm
   {
     $this->widgetSchema   ['professional_type_id'] = new sfWidgetFormDoctrineChoice(array(
       'model'     => 'ProfessionalType',
-      'order_by'  => array('name','')
+      'order_by'  => array('name',''),
+      'add_empty' => true,
     ));
     $this->validatorSchema['professional_type_id'] = new sfValidatorDoctrineChoice(array(
       'model'     => 'ProfessionalType',
