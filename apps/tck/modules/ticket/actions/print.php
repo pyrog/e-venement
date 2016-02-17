@@ -329,6 +329,34 @@
       $this->setLayout(false);
       $this->getResponse()->setContentType('application/octet-stream');
       
+      $usb = sfConfig::get('project_internals_usb', sfConfig::get('software_internals_usb'));
+      $usbid = json_decode($request->getParameter('direct', false), true);
+      $found = false;
+      foreach ( $usb['printers'] as $type => $ids )
+      if ( in_array($usbid, $ids) )
+      {
+        error_log(sprintf('Printing tickets: the given USB device does not match any from our configuration (vid: %s, pid: %s).', $usbid['vid'], $usbid['pid']));
+        $found = true;
+        break;
+      }
+      
+      // we need to have /usr/sbin/cupsfilter & /usr/bin/base64 installed to be able to use direct printing
+      $paths = sfConfig::get('project_internals_exec_path', sfConfig::get('software_internals_exec_path'));
+      if (!( isset($paths['cupsfilter']) && is_executable($paths['cupsfilter']) && isset($paths['base64']) && is_executable($paths['base64']) ))
+      {
+        error_log('Printing tickets: the workstation is ready for direct printing, but the server is not... Please correct this issue.');
+        $found = false;
+      }
+      
+      if ( !$found )
+      {
+        sfConfig::set('sf_web_debug', false);
+        $this->getResponse()->setContentType('application/pdf');
+        $this->printer = false;
+      }
+      else
+        $this->printer = $type;
+      
       return 'Direct';
     }
     

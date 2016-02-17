@@ -36,3 +36,11 @@ all:
       from:   ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿœ
       to:     SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyyo
     locale: C.UTF-8
+    usb:
+      printers:
+        boca: [{ vid: 1, pid: 1 }]
+        star: [{ vid: 1305, pid: 1 }]
+    exec_path:
+      cupsfilter: /usr/sbin/cupsfilter
+      base64: /usr/bin/base64
+      

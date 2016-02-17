@@ -64,6 +64,13 @@ all:
       br: Brezhoneg
     plugins: []       # e.g. [liMemberCardPlugin]
     #users_domain: eve # to restrict the listing of users in this particular domain and its subdomain (this is not a DNS but an internal split only)
+    #usb:         # change things here only if you know exactly what you do, and refer to config/e-venement.yml params
+    #  printers:
+    #    star: [{ vid: 1305, pid: 1 }]
+    #    boca: [{ vid: 0, pid: 0 }]
+    #exec_path:   # change things here only if you know exactly what you do, and refer to config/e-venement.yml params
+    #  cupsfilter: /usr/sbin/cupsfilter
+    #  base64: /usr/bin/base64
 
   eticketting:
     salt: ARANDOMSALTHERE
