@@ -19,6 +19,7 @@ class ProfessionalForm extends BaseProfessionalForm
     ));
     $this->validatorSchema['professional_type_id'] = new sfValidatorDoctrineChoice(array(
       'model'     => 'ProfessionalType',
+      'required'  => false,
     ));
     
     $this->widgetSchema ['groups_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
