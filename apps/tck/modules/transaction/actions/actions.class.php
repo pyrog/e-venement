@@ -23,6 +23,8 @@
 ?>
 <?php
 
+use Knp\Snappy\Pdf;
+
 require_once dirname(__FILE__).'/../lib/transactionGeneratorConfiguration.class.php';
 require_once dirname(__FILE__).'/../lib/transactionGeneratorHelper.class.php';
 

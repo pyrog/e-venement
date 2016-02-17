@@ -14,6 +14,7 @@
   <li class="pay-before"><?php echo __('You must record the payment(s) before printing the ticket(s)') ?></li>
   <li class="partial-print-error"><?php echo __('You must have at least one manifestation selected.') ?></li>
   <li class="give-price-to-wip"><?php echo __('You always need to give a price to every seated-only tickets before printing or booking.') ?></li>
+  <li class="direct-printing-info"><?php echo __('e-venement will print the tickets directly on your printer') ?></div>
   <script type="text/javascript"><!--
     if ( LI === undefined )
       var LI = {};

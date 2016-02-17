@@ -64,6 +64,7 @@ all:
     #alert_on_notprinted: true
     #auto_integrate: true
     #specimen: false
+    #wkhtmltopdf: disabled        # uncomment this to use DomPDF for PDF rendering
   control:
     future: 6 hours
     past:   1 day

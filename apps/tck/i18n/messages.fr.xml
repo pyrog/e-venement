@@ -5,6 +5,10 @@
     <header/>
     <body>
       <trans-unit>
+        <source>The server will print the tickets directly on your printer</source>
+        <target>e-venement va imprimer directement les billets sur votre imprimante</target>
+      </trans-unit>
+      <trans-unit>
         <source>Postalcode</source>
         <target>Code postal</target>
       </trans-unit>

@@ -22,7 +22,8 @@
 $(document).ready(function(){
   // *T* here we are after the page is loaded
   
-  var connector = new Connector('wss://localhost:8164/ws', function(){
+  var connector = new Connector('wss://cube.office.libre-informatique.fr:8164/ws', function(){
+  //var connector = new Connector('wss://localhost:8164/ws', function(){
     // *T* here we are after the websocket first connection is established
     
     connector.console('Scanning devices (direct call) ...');
@@ -43,7 +44,8 @@ $(document).ready(function(){
       
       $('#li_transaction_museum .print, #li_transaction_manifestations .print')
         .each(function(){
-          $(this).prop('action', $(this).prop('action')+'?direct='+JSON.stringify(myDevice));
+          $(this).prop('action', $(this).prop('action')+'?direct='+JSON.stringify(myDevice))
+            .prop('title', $('#li_transaction_field_close .print .direct-printing-info').text());
         })
         .attr('onsubmit', null)
         .submit(function(){
