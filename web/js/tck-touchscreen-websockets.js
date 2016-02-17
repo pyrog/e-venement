@@ -22,8 +22,7 @@
 $(document).ready(function(){
   // *T* here we are after the page is loaded
   
-  var connector = new Connector('wss://cube.office.libre-informatique.fr:8164/ws', function(){
-  //var connector = new Connector('ws://localhost:8164/ws', function(){
+  var connector = new Connector('wss://localhost:8164/ws', function(){
     // *T* here we are after the websocket first connection is established
     
     connector.console('Scanning devices (direct call) ...');
