@@ -491,12 +491,14 @@ class contactActions extends autoContactActions
   }
   public function executeSideBar(sfWebRequest $request)
   {
+    $this->filters = false;  // a trick that avoids until 5 sec of processing #1/2
     $cacher = liCacher::create('contact/sideBar?sf_guard_user_id='.$this->getUser()->getId())
       ->setDomain('rp-index');
     if ( !$cacher->requiresRefresh($request) )
     if ( ($this->cache = $cacher->useCache()) !== false )
       return 'Success';
     
+    unset($this->filters);  // trick #2/2
     $this->executeIndex($request);
     $this->cache = $this->getPartial('global/tdp/side_widget', array(
       'filters' => $this->filters,

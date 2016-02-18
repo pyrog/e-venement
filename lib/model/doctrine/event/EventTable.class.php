@@ -43,6 +43,7 @@ class EventTable extends PluginEventTable
   { return $this->retrieveList($q, true); }
   public function retrieveList($q = NULL, $museum = false)
   {
+    global $user;
     if (! $q instanceof Doctrine_Query )
       $q = $this->createQuery('e');
     
@@ -50,9 +51,14 @@ class EventTable extends PluginEventTable
     $admin = false;
     $sf_user = false;
     try {
-    if ( sfContext::hasInstance() && method_exists(sfContext::getInstance()->getUser(), 'getContactId') )
+    // optimized part
+    $sf_user = $user instanceof myUser ? $user : NULL; //
+    if ( !$sf_user && sfContext::hasInstance() && method_exists(sfContext::getInstance()->getUser(), 'getContactId') ) //
+      $sf_user = sfContext::getInstance()->getUser(); //
+    if ( $sf_user ) //
     {
-      $sf_user = sfContext::getInstance()->getUser();
+      $user = $sf_user; //
+      
       $cid = $sf_user->getContactId();
       $admin = $sf_user->hasCredential('event-access-all');
     } }
