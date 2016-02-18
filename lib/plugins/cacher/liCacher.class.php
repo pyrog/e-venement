@@ -27,6 +27,7 @@ class liCacher
   protected $data = NULL;
   protected $path = NULL;
   protected $cache = NULL;
+  protected $domain = 'cache_files';
   const refreshKeyword = 'refresh';
   
   static public function create($path, $escape = false)
@@ -67,6 +68,16 @@ class liCacher
     return serialize($this->getData());
   }
   
+  public function getDomain()
+  {
+    return $this->domain;
+  }
+  public function setDomain($domain)
+  {
+    $this->domain = $domain;
+    return $this;
+  }
+  
   public function getData()
   {
     return $this->data;
@@ -84,11 +95,11 @@ class liCacher
     
     if (!( $this->cache = Doctrine::getTable('Cache')->createQuery('c')
       ->andWhere('c.identifier = ?', $this->getPath())
-      ->andWhere('c.domain = ?', 'cache_files')
+      ->andWhere('c.domain = ?', $this->domain)
       ->fetchOne() ))
     {
       $this->cache = new Cache;
-      $this->cache->domain = 'cache_files';
+      $this->cache->domain = $this->domain;
       $this->cache->identifier = $this->getPath();
     }
     
