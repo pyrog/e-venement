@@ -30,7 +30,7 @@ class RemoveLockFilesTask extends sfBaseTask{
       new sfCommandArgument('application', sfCommandArgument::OPTIONAL, '', 'event'),
     ));
     $this->addOptions(array(
-      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
     ));
     $this->namespace = 'e-venement';
     $this->name = 'remove-lock-files';
