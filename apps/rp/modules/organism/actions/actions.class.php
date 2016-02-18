@@ -223,7 +223,20 @@ class organismActions extends autoOrganismActions
   }
   public function executeSideBar(sfWebRequest $request)
   {
+    $cacher = liCacher::create('contact/sideBar?sf_guard_user_id='.$this->getUser()->getId())
+      ->setDomain('rp-index');
+    if ( !$cacher->requiresRefresh($request) )
+    if ( ($this->cache = $cacher->useCache()) !== false )
+      return 'Success';
+    
     $this->executeIndex($request);
+    $this->cache = $this->getPartial('global/tdp/side_widget', array(
+      'filters' => $this->filters,
+    ));
+    
+    $cacher
+      ->setData($this->cache)
+      ->writeData();
   }
   public function executeIndex(sfWebRequest $request)
   {

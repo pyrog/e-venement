@@ -28,5 +28,22 @@ abstract class PluginGroup extends BaseGroup
         ->execute() as $user )
       $this->Users[] = $user;
     }
+    
+    $this->clearCache($event);
+  }
+  
+  public function preDelete($event)
+  {
+    parent::preDelete($event);
+    $this->clearCache($event);
+  }
+  
+  public function clearCache($event = NULL)
+  {
+    // clear all cached data from the rp-index domain
+    Doctrine::getTable('Cache')->createQuery()
+      ->andWhere('domain = ?', 'rp-index')
+      ->delete()
+      ->execute();
   }
 }

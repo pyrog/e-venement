@@ -1,3 +1,1 @@
-<?php include_partial('global/tdp/side_widget', array(
-  'filters' => $filters,
-)) ?>
+<?php echo $sf_data->getRaw('cache') ?>
