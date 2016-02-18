@@ -204,7 +204,7 @@ EOF;
     ));
     $this->widgetSchema   ['meta_events_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'MetaEvent',
-      'query' => Doctrine::getTable('MetaEvent')->createQuery('me')
+      'query' => $q = Doctrine::getTable('MetaEvent')->createQuery('me')
         ->andWhereIn('me.id',array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials())),
       'order_by' => array('name','asc'),
       'multiple' => true,
@@ -212,13 +212,12 @@ EOF;
     $this->validatorSchema['meta_events_list'] = new sfValidatorDoctrineChoice(array(
       'required' => false,
       'model'    => 'MetaEvent',
-      'query' => Doctrine::getTable('MetaEvent')->createQuery('me')
-        ->andWhereIn('me.id',array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials())),
+      'query' => $q,
       'multiple' => true,
     ));
     $this->widgetSchema   ['prices_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Price',
-      'query' => Doctrine::getTable('Price')->createQuery('p')
+      'query' => $q = Doctrine::getTable('Price')->createQuery('p')
         ->leftJoin('p.Users u')
         ->andWhere('u.id = ?',sfContext::getInstance()->getUser()->getId()),
       'order_by' => array('name, description',''),
@@ -227,9 +226,7 @@ EOF;
     $this->validatorSchema['prices_list'] = new sfValidatorDoctrineChoice(array(
       'required' => false,
       'model'    => 'Price',
-      'query' => Doctrine::getTable('Price')->createQuery('p')
-        ->leftJoin('p.Users u')
-        ->andWhere('u.id = ?',sfContext::getInstance()->getUser()->getId()),
+      'query' => $q,
       'multiple' => true,
     ));
     $this->widgetSchema   ['workspaces_list'] = new sfWidgetFormDoctrineChoice(array(
