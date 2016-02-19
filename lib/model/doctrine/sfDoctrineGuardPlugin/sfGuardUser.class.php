@@ -18,6 +18,18 @@ class sfGuardUser extends PluginsfGuardUser
       parent::save($conn);
   }
   
+  public function preSave($event)
+  {
+    parent::preSave($event);
+    
+    // clear cache
+    Doctrine::getTable('Cache')->createQuery('c')
+      ->andWhere('c.domain = ?', 'rp-index')
+      ->andWhere('c.identifier LIKE ?', '%sf_guard_user_id='.$this->id)
+      ->delete()
+      ->execute();
+  }
+  
   public function __toString()
   {
     return (string) $this->getUsername().' ('.$this->getName().')';
