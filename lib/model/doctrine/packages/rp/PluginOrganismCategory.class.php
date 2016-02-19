@@ -12,4 +12,23 @@
  */
 abstract class PluginOrganismCategory extends BaseOrganismCategory
 {
+  public function preDelete($event)
+  {
+    parent::preDelete($event);
+    $this->clearCache($event);
+  }
+  public function preSave($event)
+  {
+    parent::preSave($event);
+    $this->clearCache($event);
+  }
+  
+  public function clearCache($event = NULL)
+  {
+    // clear all cached data from the rp-index domain
+    Doctrine::getTable('Cache')->createQuery()
+      ->andWhere('domain = ?', 'rp-index')
+      ->delete()
+      ->execute();
+  }
 }
