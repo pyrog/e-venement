@@ -58,12 +58,15 @@ EveConnector = function(uri, directExecute) {
     });
     this.socket.on('connect_error', function(err){
         log('error', 'connect_error', err);
+        this.onError();
     });
     this.socket.on('connect_failed', function(err){
         log('error', 'connect_failed', err);
+        this.onError();
     });
     this.socket.on('error', function(err){
         log('error', 'error', err);
+        this.onError();
     });
 
     this.isDeviceAvailable = function(device) {
@@ -77,7 +80,7 @@ EveConnector = function(uri, directExecute) {
             });
         });
     };
-
+    
     this.areDevicesAvailable = function(query) {
         var socket = this.socket;
         return new Promise(function(resolve, reject){
@@ -101,5 +104,7 @@ EveConnector = function(uri, directExecute) {
             });
         });
     };
+    
+    this.onError = function(){ }
 }
 
