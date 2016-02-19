@@ -25,11 +25,12 @@
 
 class liPDFPlugin
 {
-  protected $content, $pdf;
+  protected $content, $pdf, $verbose_in_error_log;
   
-  public function __constructor($html, $verbose_in_error_log = true)
+  public function __construct($html, $verbose_in_error_log = true)
   {
     $this->content = $html;
+    $this->verbose_in_error_log = $verbose_in_error_log;
 
     $composer_dir = sfConfig::get('sf_lib_dir').'/vendor/composer/';
     $wkhtmltopdf = $composer_dir.'h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64';
@@ -40,14 +41,12 @@ class liPDFPlugin
     {
       require_once $composer_dir.'autoload.php';
       $snappy = new Knp\Snappy\Pdf($wkhtmltopdf);
-      $this->pdf = $snappy->getOutputFromHtml(get_partial('global/get_tickets_pdf', array('tickets_html' => $content)));
+      $this->pdf = $snappy->getOutputFromHtml(get_partial('global/get_tickets_pdf', array('tickets_html' => $this->content)));
       return;
     } catch ( RuntimeException $e ) {
-      if ( $verbose_in_error_log )
-      {
-        error_log('Printing tickets: even if the executable is present, "wkhtmltopdf" is not working. Falling back to classic PDF generation.');
-        error_log('Error: '.$e->getMessage());
-      }
+      $this
+        ->log('Printing tickets: even if the executable is present, "wkhtmltopdf" is not working. Falling back to classic PDF generation.')
+        ->log('Error: '.$e->getMessage());
     }
 
     // without wkhtmltopdf, using DomPDF
@@ -59,6 +58,13 @@ class liPDFPlugin
   public function getPDF()
   {
     return $this->pdf;
+  }
+  
+  protected function log($msg)
+  {
+    if ( $verbose_in_error_log )
+      error_log($msg);
+    return $this;
   }
 }
 
