@@ -143,7 +143,7 @@
         $payments .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($mc_amount,'€')."\n";
       $amount = 0;
       foreach ( $transaction->Payments as $payment )
-        $payments .= "&nbsp;&nbsp;".$payment->PaymentMethod.": ".format_currency($transaction->getPrice(true,true),'€')."\n";
+        $payments .= "&nbsp;&nbsp;".$payment->Method.": ".format_currency($transaction->getPrice(true,true),'€')."\n";
       if ( $payments )
       {
         $command .= "\n";
