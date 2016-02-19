@@ -21,7 +21,17 @@ class sfGuardUser extends PluginsfGuardUser
   public function preSave($event)
   {
     parent::preSave($event);
-    
+    $this->clearCache($event);
+  }
+  
+  public function preDelete($event)
+  {
+    parent::preDelete($event);
+    $this->clearCache($event);
+  }
+  
+  public function clearCache($event = NULL)
+  {
     // clear cache
     Doctrine::getTable('Cache')->createQuery('c')
       ->andWhere('c.domain = ?', 'rp-index')
