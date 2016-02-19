@@ -1,36 +1,54 @@
+<?php if ( sfConfig::has('app_tickets_control_left') ) use_stylesheet('print-tickets.controlleft.css', '', array('media' => 'all')) ?>
+<?php if ( sfConfig::get('app_tickets_specimen',false) ) use_stylesheet('print-tickets-specimen', '', array('media' => 'all')) ?>
+
+<?php $html = '' ?>
 <?php
-  if ( sfConfig::get('sf_web_debug', false) )
-  {
-    echo get_partial('global/get_tickets_pdf', array('tickets_html' => $content));
-    return;
-  }
+  // adding the stylesheets & the javascripts
+  foreach ( $sf_response->getStylesheets() as $css => $opt )
+  if ( file_exists($file = sfConfig::get('sf_web_dir').preg_replace('/\\?.*$/', '', stylesheet_path($css))) )
+    $html .= '<style media="all" type="text/css" data-orig="'.$css.'">'.file_get_contents($file).'</style>'."\n";
+  foreach ( $sf_response->getJavascripts() as $js  => $opt )
+  if ( file_exists($file = sfConfig::get('sf_web_dir').preg_replace('/\\?.*$/', '', javascript_path($js))) )
+    $html .= '<script type="text/javascript" data-orig="'.$js.'">'.file_get_contents($file).'</script>'."\n";
+?>
+<?php
+  // getting the HTML representing the tickets
+  foreach ( $tickets as $ticket )
+    $html .= get_partial('ticket_html',array(
+      'ticket' => isset($ticket['ticket']) ? $ticket['ticket'] : $ticket,
+      'nb' => isset($ticket['nb']) ? $ticket['nb'] : 1,
+      'duplicate' => $duplicate))
+    ;
+?>
+<?php
+  $generator = new liPDFPlugin;
+  $generator->setOption('grayscale', true);
+  $generator->setOption('page-width', '152mm');
+  $generator->setOption('page-height', '60mm');
+  //$generator->setOption('orientation', 'landscape');
   
-  $generator = new liPDFPlugin(get_partial('global/get_tickets_pdf', array('tickets_html' => $content)));
+  // margins
+  foreach ( array('bottom', 'left', 'right', 'top') as $prop )
+    $generator->setOption('margin-'.$prop, '0');
+  
+  $generator->setHtml(get_partial('global/get_tickets_pdf', array('tickets_html' => trim($html))));
 
   // if no printer has been found, then prints out a PDF
   if ( !$printer )
   {
-    echo $generator->getPDF();
+    if ( $sf_request->hasParameter('debug') )
+    {
+      $sf_response->setContentType('text/html');
+      echo $generator->getHtml();
+      return;
+    }
+    $sf_response->setContentType('application/pdf');
+    echo $generator->getPdf();
     return;
   }
   
-  // records the PDF as a file, and remember the name of that file
-  $filename = sfConfig::get('sf_app_cache_dir').'/tickets-'.date('YmdHis').'-'.rand(1000000, 9999999).'.pdf';
-  file_put_contents($filename, $generator->getPDF());
-  
-  // defining which PPD file we will use
-  switch ( $type ) {
-  case 'boca':
-    $ppd = sfConfig::get('sf_root_dir').'/data/cups/Boca.ppd';
-    break;
-  default:
-    $ppd = sfConfig::get('sf_root_dir').'/data/cups/StarTSP700.ppd';
-    break;
-  }
-  
-  $cmd = sprintf('%s -e -m printer/pqueue -p %s %s 2> /dev/null | %s', $paths['cupsfilter'], $ppd, $filename, $paths['base64']);
-  if ( sfConfig::get('sf_web_debug', false) )
-    error_log("Executing: $cmd...");
-  exec($cmd, $raw);
-  echo implode('', $raw);
+  include_partial('global/print_direct', array(
+    'printer' => $printer,
+    'pdf'     => $generator->getPDF(),
+  ));
 ?>

@@ -1,7 +1,7 @@
 <?php
   // records the PDF as a file, and remember the name of that file
   $filename = sfConfig::get('sf_app_cache_dir').'/tickets-'.date('YmdHis').'-'.rand(1000000, 9999999).'.pdf';
-  file_put_contents($filename, $pdf);
+  file_put_contents($filename, $sf_data->getRaw('pdf'));
   
   // defining which PPD file we will use
   switch ( $printer ) {
@@ -9,7 +9,7 @@
     $ppd = sfConfig::get('sf_root_dir').'/data/cups/Boca.ppd';
     break;
   default:
-    $ppd = sfConfig::get('sf_root_dir').'/data/cups/StarTSP700.ppd';
+    $ppd = sfConfig::get('sf_root_dir').'/data/cups/StarTSP700Ticket.ppd';
     break;
   }
 
