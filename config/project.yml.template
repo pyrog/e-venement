@@ -8,9 +8,6 @@ all:
   tickets:
     count_demands: false
     free_price_default: 10    # 1 by default
-    #pdf:
-    #  width: 145mm
-    #  height: 60mm
   #events:
   #  auto_add_price_manifestation: true
   about:
@@ -71,6 +68,8 @@ all:
     #  printers:
     #    star: [{ vid: 1305, pid: 1 }]
     #    boca: [{ vid: 0, pid: 0 }]
+    #  drivers:
+    #    boca: '' # can be "HP" for HP-2P-Plus printers
     #exec_path:   # change things here only if you know exactly what you do, and refer to config/e-venement.yml params
     #  cupsfilter: /usr/sbin/cupsfilter
     #  base64: /usr/bin/base64

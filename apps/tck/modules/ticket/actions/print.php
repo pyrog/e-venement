@@ -324,7 +324,7 @@
       $this->setLayout(false);
       $this->getResponse()->setContentType('application/octet-stream');
       
-      $usb = sfConfig::get('project_internals_usb', sfConfig::get('software_internals_usb'));
+      $usb = array_merge(sfConfig::get('software_internals_usb'), sfConfig::get('project_internals_usb'));
       $usbid = json_decode($request->getParameter('direct', false), true);
       $found = false;
       foreach ( $usb['printers'] as $type => $ids )
