@@ -5,10 +5,10 @@
 <?php
   // adding the stylesheets & the javascripts
   foreach ( $sf_response->getStylesheets() as $css => $opt )
-  if ( file_exists($file = sfConfig::get('sf_web_dir').preg_replace('/\\?.*$/', '', stylesheet_path($css))) )
+  if ( file_exists($file = $_SERVER['DOCUMENT_ROOT'].preg_replace('/\\?.*$/', '', stylesheet_path($css))) )
     $html .= '<style media="all" type="text/css" data-orig="'.$css.'">'.file_get_contents($file).'</style>'."\n";
   foreach ( $sf_response->getJavascripts() as $js  => $opt )
-  if ( file_exists($file = sfConfig::get('sf_web_dir').preg_replace('/\\?.*$/', '', javascript_path($js))) )
+  if ( file_exists($file = $_SERVER['DOCUMENT_ROOT'].preg_replace('/\\?.*$/', '', javascript_path($js))) )
     $html .= '<script type="text/javascript" data-orig="'.$js.'">'.file_get_contents($file).'</script>'."\n";
 ?>
 <?php
@@ -23,7 +23,7 @@
 <?php
   $generator = new liPDFPlugin;
   $generator->setOption('grayscale', true);
-  $generator->setOption('page-width', '152mm');
+  $generator->setOption('page-width', '145mm');
   $generator->setOption('page-height', '60mm');
   //$generator->setOption('orientation', 'landscape');
   

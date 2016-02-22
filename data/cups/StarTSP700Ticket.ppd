@@ -525,7 +525,7 @@
 
 *OpenGroup: CashDrawerGroup/Cash Drawer Control
 *OpenUI *CashDrawerSetting/1. Cash Drawer: PickOne
-*DefaultCashDrawerSetting: 2OpenDrawer2
+*DefaultCashDrawerSetting: 3OpenDrawer3
 *CashDrawerSetting 0DoNotOpenDrawers/Do Not Open Drawers: ""
 *CashDrawerSetting 1OpenDrawer1/Open Drawer 1: ""
 *CashDrawerSetting 2OpenDrawer2/Open Drawer 2: ""

@@ -22,7 +22,7 @@
 $(document).ready(function(){
   // *T* here we are after the page is loaded
 
-    var connector = new EveConnector('https://cube.office.libre-informatique.fr:8164', function(){
+    var connector = new EveConnector('https://localhost:8164', function(){
         // *T* here we are after the websocket first connection is established
 
         connector.log('info', 'Scanning devices (direct call) ...');

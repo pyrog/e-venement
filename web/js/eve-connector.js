@@ -31,7 +31,6 @@ EveConnector = function(uri, directExecute) {
 
     // Debug functions
     this.log = function(type, msg, obj){
-      console.error(msg);
       if ( window.location.hash != '#debug' )
         return;
       switch ( type ) {
