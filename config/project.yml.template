@@ -8,8 +8,9 @@ all:
   tickets:
     count_demands: false
     free_price_default: 10    # 1 by default
-  #events:
-  #  auto_add_price_manifestation: true
+  #pdf:
+  #  width: 145mm
+  #  height: 60mm
   about:
     nowarranty: false
     client:
@@ -31,6 +32,7 @@ all:
   #  enable: false
   #events:
   #  enable: true
+  #  auto_add_price_manifestation: true
   demo: false
   network:
     ipv6_ready: false
