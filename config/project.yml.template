@@ -8,9 +8,9 @@ all:
   tickets:
     count_demands: false
     free_price_default: 10    # 1 by default
-  #pdf:
-  #  width: 145mm
-  #  height: 60mm
+    #pdf:
+    #  width: 145mm
+    #  height: 60mm
   about:
     nowarranty: false
     client:
