@@ -144,6 +144,10 @@ class transactionActions extends autoTransactionActions
       && $ticket->price_id == $request->getParameter('price_id', 0)
       && $ticket->Duplicatas->count() == 0
       && !$ticket->cancelling )
+      $tickets[$ticket->id] = $ticket;
+    
+    asort($tickets); // sorting tickets to keep the same order anytime
+    foreach ( $tickets as $ticket )
     {
       $form = new TicketRegisteredForm($ticket);
       $this->forms[] = $form;
