@@ -9,7 +9,7 @@ all:
     count_demands: false
     free_price_default: 10    # 1 by default
     #pdf:
-    #  width: 145mm
+    #  width: 145mm  -> 155mm is usually a good value for boca printers
     #  height: 60mm
   about:
     nowarranty: false
