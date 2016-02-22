@@ -21,9 +21,9 @@
     ;
 ?>
 <?php
-  $options = sfConfig::get('project_tickets_pdf', array(
-    'width'   => '145mm',
-    'height'  => '60mm',
+  $options = array_merge(
+    array('width' => '145mm', 'height' => '60mm'),
+    sfConfig::get('project_tickets_pdf', array())
   );
   $generator = new liPDFPlugin;
   $generator->setOption('grayscale', true);
