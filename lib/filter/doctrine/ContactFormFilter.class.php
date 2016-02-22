@@ -568,7 +568,7 @@ EOF;
       if ( !$query->contains("LEFT JOIN ctck.Manifestation cm") )
       $query->leftJoin('ctck.Manifestation cm');
       if ( !$query->contains("LEFT JOIN cm.Event cevent") )
-      $query->leftJoin('m.Event cevent');
+      $query->leftJoin('cm.Event cevent');
      
       $query->andWhere('(TRUE')
             ->andWhereIn('event.event_category_id',$value)
