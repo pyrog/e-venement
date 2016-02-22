@@ -21,10 +21,14 @@
     ;
 ?>
 <?php
+  $options = sfConfig::get('project_tickets_pdf', array(
+    'width'   => '145mm',
+    'height'  => '60mm',
+  );
   $generator = new liPDFPlugin;
   $generator->setOption('grayscale', true);
-  $generator->setOption('page-width', '145mm');
-  $generator->setOption('page-height', '60mm');
+  $generator->setOption('page-width', $options['width']);
+  $generator->setOption('page-height', $options['height']);
   //$generator->setOption('orientation', 'landscape');
   
   // margins
