@@ -33,3 +33,5 @@
 /config/project.yml
 /config/properties.ini
 /config/private
+
+/nbproject
