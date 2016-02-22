@@ -15,6 +15,9 @@ class OrganismForm extends BaseOrganismForm
    */
   public function configure()
   {
+    // removes the emails_list widget to avoid loosing data...
+    unset($this->widgetSchema['emails_list']);
+    
     $this->widgetSchema   ['phone_number'] = new sfWidgetFormInputText();
     $this->validatorSchema['phone_number'] = new sfValidatorPass(array('required' => false));
     
