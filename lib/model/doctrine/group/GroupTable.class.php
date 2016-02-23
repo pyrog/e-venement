@@ -38,14 +38,12 @@ class GroupTable extends PluginGroupTable
     // NOW the rest is considered as an authenticated environment
     
     return $query
-      ->andWhere(($sf_user->hasCredential('pr-group-common') ? "$alias.sf_guard_user_id IS NULL OR " : '')."$alias.sf_guard_user_id = ?",$sf_user->getId())
-      ->leftJoin("$alias.Users auth_users")
       ->leftJoin("$alias.Users users")
-      ->andWhere("($alias.sf_guard_user_id = ? OR ($alias.sf_guard_user_id IS NULL AND ? AND (auth_users.id = ? OR ?)))",array(
-        $sf_user->getId(),
-        $sf_user->hasCredential('pr-group-common'),
-        $sf_user->getId(),
+      ->andWhere("CASE WHEN $alias.sf_guard_user_id IS NULL THEN CASE WHEN ? THEN true ELSE CASE WHEN ? THEN (SELECT count(sf_guard_user_id) > 0 FROM group_user WHERE group_id = $alias.id AND sf_guard_user_id = ?) ELSE false END END ELSE $alias.sf_guard_user_id = ? END",array(
         $sf_user->hasCredential(array('admin-users','admin-power'),false),
+        $sf_user->hasCredential('pr-group-common') ? true : false,
+        $sf_user->getId(),
+        $sf_user->getId(),
       ));
   }
 

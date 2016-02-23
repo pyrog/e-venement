@@ -144,6 +144,7 @@ class groupActions extends autoGroupActions
     
     $q = Doctrine::getTable('Group')
       ->createQuery('g')
+      ->select('g.*, u.*')
       ->orderby('name', '')
       ->limit($request->getParameter('limit'));
     if ( trim($search) )
@@ -155,6 +156,8 @@ class groupActions extends autoGroupActions
     
     if (!( sfConfig::get('sf_web_debug', false) && $request->hasParameter('debug') ))
       return 'Json';
+    else
+      $this->setLayout('nude');
   }
   
   public function executeMember(sfWebRequest $request)

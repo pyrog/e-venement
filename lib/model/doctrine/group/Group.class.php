@@ -14,10 +14,9 @@ class Group extends PluginGroup
 {
   public function __toString()
   {
-    if ( !$this->User || !$this->User->id )
-      return parent::__toString();
-    else
-      return '('.$this->User->username.') '.parent::__toString();
+    return !$this->sf_guard_user_id
+      ? parent::__toString()
+      : '('.$this->User->username.') '.parent::__toString();
   }
   
   public function getHtmlTag()
