@@ -25,34 +25,70 @@
 
 class liPDFPlugin
 {
-  protected $content, $pdf, $verbose_in_error_log;
-  
-  public function __construct($html, $verbose_in_error_log = true)
+  protected $html, $pdf, $verbose_in_error_log;
+  protected $composer_dir, $wkhtmltopdf;
+  protected $options = array();
+
+  public function __construct($html = TRUE, $verbose_in_error_log = true)
   {
     $this->content = $html;
     $this->verbose_in_error_log = $verbose_in_error_log;
-
-    $composer_dir = sfConfig::get('sf_lib_dir').'/vendor/composer/';
-    $wkhtmltopdf = $composer_dir.'h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64';
+    $this->composer_dir = sfConfig::get('sf_lib_dir').'/vendor/composer/';
+    $this->wkhtmltopdf  = $this->composer_dir.'h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64';
+    
+    if ( $html )
+      $this->setHtml($html);
+  }
+  
+  public function setHtml($html)
+  {
+    $this->html = $html;
     
     // with wkhtmltopdf
-    if ( sfConfig::get('project_tickets_wkhtmltopdf', 'enabled') && is_executable($wkhtmltopdf) )
+    if ( sfConfig::get('project_tickets_wkhtmltopdf', 'enabled') )
     try
     {
-      require_once $composer_dir.'autoload.php';
-      $snappy = new Knp\Snappy\Pdf($wkhtmltopdf);
-      $this->pdf = $snappy->getOutputFromHtml(get_partial('global/get_tickets_pdf', array('tickets_html' => $this->content)));
+      if ( !is_executable($this->wkhtmltopdf) )
+        throw new RuntimeException('No wkhtmltopdf executable found. Please check your setup.');
+      
+      require_once $this->composer_dir.'autoload.php';
+      $snappy = new Knp\Snappy\Pdf($this->wkhtmltopdf);
+      foreach ( $this->options as $option => $value )
+        $snappy->setOption($option, $value);
+      $this->pdf = $snappy->getOutputFromHtml(get_partial('global/get_tickets_pdf', array('tickets_html' => $this->html)));
       return;
     } catch ( RuntimeException $e ) {
       $this
+        ->log('Printing tickets: [Error] '.$e->getMessage())
         ->log('Printing tickets: even if the executable is present, "wkhtmltopdf" is not working. Falling back to classic PDF generation.')
-        ->log('Error: '.$e->getMessage());
+      ;
     }
 
     // without wkhtmltopdf, using DomPDF
     $pdf = new sfDomPDFPlugin();
-    $pdf->setInput(get_partial('global/get_tickets_pdf', array('tickets_html' => $content)));
+    $pdf->setInput(get_partial('global/get_tickets_pdf', array('tickets_html' => $html)));
     $this->pdf = $pdf->render();
+  }
+  
+  /**
+   * @see Knp\Snappy\Pdf::setOption()
+   */
+  public function setOption($name, $value)
+  {
+    $this->options[$name] = $value;
+    return $this;
+  }
+  
+  public function getOptions($name = NULL)
+  {
+    if ( $name )
+      return $this->options[$name];
+    return $this->options;
+  }
+  
+  public function getHtml()
+  {
+    return $this->html;
   }
 
   public function getPDF()
@@ -62,9 +98,23 @@ class liPDFPlugin
   
   protected function log($msg)
   {
-    if ( $verbose_in_error_log )
+    if ( $this->verbose_in_error_log )
       error_log($msg);
     return $this;
+  }
+  
+  public function isReady()
+  {
+    try {
+      if ( !is_executable($this->wkhtmltopdf) )
+        throw new RuntimeException('No wkhtmltopdf executable found.');
+      $snappy = new Knp\Snappy\Pdf($this->wkhtmltopdf);
+      $snappy->getOutputFromHtml('<html><head></head><body>test</body><html>');
+    } catch ( RuntimeException $e ) {
+      return false;
+    }
+    
+    return true;
   }
 }
 

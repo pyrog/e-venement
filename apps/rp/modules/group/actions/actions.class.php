@@ -139,6 +139,7 @@ class groupActions extends autoGroupActions
   public function executeAjax(sfWebRequest $request)
   {
     $charset = sfConfig::get('software_internals_charset');
+    $transliterate = sfConfig::get('software_internals_transliterate');
     $search  = iconv($charset['db'],$charset['ascii'],$request->getParameter('q',''));
     
     $q = Doctrine::getTable('Group')
@@ -147,7 +148,7 @@ class groupActions extends autoGroupActions
       ->orderby('name', '')
       ->limit($request->getParameter('limit'));
     if ( trim($search) )
-      $q->andWhere('g.name ILIKE ?', '%'.$search.'%');
+      $q->andWhere(sprintf("translate(g.name, '%s', '%s') ILIKE ?", $transliterate['from'], $transliterate['to']), '%'.$search.'%');
     
     $this->groups = array();
     foreach ( $q->execute() as $group )

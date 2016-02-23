@@ -27,7 +27,7 @@
 
 *OpenUI *PageSize/Media Size: PickOne
 *OrderDependency: 10 AnySetup *PageSize
-*DefaultPageSize: A4
+*DefaultPageSize: X52D5MMY140MM
 
 *%PageSize Custom/Custom:                        "<</PageSize[0 0]/HWResolution[203 203]/ImagingBBox null>>setpagedevice"
 
@@ -150,7 +150,7 @@
 
 *OpenUI *PageRegion: PickOne
 *OrderDependency: 10 AnySetup *PageRegion
-*DefaultPageRegion: A4
+*DefaultPageRegion: X52D5MMY140MM
 
 *%PageRegion Custom/Custom:                      "<</PageSize[0 0]/HWResolution[203 203]/ImagingBBox null>>setpagedevice"
 
@@ -259,7 +259,7 @@
 *PageRegion Legal/Legal :          "<</PageSize[612 1008]/HWResolution[67 67]/ImagingBBox null>>setpagedevice"
 *CloseUI: *PageRegion
 
-*DefaultImageableArea: A4
+*DefaultImageableArea: X52D5MMY140MM
 
 *%ImageableArea Custom:              "0.0 0.0 0.0 0.0"
 
@@ -368,7 +368,7 @@
 *ImageableArea Legal:               "0.0 0.0 612.0 1008.0"
 
 
-*DefaultPaperDimension: A4
+*DefaultPaperDimension: X52D5MMY140MM
 
 *%PaperDimension Custom:             "0 0"
 
@@ -495,13 +495,13 @@
 *CloseUI: *PrintSpeed
 
 *OpenUI *PageType/3. Page Type: PickOne
-*DefaultPageType: 0Variable
+*DefaultPageType: 1Fixed
 *PageType 0Variable/Variable Length: ""
 *PageType 1Fixed/Fixed Length: ""
 *CloseUI: *PageType
 
 *OpenUI *TopSearch/4. Top Search: PickOne
-*DefaultTopSearch: 0Disable
+*DefaultTopSearch: 1Enable
 *TopSearch 0Disable/Disable: ""
 *TopSearch 1Enable/Enable: ""
 *CloseUI: *TopSearch
@@ -525,7 +525,7 @@
 
 *OpenGroup: CashDrawerGroup/Cash Drawer Control
 *OpenUI *CashDrawerSetting/1. Cash Drawer: PickOne
-*DefaultCashDrawerSetting: 1OpenDrawer1
+*DefaultCashDrawerSetting: 3OpenDrawer3
 *CashDrawerSetting 0DoNotOpenDrawers/Do Not Open Drawers: ""
 *CashDrawerSetting 1OpenDrawer1/Open Drawer 1: ""
 *CashDrawerSetting 2OpenDrawer2/Open Drawer 2: ""

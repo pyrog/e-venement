@@ -10,7 +10,7 @@
   $maxsize['place'] = isset($maxsize['place']) && intval($maxsize['place']) != 0 ? intval($maxsize['place']) : 30;
 ?>
 <div class="ticket">
-  <div class="logo"><?php echo image_tag(sfConfig::get('app_tickets_logo')) ?></div>
+  <div class="logo"><?php //echo image_tag(sfConfig::get('app_tickets_logo')) ?></div>
   <div class="left">
     <p class="manifid">
       <?php echo $ticket->Manifestation->id ?><span class="tariftop"><?php echo $ticket->price_name ?></span>
@@ -44,10 +44,10 @@
     <p class="ticket-bc"><?php
     switch ( sfConfig::get('app_tickets_id') ) {
     case 'barcode':
-      echo '<img src="'.url_for('ticket/barcode?id='.$ticket->id).'" />';
+      //echo '<img src="'.url_for('ticket/barcode?id='.$ticket->id).'" />';
       break;
     default:
-      echo image_tag('/liBarcodePlugin/php-barcode/barcode.php?scale=1&code='.$ticket->getIdBarcoded());
+      //echo image_tag('/liBarcodePlugin/php-barcode/barcode.php?scale=1&code='.$ticket->getIdBarcoded());
       break;
     }
     ?></p>

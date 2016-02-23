@@ -321,24 +321,22 @@
     
     if ( $request->hasParameter('direct') )
     {
-      // TODO, redering a specific PDF for direct printing
-      $this->content = '';
-      foreach ( $this->transactions as $transaction )
-        $this->content .= $transaction->renderSimplifiedTickets(array('only' => $this->tickets));
-      sfConfig::set('sf_web_debug', false);
       $this->setLayout(false);
       $this->getResponse()->setContentType('application/octet-stream');
       
-      $usb = sfConfig::get('project_internals_usb', sfConfig::get('software_internals_usb'));
+      $usb = array_merge(sfConfig::get('software_internals_usb', array()), sfConfig::get('project_internals_usb', array()));
       $usbid = json_decode($request->getParameter('direct', false), true);
       $found = false;
       foreach ( $usb['printers'] as $type => $ids )
       if ( in_array($usbid, $ids) )
       {
-        error_log(sprintf('Printing tickets: the given USB device does not match any from our configuration (vid: %s, pid: %s).', $usbid['vid'], $usbid['pid']));
+        if ( sfConfig::get('sf_web_debug', false) )
+          error_log(sprintf('Printing tickets: the given USB device does match our configuration (vid: %s, pid: %s).', $usbid['vid'], $usbid['pid']));
         $found = true;
         break;
       }
+      if ( !$found && sfConfig::get('sf_web_debug', false) )
+        error_log(sprintf('Printing tickets: ERROR the given USB device does not match our configuration (vid: %s, pid: %s).', $usbid['vid'], $usbid['pid']));
       
       // we need to have /usr/sbin/cupsfilter & /usr/bin/base64 installed to be able to use direct printing
       $paths = sfConfig::get('project_internals_exec_path', sfConfig::get('software_internals_exec_path'));

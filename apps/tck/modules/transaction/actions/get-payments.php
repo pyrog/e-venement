@@ -53,12 +53,16 @@
    *     translinked: id of the original transaction, NULL if the payment is linked to the current transaction
    **/
 
+
   $this->transaction = false;
   if ( $request->getParameter('id',false) )
   {
-    $this->transaction = Doctrine::getTable('Transaction')->createQuery('t')
+    $this->transaction = Doctrine_Query::create()->from('Transaction t')
       ->andWhere('t.id = ?', $request->getParameter('id'))
       ->leftJoin('t.Payments p')
+      ->leftJoin('t.Translinked tl')
+      ->leftJoin('tl.Payments tlp')
+      ->select('t.id, p.*, tl.*, tlp.*')
       ->fetchOne();
   }
   
