@@ -6,10 +6,27 @@
   // adding the stylesheets & the javascripts
   foreach ( $sf_response->getStylesheets() as $css => $opt )
   if ( file_exists($file = $_SERVER['DOCUMENT_ROOT'].preg_replace('/\\?.*$/', '', stylesheet_path($css))) )
-    $html .= '<style media="all" type="text/css" data-orig="'.$css.'">'.file_get_contents($file).'</style>'."\n";
+  {
+    // replace foreign content by base64 data...
+    $content = file_get_contents($file);
+    preg_match_all('!([^\w])url\([\'\"]?([\w\.-_/]*)[\'\"]?\)!', $content, $matches);
+    if ( count($matches) > 0 )
+    {
+      foreach ( $matches[0] as $i => $match )
+      {
+        $path = dirname($file).'/'.$matches[2][$i];
+        $call = 'url(data:image/'.pathinfo($path, PATHINFO_EXTENSION).';base64,';
+        $matches[2][$i] = $matches[1][$i].$call.base64_encode(file_get_contents($path)).')';
+      }
+      $content = str_replace($matches[0], $matches[2], $content);
+    }
+    $html .= '<style media="all" type="text/css" data-orig="'.$css.'">'.$content.'</style>'."\n";
+  }
   foreach ( $sf_response->getJavascripts() as $js  => $opt )
   if ( file_exists($file = $_SERVER['DOCUMENT_ROOT'].preg_replace('/\\?.*$/', '', javascript_path($js))) )
+  {
     $html .= '<script type="text/javascript" data-orig="'.$js.'">'.file_get_contents($file).'</script>'."\n";
+  }
 ?>
 <?php
   // getting the HTML representing the tickets
