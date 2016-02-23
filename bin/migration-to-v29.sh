@@ -69,7 +69,8 @@ if [ "$subm" != "n" ]; then
 fi
 
 
-read -p "Do you want to reset your dump & patch your database for e-venement v2.8 ? [Y/n] " dump
+echo '';
+read -p "Do you want to reset your dump & patch your database for e-venement v2.9? [Y/n] " dump
 if [ "$dump" != "n" ]; then
 
 name="$PGDATABASE"

@@ -103,6 +103,16 @@ class eventConfiguration extends sfApplicationConfiguration
       {
         foreach ( array('showTickets', 'showSpectators', 'statsFillingData',) as $action )
         {
+          $context = sfContext::getInstance();
+          // this is a workaround for some cases where the user is lost between actions ??...
+          if ( !$context->getUser()->getId() )
+          {
+            $context->getUser()->setGuardUser($user = Doctrine::getTable('sfGuardUser')->createQuery('u')
+              ->andWhere('u.is_super_admin = ?', true)
+              ->andWhere('u.is_active = ?', true)
+              ->fetchOne());
+          }
+          
           if ( !isset($nb[$action]) )
             $nb[$action] = 0;
           
