@@ -160,8 +160,8 @@
           ? $request->getParameter('manifestation_id')
           : array($request->getParameter('manifestation_id'));
         $q->andWhere('(TRUE')
-          ->andWhereIn('n.id',$pid)
-          ->orWhereIn('m.id',$pid)
+            ->andWhereIn('m.id',$pid)
+            ->orWhere('m.id IN (SELECT mm.depends_on FROM Manifestation mm WHERE mm.id = ?)',$pid)
           ->andWhere('TRUE)')
         ;
       }

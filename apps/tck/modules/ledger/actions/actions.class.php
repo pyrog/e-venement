@@ -164,8 +164,6 @@ class ledgerActions extends sfActions
       ->leftJoin('t.Professional pro')
       ->leftJoin('pro.Organism o')
       ->leftJoin('p.User u')
-      ->leftJoin('u.MetaEvents me')
-      ->leftJoin('u.Workspaces ws')
       ->orderBy('m.name, m.id, t.id, p.value, p.created_at')
       ->select('m.*, p.*, t.*, u.*, c.*, pro.*, o.*');
     
