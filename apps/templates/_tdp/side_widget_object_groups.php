@@ -16,7 +16,14 @@
           <h3><?php echo $obj ?></h3>
         <?php endif ?>
         <form action="#" method="get"><ul>
-          <?php foreach ( $obj->getGroups() as $group ): ?>
+          <?php
+            // ordering groups
+            $groups = array();
+            foreach ( $obj->getGroups() as $group )
+              $groups[$group.' || '.$group->id] = $group;
+            ksort($groups);
+          ?>
+          <?php foreach ( $groups as $group ): ?>
           <?php $users = array(); foreach ( $group->Users as $user ) $users[] = $user->id; ?>
           <?php if ( is_null($group->sf_guard_user_id) && (in_array($sf_user->getId(), $users) || $sf_user->hasCredential(array('super-admin','admin'),false)) || $group->sf_guard_user_id === $sf_user->getId() ): ?>
           <li>
