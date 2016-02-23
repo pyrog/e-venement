@@ -11,7 +11,7 @@
 class cartActions extends sfActions
 {
   protected $transaction = NULL;
-  
+
   public function preExecute()
   {
     $this->getUser()->addAuthException($this->getModuleName(), 'response');
@@ -21,9 +21,9 @@ class cartActions extends sfActions
   public function executeCommitSurvey(sfWebRequest $request)
   {
     $this->getContext()->getConfiguration()->loadHelpers('I18N');
-    
+
     $params = $request->getParameter('survey', array());
-    
+
     $s = new Survey;
     foreach ( $surveys = $this->getUser()->getTransaction()->getSurveysToFillIn() as $survey )
     if ( $survey->id == $params['id'] )
@@ -32,11 +32,11 @@ class cartActions extends sfActions
       break;
     }
     $this->form = new SurveyPublicForm($s);
-    
+
     $this->form->bind($params);
     if ( !$this->form->isValid() )
       return 'Error';
-    
+
     $this->form->save();
   }
   public function executeSurveys(sfWebRequest $request)
@@ -50,12 +50,12 @@ class cartActions extends sfActions
     try { $this->transac = $this->getUser()->getTransaction(); }
     catch ( liOnlineSaleException $e )
     { $this->transac = new Transaction; }
-    
+
     if ( $this->transac === false )
       $this->transac = new Transaction;
-    
+
     $this->timeout = false;
-    
+
     // global timeout
     $time = strtotime(
       '+'.sfConfig::get('app_timeout_global', '1 hour'),
@@ -67,8 +67,11 @@ class cartActions extends sfActions
       str_pad(floor($time%3600%60), 2, '0', STR_PAD_LEFT)
     ;
     if ( $time <= 0 )
+    {
       $this->timeout = true;
-    
+      $this->getUser()->resetTransaction();
+    }
+
     // older item timeout
     $ticket = Doctrine::getTable('Ticket')->createQuery('tck')
       ->andWhere('tck.transaction_id = ?', $this->transac->id)
@@ -87,7 +90,10 @@ class cartActions extends sfActions
         str_pad(floor($time%3600%60), 2, '0', STR_PAD_LEFT)
       ;
       if ( $time <= 0 )
+      {
         $this->timeout = true;
+        $this->getUser()->resetTransaction();
+      }
     }
   }
   public function executeEmpty(sfWebRequest $request)
@@ -101,7 +107,7 @@ class cartActions extends sfActions
       'request' => $request,
       'action' => $this,
     )));
-    
+
     try { $this->transaction = $this->getUser()->getTransaction(); }
     catch ( liOnlineSaleException $e )
     {
@@ -110,7 +116,7 @@ class cartActions extends sfActions
       $this->getUser()->setFlash('error',__('No cart to display'));
       $this->redirect('cart/show');
     }
-    
+
     // go back to the just-paid transaction, what ever it is
     $transaction = Doctrine::getTable('Transaction')->createQuery('t')
       ->select('t.*')
@@ -135,7 +141,7 @@ class cartActions extends sfActions
   {
     // harden data
     $this->getContext()->getConfiguration()->hardenIntegrity();
-    
+
     // pay a specific transaction
     $this->specific_transaction = intval($request->getParameter('transaction_id')).'' === ''.$request->getParameter('transaction_id','')
       ? Doctrine::getTable('Transaction')->find($request->getParameter('transaction_id'))
@@ -151,22 +157,22 @@ class cartActions extends sfActions
         $this->dispatcher->notify($event);
       }
     }
-    
+
     // already done first
     if ( sfConfig::get('app_contact_modify_coordinates_first', false) && $this->getUser()->getContact() )
       $this->redirect('cart/order');
-    
+
     $form_values = $this->getUser()->getAttribute('contact_form_values',array());
     unset($form_values['_csrf_token']);
     unset($form_values['id']);
-    
+
     try { $contact = $this->getUser()->getContact() ? $this->getUser()->getContact() : new Contact; }
     catch ( liEvenementException $e )
     { $contact = new Contact; }
-    
+
     if ( !isset($this->form) )
       $this->form = new ContactPublicForm($contact);
-    
+
     if ( $contact->isNew() )
       $this->form->setDefaults($form_values);
     else
@@ -175,27 +181,27 @@ class cartActions extends sfActions
       foreach ( $this->getUser()->getContact()->Phonenumbers as $pn )
         $pns[$pn->updated_at.' '.$pn->id] = $pn;
       ksort($pns);
-      
+
       $pn = array_pop($pns);
       $this->form->setDefault('phone_type',$pn->name);
       $this->form->setDefault('phone_number',$pn->number);
-      
+
       $this->form->removePassword();
     }
-    
+
     $this->login = new LoginForm;
   }
-  
+
   public function executeShow(sfWebRequest $request)
   {
     // harden data
     $this->getContext()->getConfiguration()->hardenIntegrity();
-    
+
     // normal behavior
     $this->transaction_id = $this->getUser()->getTransaction()->id;
-    
+
     $this->transaction = $this->getUser()->getTransaction();
-    
+
     if ( $this->transaction->Tickets->count() == 0
       && $this->transaction->MemberCards->count() == 0
       && $this->transaction->BoughtProducts->count() == 0 )
@@ -204,21 +210,21 @@ class cartActions extends sfActions
       $this->getUser()->setFlash('notice',__('Your cart is still empty, select tickets first...'));
       $this->redirect('@homepage');
     }
-    
+
     $this->redirect('transaction/show?id='.$this->transaction_id);
   }
-  
+
   public function executeOrder(sfWebRequest $request)
   {
     require(dirname(__FILE__).'/order.php');
   }
-  
+
   public function executeResponse(sfWebRequest $request)
   {
     // WHERE THE BANK PINGS BACK WHEN THE ORDER IS PAID
     return require(dirname(__FILE__).'/response.php');
   }
-  
+
   protected function getMemberCardPaymentMethod()
   {
     return Doctrine::getTable('PaymentMethod')->createQuery('pm')
@@ -227,7 +233,7 @@ class cartActions extends sfActions
       ->orderBy('id')
       ->fetchOne();
   }
-  
+
   public function executeSendConfirmationEmails(sfWebRequest $request)
   {
     $this->sendConfirmationEmails($this->getUser()->getTransaction(), $this);
@@ -237,31 +243,92 @@ class cartActions extends sfActions
   {
     return require(dirname(__FILE__).'/send-confirmation-emails.php');
   }
-  
+
   protected function createPaymentsDoneByMemberCards(PaymentMethod $payment_method = NULL)
   {
     if ( is_null($payment_method) )
       $payment_method = $this->getMemberCardPaymentMethod();
-    
+
     foreach ( $this->getUser()->getTransaction()->Tickets as $ticket )
     if ( $ticket->Price->member_card_linked )
     {
       $p_mc = new Payment;
       $p_mc->value = $ticket->value;
       $p_mc->Method = $payment_method;
-      
+
       foreach ( $this->getUser()->getTransaction()->MemberCards as $mc )
       if ( $mc->hasPrice($ticket->price_id) && $mc->getValue() >= $ticket->value )
         $p_mc->member_card_id = $mc->id;
-      
+
       if ( is_null($p_mc->member_card_id) )
       foreach ( $this->getUser()->getContact()->MemberCards as $mc )
       if ( $mc->transaction_id != $this->transaction->id && $mc->active
         && $mc->hasPrice($ticket->price_id) && $mc->getValue() >= $ticket->value )
         $p_mc->member_card_id = $mc->id;
-      
+
       if ( !is_null($p_mc->member_card_id) )
         $this->getUser()->getTransaction()->Payments[] = $p_mc;
     }
   }
+
+
+    public function getErrors($form = false, $embedded_forms = array()) {
+      if (!$form){
+        return false;
+      }
+      $errors = array();  $total_error++;
+      // individual widget errors
+      foreach ($form as $form_field) {
+        if ($form_field->hasError()) {
+          $error_obj = $form_field->getError();
+          if ($error_obj instanceof sfValidatorErrorSchema) {
+            foreach ($error_obj->getErrors() as $error) {
+              // add namespace for embedded form erros
+              if ($form->getName() != $form->getName()) {
+                $errors[$form->getName()][$form_field->getName()][] = $error->getMessage();  $total_error++;
+              } else {
+                $errors[$form_field->getName()][] = $error->getMessage();
+              }
+            }
+          } else {
+            if ($form->getName() != $form->getName()) {
+              $errors[$form->getName()][$form_field->getName()][] = $error_obj->getMessage();  $total_error++;
+            } else {
+              $errors[$form_field->getName()] = $error_obj->getMessage();  $total_error++;
+            }
+          }
+        }
+      }
+      // for global errors
+      foreach ($form->getGlobalErrors() as $validator_error) {
+        $errors[] = $validator_error->getMessage();
+      }
+      // for embedded form error processing
+      $count_embedded_error = 0;
+      if (count($embedded_forms) && is_array($embedded_forms) ) {
+        foreach($embedded_forms as $key => $embedded_form_name){
+          if (isset($errors[$embedded_form_name])) {
+            if(is_array($errors[$embedded_form_name])){
+              foreach($errors[$embedded_form_name] as $key1=>$errors_embedded){
+                $error_embedded_form = array();
+                $asEFRawErrors = explode("]", $errors_embedded);
+                foreach($asEFRawErrors as $ssRawError){
+                  if ($ssRawError!=null) {
+                    $raw_error = explode("[",$ssRawError);
+                    $error_embedded_form[trim($raw_error[0])] = trim($raw_error[1]);  $total_error++;
+                    //$error_embedded_form[] = $ssRawError;
+                  }
+                }
+                $errors[$embedded_form_name][$key1] = $error_embedded_form;
+                $count_embedded_error += count($error_embedded_form);
+              }
+            }
+          }
+        }
+      }
+      $errors_final['error_message'] = $errors;
+      // count errors
+      $errors_final['error_count'] = $total_error;
+      return $errors_final;
+    }
 }

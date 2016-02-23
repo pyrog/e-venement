@@ -10,8 +10,10 @@
 #sf_admin_content .li_table > * > * > *:not(:last-child) { padding-right: 10px; }
 
 /* specific */
-#li_transaction_field_more, #li_transaction_field_contact_id, #li_transaction_field_professional_id { width: 20.5em; white-space: nowrap; position: relative; }
-#sf_admin_content .li_fieldset #li_transaction_field_professional_id { top: -1em; margin-left: calc(-21.5em - 8px); border-top: 0; border-bottom: 0; border-top-right-radius: 0; border-top-left-radius: 0; height: 2.5em; text-align: center; padding-top: 0; }
+#li_transaction_field_more, #li_transaction_field_postalcode, #li_transaction_field_contact_id, #li_transaction_field_professional_id { width: 20.5em; white-space: nowrap; position: relative; }
+#sf_admin_content .li_fieldset #li_transaction_field_postalcode, #sf_admin_content .li_fieldset #li_transaction_field_professional_id { top: -1em; margin-left: calc(-21.5em - 8px); border-top: 0; border-bottom: 0; border-top-right-radius: 0; border-top-left-radius: 0; height: 2.5em; text-align: center; padding-top: 0; }
+#sf_admin_content .li_fieldset #li_transaction_field_postalcode { text-align: left; }
+#sf_admin_content .li_fieldset #li_transaction_field_postalcode input { text-align: center; }
 #sf_admin_content .li_fieldset #li_transaction_field_contact_id { top: -3.8em; border-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding-bottom: 0; }
 .inner-edition { position: absolute; top: 51px; right: 20px; width: 810px; bottom: 20px; }
 .inner-edition iframe { width: 100%; height: 100%; }
@@ -191,4 +193,5 @@
 /* OTHERS */
 .sf_admin_flashes { position: absolute; width: 94%; z-index: 2; margin-left: 5px; margin-top: -2.85em; }
 #li_fieldset_hidden { display: none; }
-h1 #simplified-gui, h1 #resend-email, h1 #abandon { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }
+h1 .fg-button { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }
+#simplified-gui, h1 #resend-email, h1 #abandon { float: right; padding: 0.7em; margin: -0.3em -0.1em 0 5px; }

@@ -59,6 +59,8 @@
     'printed_deposits_percentage' => __('Printed for deposit').' %',
     'free_percentage'       => __('Free').' %',
     'cashflow'              => __('Cashflow'),
+    'meta_event'            => __('Meta-event'),
+    'event_category'        => __('Event category'),
   );
   
   if ( !sfConfig::get('project_tickets_count_demands',false) )

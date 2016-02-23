@@ -10,6 +10,7 @@ all:
       sfWidgetFormInputText: Line
       #liWidgetFormInputCheckbox: Checkbox
       liWidgetFormChoiceMultiple: Select one or many in a list
+      liWidgetFormChoiceMultipleContact: Select one or many in a list for each contact
       liWidgetFormChoiceExpanded: Select one in a list
       liWidgetFormDateText: Date
       liWidgetFormDateTime: Date+Time

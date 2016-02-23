@@ -138,11 +138,18 @@
     $command .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($amount,'€')."\n";
     if ( sfConfig::get('app_payment_type', 'paybox') != 'onthespot' )
     {
-      $command .= "\n";
-      $command .= "Paiements\n";
+      $payments = '';
       if ( $mc_amount = $transaction->getTicketsLinkedToMemberCardPrice(true) )
-      $command .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($mc_amount,'€')."\n";
-      $command .= "&nbsp;&nbsp;".__('Credit card').": ".format_currency($transaction->getPrice(true,true),'€')."\n";
+        $payments .= "&nbsp;&nbsp;".__('Member cards').": ".format_currency($mc_amount,'€')."\n";
+      $amount = 0;
+      foreach ( $transaction->Payments as $payment )
+        $payments .= "&nbsp;&nbsp;".$payment->Method.": ".format_currency($transaction->getPrice(true,true),'€')."\n";
+      if ( $payments )
+      {
+        $command .= "\n";
+        $command .= "Paiements\n";
+        $command .= $payments;
+      }
     }
     
     $replace = array(
@@ -194,9 +201,9 @@ EOF
         continue;
       
       // attachments, tickets/products in PDF
-      $pdf = new sfDomPDFPlugin();
-      $pdf->setInput($action->getPartial('transaction/get_tickets_pdf', array('tickets_html' => $content)));
-      $pdf = $pdf->render();
+      $generator = new liPDFPlugin($action->getPartial('transaction/get_tickets_pdf', array('tickets_html' => $content)));
+      $pdf = $generator->getPDF();
+      
       file_put_contents(sfConfig::get('sf_upload_dir').'/'.($filename = $var.'-'.$transaction->id.'-'.date('YmdHis').'-'.rand(1000000000,9999999999).'.pdf'), $pdf);
       $attachment = new Attachment;
       $attachment->filename = $filename;

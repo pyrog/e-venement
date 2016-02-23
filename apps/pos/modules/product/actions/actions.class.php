@@ -210,6 +210,7 @@ class productActions extends autoProductActions
       ->orderBy('pt.name')
     ;
     if ( ($tid = intval($request->getParameter('except_transaction', false))).'' === ''.$request->getParameter('except_transaction', false) )
+    if ( $request->getParameter('all', false) !== 'true' )
       $q->andWhere('pdt.id NOT IN (SELECT bpd.product_id FROM BoughtProduct bp LEFT JOIN bp.Declination bpd WHERE bp.transaction_id = ? AND bp.product_declination_id IS NOT NULL)',$tid);
     
     // huge hack to look for declinations' codes AND product_index

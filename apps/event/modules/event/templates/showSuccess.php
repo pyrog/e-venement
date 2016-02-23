@@ -3,7 +3,11 @@
 
 <div id="sf_admin_container" class="sf_admin_show ui-widget ui-widget-content ui-corner-all">
   <div class="fg-toolbar ui-widget-header ui-corner-all">
+    <?php if ( $museum ): ?>
+    <h1><?php echo __('View Visit %%name%%', array('%%name%%' => $event->name), 'messages') ?></h1>
+    <?php else: ?>
     <h1><?php echo __('View Event %%name%%', array('%%name%%' => $event->name), 'messages') ?></h1>
+    <?php endif ?>
   </div>
 
   <?php include_partial('global/flashes') ?>

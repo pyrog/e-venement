@@ -12,7 +12,7 @@
 
 #content .sf_admin_action_back { margin-left: 42px; }
 
-#sf_admin_form_tab_menu table th { display: none; }
+#sf_admin_form_tab_menu table thead { display: none; }
 
 #sf_admin_form_tab_menu table table th { display: inline; }
 

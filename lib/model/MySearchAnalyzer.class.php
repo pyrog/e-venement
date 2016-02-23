@@ -44,16 +44,9 @@ class MySearchAnalyzer extends Doctrine_Search_Analyzer_Utf8
   */
   );
   
-      public function analyze($text, $encoding = null)
-      {
-        // translatable special chars
-        $transliterate = sfConfig::get('software_internals_transliterate',array());
-        $text = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $text);
-        
-        // considering very special chars as spaces
-        $text = str_replace(array(
+  public static $cutchars = array(
           '@',
-          '.',',','¿',
+          '.',',','?','!','¡','¿',';',
           '♠','♣','♥','♦',
           '-','+',
           '←','↑','→','↓',
@@ -63,7 +56,16 @@ class MySearchAnalyzer extends Doctrine_Search_Analyzer_Utf8
           '“', '”', '„',
           '°','™','©','®',
           '³','²',
-        ),' ',$text);
+  );
+  
+      public function analyze($text, $encoding = null)
+      {
+        // translatable special chars
+        $transliterate = sfConfig::get('software_internals_transliterate',array());
+        $text = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $text);
+        
+        // considering very special chars as spaces
+        $text = str_replace(self::$cutchars,' ',$text);
         
         $charset = sfConfig::get('software_internals_charset');
         $text = mb_strtolower(iconv($charset['db'],$charset['ascii'],$text));
@@ -76,8 +78,7 @@ class MySearchAnalyzer extends Doctrine_Search_Analyzer_Utf8
         if (strcasecmp($encoding, 'utf-8') != 0 && strcasecmp($encoding, 'utf8') != 0)
             $text = iconv($encoding, 'UTF-8', $text);
         
-        
-        $text = preg_replace('/\s[0-9]+\s/', ' ', $text);
+        //$text = preg_replace('/\s[0-9]+\s/', ' ', $text);
         $text = preg_replace('/\s[^\s]\s/', ' ', $text);
         $text = preg_replace('/[^\p{L}\p{N}]+/u', ' ', $text);
         $text = preg_replace('/\s\s+/', ' ', $text);

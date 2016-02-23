@@ -40,7 +40,7 @@
     ->andWhere('g.group_name = ?', $params['group_name'])
     ->andWhere('g.online = ?', true)
     
-    ->leftJoin('g.PriceGauges         gpg WITH gpg.price_id IN (SELECT gup.price_id FROM UserPrice gup WHERE gup.sf_guard_user_id = ?)', $this->getUser()->getId())
+    ->leftJoin('g.PriceGauges         gpg WITH g.workspace_id IN (SELECT ppws.workspace_id FROM WorkspacePrice ppws WHERE gpg.price_id = ppws.price_id) AND gpg.price_id IN (SELECT gup.price_id FROM UserPrice gup WHERE gup.sf_guard_user_id = ?)', $this->getUser()->getId())
     ->leftJoin('g.Manifestation m')
     ->leftJoin('m.PriceManifestations mpm WITH mpm.price_id IN (SELECT mup.price_id FROM UserPrice mup WHERE mup.sf_guard_user_id = ?)', $this->getUser()->getId())
     ->andWhere('(gpg.price_id = ? OR mpm.price_id = ?)', array($params['price_id'], $params['price_id']))
@@ -111,8 +111,6 @@
     $ticket->addLinkedProducts();
   $tickets->save();
 
-  $this->dispatcher->notify($event = new sfEvent($this, 'pub.after_adding_tickets', array()));
-  
   // return back the list of real tickets
   $this->data = array('tickets' => array());
   foreach ( $this->getUser()->getTransaction()->Tickets as $ticket )
@@ -131,5 +129,7 @@
       'value'             => (float)$ticket->value,
     );
   }
+  
+  $this->dispatcher->notify($event = new sfEvent($this, 'pub.after_adding_tickets', array('tickets' => $tickets, 'direct_contact' => sfConfig::get('app_tickets_direct_contact', 'auto') == 'auto')));
   
   return 'Success';

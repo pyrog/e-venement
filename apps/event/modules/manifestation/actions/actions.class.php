@@ -177,7 +177,11 @@ class manifestationActions extends autoManifestationActions
     $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
     
     $this->forward404Unless($request->hasParameter('id'));
-    $this->redirect(cross_app_url_for('tck', 'transaction/new#manifestations-'.$request->getParameter('id')));
+    $this->redirect(cross_app_url_for('tck',
+      'transaction/new#'.
+      ($this->getContext()->getConfiguration()->getApplication() == 'museum' ? 'museum' : 'manifestations').
+      '-'.$request->getParameter('id')
+    ));
   }
   
   public function executeExport(sfWebRequest $request)
@@ -235,6 +239,10 @@ class manifestationActions extends autoManifestationActions
       if ( $location->id )
       $this->form->setDefault('location_id', $location->id);
     }
+    if ( $request->getParameter('start') )
+      $this->form->setDefault('happens_at', $request->getParameter('start')/1000);
+    if ( $request->getParameter('start') && $request->getParameter('end') )
+      $this->form->setDefault('duration', ($request->getParameter('end') - $request->getParameter('start'))/1000);
     
     // booking_list
     if ( ($list = $request->getParameter('booking_list', $this->getUser()->getFlash('booking_list',array())))
@@ -251,7 +259,11 @@ class manifestationActions extends autoManifestationActions
     $eids = array();
     if ( $search )
     {
-      $e = Doctrine_Core::getTable('Event')->search($search.'*',Doctrine::getTable('Event')->createQuery('e')->andWhere('e.museum = ?', $museum));
+      $e = Doctrine_Core::getTable('Event')->search($search.'*',
+        Doctrine::getTable('Event')->createQuery('e')
+          ->andWhere('e.museum = ?', $museum)
+          ->andWhereIn('e.meta_event_id', array_keys($this->getUser()->getMetaEventsCredentials()))
+      );
       foreach ( $e->execute() as $event )
         $eids[] = $event['id'];
     }
@@ -438,9 +450,9 @@ class manifestationActions extends autoManifestationActions
     
     $sf_user = $this->getUser();
     $manifestation = $this->getRoute()->getObject();
-    if ( !in_array($manifestation->Event->meta_event_id,array_keys($sf_user->getMetaEventsCredentials())) )
+    if ( !$sf_user->isSuperAdmin() && !in_array($manifestation->Event->meta_event_id,array_keys($sf_user->getMetaEventsCredentials())) )
     {
-      $this->getUser()->setFlash('error',"You cannot access this object, you do not have the required credentials.");
+      $this->getUser()->setFlash('error', $error = "You cannot access this object, you do not have the required credentials.");
       $this->redirect('@event');
     }
     
@@ -452,7 +464,7 @@ class manifestationActions extends autoManifestationActions
       || $manifestation->reservation_confirmed && !$sf_user->hasCredential('event-manif-edit-confirmed') && $manifestation->contact_id !== $sf_user->getContactId()
       || !(isset($config['let_restricted_users_confirm']) && $config['let_restricted_users_confirm']) && !$sf_user->hasCredential('event-manif-edit-confirmed') )
     {
-      $this->getUser()->setFlash('error',"You cannot edit this object, you do not have the required credentials.");
+      $this->getUser()->setFlash('error', $error = "You cannot edit this object, you do not have the required credentials.");
       $this->redirect('manifestation/show?id='.$manifestation->id);
     }
   }
@@ -547,9 +559,9 @@ class manifestationActions extends autoManifestationActions
     $this->setLayout('nude');
     $this->securityAccessFiltering($request, false);
     
-    $cacher = liCacher::create($request);
+    $cacher = liCacher::create('manifestation/showSpectators?id='.$request->getParameter('id'), true);
     if ( !$cacher->requiresRefresh($request) )
-    if ( ($this->cache = $cacher->useCache()) !== false )
+    if ( ($this->cache = $cacher->useCache($this->getRoute()->getObject()->getCacheTimeout())) !== false )
       return 'Success';
     
     $this->manifestation_id = $request->getParameter('id');
@@ -569,9 +581,9 @@ class manifestationActions extends autoManifestationActions
     $this->setLayout('nude');
     $this->securityAccessFiltering($request, false);
     
-    $cacher = liCacher::create($request);
+    $cacher = liCacher::create('manifestation/showTickets?id='.$request->getParameter('id'), true);
     if ( !$cacher->requiresRefresh($request) )
-    if ( ($this->cache = $cacher->useCache()) !== false )
+    if ( ($this->cache = $cacher->useCache($this->getRoute()->getObject()->getCacheTimeout())) !== false )
       return 'Success';
     
     $this->manifestation_id = $request->getParameter('id');

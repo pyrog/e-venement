@@ -313,7 +313,12 @@
           $.ajax({
             url: $(this).prop('action'),
             data: $(this).serialize(),
-            complete: function(){
+            success: function(json){
+              // message
+              console.error(json);
+              if ( json.message )
+                LI.alert(json.message, json.success ? 'success' : 'error');
+              
               // graphical removal
               $(seat).parent().find('.seat[data-id='+$(seat).attr('data-id')+']').remove();
               $('.sf_admin_form_field_show_picture .pre-seat').remove();  // cleaning current stuff
@@ -396,7 +401,7 @@
           seat.attr('data-ticket-id', null);
           $('#done [name="ticket[numerotation]"], #done [name="ticket[id]"]').val('');
           $('#done [name=ticket_numerotation][value="'+seat.attr('data-num')+'"]').val('')
-            .closest('.ticket').find('[name=ticket_id]').val('')
+            //.closest('.ticket').find('[name=ticket_id]').val('') // done on 2016-01-08 by beta on the advise of Brest Metropole
             .closest('.ticket').prependTo('#todo')
           ;
           $('#done .total').text(parseInt($('#done .total').text())-1);

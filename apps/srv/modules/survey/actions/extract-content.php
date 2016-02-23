@@ -31,6 +31,7 @@ $queries = new Doctrine_Collection('SurveyQuery');
 $this->lines['title']['name']         = (string)$survey;
 $this->lines['title']['professional'] = '';
 $this->lines['title']['organism']     = '';
+$this->lines['title']['email']        = '';
 $this->lines['title']['transaction']  = '';
 $this->lines['title']['tickets']      = '';
 foreach ( $this->survey->Queries as $query )
@@ -45,6 +46,7 @@ foreach ( $this->survey->Queries as $query )
 $this->lines['details']['name']         = __('Contact');
 $this->lines['details']['professional'] = __('Function');
 $this->lines['details']['organism']     = __('Organism');
+$this->lines['details']['email']        = __('Email');
 $this->lines['details']['transaction']  = __('Transaction');
 $this->lines['details']['tickets']      = __('Tickets');
 foreach ( $this->survey->Queries as $query )
@@ -60,10 +62,15 @@ foreach ( $this->survey->AnswersGroups as $group )
 if ( $group->Answers->count() > 0 )
 {
   $this->lines[$i] = array();
-  $this->lines[$i]['name'] = (string)$group->Contact;
+  $this->lines[$i]['name']         = (string)$group->Contact;
   $this->lines[$i]['professional'] = (string)$group->Professional->name_type;
-  $this->lines[$i]['organism'] = (string)$group->Professional->Organism;
-  $this->lines[$i]['transaction'] = '#'.$group->transaction_id;
+  $this->lines[$i]['organism']     = (string)$group->Professional->Organism;
+  $this->lines[$i]['email']        = $group->professional_id && $group->Professional->email
+    ? $group->Professional->email
+    : $group->contact_id && $group->Contact->email
+    ? $group->Contact->email
+    : $group->Professional->Organism->email;
+  $this->lines[$i]['transaction']  = '#'.$group->transaction_id;
   
   // counting valid tickets in the transaction
   $cpt = 0;
@@ -76,8 +83,36 @@ if ( $group->Answers->count() > 0 )
   }
   $this->lines[$i]['tickets'] = $cpt;
   
+  $cid = null;
   foreach ( $group->Answers as $answer )
   {
+    if ( $answer->contact_id )
+    {
+      if ( !is_null($cid) && $answer->contact_id != $cid )
+      {
+        $i++;
+        
+        foreach ( $group->Transaction->Tickets as $ticket )
+        if ( $ticket->contact_id == $answer->contact_id )
+        {
+          if ( $ticket->hasBeenCancelled() || $ticket->duplicating )
+            continue;
+          if ( $group->Transaction->Order->count() > 0 || $ticket->printed_at || $ticket->integrated_at )
+            $cpt++;
+        }
+        $this->lines[$i]['tickets'] = $cpt;
+      }
+      
+      $this->lines[$i]['name']         = (string)$answer->Contact;
+      $this->lines[$i]['professional'] = '';
+      $this->lines[$i]['organism']     = (string)$group->Professional->Organism;
+      $this->lines[$i]['email']        = $answer->Contact->email
+        ? $answer->Contact->email
+        : $group->Professional->Organism->email;
+      $this->lines[$i]['transaction'] = '#'.$group->transaction_id;
+      $cid = $answer->contact_id;
+    }
+    
     if ( $queries[$answer->survey_query_id]->Options->count() == 0 )
       $this->lines[$i][$queries[$answer->survey_query_id]->slug] = $answer->value;
     else

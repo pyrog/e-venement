@@ -1,0 +1,20 @@
+all:
+  credentials: pr-card-promo
+
+new:
+  credentials: pr-card-promo-new
+create:
+  credentials: pr-card-promo-new
+
+delete:
+  credentials: pr-card-promo-del
+batchDelete:
+  credentials: pr-card-promo-del
+deleteSimple:
+  credentials: pr-card-promo-del
+
+edit:
+  credentials: pr-card-promo-edit
+update:
+  credentials: pr-card-promo-edit
+

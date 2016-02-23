@@ -5,6 +5,26 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Resume contacts</source>
+        <target>Reprendre des contacts</target>
+      </trans-unit>
+      <trans-unit>
+        <source>No special offer found.</source>
+        <target>Aucune offre spéciale trouvée.</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Enjoy your special offer!</source>
+        <target>Profitez de votre offre spéciale !</target>
+      </trans-unit>
+      <trans-unit>
+        <source>You can already enjoy this special offer.</source>
+        <target>Vous pouvez déjà profiter de cette offre spéciale.</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Promo Code</source>
+        <target>Code avantage</target>
+      </trans-unit>
+      <trans-unit>
         <source>Add</source>
         <target>Ajouter</target>
       </trans-unit>

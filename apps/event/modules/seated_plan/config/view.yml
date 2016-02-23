@@ -61,4 +61,8 @@ seatAddSuccess:
   has_layout: false
   http_metas:
     content-type: application/json
+seatDelSuccess:
+  has_layout: false
+  http_metas:
+    content-type: application/json
 

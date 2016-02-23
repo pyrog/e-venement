@@ -19,7 +19,9 @@ class OrganismTable extends PluginOrganismTable
     {
       $sf_user = sfContext::getInstance()->getUser();
       $ws = array_keys($sf_user->getWorkspacesCredentials());
+      $ws[] = 0;
       $me = array_keys($sf_user->getMetaEventsCredentials());
+      $me[] = 0;
       $q->leftJoin('p.Transactions ptr WITH ptr.id IN (SELECT ttck3.transaction_id FROM Ticket ttck3 LEFT JOIN ttck3.Manifestation mm3 LEFT JOIN mm3.Event ee3 LEFT JOIN mm3.Gauges gg3 WHERE gg3.workspace_id IN ('.implode(',',$ws).') AND ee3.meta_event_id IN ('.implode(',',$me).'))');
     }
     $q->leftJoin('ptr.Payments payment')

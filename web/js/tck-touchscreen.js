@@ -9,14 +9,14 @@ $(document).ready(function(){
   ', [name="transaction[description]"]'+
   ', #li_transaction_field_more input[type=checkbox]'+
   '').change(function(){ $(this).closest('form').submit(); });
-  
+
   LI.initContent();
   $('#li_transaction_field_content h2 a').click(function(){
     LI.initContent();
     return false;
   });
   $('#sf_admin_content form:not(.noajax)').submit(LI.formSubmit);
-  
+
   // PLAYING W/ CART'S CONTENT
   // sliding content
   var settings = Cookie.has('tck.touchscreen.hidden-bunches')
@@ -24,15 +24,15 @@ $(document).ready(function(){
     : {};
   $('#li_transaction_field_content h2').click(function(){
     var bunch = $(this).closest('.bunch');
-    
+
     // it's a bit tricky to allow the CSS transition
     if ( !bunch.hasClass('small') )
       bunch.css('height', bunch.height()+'px');
     bunch.toggleClass('small');
     setTimeout(function(){ bunch.css('height', ''); }, 200);
-    
+
     $(this).find('.ui-state-highlight').focusout();
-    
+
     // cookies
     settings[bunch.attr('data-bunch-id')] = bunch.hasClass('small');
     Cookie.set('tck.touchscreen.hidden-bunches', JSON.stringify(settings));
@@ -40,17 +40,17 @@ $(document).ready(function(){
   $('#li_transaction_field_content h3').click(function(){
     $(this).closest('.family').find('.items').each(function(){
       var showing = $(this).is(':hidden');
-      
+
       $(this).slideToggle();
       if ( !showing ) $(this).find('.ui-state-highlight').focusout();
     });
   });
-  
+
   // retrieve focusout()s
   $('.highlight input, .highlight select, .highlight textarea')
     .focusout(function(){ return false; })
     .focusin (function(){ $(this).closest('.highlight').focusin(); return false; });
-  
+
   // changing quantities
   $('#li_transaction_field_content .qty a').click(function(){
     var input = $(this).closest('.qty').find('input');
@@ -64,13 +64,13 @@ $(document).ready(function(){
       $(this).closest('.highlight').focusin();
     if ( isNaN(parseInt($(this).val(),10)) || $(this).closest('.declination').is('.active.printed') )
       $(this).val($(this).prop('defaultValue'));
-    
+
     if ( $(this).prop('defaultValue') !== $(this).val() )
     {
       var diff = $(this).val() - $(this).prop('defaultValue');
       var form = $('#li_transaction_field_price_new form.prices');
       var orig = form.find('[name="transaction[price_new][qty]"]').val();
-      
+
       // if the tickets to process are integrated
       if ( $(this).closest('.declination').is('.active.integrated') )
       {
@@ -82,10 +82,10 @@ $(document).ready(function(){
         }
         else
           form.find('[name="transaction[price_new][state]"]').val('integrated');
-      } 
-      
+      }
+
       $(this).select();
-      
+
       // set values & submit
       form.find('[name="transaction[price_new][qty]"]').val(diff);
       form.find('[name="transaction[price_new][price_id]"]').val($(this).closest('.declination').attr('data-price-id'));
@@ -93,27 +93,28 @@ $(document).ready(function(){
         $(this).closest('.item').attr('data-'+$(this).closest('.item').attr('data-type')+'-id')
       );
       form.find('[name="transaction[price_new][type]"]').val($(this).closest('.item').attr('data-type'));
+      form.find('[name="transaction[price_new][bunch]"]').val($(this).closest('.bunch').attr('data-bunch-id'));
       form.submit();
-      
+
       // reinit
       form.find('[name="transaction[price_new][qty]"]').val(orig);
     }
   });
-  
+
   // total calculation
   $('#li_transaction_field_content .item .total').select(LI.calculateTotals).select();
-  
+
   // showing numerotation & ids
   $('#li_transaction_field_content .item .ids').click(function(){ $(this).closest('.declination').find('.price_name').click(); });
   $('#li_transaction_field_content .item .price_name').click(function(){
     $(this).closest('.declination').find('.ids').toggleClass('show');
     $(this).closest('.highlight').focusin();
   });
-  
+
   // showing the gauges
   $('#li_transaction_field_content .item').focusin(function(){
     $('#li_transaction_field_product_infos *').remove(); // cleaning products infos
-      
+
     if ( $(this).find('.data .gauge.raw').length > 0 )
     {
       if ( !$(this).find('.data .gauge.raw').text() )
@@ -148,7 +149,7 @@ $(document).ready(function(){
     $(this).find('.data .gauge.seated.picture').remove();
     $(this).focusin();
   });
-  
+
   // refreshing the gauges if the document has lost focus
   $(window).blur(function(){
     if ( location.hash === '#debug' )
@@ -157,17 +158,17 @@ $(document).ready(function(){
     $('#li_transaction_field_content .item .data .gauge.raw').html(''); // cleaning cached raw gauge
     $('#li_transaction_field_content .item .data .gauge.seated.picture').remove(); // cleaning cached seated plan
   });
-    
+
   // CONTACT CHANGE & INIT
   $.each([
     '#li_transaction_field_contact_id',
     '#li_transaction_field_professional_id'
   ], function(index, value){ LI.initTouchscreen(value); });
-  
+
   // CONTACT CREATION
   $('#li_transaction_field_contact_id .create-contact').click(function(){
     var w = window.open($(this).prop('href')+'&name='+$('#li_transaction_field_contact_id [name="autocomplete_transaction[contact_id]"]').val(),'new_contact');
-    
+
     w.onload = function(){
       setTimeout(function(){
         $(w.document).ready(function(){
@@ -177,18 +178,18 @@ $(document).ready(function(){
         w.onunload = LI.goBackToTransaction;
       },2500);
     };
-    
+
     return false;
   });
-  
+
   // CLICK WIDGETS
   $('#sf_admin_content .highlight').focusout(function(){
-    $(this).removeClass('ui-state-highlight'); // removing any highlight 
+    $(this).removeClass('ui-state-highlight'); // removing any highlight
     return false; // to avoid the event to go up in the JS tree
   }).focusin(function(){
     $('#sf_admin_content .ui-state-highlight').focusout();
     $(this).addClass('ui-state-highlight');
-    
+
     if ( $(this).hasClass('board-alpha') || $(this).closest('.board-alpha').length > 0 )
       $('#li_transaction_field_board').addClass('alpha');
     if ( !$(this).hasClass('board-alpha') || $(this).closest('.board-alpha').length == 0 )
@@ -197,7 +198,7 @@ $(document).ready(function(){
       if ( $(this).find('.num, .alpha').length > 0 )
         $(this).val($(this).closest('#li_transaction_field_board').hasClass('num') ? $(this).find('.num').html() : $(this).find('.alpha').html());
     });
-    
+
     if ( !$(this).is('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more') )
     {
       $('#li_transaction_field_informations .vcard').slideUp();
@@ -205,17 +206,17 @@ $(document).ready(function(){
       $('#sf_admin_container').css('width','100%');
       setTimeout(function(){ $(window).resize(); }, 1500); // because of the transition-duration
     }
-    
+
     return false; // to avoid the event to go up in the JS tree
   }).click(function(){
     $(this).focusin();
   });
-  
+
   // AVOIDING FOCUSIN IF A CLICK ON SOME PAYMENTS WIDGETS HAPPENS
   $('#li_transaction_field_payments_list [name=partial]').mousedown(function(){
     if ( $('#li_transaction_field_content .highlight.ui-state-highlight').length == 0 )
       return true;
-    
+
     $(this).appendTo('body');
     elt = this;
     $(this).click();
@@ -224,24 +225,24 @@ $(document).ready(function(){
   $('#li_transaction_field_payments_list [name=invoice]').mousedown(function(){
     if ( $('#li_transaction_field_content .highlight.ui-state-highlight').length == 0 )
       return true;
-    
+
     form = $(this).closest('form');
     $(this).appendTo('body');
     form.submit();
     elt = this;
     setTimeout(function(){ $(elt).insertAfter($('#li_transaction_field_payments_list input:last')); }, 250);
   });
-  
+
   // vCard & co
-  $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more').click(function(){
-    $('#li_transaction_field_professional_id, #li_transaction_field_contact_id, #li_transaction_field_more').addClass('ui-state-highlight');
+  $('#li_transaction_field_professional_id, #li_transaction_field_postalcode, #li_transaction_field_contact_id, #li_transaction_field_more').click(function(){
+    $('#li_transaction_field_professional_id, #li_transaction_field_postalcode, #li_transaction_field_contact_id, #li_transaction_field_more').addClass('ui-state-highlight');
     if ( $('#li_transaction_field_contact_id .data a').length > 0
       && $('#li_transaction_field_informations .vcard').length == 0 )
     {
       $.get($('#li_transaction_field_contact_id .data a').prop('href').replace('.html','')+'/vcf', function(data){
         vcard = vCard.initialize(data);
         data = $.parseHTML(vcard.to_html());
-        
+
         $(data).find('.type').remove();
         $(data).find('.postal-code').each(function(){ $(this).insertBefore($(this).closest('address').find('.locality')); });
         $('#li_transaction_field_informations').prepend($(data));
@@ -249,13 +250,17 @@ $(document).ready(function(){
     }
     else
       $('#li_transaction_field_informations .vcard').slideDown('slow');
-    
+
     // show the contact's file if the screen width is wide enough
     if ( $('#sf_admin_container').width() > 1400 && $('#li_transaction_field_contact_id .data a').length > 0 )
     {
+      // do not show the contact if we are inside the simplified process
+      if ( $('#li_fieldset_simplified').is(':visible') )
+        return;
+
       $('#sf_admin_container').width($('#sf_admin_container').width()-800);
       setTimeout(function(){ $(window).resize(); }, 1500); // because of the transition-duration
-      
+
       var iframe = $('<iframe></iframe>')
         .attr('src',$('#li_transaction_field_contact_id .data a').prop('href'))
         .hide()
@@ -276,19 +281,19 @@ $(document).ready(function(){
       ;
     }
   });
-  
+
   // THE BOARD
   $('#li_transaction_field_board button').click(LI.boardClick)
-  
+
   // ARROWS ON DOCUMENT / ON ITEMS
   $(document).keydown(function(e){
     if ( $('#li_transaction_field_content .item.ui-state-highlight').length == 0
       || $('#li_transaction_field_content .item').length == 1 )
       return true;
-    
+
     if ( e.which != 38 && e.which != 40 )
       return true;
-    
+
     var items = $('#li_transaction_field_content .families:not(.sample) .family:not(.total) .item:not(.total)').toArray();
     switch ( e.which ) {
     case 40: // arrow down
@@ -312,23 +317,23 @@ $(document).ready(function(){
       }
       break;
     }
-    
+
     return false;
   });
-  
+
   // FLASHES
   // hide the flashes after a while
   setTimeout(
     function(){ $('.sf_admin_flashes > *').fadeOut('slow',function(){ $(this).remove(); }); }
     , 2500
   );
-  
+
   // DISPLAYS A WARNING MESSAGE WHEN THE WINDOW ATTEMPS TO BE CLOSED
   $(window).on('beforeunload', LI.closeTransaction);
-  
+
   // RESPONSIVE DESIGN
   LI.responsiveDesign();
-  
+
   // NEW PAYMENT
   $('#li_transaction_field_payment_new [name="transaction[payment_new][payment_method_id]"]').each(function(){
     $(this).closest('li').find('input, label').hide();
@@ -339,9 +344,9 @@ $(document).ready(function(){
       .appendTo($(this).closest('li'));
   });
   $('#li_transaction_field_payment_new .submit').hide();
-  
+
   // reset the current transaction + resend the confirmation email + access to the simplified gui
-  $('#abandon, #resend-email, #simplified-gui').appendTo($('#sf_admin_container .ui-widget-header h1'));
+  $('#abandon, #resend-email, #simplified-gui, #direct-surveys').appendTo($('#sf_admin_container .ui-widget-header h1'));
 });
 
 // check gauges for overbooking
@@ -354,21 +359,20 @@ LI.checkGauges = function(form){
     $(form).clone(true).removeAttr('onsubmit').appendTo('body').submit().remove();
     return;
   }
-  
+
   // if there is only tickets for museums
   if ( $('#li_transaction_field_content #li_transaction_manifestations .families:not(.sample) .item tbody .declination [name="qty"]').length == 0
     && $('#li_transaction_field_content #li_transaction_museum .families:not(.sample) .item tbody .declination [name="qty"]').length > 0 )
     return true;
-    
-  
+
   var qty = 0;
   var go = true;
-  
+
   $('#li_transaction_field_content #li_transaction_manifestations .families:not(.sample) .item').each(function(){
     if ( go == false )
       return;
-    
-    if ( $(this).find('tbody .declination [name="qty"]').length > 0 )
+
+    if ( $(this).find('tbody .declination:not(.printed):not(.integrated) [name="qty"]').length > 0 )
     {
       var gauge = this;
       qty++;
@@ -376,22 +380,22 @@ LI.checkGauges = function(form){
         var elts = $(gauge).find('tbody .declination:not(.active) [name="qty"]');
         $(gauge).find('.data .gauge.raw').html(JSON.stringify(data));
         LI.renderGauge(gauge, true);
-        
+
         // overbooking
         var total = 0;
-        
+
         // a loophole for the tickets of the current transaction
         if ( $('#li_transaction_field_payments_list [name="cancel-order"]').css('visibility') == 'hidden'
           && $('#li_transaction_field_price_new .count-demands').length == 0 )
           elts.each(function(){ total += parseInt($(this).val(),10); });
-        
+
         if ( data.free - total < 0 )
         {
           go = false;
           elts.addClass('blink');
           LI.blinkQuantities(elts, true);
         }
-        
+
         qty--;
         if ( qty == 0 )
         {
@@ -411,8 +415,8 @@ LI.checkGauges = function(form){
       });
     }
   });
-  
-  return false;
+
+  return go;
 }
 
 LI.renderStocks = function(item)
@@ -426,7 +430,7 @@ LI.renderGauge = function(item, only_inline_gauge)
 {
   if ( only_inline_gauge == undefined )
     only_inline_gauge = false;
-  
+
   // the small gauge
   if (!( typeof item != 'string' && $(item).find('.data .gauge.raw').length == 0 ))
   {
@@ -448,7 +452,7 @@ LI.renderGauge = function(item, only_inline_gauge)
         $(this).hide();
     });
   }
-  
+
   // gauge for seated plan
   if ( !only_inline_gauge && typeof item != 'string' && $(item).find('.data .gauge.seated').length > 0 )
   {
@@ -479,7 +483,7 @@ LI.renderGauge = function(item, only_inline_gauge)
       $('<div />').addClass('show-seated-plan')
         .append(button)
         .appendTo($('#li_transaction_field_product_infos'));
-      
+
       // caching
       LI.seatedPlanInitializationFunctions.push(function(){
         $(item).find('.data .gauge.seated.picture').remove(); // to ensure that we've got only one plan cached
@@ -496,22 +500,22 @@ LI.responsiveDesign = function(){
   $(window).resize(function(){
     var margin;
     $('#sf_admin_content').css('transform', 'scale(1)');
-    
+
     var scale = {
       x: $('#sf_admin_container').width()/$('#sf_admin_content').width(),
       y: ( $(window).height()
           - $('#sf_admin_content').position().top
          )/$('#sf_admin_content').height()
     };
-    
+
     // if gap between the two scales is too important, choose the smallest
     if ( scale.x / scale.y > 1.3 )
       scale.x = scale.y * 1.3;
     if ( scale.y / scale.x > 1.3 )
       scale.y = scale.x * 1.3;
-    
+
     $('#sf_admin_content').css('transform', 'scale('+scale.x+','+scale.y+')');
-    
+
     $('#sf_admin_container').height(
         $('#sf_admin_content').height()*scale.y + 20
       + $('.ui-widget-header').height()
@@ -533,7 +537,7 @@ LI.initContent = function(){
         LI.alert(data.success.error_fields[id],'error');
         return;
       }
-      
+
       if ( data.success.success_fields[id] !== undefined && data.success.success_fields[id].data !== undefined )
       {
         LI.completeContent(data.success.success_fields[id].data.content, id);
@@ -548,14 +552,20 @@ LI.initTouchscreen = function(elt)
   switch ( elt ) {
   case '#li_transaction_field_contact_id':
     if ( $(elt+' [name="transaction[contact_id]"]').val() == '' )
+    {
       $(elt+' .data a').remove();
+      $('#li_transaction_field_postalcode').fadeIn();
+    }
     else
+    {
       $(elt+' .data a').prepend('<span class="ui-icon ui-icon-person"></span>');
+      $('#li_transaction_field_postalcode').fadeOut(function(){ $(this).find('input').val(''); });
+    }
     $(elt+' .li_touchscreen_new').toggle($(elt+' .data a').length == 0);
     $('#li_transaction_field_informations .vcard').remove();
     $(elt).click();
     break;
-  
+
   case '#li_transaction_field_professional_id':
     if ( $(elt+' select option').length == 0 || $(elt+' select option').length == 1 && !$(elt+' select option:first').val() )
       $(elt+' select').fadeOut('fast');
@@ -576,7 +586,7 @@ LI.calculateTotals = function()
 {
   if ( $(this).closest('.families.sample').length > 0 )
    return;
-    
+
   // remove totals if there is only one line
   if ( !$(this).closest('.family').is('.total')
     && $(this).closest('.declinations').length > 0
@@ -590,21 +600,21 @@ LI.calculateTotals = function()
     else
       $(this).hide();
   }
-    
+
   var elt = this;
   var totals = new Object;
   $(this).closest($(this).closest('.declinations.total').length > 0 ? '.items' : '.declinations').find('.declination .nb').each(function(){
     var val = $(this).is('.qty') ? $(this).find('input').val() : $(this).html();
     if ( !val ) val = '';
-    
+
     if ( totals[$(this).attr('class')] == undefined )
       totals[$(this).attr('class')] = 0;
-    
+
     i = LI.parseFloat(val);
     if ( !isNaN(i) )
       totals[$(this).attr('class')] += i;
   });
-  
+
   $.each(totals, function(index, value){
     var total = $(elt).find('.'+index.replace(/\s+/g,'.'));
     if ( $(total).hasClass('money') )
@@ -614,7 +624,7 @@ LI.calculateTotals = function()
     else
       total.html(value);
   });
-    
+
   // megatotal
   var megaelt = $(this).closest('.families').find('.family.total');
   totals = new Object;
@@ -635,7 +645,7 @@ LI.calculateTotals = function()
     else
       total.html(value);
   });
-  
+
   // total of totals
   var total = { pit: 0, vat: 0, tep: 0 };
   $('.family.total .item.total tr.total').each(function(){
@@ -653,10 +663,10 @@ LI.calculateTotals = function()
       }
     });
   });
-  
+
   $.each(total, function(index, value){
     $('#li_transaction_field_payments_list .topay .'+index).html(LI.format_currency(value));
-    
+
     var tmp = LI.parseFloat($('#li_transaction_field_payments_list tfoot .total .sf_admin_list_td_list_value').html());
     tmp = isNaN(tmp) ? 0 : tmp;
     tmp = total[index] - tmp * total[index]/total.pit;
@@ -698,7 +708,7 @@ LI.clickBoard = function(){
   var elt = $('.li_fieldset .ui-state-highlight').find('textarea, input:not([type=hidden])');
   if ( $('.li_fieldset .ui-state-highlight').closest('#li_transaction_field_content').length == 1 )
     elt = $('#li_transaction_field_price_new').find('input[type=text]'); // case of qty of "products"
-  
+
   if ( $(this).val().substring(0,1) != '_' )
   {
     if ( !$(this).closest('#li_transaction_field_board').hasClass('alpha') )
@@ -706,7 +716,7 @@ LI.clickBoard = function(){
     else // alpha
     {
       var button = this; // init
-      
+
       if ( $(button).hasClass('selected') )
       {
         // same button
@@ -714,7 +724,7 @@ LI.clickBoard = function(){
         var letter = $(button).val().substring(index, index+1);
         if ( !letter )
           letter = $(button).val().substring(0,1);
-        
+
         $(button).prop('title', letter);
       }
       else
@@ -723,11 +733,11 @@ LI.clickBoard = function(){
         if ( $('#li_transaction_field_board .selected').length > 0 )
           elt.val(elt.val()+$('#li_transaction_field_board .selected').prop('title'));
         $('#li_transaction_field_board .selected').removeClass('selected').prop('title',false);
-        
+
         // recording the current one...
         $(button).addClass('selected').prop('title',$(button).val().substring(0,1));
       }
-      
+
       // completion
       setTimeout(function(){
         if ( $(button).is('.selected') )
@@ -760,7 +770,7 @@ LI.clickBoard = function(){
 LI.closeTransaction = function(event){
   $('#transition').show();
   var go = { ok: true, text: '' };
-  
+
   $.ajax({
     url: $('#li_transaction_field_close form').prop('action'),
     type: $('#li_transaction_field_close form').prop('method'),
@@ -774,7 +784,7 @@ LI.closeTransaction = function(event){
         return;
       }
       var buf = [];
-      
+
       // success
       if ( data.success.success_fields.close !== undefined )
       {
@@ -785,7 +795,7 @@ LI.closeTransaction = function(event){
         go.text = buf.join("\n");
         return;
       }
-      
+
       // error
       if ( data.success.error_fields.close !== undefined )
       {
@@ -800,7 +810,7 @@ LI.closeTransaction = function(event){
       }
     }
   });
-  
+
   // the GUI behaviour
   if ( !go.ok ) //&& !confirm(go.text) )
   {

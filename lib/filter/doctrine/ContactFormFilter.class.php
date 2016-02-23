@@ -170,6 +170,16 @@ EOF;
     ));
     
     // events
+    $this->widgetSchema   ['manifestations_list'] = new cxWidgetFormDoctrineJQuerySelectMany(array(
+      'model' => 'Manifestation',
+      'url'   => cross_app_url_for('event', 'manifestation/ajax'),
+      'config' => '{ max: 25 }',
+    ));
+    $this->validatorSchema['manifestations_list'] = new sfValidatorDoctrineChoice(array(
+      'model'    => 'Manifestation',
+      'multiple' => true,
+      'required' => false,
+    ));
     $this->widgetSchema   ['events_list'] = new sfWidgetFormDoctrineChoice(array(
       'model'    => 'Event',
       'query'    => Doctrine::getTable('Event')->retrieveList()->select('e.*, translation.*'),
@@ -194,7 +204,7 @@ EOF;
     ));
     $this->widgetSchema   ['meta_events_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'MetaEvent',
-      'query' => Doctrine::getTable('MetaEvent')->createQuery('me')
+      'query' => $q = Doctrine::getTable('MetaEvent')->createQuery('me')
         ->andWhereIn('me.id',array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials())),
       'order_by' => array('name','asc'),
       'multiple' => true,
@@ -202,13 +212,12 @@ EOF;
     $this->validatorSchema['meta_events_list'] = new sfValidatorDoctrineChoice(array(
       'required' => false,
       'model'    => 'MetaEvent',
-      'query' => Doctrine::getTable('MetaEvent')->createQuery('me')
-        ->andWhereIn('me.id',array_keys(sfContext::getInstance()->getUser()->getMetaEventsCredentials())),
+      'query' => $q,
       'multiple' => true,
     ));
     $this->widgetSchema   ['prices_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Price',
-      'query' => Doctrine::getTable('Price')->createQuery('p')
+      'query' => $q = Doctrine::getTable('Price')->createQuery('p')
         ->leftJoin('p.Users u')
         ->andWhere('u.id = ?',sfContext::getInstance()->getUser()->getId()),
       'order_by' => array('name, description',''),
@@ -217,9 +226,7 @@ EOF;
     $this->validatorSchema['prices_list'] = new sfValidatorDoctrineChoice(array(
       'required' => false,
       'model'    => 'Price',
-      'query' => Doctrine::getTable('Price')->createQuery('p')
-        ->leftJoin('p.Users u')
-        ->andWhere('u.id = ?',sfContext::getInstance()->getUser()->getId()),
+      'query' => $q,
       'multiple' => true,
     ));
     $this->widgetSchema   ['workspaces_list'] = new sfWidgetFormDoctrineChoice(array(
@@ -395,6 +402,7 @@ EOF;
     $fields['groups_list']          = 'GroupsList';
     $fields['not_groups_list']      = 'NotGroupsList';
     $fields['emails_list']          = 'EmailsList';
+    $fields['manifestations_list']  = 'ManifestationsList';
     $fields['events_list']          = 'EventsList';
     $fields['event_categories_list']= 'EventCategoriesList';
     $fields['meta_events_list']     = 'MetaEventsList';
@@ -482,11 +490,39 @@ EOF;
   }
   
   // links to the ticketting system module
-  public function addEventsListColumnQuery(Doctrine_Query $q, $field, $value)
+  public function addManifestationsListColumnQuery(Doctrine_Query $q, $field, $value)
   {
+    if ( !is_array($value) )
+      return $q;
+    
     $a = $q->getRootAlias();
     
-    if ( is_array($value) )
+    foreach ( array($q,$this->tickets_having_query) as $query )
+    {
+      if ( !$query->contains("LEFT JOIN $a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
+      $query->leftJoin("$a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)");
+      
+      if ( !$query->contains("LEFT JOIN transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)") )
+      $query->leftJoin('transac.Tickets tck WITH (tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL) AND tck.id NOT IN (SELECT ttck.cancelling FROM ticket ttck WHERE ttck.cancelling IS NOT NULL)');
+      
+      if ( !$query->contains("LEFT JOIN $a.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)") )
+      $query->leftJoin($a.'.DirectTickets ctck WITH (ctck.printed_at IS NOT NULL OR ctck.integrated_at IS NOT NULL) AND ctck.id NOT IN (SELECT cttck.cancelling FROM ticket cttck WHERE cttck.cancelling IS NOT NULL)');
+      
+      $query->andWhere('(TRUE')
+            ->andWhereIn('tck.manifestation_id',$value)
+            ->orWhereIn('ctck.manifestation_id', $value)
+            ->andWhere('TRUE)');
+    }
+    
+    return $q;
+  }
+  public function addEventsListColumnQuery(Doctrine_Query $q, $field, $value)
+  {
+    if ( !is_array($value) )
+      return $q;
+    
+    $a = $q->getRootAlias();
+    
     foreach ( array($q,$this->tickets_having_query) as $query )
     {
       if ( !$query->contains("LEFT JOIN $a.Transactions transac WITH (p.id = transac.professional_id OR transac.professional_id IS NULL)") )
@@ -532,7 +568,7 @@ EOF;
       if ( !$query->contains("LEFT JOIN ctck.Manifestation cm") )
       $query->leftJoin('ctck.Manifestation cm');
       if ( !$query->contains("LEFT JOIN cm.Event cevent") )
-      $query->leftJoin('m.Event cevent');
+      $query->leftJoin('cm.Event cevent');
      
       $query->andWhere('(TRUE')
             ->andWhereIn('event.event_category_id',$value)

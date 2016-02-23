@@ -33,6 +33,20 @@ $(document).ready(function(){
     })
   ;
   
+  // complete the named tickets using an other manifestation
+  $('#tickets .complete').click(function(){
+    $.ajax({
+      method: 'get',
+      url: $(this).prop('href'),
+      success: function(data){
+        if ( !data )
+          return;
+        LI.pubNamedTicketsData(data);
+      }
+    });
+    return false;
+  });
+  
   $('form.named-tickets').submit(function(){
     if ( location.hash == '#debug' )
     {

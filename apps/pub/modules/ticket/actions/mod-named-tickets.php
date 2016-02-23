@@ -131,13 +131,53 @@
           // if the last contact was already confirmed, cannot modify such a contact
           if ( !$ticket->contact_id || $ticket->DirectContact->confirmed )
           {
-            $ticket->DirectContact = new Contact;
-            if ( $ticket->Transaction->Order->count() == 0 )
-              $ticket->DirectContact->confirmed = false;
+            $get_keywords = function($search)
+            {
+              $nb = mb_strlen($search);
+              $charset = sfConfig::get('software_internals_charset');
+              $transliterate = sfConfig::get('software_internals_transliterate',array());
+              
+              $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
+              $search = str_replace(MySearchAnalyzer::$cutchars,' ',$search);
+              $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
+              
+              return explode(' ', preg_replace('/\s+/', ' ', $search));
+            };
+            
+            // Search for an existing contact
+            $q = Doctrine_Query::create()->from('Contact c')
+              ->orderBy('c.updated_at DESC')
+              ->andWhere('c.email = ?', strtolower(trim($data[$ticket->id]['contact']['email'])))
+            ;
+            
+            $i = 0;
+            foreach ( array('firstname', 'name',) as $field )
+            foreach ( $get_keywords($data[$ticket->id]['contact'][$field]) as $keyword )
+            {
+              $i++;
+              $alias = "ci$i";
+              $s = Doctrine::getTable('ContactIndex')->createQuery($alias)
+                ->select("$alias.id")
+                ->andWhere("$alias.field = ?", $field)
+                ->andWhere("$alias.keyword = ?", $keyword)
+              ;
+              $q->andWhere("c.id IN ($s)", $s->getParams()['where']);
+            }
+            $contact = $q->fetchOne();
+            
+            if ( $contact )
+              $ticket->DirectContact = $contact;
+            else
+            {
+              $ticket->DirectContact = new Contact;
+              if ( $ticket->Transaction->Order->count() == 0 )
+                $ticket->DirectContact->confirmed = false;
+            }
           }
           
           foreach ( array('title', 'name', 'firstname', 'email') as $field )
-            $ticket->DirectContact->$field = $data[$ticket->id]['contact'][$field];
+            $ticket->DirectContact->$field = trim($data[$ticket->id]['contact'][$field]);
+          $ticket->DirectContact->email = strtolower($ticket->DirectContact->email);
           
           $validator = new sfValidatorEmail;
           try {
@@ -152,7 +192,7 @@
               unset($ticket->DirectContact);
           }
           
-          break;
+          break; // only 1 loop is sufficient to process 1 ticket/contact
         }
       }
       
@@ -196,10 +236,6 @@
         $prices[''.$pid] = $tmp[$pid];
     }
     
-    $event = new sfEvent($this, 'pub.after_adding_tickets', array());
-    if ( $no_direct_contact )
-      $event['direct_contact'] = false;
-    $this->dispatcher->notify($event);
     // the json data
     $this->data[$ticket->manifestation_id.' '.$ticket->Seat.' '.$ticket->id] = array(
       'id'                => $ticket->id,
@@ -221,6 +257,11 @@
       'comment'           => $ticket->comment,
     );
   }
+  
+  $event = new sfEvent($this, 'pub.after_adding_tickets', array('tickets' => $tickets));
+  if ( sfConfig::get('app_tickets_direct_contact', 'auto') == 'auto' && isset($no_direct_contact) && $no_direct_contact )
+    $event['direct_contact'] = false;
+  $this->dispatcher->notify($event);
   
   ksort($this->data);
   // delete stored-for-deletion tickets (if not getting back a transaction already paid)

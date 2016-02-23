@@ -22,9 +22,9 @@
 ***********************************************************************************/
 ?>
 <?php
-    $path = liCacher::componePath($request->getUri());
+    $path = 'manifestation/statsFillingData?id='.$request->getParameter('id');
     if ( !$request->hasParameter('refresh')
-      && ($this->json = liCacher::create($path)->useCache()) !== false )
+      && ($this->json = liCacher::create($path, true)->useCache($this->getRoute()->getObject()->getCacheTimeout())) !== false )
       return 'Success';
     if ( sfConfig::get('sf_web_debug', false) )
       error_log("Refreshing the cache for Manifestation's statistics (manifestation->id = ".$request->getParameter('id').")");

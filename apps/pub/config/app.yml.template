@@ -38,7 +38,9 @@ all:
     #id: qrcode # can be id (default), qrcode, othercode
     #no_conflict: 30 minutes # the needed minimum delay to go from one location to another
     #pdf_attachments: true
+    #merge: vertical # horizontal: merge tickets by manifestations | vertical: merge tickets by DirectContact, depends on 'pdf_attachments: true'
     #nb_manifestations_per_default: 100
+    #direct_contact: auto # auto (default) | manuall
   store:
     #disabled: false
     max_per_product: 9
@@ -58,6 +60,7 @@ all:
   #  title: Member cards    # tweak this for the ariane widget
   #  show_expire_at: true
   #  complete_your_passes: false  # adds a button in the bottom of the cart
+  #  promo_code: false
   #show:
   #  company_id: 5 # do not set something if you do not care
   seller:

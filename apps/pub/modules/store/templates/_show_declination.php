@@ -4,7 +4,7 @@
     <?php echo $declination->getRawValue()->description ?>
   </div>
   <?php
-    $max = $declination->stock - $declination->Product->online_limit;
+    $max = $declination->stock - $declination->Product->online_limit - $declination->findOrderedSiblings()->count();
     foreach ( $sf_user->getTransaction()->BoughtProducts as $bp )
     if ( $bp->product_declination_id == $declination->id )
       $max++;

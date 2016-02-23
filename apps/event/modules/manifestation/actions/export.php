@@ -25,31 +25,34 @@
     $this->getContext()->getConfiguration()->loadHelpers(array('Date','CrossAppLink'));
     $manifestation = $this->getRoute()->getObject();
     
-    $q = new Doctrine_Query;
-    $q->from('Contact c')
+    $q = liDoctrineQuery::create()->from('Contact c')
       ->leftJoin('c.Transactions t')
-      ->leftJoin('t.Professional tp')
-      ->leftJoin('t.Tickets tck')
-      ->leftJoin('tck.Manifestation m')
-      ->leftJoin('c.Professionals cp ON c.id = cp.contact_id AND (cp.id = tp.id OR cp.id IS NULL AND tp.id IS NULL)')
+      // Tickets from Transaction
+      ->leftJoin('t.Tickets tck WITH tck.cancelling IS NULL AND tck.id NOT IN (SELECT tck2.cancelling FROM Ticket tck2 WHERE tck2.cancelling IS NOT NULL) AND tck.manifestation_id = ?', $manifestation->id)
+      ->leftJoin('c.Professionals cp WITH tck.id IS NOT NULL AND t.professional_id IS NOT NULL AND cp.id = t.professional_id')
+      // DirectContacts
+      ->leftJoin('c.DirectTickets dtck WITH dtck.cancelling IS NULL AND dtck.id NOT IN (SELECT dtck2.cancelling FROM Ticket dtck2 WHERE dtck2.cancelling IS NOT NULL) AND dtck.manifestation_id = ?', $manifestation->id)
+      
       ->select('c.*, cp.*')
-      ->andWhere('m.id = ?',$manifestation->id)
-      ->andWhere('tck.cancelling IS NULL')
-      ->andWhere('tck.id NOT IN (SELECT tck2.cancelling FROM Ticket tck2 WHERE tck2.cancelling IS NOT NULL)');
+      ->andWhere('dtck.id IS NOT NULL OR tck.id IS NOT NULL')
+    ;
+    
     
     switch ( $type = $request->getParameter('status') ) {
     case 'asked':
       $q->leftJoin('t.Order o')
         ->andWhere('o.id IS NULL')
-        ->andWhere('tck.printed_at IS NULL AND tck.integrated_at IS NULL');
+        ->andWhere('dtck.printed_at IS NULL AND dtck.integrated_at IS NULL')
+        ->andWhere(' tck.printed_at IS NULL AND  tck.integrated_at IS NULL');
       break;
     case 'ordered':
       $q->leftJoin('t.Order o')
         ->andWhere('o.id IS NOT NULL')
-        ->andWhere('tck.printed_at IS NULL AND tck.integrated_at IS NULL');
+        ->andWhere('dtck.printed_at IS NULL AND dtck.integrated_at IS NULL')
+        ->andWhere(' tck.printed_at IS NULL AND  tck.integrated_at IS NULL');
       break;
     default:
-      $q->andWhere('(tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL)');
+      $q->andWhere('(tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL OR dtck.printed_at IS NOT NULL OR dtck.integrated_at IS NOT NULL)');
       break;
     }
 

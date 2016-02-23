@@ -6,6 +6,10 @@ dataSuccess:
   has_layout: false
   http_metas:
     content-type: application/json
+jsonSuccess:
+  has_layout: false
+  http_metas:
+    content-type: application/json
   
 csvSuccess:
   has_layout: false

@@ -31,5 +31,30 @@ class EmailFormFilter extends BaseEmailFormFilter
     ));
     
     $this->widgetSchema['sf_guard_user_id']->setOption('order_by',array('first_name, last_name, username',''));
+    
+    $this->widgetSchema   ['email_address'] = new sfWidgetFormInput(array(
+      'type' => 'email',
+    ));
+    $this->validatorSchema['email_address'] = new sfValidatorEmail(array(
+      'required' => false,
+    ));
+  }
+  
+  public function getFields()
+  {
+    $fields = parent::getFields();
+    $fields['email_address'] = 'EmailAddress';
+    return $fields;
+  }
+  
+  public function addEmailAddressColumnQuery(Doctrine_Query $q, $field, $value)
+  {
+    if ( !$value )
+      return $q;
+    
+    $a = $q->getRootAlias();
+    $q->andWhere("LOWER($a.field_to) = LOWER(?) OR LOWER($a.field_cc) = LOWER(?) OR LOWER($a.field_bcc) = LOWER(?)", array($value, $value, $value));
+    
+    return $q;
   }
 }

@@ -34,10 +34,24 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
   public $overload_config_file;
 
   protected $routings = array();
- 
   
   public function setup()
   {
+    if (!( defined('SF_USE_LOCAL_RW_DIRS') && SF_USE_LOCAL_RW_DIRS ))
+    {
+      $ucache = basename($this->getRootDir()).'-'.md5($this->getRootDir());
+      $this->setCacheDir("/tmp/$ucache/cache");
+      $this->setLogDir("/tmp/$ucache/log");
+      
+      foreach ( array("/tmp/$ucache/cache", "/tmp/$ucache/log") as $dir )
+      if ( !file_exists($dir) )
+      {
+        mkdir($dir, 0777, true);
+        chmod(dirname($dir), 0777); // to be sure...
+        chmod($dir, 0777); // to be sure...
+      }
+    }
+    
     // year of birth
     $this->yob = array();
     for ( $i = 0 ; $i < 80 ; $i++ )
@@ -85,17 +99,17 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
     $this->loadSecondWavePlugins();
     $this->failover();
     if ( sfConfig::get('project_network_proxy', false) )
-      stream_context_set_default($var = [
-        'http'  => [
+      stream_context_set_default($var = array(
+        'http'  => array(
           'proxy' => sfConfig::get('project_network_proxy'),
           'request_fulluri' => true,
-        ],
-        'https' => [
+        ),
+        'https' => array(
           'proxy' => sfConfig::get('project_network_proxy'),
           'request_fulluri' => true,
-        ],
-        'ssl' => ['SNI_enabled' => false], // Disable SNI for https over http proxies
-      ]);
+        ),
+        'ssl' => array('SNI_enabled' => false), // Disable SNI for https over http proxies
+      ));
   }
   
   // pass-by the native symfony restriction, if and only if the plugin developper knows what's going on
@@ -149,7 +163,7 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
   }
   
   // @see liGarbageCollectorInterface
-  public function executeGarbageCollectors($names = NULL)
+  public function executeGarbageCollectors($names = NULL, $id = NULL)
   {
     if ( is_null($names) )
       $names = array_keys($this->collectors);
@@ -161,7 +175,7 @@ class ProjectConfiguration extends sfProjectConfiguration implements liGarbageCo
     {
       $fct = $this->getGarbageCollector($name);
       if ( $fct instanceof Closure )
-        $fct();
+        $fct($id);
     }
     
     return $this;

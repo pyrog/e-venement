@@ -21,6 +21,7 @@ generator:
         expire_at: { label: Expire at }
         list_contact: { label: Contact }
         checks_count: { label: Checks }
+        has_email_address: { label: Has an email address }
       list:
         title: List of active member cards on the period (cf. filters)
         display: [_id, _name, _list_contact, created_at, expire_at, _value, checks_count]
@@ -33,7 +34,7 @@ generator:
         table_method: retreiveListOfActivatedCards
         max_per_page: 50
       filter:
-        display: [member_card_type_id, contact_id, expire_at]
+        display: [member_card_type_id, contact_id, expire_at, has_email_address]
       form:    ~
       edit:    ~
       new:     ~

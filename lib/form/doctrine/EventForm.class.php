@@ -56,7 +56,10 @@ class EventForm extends BaseEventForm
       'url'   => cross_app_url_for('rp','organism/ajax'),
     ));
     
-    $this->validatorSchema['duration'] = new sfValidatorString(array('required' => false));
+    $this->validatorSchema['duration'] = new sfValidatorRegex(array(
+      'required' => false,
+      'pattern'  => '/^\d+:\d\d$/',
+    ));
     
     if ( $this->object->isNew() )
     {
@@ -76,7 +79,7 @@ class EventForm extends BaseEventForm
       foreach ( $this->object->Manifestations as $key => $manif )
       {
         foreach(array(
-          'event_id', 'sf_guard_user_id', 'version',
+          'event_id', 'sf_guard_user_id', 'version', 'automatic',
           'workspaces_list', 'prices_list', 'organizers_list',
           'description',
           'depends_on', 'contact_id',

@@ -31,75 +31,101 @@
     
     // the autocompleter & the manifestation's selector
     $('#li_transaction_field_content .new-family [name=autocompleter]').keyup(function(e){
+      // do not take into account the \n chars
+      if ( e.which == 13 )
+        return;
+      
       var val = $(this).val();
+      var direct = $(this).val().replace(/^(.*)(!)$/, '$2') == '!' ? true : false;
       var elt = this;
       setTimeout(function(){ // this timeout is to execute a HTTP request for a bulk for letters instead of for every single keyup()
-        if ( val == $(elt).val() ) // then launch the request
-        {
-          var select = $(elt).closest('.new-family').find('select');
-          
-          // emptying the previous select's content
-          select.html('');
-          
-          // disabling the selection of any manif that is already selected (including those w/o any ticket yet) 
-          var except = [];
-          $(elt).closest('.bunch').find('.family:not(.total)').each(function(){
-            if ( $(this).attr('data-family-id') )
-              except.push($(this).attr('data-family-id'));
-          });
-          
-          $.ajax({
-            url: select.attr('data-content-url'),
-            data: { with_colors: true, q: $(elt).val(), except: except, max: select.attr('data-content-qty'), 'keep-order': true },
-            method: 'get',
-            success: function(data){
-              if ( LI.touchscreenOnNewFamilyLoad != undefined )
-              $.each(LI.touchscreenOnNewFamilyLoad, function(i, fct){
-                fct(data, $(select).closest('form'));
-              });
-              
-              select.html('');
-              $.each(data, function(id, manif){
-                $('<option></option>').val(manif.id)
-                  .css('background-color', manif.color)
-                  .text(manif.name).prop('title', manif.name)
-                  .attr('data-gauge-url', manif.gauge_url)
-                  .appendTo(select);
-              });
-              
-              // if only one option is available w/o looking for something special, select this only option
-              if ( $(elt).val() == '' && select.find('option').length == 1
-                && location.hash != '#debug'
-                && $(elt).closest('.bunch').find('.family:not(.total)').length == 0
-              )
-              {
-                select.find('option').prop('selected', true);
-                select.focusout();
-              }
-              
-              // show mini-gauge w/o selecting a new family
-              $('#li_transaction_field_content .bunch .new-family select option').unbind('click').click(function(){
-                if ( !$(this).attr('data-gauge-url') )
-                  return;
-                
-                var option = this;
-                $.get($(this).attr('data-gauge-url'), function(data){
-                  $('#li_transaction_field_product_infos *').remove(); // cleaning products infos
-                  
-                  switch ( $(option).closest('[data-bunch-id]').attr('data-bunch-id') ) {
-                  case 'store':
-                    LI.renderStocks(JSON.stringify(data));
-                    break;
-                  default:
-                    LI.renderGauge(JSON.stringify(data), true);
-                    break;
-                  }
-                });
-              });
+        if ( val != $(elt).val() ) // stops the request
+          return;
+        
+        // the searched string  
+        var search = $(elt).val().replace(/^(.*)(!)$/, '$1');
+        
+        // the select
+        var select = $(elt).closest('.new-family').find('select');
+        
+        // emptying the previous select's content
+        select.html('');
+        
+        // disabling the selection of any manif that is already selected (including those w/o any ticket yet) 
+        var except = [];
+        if ( !direct )
+        $(elt).closest('.bunch').find('.family:not(.total)').each(function(){
+          if ( $(this).attr('data-family-id') )
+            except.push($(this).attr('data-family-id'));
+        });
+        
+        $.ajax({
+          url: select.attr('data-content-url'),
+          data: {
+            with_colors: true,
+            q: search,
+            except: except,
+            all: direct ? 'true' : null,
+            max: select.attr('data-content-qty'),
+            'keep-order': true
+          },
+          method: 'get',
+          success: function(data){
+            if ( LI.touchscreenOnNewFamilyLoad != undefined )
+            $.each(LI.touchscreenOnNewFamilyLoad, function(i, fct){
+              fct(data, $(select).closest('form'));
+            });
+            
+            select.html('');
+            $.each(data, function(id, manif){
+              $('<option></option>').val(manif.id)
+                .css('background-color', manif.color)
+                .text(manif.name).prop('title', manif.name)
+                .attr('data-gauge-url', manif.gauge_url)
+                .appendTo(select);
+            });
+            
+            // if only one option is available w/o looking for something special
+            // or if we are in a "direct" mode
+            // then select this only option
+            if ( (direct || $(elt).val() == '') && select.find('option').length == 1
+              && location.hash != '#debug'
+              && (direct || $(elt).closest('.bunch').find('.families:not(.sample) .family:not(.total)').length == 0)
+            )
+            {
+              select.find('option').prop('selected', true);
+              select.focusout();
+              setTimeout(function(){
+                $('#li_transaction_field_price_new [name="price_new[id]"]:first').click();
+              }, 2000);
             }
-          });
-        }
-      },330);
+            
+            // reset the search words
+            if ( direct )
+              $(elt).val('');
+            
+            // show mini-gauge w/o selecting a new family
+            $('#li_transaction_field_content .bunch .new-family select option').unbind('click').click(function(){
+              if ( !$(this).attr('data-gauge-url') )
+                return;
+              
+              var option = this;
+              $.get($(this).attr('data-gauge-url'), function(data){
+                $('#li_transaction_field_product_infos *').remove(); // cleaning products infos
+                
+                switch ( $(option).closest('[data-bunch-id]').attr('data-bunch-id') ) {
+                case 'store':
+                  LI.renderStocks(JSON.stringify(data));
+                  break;
+                default:
+                  LI.renderGauge(JSON.stringify(data), true);
+                  break;
+                }
+              });
+            });
+          }
+        });
+      }, direct ? 50 : 330);
       
       return false;
     }).keyup();

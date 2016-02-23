@@ -13,6 +13,11 @@ require_once dirname(__FILE__).'/../lib/member_card_typeGeneratorHelper.class.ph
  */
 class member_card_typeActions extends autoMember_card_typeActions
 {
+  public function executeAddPromoCode(sfWebRequest $request)
+  {
+    $this->redirect('promo_code/new?mct_id='.$request->getParameter('id'));
+  }
+  
   public function executeShow(sfWebRequest $request)
   {
     $this->redirect('member_card_type/edit?id='.$request->getParameter('id'));

@@ -67,6 +67,7 @@
     });
     */
     
+    LI.fixCacherLinks();
     <?php include_partial('show_print_part_js',array('tab' => 'spectators', 'jsFunction' => 'LI.manifShowSpectators')) ?>
   });
 </script>

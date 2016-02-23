@@ -32,6 +32,7 @@ class myUser extends pubUser
   protected $workspaces = array();
   protected $transaction = NULL;
   protected $auth_exceptions = array();
+  protected $origin_id = NULL;
   
   public function initialize(sfEventDispatcher $dispatcher, sfStorage $storage, $options = array())
   {
@@ -72,7 +73,6 @@ class myUser extends pubUser
     // detecting if one ticket has to be affected to the current contact
     if ( $this->getTransaction()->contact_id )
     {
-      $nocontactatall = true;
       $manifs = array();
       foreach ( $this->getTransaction()->Tickets as $ticket )
       {
@@ -83,6 +83,7 @@ class myUser extends pubUser
       
       foreach ( $manifs as $manifid => $tickets )
       {
+        $nocontactatall = true;
         foreach ( $tickets as $ticket )
         if ( $ticket->contact_id )
         {
@@ -381,13 +382,11 @@ class myUser extends pubUser
   
   public function resetTransaction()
   {
-    if (!( $this->getAttribute('transaction_id',false) && $this->hasContact() ))
-    {
-      $this->getTransaction();
-      return $this;
-    }
+    $contact = false;
+    if ( $this->getAttribute('transaction_id',false) && $this->hasContact() )
+      $contact = $this->getContact();
     
-    $contact = $this->getContact();
+    $this->setOriginId();
     $this->getAttributeHolder()->remove('transaction_id');
     $this->transaction = NULL;
     $this->getTransaction();
@@ -400,12 +399,24 @@ class myUser extends pubUser
   {
     if ( $this->getTransaction()->Order->count() == 0 )
       $this->transaction->Tickets->delete();
+    $this->setOriginId();
     $this->getAttributeHolder()->remove('transaction_id');
     $this->transaction = NULL;
     $this->getTransaction();
     
     return $this;
   }
+  
+  public function setOriginId()
+  {
+    $this->origin_id = $this->getAttribute('transaction_id',false);
+    return $this;
+  }
+  public function getOriginId()
+  {
+    return $this->origin_id;
+  }
+  
   
   public function setDefaultCulture(array $languages)
   {

@@ -1,6 +1,8 @@
 <?php use_helper('Date') ?>
 <h1><?php echo __('Choose tickets') ?></h1>
 
+<?php include_partial('global/promo_code') ?>
+
 <?php if ( sfConfig::get('app_options_home', 'event') == 'meta_event' ): ?>
   <div id="meta_event">&laquo;&nbsp;<?php echo link_to($manifestation->Event->MetaEvent, 'event/index?meta-event='.$manifestation->Event->MetaEvent->slug) ?></div>
 <?php endif ?>

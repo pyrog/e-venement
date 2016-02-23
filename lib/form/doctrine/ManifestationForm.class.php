@@ -58,12 +58,16 @@ class ManifestationForm extends BaseManifestationForm
       'time' => new liWidgetFormTimeText(),
     ));
     $this->validatorSchema['ends_at'] = new sfValidatorDateTime(array('required' => false));
-    $this->validatorSchema['duration'] = new sfValidatorString(array('required' => false));
+    $this->validatorSchema['duration'] = new sfValidatorRegex(array(
+      'required' => false,
+      'pattern'  => '/^\d+:\d\d$/',
+    ));
     
     $this->widgetSchema['vat_id']
       ->setOption('order_by', array('value, name', ''));
     $this->widgetSchema['depends_on'] = new liWidgetFormDoctrineJQueryAutocompleter(array(
       'model' => 'Manifestation',
+      'method_for_query' => 'slightlyFindOneById',
       'url'   => url_for('manifestation/ajax?except='.$this->object->id),
       'config' => '{ max: '.sfConfig::get('app_manifestation_depends_on_limit',10).' }',
     ));

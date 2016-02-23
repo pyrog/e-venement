@@ -26,21 +26,22 @@ class liCacher
 {
   protected $data = NULL;
   protected $path = NULL;
+  protected $cache = NULL;
+  protected $domain = 'cache_files';
   const refreshKeyword = 'refresh';
   
-  static public function create($path)
+  static public function create($path, $escape = false)
   {
-    if ( $path instanceof sfWebRequest )
-      $path = self::componePath($path->getUri());
-    
-    return new self($path);
+    if ( $path instanceof sfWebRequest && $path->getUri() )
+      return new self(self::componePath($path->getUri()));
+    return new self($escape ? self::componePath($path) : $path);
   }
   static public function componePath($uri)
   {
     $uri = preg_replace('![?&/]{0,1}'.self::refreshKeyword.'([=/][\w\d]*){0,1}!', '', $uri);
     $uri = preg_replace('![?&/]+$!', '', $uri);
     
-    return sfConfig::get('sf_module_cache_dir').'/'.md5($uri).'.data';
+    return $uri;
   }
   static public function requiresRefresh(sfWebRequest $request)
   {
@@ -67,6 +68,16 @@ class liCacher
     return serialize($this->getData());
   }
   
+  public function getDomain()
+  {
+    return $this->domain;
+  }
+  public function setDomain($domain)
+  {
+    $this->domain = $domain;
+    return $this;
+  }
+  
   public function getData()
   {
     return $this->data;
@@ -77,28 +88,54 @@ class liCacher
     return $this;
   }
   
+  protected function getDBCache()
+  {
+    if ( $this->cache )
+      return $this->cache;
+    
+    if (!( $this->cache = Doctrine::getTable('Cache')->createQuery('c')
+      ->andWhere('c.identifier = ?', $this->getPath())
+      ->andWhere('c.domain = ?', $this->domain)
+      ->fetchOne() ))
+    {
+      $this->cache = new Cache;
+      $this->cache->domain = $this->domain;
+      $this->cache->identifier = $this->getPath();
+    }
+    
+    return $this->cache;
+  }
   public function loadData()
   {
-    $this->setData(unserialize(file_get_contents($this->getPath())));
+    $this->setData(unserialize($this->getDBCache()->content));
     return $this;
   }
   public function writeData()
   {
-    file_put_contents($this->getPath(), (string)$this);
+    $this->getDBCache()->content = (string)$this;
+    $this->getDBCache()->updated_at = date('Y-m-d H:i:s');
+    $this->getDBCache()->save();
+    
     return $this;
   }
   
-  public function useCache($interval = NULL)
+  public function needsRefresh($interval = NULL)
   {
     if ( is_null($interval) )
       $interval = sfConfig::get('app_cacher_timeout', '1 day ago');
     
-    if ( !file_exists($this->getPath()) )
-      return false;
+    if ( $this->getDBCache()->isNew() )
+      return true;
     
-    $ctime = filectime($this->getPath());
-    if (!( $ctime !== false && $ctime > strtotime($interval) ))
-      return false;
-    return $this->loadData()->getData();
+    $ctime = strtotime($this->getDBCache()->updated_at);
+    if ( $ctime !== false && $ctime < strtotime($interval) )
+      return true;
+    
+    return false;
+  }
+  
+  public function useCache($interval = NULL)
+  {
+    return !$this->needsRefresh($interval) ? $this->loadData()->getData() : false;
   }
 }

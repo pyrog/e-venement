@@ -2,6 +2,8 @@ indexSuccess:
   javascripts: [list-scroll]
 editSuccess:
   stylesheets: [stats]
+showSuccess:
+  stylesheets: [stats]
 
 extractSuccess:
   layout: false

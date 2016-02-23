@@ -62,6 +62,7 @@ $(document).ready(function(){
           console.log('fail: '+orig);
         },
         success: function(json){
+          console.error(json);
           orig = $(form).find('select').val();
           $(form).closest('[data-price-id]').find('.value [name="store[free-price]"]').prop('readonly', orig > 0);
           if ( $.trim(json.success.message) )

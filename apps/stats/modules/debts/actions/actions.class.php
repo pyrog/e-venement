@@ -32,6 +32,11 @@ class debtsActions extends sfActions
       $this->form->bind($this->getUser()->getAttribute('stats.criterias',array(),'admin_module'));
   }
   
+  public function executeJson(sfWebRequest $request)
+  {
+    $this->lines = $this->getRawData();
+  }
+  
   public function executeCsv(sfWebRequest $request)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('Number','Date'));

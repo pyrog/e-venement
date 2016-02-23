@@ -26,6 +26,7 @@ class geoActions extends sfActions
     
     $this->form = new StatsCriteriasForm();
     $this->form
+      ->addOnlyWhatCriteria()
       ->addApproachCriteria()
       ->addEventCriterias()
       ->addManifestationCriteria()
@@ -44,6 +45,11 @@ class geoActions extends sfActions
     return $this;
   }
   
+  public function executeJson(sfWebRequest $request)
+  {
+    $criterias = $this->getCriterias();
+    $this->data = $this->getData($request->getParameter('type','ego'), !(isset($criterias['approach']) && $criterias['approach'] === ''));
+  }
   public function executeCsv(sfWebRequest $request)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink','Number'));
@@ -62,36 +68,36 @@ class geoActions extends sfActions
       $this->lines[$name] = array(
         'name' => __($name),
         'qty' => $data,
-        'percent' => format_number(round($data*100/$total['nb'],2)),
+        'percent' => format_number(round($data*100/($total['nb'] ? $total['nb'] : 0),2)),
       );
     }
     foreach ( $this->data['tickets'] as $name => $data )
     {
       $this->lines[$name]['tickets'] = $data;
-      $this->lines[$name]['tickets%'] = format_number(round($data*100/$total['tickets'], 2));
+      $this->lines[$name]['tickets%'] = format_number(round($data*100/($total['tickets'] ? $total['tickets'] : 1), 2));
     }
     foreach ( $this->data['value'] as $name => $data )
     {
       $this->lines[$name]['value'] = format_currency($data, '€');
-      $this->lines[$name]['value%'] = format_number(round($data*100/$total['value'], 2));
+      $this->lines[$name]['value%'] = format_number(round($data*100/($total['value'] ? $total['value'] : 1), 2));
     }
     
     $this->lines['total'] = array(
-      'name'    => __('Total'),
-      'contacts'     => $total['nb'],
-      'percent' => 100,
-      'tickets'   => $total['tickets'],
-      'tickets%' => 100,
-      'value'   => format_currency($total['value'],'€'),
-      'value%' => 100,
+      'name'          => __('Total'),
+      'qty'           => $total['nb'],
+      'percent'       => 100,
+      'tickets'       => $total['tickets'],
+      'tickets%'      => 100,
+      'value'         => format_currency($total['value'],'€'),
+      'value%'        => 100,
     );
     
     $params = OptionCsvForm::getDBOptions();
     $this->options = array(
-      'ms' => in_array('microsoft',$params['option']),
-      'fields' => array('name','qty','percent','tickets', 'tickets%', 'value','value%'),
-      'tunnel' => false,
-      'noheader' => false,
+      'ms'        => in_array('microsoft',$params['option']),
+      'fields'    => array('name','qty','percent','tickets', 'tickets%', 'value','value%'),
+      'tunnel'    => false,
+      'noheader'  => false,
     );
     
     $this->outstream = 'php://output';
@@ -138,9 +144,11 @@ class geoActions extends sfActions
   
   protected function buildQuery()
   {
-    $q = $this->addFiltersToQuery(Doctrine_Query::create()->from('Contact c'))
-      ->leftJoin('c.Transactions t')
-      ->leftJoin('t.Professional pro')
+    $q = $this->addFiltersToQuery(Doctrine_Query::create()
+        ->from('Transaction t')
+        ->leftJoin('t.Contact c')
+        ->leftJoin('t.Professional pro')
+      )
       ->leftJoin('pro.Organism o')
       ->leftJoin('t.Tickets tck')
       ->andWhere('tck.printed_at IS NOT NULL OR tck.integrated_at IS NOT NULL')
@@ -172,6 +180,15 @@ class geoActions extends sfActions
       ;
     }
     
+    if ( isset($criterias['only_what']) )
+    switch ( $criterias['only_what'] ) {
+    case 'individuals':
+      $q->andWhere('t.professional_id IS NULL');
+      break;
+    case 'professionals':
+      $q->andWhere('t.professional_id IS NOT NULL');
+      break;
+    }
     if ( isset($criterias['meta_events_list']) && is_array($criterias['meta_events_list']) )
       $q->andWhereIn('e.meta_event_id', $criterias['meta_events_list']);
     if ( isset($criterias['event_categories_list']) && is_array($criterias['event_categories_list']) )
@@ -218,25 +235,34 @@ class geoActions extends sfActions
         ->andWhere('(TRUE')
         ->andWhereIn('o.postalcode', $client['postalcode'])
         ->orWhereIn('c.postalcode', $client['postalcode'])
+        ->orWhereIn('t.postalcode', $client['postalcode'])
         ->andWhere('TRUE)')
       ;
     case 'postalcodes':
       $q = isset($metro) ? $metro : $this->buildQuery();
       $q
-        ->select('c.id')
-        ->addSelect('(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END) AS postalcode')
+        ->select('t.id, c.id AS contact_id')
+        ->addSelect('(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE CASE WHEN c.id IS NOT NULL THEN c.postalcode ELSE t.postalcode END END) AS postalcode')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
+        ->groupBy('t.id, c.id, c.postalcode, pro.id, o.postalcode, t.postalcode')
       ;
+      $contacts = array();
       foreach ( $arr = $q->fetchArray() as $pc )
+      foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
-        foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
+        // this is here as a workaround of the arrival of postalcodes within transactions
+        if ( $approach == 'nb' )
         {
-          if ( !isset($res[$approach][$pc['postalcode']]) )
-            $res[$approach][$pc['postalcode']] = 0;
-          $res[$approach][$pc['postalcode']] += is_int($field) ? $field : $pc[$field];
+          $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+          if ( in_array($id, $contacts) )
+            continue;
+          $contacts[] = $id;
         }
+        
+        if ( !isset($res[$approach][$pc['postalcode']]) )
+          $res[$approach][$pc['postalcode']] = 0;
+        $res[$approach][$pc['postalcode']] += is_int($field) ? $field : $pc[$field];
       }
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         arsort($res[$approach]);
@@ -244,7 +270,7 @@ class geoActions extends sfActions
       $cpt = 0;
       foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
-        if ( intval($code).'' !== ''.$code )
+        if ( str_pad(intval($code).'',5,'0',STR_PAD_LEFT) !== ''.$code )
         {
           foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
           {
@@ -271,16 +297,26 @@ class geoActions extends sfActions
     break;
     
     case 'departments':
+      $contacts = array();
       foreach ( $this->buildQuery()
-        ->select('c.id')
-        ->addSelect('substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END,1,2) AS dpt')
+        ->select('t.id, c.id AS contact_id')
+        ->addSelect('substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE CASE WHEN c.id IS NOT NULL THEN c.postalcode ELSE t.postalcode END END,1,2) AS dpt')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
+        ->groupBy('t.id, c.id, c.postalcode, pro.id, o.postalcode, t.postalcode')
         ->fetchArray() as $pc )
       {
         foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         {
+          // this is here as a workaround of the arrival of postalcodes within transactions
+          if ( $approach == 'nb' )
+          {
+            $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+            if ( in_array($id, $contacts) )
+              continue;
+            $contacts[] = $id;
+          }
+          
           if ( !isset($res[$approach][$pc['dpt']]) )
             $res[$approach][$pc['dpt']] = 0;
           $res[$approach][$pc['dpt']] += is_int($field) ? $field : $pc[$field];
@@ -293,7 +329,7 @@ class geoActions extends sfActions
       $cpt = 0;
       foreach ( $res[$count_tickets ? 'tickets' : 'nb'] as $code => $qty )
       {
-        if ( intval($code).'' !== ''.$code )
+        if ( str_pad(intval($code).'',2,'0',STR_PAD_LEFT) !== ''.$code )
         {
           foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
           {
@@ -318,6 +354,7 @@ class geoActions extends sfActions
         arsort($res[$approach]);
       }
       
+      $contacts = array();
       foreach ( Doctrine::getTable('GeoFrDepartment')->createQuery('gd')
         ->andWhereIn('gd.num', array_keys($res['nb']))
         ->execute() as $dpt )
@@ -337,16 +374,26 @@ class geoActions extends sfActions
         $dpts[$dpt['num']] = $dpt['region'];
       $dpts[''] = '';
       
+      $contacts = array();
       foreach ( $this->buildQuery()
-        ->select('c.id')
-        ->addSelect('substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE c.postalcode END,1,2) AS dpt')
+        ->select('t.id, c.id AS contact_id')
+        ->addSelect('substr(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE CASE WHEN c.id IS NOT NULL THEN c.postalcode ELSE t.postalcode END END,1,2) AS dpt')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id, c.postalcode, pro.id, o.postalcode')
+        ->groupBy('t.id, c.id, c.postalcode, pro.id, o.postalcode, t.postalcode')
         ->fetchArray() as $pc )
       {
         foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         {
+          // this is here as a workaround of the arrival of postalcodes within transactions
+          if ( $approach == 'nb' )
+          {
+            $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+            if ( in_array($id, $contacts) )
+              continue;
+            $contacts[] = $id;
+          }
+          
           if ( !isset($dpts[trim($pc['dpt'])]) )
             $pc['dpt'] = '';
           if ( !isset($res[$approach][$dpts[trim($pc['dpt'])]]) )
@@ -398,12 +445,13 @@ class geoActions extends sfActions
       $tmp = sfConfig::get('app_about_client', array());
       $default_country = isset($tmp['country']) ? $tmp['country'] : '';
       
+      $contacts = array();
       foreach ( $this->buildQuery()
-        ->select('c.id')
+        ->select('t.id, c.id AS contact_id')
         ->addSelect('(CASE WHEN pro.id IS NOT NULL THEN o.country ELSE c.country END) AS country')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id, c.country, pro.id, o.country')
+        ->groupBy('t.id, c.id, c.country, pro.id, o.country')
         ->fetchArray() as $pc )
       {
         if ( !trim($pc['country']) )
@@ -411,12 +459,22 @@ class geoActions extends sfActions
         $pc['country'] = trim(ucwords(strtolower($pc['country'])));
         foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         {
+          // this is here as a workaround of the arrival of postalcodes within transactions
+          if ( $approach == 'nb' )
+          {
+            $id = $pc['contact_id'] ? $pc['contact_id'] : 't'.$pc['id'];
+            if ( in_array($id, $contacts) )
+              continue;
+            $contacts[] = $id;
+          }
+          
           if ( !isset($res[$approach][$pc['country']]) )
             $res[$approach][$pc['country']] = 0;
           $res[$approach][$pc['country']] += is_int($field) ? $field : $pc[$field];
           $total[$approach] += is_int($field) ? $field : $pc[$field];
         }
       }
+      
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         arsort($res[$approach]);
       
@@ -469,18 +527,28 @@ class geoActions extends sfActions
       
       // exact
       $q = $this->buildQuery()
-        ->select('c.id')
+        ->select('t.id, c.id AS contact_id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id')
-        ->andWhere('(pro.id IS NULL AND c.postalcode = ? OR pro.id IS NOT NULL AND o.postalcode = ?)', array($client['postalcode'][0], $client['postalcode'][0]))
+        ->groupBy('t.id, c.id')
+        ->andWhere('(pro.id IS NOT NULL AND o.postalcode = ? OR pro.id IS NULL AND c.id IS NOT NULL AND c.postalcode = ? OR c.id IS NULL AND t.postalcode = ?)', array($client['postalcode'][0], $client['postalcode'][0], $client['postalcode'][0]))
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['exact'] = 0;
+      $contacts = array();
       $arr = $q->fetchArray();
       foreach ( $arr as $c )
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
+        // this is here as a workaround of the arrival of postalcodes within transactions
+        if ( $approach == 'nb' )
+        {
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
+          if ( in_array($id, $contacts) )
+            continue;
+          $contacts[] = $id;
+        }
+        
         $res[$approach]['exact'] += is_int($field) ? $field : $c[$field];
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
@@ -491,18 +559,28 @@ class geoActions extends sfActions
         $buf = $client['postalcode'][0];
         unset($qs[0], $client['postalcode'][0]);
         $q = $this->buildQuery()
-          ->select('c.id')
+          ->select('t.id, c.id AS contact_id')
           ->addSelect('count(DISTINCT tck.id) AS qty')
           ->addSelect('sum(tck.value) AS sum')
-          ->groupBy('c.id')
-          ->andWhere('(pro.id IS NULL AND c.postalcode IN ('.implode(',',$qs).') OR pro.id IS NOT NULL AND o.postalcode IN ('.implode(',',$qs).'))', array_merge($client['postalcode'], $client['postalcode']))
+          ->groupBy('t.id, c.id')
+          ->andWhere('(pro.id IS NOT NULL AND o.postalcode IN ('.implode(',',$qs).') OR pro.id IS NULL AND c.id IS NOT NULL AND c.postalcode IN ('.implode(',',$qs).') OR c.id IS NULL AND t.postalcode IN ('.implode(',',$qs).'))', array($client['postalcode'], $client['postalcode'], $client['postalcode']))
           ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
         foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
           $res[$approach]['metropolis'] = 0;
+        $contacts = array();
         $arr = $q->fetchArray();
         foreach ( $arr as $c )
         foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         {
+          // this is here as a workaround of the arrival of postalcodes within transactions
+          if ( $approach == 'nb' )
+          {
+            $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
+            if ( in_array($id, $contacts) )
+              continue;
+            $contacts[] = $id;
+          }
+          
           $res[$approach]['metropolis'] += is_int($field) ? $field : $c[$field];
           $total[$approach] += is_int($field) ? $field : $c[$field];
         }
@@ -512,69 +590,109 @@ class geoActions extends sfActions
       
       // department
       $q = $this->buildQuery()
-        ->select('c.id')
+        ->select('t.id, c.id AS contact_id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id')
-        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) = substring(?, 1, 2)', $client['postalcode'][0])
+        ->groupBy('t.id, c.id')
+        ->andWhere('substring(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE CASE WHEN c.id IS NOT NULL THEN c.postalcode ELSE t.postalcode END END, 1, 2) = substring(?, 1, 2)', $client['postalcode'][0])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['department'] = -$res[$approach]['exact'];
+      $contacts = array();
       $arr = $q->fetchArray();
       foreach ( $arr as $c )
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
+        // this is here as a workaround of the arrival of postalcodes within transactions
+        if ( $approach == 'nb' )
+        {
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
+          if ( in_array($id, $contacts) )
+            continue;
+          $contacts[] = $id;
+        }
+        
         $res[$approach]['department'] += is_int($field) ? $field : $c[$field];
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
       // region
       $q = $this->buildQuery()
-        ->select('c.id')
+        ->select('t.id, c.id AS contact_id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id')
-        ->andWhere('substring(CASE WHEN pro.id IS NULL THEN c.postalcode ELSE o.postalcode END, 1, 2) IN (SELECT gd.num FROM GeoFrRegion gr LEFT JOIN gr.Departments gd LEFT JOIN gr.Departments gdc WHERE gdc.num = substring(?, 1, 2))', $client['postalcode'][0])
+        ->groupBy('t.id, c.id')
+        ->andWhere('substring(CASE WHEN pro.id IS NOT NULL THEN o.postalcode ELSE CASE WHEN c.id IS NOT NULL THEN c.postalcode ELSE t.postalcode END END, 1, 2) = substring(?, 1, 2)', $client['postalcode'][0])
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['region'] = -$res[$approach]['exact'] -$res[$approach]['department'];
+      $contacts = array();
       $arr = $q->fetchArray();
       foreach ( $arr as $c )
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
+        // this is here as a workaround of the arrival of postalcodes within transactions
+        if ( $approach == 'nb' )
+        {
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
+          if ( in_array($id, $contacts) )
+            continue;
+          $contacts[] = $id;
+        }
+        
         $res[$approach]['region'] += is_int($field) ? $field : $c[$field];
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
       // country
       $q = $this->buildQuery()
-        ->select('c.id')
+        ->select('t.id, c.id AS contact_id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id')
+        ->groupBy('t.id, c.id')
         ->andWhere('(pro.id IS NULL AND (c.country ILIKE ? OR c.country IS NULL OR c.country = ?) OR pro.id IS NOT NULL AND (o.country ILIKE ? OR o.country IS NULL OR o.country = ?))', array(isset($client['country']) ? $client['country'] : 'France', '', isset($client['country']) ? $client['country'] : 'France', '',));
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['country'] = -$res[$approach]['exact'] -$res[$approach]['department'] -$res[$approach]['region'];
       $arr = $q->fetchArray();
+      $contacts = array();
       foreach ( $arr as $c )
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
+        // this is here as a workaround of the arrival of postalcodes within transactions
+        if ( $approach == 'nb' )
+        {
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
+          if ( in_array($id, $contacts) )
+            continue;
+          $contacts[] = $id;
+        }
+        
         $res[$approach]['country'] += is_int($field) ? $field : $c[$field];
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }
       
       // others
       $q = $this->buildQuery()
-        ->select('c.id')
+        ->select('t.id, c.id AS contact_id')
         ->addSelect('count(DISTINCT tck.id) AS qty')
         ->addSelect('sum(tck.value) AS sum')
-        ->groupBy('c.id');
+        ->groupBy('t.id, c.id');
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
         $res[$approach]['others'] = -$res[$approach]['exact'] -$res[$approach]['department'] -$res[$approach]['region'] -$res['nb']['country'];
       $arr = $q->fetchArray();
+      $contacts = array();
       foreach ( $arr as $c )
       foreach ( array('nb' => 1, 'tickets' => 'qty', 'value' => 'sum') as $approach => $field )
       {
+        // this is here as a workaround of the arrival of postalcodes within transactions
+        if ( $approach == 'nb' )
+        {
+          $id = $c['contact_id'] ? $c['contact_id'] : 't'.$c['id'];
+          if ( in_array($id, $contacts) )
+            continue;
+          $contacts[] = $id;
+        }
+        
         $res[$approach]['others'] += is_int($field) ? $field : $c[$field];
         $total[$approach] += is_int($field) ? $field : $c[$field];
       }

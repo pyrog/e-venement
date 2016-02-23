@@ -24,6 +24,25 @@ class web_originActions extends autoWeb_originActions
     $this->debug($request);
     $this->data = $this->getData($request->getParameter('which', 'referers'));
   }
+  public function executeJson(sfWebRequest $request)
+  {
+    $this->debug($request);
+    $data = $this->getData($request->getParameter('which', 'referers'), true);
+    $this->data = array();
+    
+    $previous = NULL;
+    foreach ( $data as $date => $value )
+    {
+      if ( $previous && strtotime($previous) < strtotime('-1 day', strtotime($date)) )
+      {
+        $tmp = strtotime($previous);
+        while ( ($tmp = strtotime('+1 day', $tmp)) < strtotime($date) )
+          $this->data[date('Y-m-d H:i:s', $tmp)] = 0;
+      }
+      $this->data[$date] = $value;
+      $previous = $date;
+    }
+  }
   public function executeCsv(sfWebRequest $request)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N','Date','CrossAppLink','Number'));
@@ -78,11 +97,13 @@ class web_originActions extends autoWeb_originActions
     
     return sfConfig::get('sf_web_debug', false);
   }
-  protected function getData($which = 'referers')
+  protected function getData($which = 'referers', $sysdate = false)
   {
     $pdo = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
     $limit = 10;
     $dql = $this->buildQuery()->removeDqlQueryPart('orderby');
+    $dql->leftJoin('t.MemberCards m');
+    $dql->andWhere('wo.next_id IS NULL OR p.id IS NOT NULL');
     $sql = preg_replace('/^SELECT .* FROM/', '', $dql->getRawSql());
     
     switch ( $which ) {
@@ -91,7 +112,7 @@ class web_originActions extends autoWeb_originActions
       $q = "SELECT $domain AS criteria, count(w.id) AS nb FROM $sql GROUP BY $domain";
       break;
     case 'campaigns':
-      $q = "SELECT w.campaign AS criteria, count(w.id) AS nb FROM $sql GROUP BY w.campaign";
+      $q = "SELECT (CASE WHEN m.detail IS NOT NULL AND m.detail != '' THEN 'Promo: '||m.detail ELSE w.campaign END) AS criteria, count(w.id) AS nb FROM $sql GROUP BY w.campaign, m.detail";
       $limit++; // to remove the empty campaign in the post production
       break;
     case 'deal_done':
@@ -102,9 +123,20 @@ class web_originActions extends autoWeb_originActions
       $criteria = "date_trunc('day', w.created_at)";
       $q = "SELECT $criteria AS criteria, count(w.id) AS nb FROM $sql GROUP BY $criteria";
       $limit = 30;
+      break;
     }
     
-    $q .= " ORDER BY count(w.id) DESC LIMIT $limit";
+    switch ( $which ) {
+    case 'referers':
+    case 'campaigns':
+    case 'deal_done':
+      $q .= " ORDER BY count(w.id) DESC LIMIT $limit";
+      break;
+    case 'evolution':
+      $q .= " ORDER BY $criteria DESC LIMIT $limit";
+      break;
+    }
+    
     $stmt = $pdo->prepare($q);
     $stmt->execute();
     $data = $stmt->fetchAll();
@@ -127,12 +159,9 @@ class web_originActions extends autoWeb_originActions
       break;
     case 'evolution':
       $this->type = 'line';
-      $start = strtotime(date('Y-m-d'));
       foreach ( $data as $criteria => $value )
-      {
-        if ( strtotime($values['criteria']) < strtotime('-1 month', $start) )
-          unset($data[$criteria]);
-      }
+      if ( strtotime($criteria) < strtotime('-1 month') )
+        unset($data[$criteria]);
       
       // completing empty days
       for ( $i = 0 ; $i < 31 ; $i++ )
@@ -143,7 +172,7 @@ class web_originActions extends autoWeb_originActions
       ksort($data);
       $tmp = array();
       foreach ( $data as $key => $value )
-        $tmp[format_date($key)] = $value; // to have human readable dates
+        $tmp[$sysdate ? $key : format_date($key,'d')] = $value; // to have human readable dates
       $data = $tmp;
       break;
     }

@@ -8,3 +8,5 @@
   <h2><?php echo $me ?></h2>
   <?php endforeach ?>
 <?php endif ?>
+
+<?php include_partial('global/promo_code') ?>

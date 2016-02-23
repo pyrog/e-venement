@@ -223,7 +223,22 @@ class organismActions extends autoOrganismActions
   }
   public function executeSideBar(sfWebRequest $request)
   {
+    $this->filters = false;  // a trick that avoids until 5 sec of processing #1/2
+    $cacher = liCacher::create('organism/sideBar?sf_guard_user_id='.$this->getUser()->getId())
+      ->setDomain('rp-index');
+    if ( !$cacher->requiresRefresh($request) )
+    if ( ($this->cache = $cacher->useCache()) !== false )
+      return 'Success';
+    
+    unset($this->filters);  // trick #2/2
     $this->executeIndex($request);
+    $this->cache = $this->getPartial('global/tdp/side_widget', array(
+      'filters' => $this->filters,
+    ));
+    
+    $cacher
+      ->setData($this->cache)
+      ->writeData();
   }
   public function executeIndex(sfWebRequest $request)
   {
@@ -366,7 +381,7 @@ class organismActions extends autoOrganismActions
     $transliterate = sfConfig::get('software_internals_transliterate',array());
     
     $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
-    $search = str_replace(array('_','@','.','-','+',',',"'"),' ',$search);
+    $search = str_replace(MySearchAnalyzer::$cutchars,' ',$search);
     $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
     return $search;
   }

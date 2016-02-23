@@ -134,6 +134,7 @@ class StatsCriteriasForm extends BaseForm
     ));
     $this->validatorSchema['with_contact'] = new sfValidatorChoice(array(
       'choices' => array_keys($choices),
+      'required' => false,
     ));
     return $this;
   }
@@ -153,7 +154,7 @@ class StatsCriteriasForm extends BaseForm
     $this->widgetSchema   ['groups_list'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'Group',
       'multiple' => true,
-      'order_by' => array('sf_guard_user_id DESC, name',''),
+      'order_by' => array('sf_guard_user_id ASC, name',''),
       'label' => 'Groups',
     ));
     $this->validatorSchema['groups_list'] = new sfValidatorDoctrineChoice(array(
@@ -172,6 +173,22 @@ class StatsCriteriasForm extends BaseForm
         'financial' => 'Financial',
       ),
       'label' => 'Type of approach',
+    ));
+    $this->validatorSchema['approach'] = new sfValidatorChoice(array(
+      'required' => false,
+      'choices' => array_keys($arr),
+    ));
+    return $this;
+  }
+  public function addOnlyWhatCriteria()
+  {
+    $this->widgetSchema   ['only_what'] = new sfWidgetFormChoice(array(
+      'choices' => $arr = array(
+        '' => 'Everybody',
+        'individuals' => 'Individuals',
+        'professionals' => 'Professionals',
+      ),
+      'label' => 'Type of contact',
     ));
     $this->validatorSchema['approach'] = new sfValidatorChoice(array(
       'required' => false,

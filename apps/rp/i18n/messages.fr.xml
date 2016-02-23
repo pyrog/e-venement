@@ -5,6 +5,34 @@
     <header/>
     <body>
       <trans-unit>
+        <source>Code</source>
+        <target>Code</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Promo Codes</source>
+        <target>Codes promo.</target>
+      </trans-unit>
+      <trans-unit>
+        <source>New Promo Code</source>
+        <target>Nouveau code promo.</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Begins at</source>
+        <target>Démarre le</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Ends at</source>
+        <target>Finit le</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Promo Code&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</source>
+        <target>Code promo.&lt;span class="ui-icon ui-icon-plus"&gt;&lt;/span&gt;</target>
+      </trans-unit>
+      <trans-unit>
+        <source>Has an email address</source>
+        <target>A une adresse email</target>
+      </trans-unit>
+      <trans-unit>
         <source>%%nb%% member card(s) have been cleaned up</source>
         <target>%%nb%% carte(s) d'abo ont été nettoyées</target>
       </trans-unit>

@@ -22,7 +22,7 @@ $(document).ready(function(){
   });
   
   // playing w/ declinations to make it more ergonomic
-  $('.sf_admin_form_field_declinations table + input[type=hidden]').each(function(){
+  $('.sf_admin_form_field_declinations input.declination-id').each(function(){
     
     // existing declinations
     var label = $(this).closest('table').closest('tr').find('> th');
@@ -38,7 +38,6 @@ $(document).ready(function(){
       .mouseleave(function(){ $(this).removeClass('ui-state-hover'); })
       .click(function(){
         var elt = this;
-        console.error('click');
         $('#transition').show();
         $.get($(this).prop('href'), { declination_id: $(this).attr('data-id') }, function(){
           $('#transition .close').click();

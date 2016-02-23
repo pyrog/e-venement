@@ -12,6 +12,10 @@
  */
 class Product extends PluginProduct implements liUserAccessInterface
 {
+  public function getOrderingKey()
+  {
+    return $this->name.' ~~~ '.$this->id;
+  }
   public function construct()
   {
     parent::construct();

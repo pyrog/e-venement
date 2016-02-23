@@ -52,6 +52,10 @@ class ticketActions extends sfActions
   {
     return require(dirname(__FILE__).'/add-categorized-ticket.php');
   }
+  public function executeCompleteNamedTickets(sfWebRequest $request)
+  {
+    return require(dirname(__FILE__).'/complete-named-tickets.php');
+  }
   public function executeModTickets(sfWebRequest $request)
   {
     return require(dirname(__FILE__).'/mod-tickets.php');

@@ -70,7 +70,7 @@ $(document).ready(function(){
         }
         
         // displaying the message (success/error)
-        $('<p></p>').addClass('message').text(json.message)
+        $('<p></p>').addClass('message').text(json.message+(json.tickets.length > 1 ? ' x '+json.tickets.length : ''))
           .insertAfter(control.find('h2'));
         
         // the transaction

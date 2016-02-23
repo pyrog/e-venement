@@ -30,7 +30,7 @@ class pubConfiguration extends sfApplicationConfiguration
   public function setup()
   {
     if (!( sfContext::hasInstance() && get_class(sfContext::getInstance()->getConfiguration()) != get_class($this) ))
-      $this->enablePlugins(array('liClassLoaderPlugin', 'sfDomPDFPlugin', 'liBarcodePlugin'));
+      $this->enablePlugins(array('liClassLoaderPlugin', 'liPDFPlugin', 'sfDomPDFPlugin', 'liBarcodePlugin'));
     parent::setup();
   }
   public function configure()
@@ -85,7 +85,7 @@ class pubConfiguration extends sfApplicationConfiguration
     return array_shift($txt);
   }
   
-  public static function addMemberCard(Transaction $transaction, $member_card_type_id)
+  public static function addMemberCard(Transaction $transaction, $member_card_type_id, $detail = NULL)
   {
     $mcf = new MemberCardForm;
     $arr = array();
@@ -103,6 +103,8 @@ class pubConfiguration extends sfApplicationConfiguration
     $arr['transaction_id'] = $transaction->id;
     $arr['contact_id'] = $transaction->contact_id;
     $arr['active'] = false;
+    if ( $detail )
+      $arr['detail'] = $detail;
     $arr[$mcf->getCSRFFieldName()] = $mcf->getCSRFToken();
     
     $arr['expire_at'] = sfConfig::has('project_cards_expiration_delay')
@@ -131,11 +133,7 @@ class pubConfiguration extends sfApplicationConfiguration
     if ( $mcpm->autoadd )
     {
       if ( isset($mcps[$i = $mcpm->event_id.' '.$mcpm->price_id]) )
-      {
-        error_log('before auto add '.$mcpm->event_id.' '.$mcps[$i]->quantity);
         $mcps[$i]->quantity = $mcps[$i]->quantity + $mcpm->quantity;
-        error_log('auto add '.$mcpm->event_id.' '.$mcps[$i]->quantity);
-      }
       else
         $mcps[$i] = $mcpm->copy();
     }
@@ -149,20 +147,31 @@ class pubConfiguration extends sfApplicationConfiguration
     $params = $event->getParameters();
     if ( !sfContext::hasInstance() || !( isset($params['transaction']) && $params['transaction'] instanceof Transaction ))
     {
-      error_log('Impossible to record de Web Origin: no transaction given, or similar...');
+      error_log('Impossible to record Web Origin: no transaction given, or similar...');
       return;
     }
     $transaction = $params['transaction'];
     
+    $wo = NULL;
+    $event->getSubject()->getOriginId() && $wo = Doctrine::getTable('WebOrigin')->createQuery('wo')
+      ->andWhere('wo.transaction_id = ?', $event->getSubject()->getOriginId())
+      ->fetchOne();
+    
     $origin = new WebOrigin;
     $origin->Transaction  = $transaction;
-    $origin->first_page   = $request->getUri();
-    $origin->campaign     = $request->getParameter('com');
-    $origin->referer      = $request->getReferer();
+    $origin->first_page   = $wo ? $wo->first_page : $request->getUri();
+    $origin->campaign     = $wo ? $wo->campaign : $request->getParameter('com');
+    $origin->referer      = $wo ? $wo->referer : $request->getReferer();
     $origin->ipaddress    = $request->getRemoteAddress();
     $origin->user_agent   = $_SERVER['HTTP_USER_AGENT'].'';
     
     $origin->save();
+    
+    if ( $wo )
+    {
+      $wo->next_id = $origin->id;
+      $wo->save();
+    }
   }
   
   public function triggerTransactionBeforeCreation(sfEvent $event)

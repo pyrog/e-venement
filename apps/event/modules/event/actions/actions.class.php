@@ -135,10 +135,10 @@ class eventActions extends autoEventActions
     parent::executeShow($request);
     
     $this->getContext()->getConfiguration()->loadHelpers('CrossAppLink');
-    $museum = $this->getContext()->getConfiguration()->getApplication() == 'museum';
-    if ( $this->event->museum && !$museum )
+    $this->museum = $this->getContext()->getConfiguration()->getApplication() == 'museum';
+    if ( $this->event->museum && !$this->museum )
       $this->redirect(cross_app_url_for('museum', 'event/show?id='.$this->event->id));
-    elseif ( !$this->event->museum && $museum )
+    elseif ( !$this->event->museum && $this->museum )
       $this->redirect(cross_app_url_for('event', 'event/show?id='.$this->event->id));
   }
   public function executeEdit(sfWebRequest $request)
@@ -351,7 +351,7 @@ class eventActions extends autoEventActions
     $transliterate = sfConfig::get('software_internals_transliterate',array());
     
     $search = str_replace(preg_split('//u', $transliterate['from'], -1), preg_split('//u', $transliterate['to'], -1), $search);
-    $search = str_replace(array('_','@','.','-','+',',',"'"),' ',$search);
+    $search = str_replace(MySearchAnalyzer::$cutchars,' ',$search);
     $search = mb_strtolower(iconv($charset['db'],$charset['ascii'], mb_substr($search,$nb-1,$nb) == '*' ? mb_substr($search,0,$nb-1) : $search));
     return $search;
   }

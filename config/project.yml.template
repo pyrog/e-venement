@@ -8,8 +8,9 @@ all:
   tickets:
     count_demands: false
     free_price_default: 10    # 1 by default
-  #events:
-  #  auto_add_price_manifestation: true
+    #pdf:
+    #  width: 145mm  -> 155mm is usually a good value for boca printers
+    #  height: 60mm
   about:
     nowarranty: false
     client:
@@ -31,6 +32,7 @@ all:
   #  enable: false
   #events:
   #  enable: true
+  #  auto_add_price_manifestation: true
   demo: false
   network:
     ipv6_ready: false
@@ -61,8 +63,19 @@ all:
     cultures:
       fr: Français
       en: English
-      br: Breizhoneg
+      br: Brezhoneg
     plugins: []       # e.g. [liMemberCardPlugin]
+    #users_domain: eve # to restrict the listing of users in this particular domain and its subdomain (this is not a DNS but an internal split only)
+    #usb:         # change things here only if you know exactly what you do, and refer to config/e-venement.yml params
+    #  printers:
+    #    star: [{ vid: 1305, pid: 1 }]
+    #    boca: [{ vid: 0, pid: 0 }]
+    #  drivers:
+    #    boca: '' # can be "HP" for HP-2P-Plus printers
+    #exec_path:   # change things here only if you know exactly what you do, and refer to config/e-venement.yml params
+    #  cupsfilter: /usr/sbin/cupsfilter
+    #  base64: /usr/bin/base64
+    #wkhtmltopdf: disabled        # uncomment this to use DomPDF (or nothing) for PDF rendering
 
   eticketting:
     salt: ARANDOMSALTHERE

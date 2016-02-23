@@ -144,7 +144,7 @@ class Ticket extends PluginTicket
     else
       $barcode = $this->getBarcodePng();
     
-    if ( $this->isModified() )
+    if ( $this->isModified() && !$this->isNew() )
       $this->save();
     
     if ( $type != 'html' || sfConfig::get('app_tickets_id', 'id') != 'id' )
@@ -182,10 +182,10 @@ EOF
       , __('Venue', null, 'li_tickets_email'), (string)$this->Manifestation->Location
       , __('Address', null, 'li_tickets_email'), (string)$this->Manifestation->Location->full_address
       //, __('Category', null, 'li_tickets_email'), $this->Gauge->Workspace->on_ticket ? $this->Gauge->Workspace->on_ticket : (string)$this->Gauge
-      , __('Category', null, 'li_tickets_email'), $this->category, !$this->seat_id && !$this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Free seating', null, 'li_tickets_email') : __('Seated', null, 'li_tickets_email')
+      , __('Category', null, 'li_tickets_email'), $this->isNew() ? '' : $this->category, $this->isNew() ? '' : (!$this->seat_id && !$this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Free seating', null, 'li_tickets_email') : __('Seated', null, 'li_tickets_email'))
       , __('Date', null, 'li_tickets_email'), $this->Manifestation->getFormattedDate()
       , __('Price', null, 'li_tickets_email'), $this->price_name, format_currency($this->value,'€')
-      , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : ($this->Manifestation->voucherized ? __('Voucher', null, 'li_ticket_email') : ''), $this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : __('Free seating', null, 'li_tickets_email'))
+      , $this->seat_id ? __('Seat #', null, 'li_tickets_email') : ($this->Manifestation->voucherized ? __('Voucher', null, 'li_ticket_email') : ''), $this->isNew() ? '' : ($this->seat_id ? $this->Seat : ($this->Manifestation->Location->getWorkspaceSeatedPlan($this->Gauge->workspace_id) ? __('Not yet allocated', null, 'li_tickets_email') : __('Free seating', null, 'li_tickets_email')))
       , $this->comment ? $this->comment : sfConfig::get('project_eticketting_default_comment', __('This is your ticket', null, 'li_tickets_email'))
       , $this->transaction_id, $this->id
       , $this->contact_id ? '' : $this->Transaction->contact_id ? __('Guest of') : '', $this->contact_id ? $this->DirectContact->title : $this->Transaction->Contact->title, $this->contact_id ? $this->DirectContact : $this->Transaction->Contact, $this->Transaction->professional_id ? $this->Transaction->Professional->Organism : ''
@@ -196,6 +196,23 @@ EOF
           ? $file
           : sfConfig::get('sf_web_dir').'/images/ticket-simplified-layout-100dpi.png'
       ))
+    );
+  }
+  
+  public function getDescription()
+  {
+    sfApplicationConfiguration::getActive()->loadHelpers(array('Number'));
+    
+    $seat = $this->seat_id
+      ? 'seat $seat / '
+      : '';
+    return sprintf('%s<br/>%s %s (%s%s %s)', //<div class="batch-event">%s</div><div class="batch-manifestation"><span class="batch-happens_at">%s</span> <span class="batch-location">%s</span></div><div class="batch-details">(%s%s %s)</div>',
+      $this->Manifestation->Event->short_name ? $this->Manifestation->Event->short_name : $this->Manifestation->Event,
+      $this->Manifestation->mini_date,
+      $this->Manifestation->Location,
+      $seat,
+      $this->Price,
+      format_currency($this->value, '€')
     );
   }
   

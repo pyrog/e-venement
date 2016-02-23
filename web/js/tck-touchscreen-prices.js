@@ -60,6 +60,7 @@
           .prop('title', (price.value !== null ? price.value : $('#li_transaction_field_close .prices .free-price').text())+' - '+price.description)
           .attr('data-'+$(item).attr('data-type')+'-id', $(item).attr('data-'+$(item).attr('data-type')+'-id'))
           .attr('data-type', $(item).attr('data-type'))
+          .attr('data-bunch-id', $(item).closest('.bunch').attr('data-bunch-id'))
           .appendTo(form.find('p'))
           .click(function(){
             var qty = $(this).closest('form').find('[name="transaction[price_new][qty]"]').val();
@@ -76,6 +77,9 @@
               .val($(this).attr('data-'+$(this).attr('data-type')+'-id'));
             $(this).closest('form').find('[name="transaction[price_new][type]"]')
               .val($(this).attr('data-type'));
+            $(this).closest('form').find('[name="transaction[price_new][bunch]"]')
+              .val($(this).attr('data-bunch-id'));
+            console.error($(this).attr('data-bunch-id'));
           })
         ;
       });

@@ -54,6 +54,7 @@ Transaction:
       type: boolean
       default: true
       notnull: true
+    postalcode: string(32)
   relations:
     Contact:
       foreignAlias: Transactions

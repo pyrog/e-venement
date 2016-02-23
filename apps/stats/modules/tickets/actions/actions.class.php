@@ -39,6 +39,24 @@ class ticketsActions extends sfActions
     if ( isset($criterias['meta_events_list']) && is_array($criterias['meta_events_list']) )
       $q->andWhereIn('e.meta_event_id',$criterias['meta_events_list']);
     
+    // metaevents
+    if ( isset($criterias['groups_list']) && is_array($criterias['groups_list']) )
+    {
+      if ( !$q->contains('FROM Professional p') )
+        $q->leftJoin('c.Professionals p WITH p.id = t.professional_id');
+      $q->leftJoin('p.Organism o')
+        ->leftJoin('c.ContactGroups gc')
+        ->leftJoin('p.ProfessionalGroups gp')
+        ->leftJoin('o.OrganismGroups go')
+      ;
+      $q->andWhere('(TRUE')
+        ->andWhereIn('gc.group_id',$criterias['groups_list'])
+        ->orWhereIn('gp.group_id',$criterias['groups_list'])
+        ->orWhereIn('go.group_id',$criterias['groups_list'])
+        ->andWhere('TRUE)')
+      ;
+    }
+    
     return $q;
   }
   
@@ -53,7 +71,10 @@ class ticketsActions extends sfActions
 
     $this->form = new StatsCriteriasForm;
     //$this->form->addWithContactCriteria();
-    $this->form->addEventCriterias();
+    $this->form
+      ->addEventCriterias()
+      ->addGroupsCriteria()
+    ;
     if ( is_array($this->getUser()->getAttribute('stats.criterias',array(),'admin_module')) )
     {
       $criterias = $this->getUser()->getAttribute('stats.criterias',array('dates' => array(
@@ -92,6 +113,7 @@ class ticketsActions extends sfActions
     // nb of contacts' tickets
     $q = Doctrine_Query::create()->from('Ticket tck')
       ->leftJoin('tck.Transaction t')
+      ->leftJoin('t.Contact c')
       ->select('tck.id');
     $this->contacts['tickets'] = $this->addQueryParts($q)->count();
     
@@ -99,6 +121,7 @@ class ticketsActions extends sfActions
     
     // number of contacts & nb of events/contacts
     $q = Doctrine_Query::create()->from('Professional p')
+      ->leftJoin('p.Contact c')
       ->leftJoin('p.Transactions t')
       ->leftJoin('t.Tickets tck')
       ->select('p.id, count(DISTINCT e.id) AS nb_events')
@@ -111,7 +134,8 @@ class ticketsActions extends sfActions
       $this->professionals['events'] += $professional->nb_events;
     
     $q = Doctrine_Query::create()->from('Ticket tck')
-      ->leftJoin('tck.Transaction t');
+      ->leftJoin('tck.Transaction t')
+      ->leftJoin('t.Contact c');
     $this->professionals['tickets'] = $this->addQueryParts($q,true)->count();
   }
 }
